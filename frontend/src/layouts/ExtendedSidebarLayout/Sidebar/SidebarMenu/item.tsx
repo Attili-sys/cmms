@@ -26,6 +26,7 @@ interface SidebarMenuItemProps {
   badgeTooltip?: string;
   open?: boolean;
   active?: boolean;
+  disabled?: boolean;
   name: string;
 }
 
@@ -54,6 +55,7 @@ const SidebarMenuItem: FC<SidebarMenuItemProps> = ({
   badgeTooltip,
   open: openParent,
   active,
+  disabled,
   name,
   ...rest
 }) => {
@@ -64,6 +66,20 @@ const SidebarMenuItem: FC<SidebarMenuItemProps> = ({
   const toggleMenu = (): void => {
     setMenuToggle((Open) => !Open);
   };
+
+  if (disabled) {
+    return (
+      <ListItem component="div" key={name} sx={{ opacity: 0.3, cursor: 'not-allowed' }}>
+        <Button
+          disabled
+          startIcon={Icon && <Icon />}
+          sx={{ width: '100%', justifyContent: 'flex-start', pointerEvents: 'none' }}
+        >
+          {t(name)}
+        </Button>
+      </ListItem>
+    );
+  }
 
   if (children) {
     return (

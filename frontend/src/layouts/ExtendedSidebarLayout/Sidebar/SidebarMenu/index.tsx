@@ -1,13 +1,9 @@
 import {
   alpha,
   Box,
-  Button,
-  Link,
   List,
   ListSubheader,
-  Stack,
-  styled,
-  Typography
+  styled
 } from '@mui/material';
 import { matchPath, useLocation } from 'react-router-dom';
 import SidebarMenuItem from './item';
@@ -18,9 +14,6 @@ import { useEffect } from 'react';
 import { getUrgentWorkOrdersCount } from '../../../../slices/workOrder';
 import { useDispatch, useSelector } from '../../../../store';
 import { getPendingRequestsCount } from '../../../../slices/request';
-import dayjs from 'dayjs';
-import { isCloudVersion } from 'src/config';
-import { getLocalizedHomeUrl } from '../../../../utils/urlPaths';
 
 const MenuWrapper = styled(Box)(
   ({ theme }) => `
@@ -94,7 +87,16 @@ const SubMenuWrapper = styled(Box)(
             font-size: ${theme.typography.pxToRem(20)};
           }
 
-          &.active,
+          &.active {
+            background-color: ${alpha(theme.colors.alpha.trueWhite[100], 0.06)};
+            color: #D69D10;
+
+            .MuiButton-startIcon,
+            .MuiButton-endIcon {
+              color: #D69D10;
+            }
+          }
+
           &:hover {
             background-color: ${alpha(theme.colors.alpha.trueWhite[100], 0.06)};
             color: ${theme.colors.alpha.trueWhite[100]};
@@ -148,7 +150,16 @@ const SubMenuWrapper = styled(Box)(
                 margin-right: ${theme.spacing(1.8)};
               }
 
-              &.active,
+              &.active {
+                color: #D69D10;
+
+                &:before {
+                  background: #D69D10;
+                  transform: scale(1);
+                  opacity: 1;
+                }
+              }
+
               &:hover {
 
                 &:before {
@@ -198,6 +209,18 @@ const reduceChildRoutes = ({
       )
     : false;
 
+  if (item.disabled) {
+    ev.push(
+      <SidebarMenuItem
+        key={key}
+        disabled
+        name={item.name}
+        icon={item.icon}
+      />
+    );
+    return ev;
+  }
+
   if (item.items) {
     const partialMatch = item.link
       ? !!matchPath(
@@ -245,14 +268,11 @@ const reduceChildRoutes = ({
 
 function SidebarMenu() {
   const location = useLocation();
-  const { t, i18n }: { t: any; i18n: any } = useTranslation();
+  const { t }: { t: any } = useTranslation();
   const dispatch = useDispatch();
-  const { hasViewPermission, hasFeature, user, company } = useAuth();
+  const { hasViewPermission, hasFeature, user } = useAuth();
   const { urgentCount } = useSelector((state) => state.workOrders);
   const { pendingCount } = useSelector((state) => state.requests);
-  const TRIAL_DAYS = 15;
-  const daysPassed = dayjs().diff(dayjs(company.createdAt), 'day');
-  const daysLeft = TRIAL_DAYS - daysPassed;
 
   useEffect(() => {
     if (user.id) {
@@ -262,51 +282,7 @@ function SidebarMenu() {
   }, [user.id]);
   return (
     <>
-      {isCloudVersion &&
-        !company.demo &&
-        user.ownsCompany &&
-        !company.subscription.activated &&
-        user.superAccountRelations.length === 0 && (
-          <Stack
-            sx={{
-              backgroundColor: 'rgb(51, 194, 255)',
-              p: 2,
-              mx: 2,
-              mt: 2,
-              borderRadius: 2
-            }}
-            spacing={1}
-          >
-            <Typography color={'white'} fontSize={'16px'} fontWeight={'bold'}>
-              {daysLeft > 0
-                ? `Your trial ends in ${daysLeft} days`
-                : `Your trial has ended`}
-            </Typography>
-            <Typography color={'white'} fontSize={'14px'}>
-              You are on the {company.subscription.subscriptionPlan.name} plan
-            </Typography>
-            <Button
-              component={Link}
-              href={
-                isCloudVersion
-                  ? '/app/subscription/plans'
-                  : getLocalizedHomeUrl(
-                      'pricing?type=selfhosted',
-                      i18n.language
-                    )
-              }
-              {...(isCloudVersion
-                ? {}
-                : { target: '_blank', rel: 'noopener noreferrer' })}
-              variant="contained"
-              color="primary"
-              sx={{ mt: 1 }}
-            >
-              Upgrade
-            </Button>
-          </Stack>
-        )}
-      <>
+<>
         {(user.superAccountRelations.length
           ? [
               {

@@ -14,7 +14,6 @@ import PowerSettingsNewTwoToneIcon from '@mui/icons-material/PowerSettingsNewTwo
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import useAuth from 'src/hooks/useAuth';
 import UpgradeTwoToneIcon from '@mui/icons-material/UpgradeTwoTone';
-import QuestionMarkTwoToneIcon from '@mui/icons-material/QuestionMarkTwoTone';
 import CodeTwoToneIcon from '@mui/icons-material/CodeTwoTone';
 import {
   isCloudVersion,
@@ -116,23 +115,6 @@ function SidebarFooter() {
           </IconButton>
         </LightTooltip>
       )}
-      <LightTooltip placement="top" arrow title={t('documentation')}>
-        <IconButton
-          sx={{
-            background: `${theme.colors.alpha.trueWhite[10]}`,
-            color: `${theme.colors.alpha.trueWhite[70]}`,
-            transition: `${theme.transitions.create(['all'])}`,
-
-            '&:hover': {
-              background: `${alpha(theme.colors.alpha.trueWhite[100], 0.2)}`,
-              color: `${theme.colors.alpha.trueWhite[100]}`
-            }
-          }}
-          onClick={() => window.open('https://grashjs.github.io/user-guide')}
-        >
-          <QuestionMarkTwoToneIcon fontSize="small" />
-        </IconButton>
-      </LightTooltip>
       {user.superAccountRelations.length === 0 && (
         <LightTooltip placement="top" arrow title={t('wo_calendar')}>
           <IconButton

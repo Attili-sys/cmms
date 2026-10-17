@@ -29,7 +29,6 @@ import type { ApexOptions } from 'apexcharts';
 import PersonOutlineTwoToneIcon from '@mui/icons-material/PersonOutlineTwoTone';
 import BusinessTwoToneIcon from '@mui/icons-material/BusinessTwoTone';
 import SwitchLeftTwoToneIcon from '@mui/icons-material/SwitchLeftTwoTone';
-import HelpTwoToneIcon from '@mui/icons-material/HelpTwoTone';
 import PhoneAndroidTwoToneIcon from '@mui/icons-material/PhoneAndroidTwoTone';
 import CloseIcon from '@mui/icons-material/Close';
 import { QRCodeSVG } from 'qrcode.react';
@@ -376,30 +375,6 @@ function HeaderUserbox() {
               </Box>
             </MenuItem>
           )}
-          <MenuItem
-            onClick={() => {
-              window.open('https://grashjs.github.io/user-guide');
-            }}
-          >
-            <ListItemIcon>
-              <HelpTwoToneIcon />
-            </ListItemIcon>
-            <ListItemText
-              primaryTypographyProps={{
-                variant: 'h5'
-              }}
-              primary={t('documentation')}
-            />
-            <Box display="flex" alignItems="center">
-              <ChevronRightTwoToneIcon
-                sx={{
-                  ml: 1,
-                  color: `${theme.colors.alpha.black[30]}`,
-                  opacity: 0.8
-                }}
-              />
-            </Box>
-          </MenuItem>
           <MenuItem onClick={handleOpenQrDialog}>
             <ListItemIcon>
               <PhoneAndroidTwoToneIcon />

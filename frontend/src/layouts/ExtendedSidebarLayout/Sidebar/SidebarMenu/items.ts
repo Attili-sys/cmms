@@ -37,6 +37,7 @@ export interface MenuItem {
   permission?: PermissionEntity;
   planFeature?: PlanFeature;
   uiConfigKey?: keyof Omit<UiConfiguration, 'id'>;
+  disabled?: boolean;
 
   items?: MenuItem[];
   name: string;
@@ -68,6 +69,7 @@ const ownMenuItems: MenuItems[] = [
         icon: InsertChartTwoToneIcon,
         permission: PermissionEntity.ANALYTICS,
         planFeature: PlanFeature.ANALYTICS,
+        disabled: true,
         items: [
           {
             name: 'work_orders',
@@ -172,7 +174,8 @@ const ownMenuItems: MenuItems[] = [
         link: '/app/purchase-orders',
         icon: ReceiptTwoToneIcon,
         permission: PermissionEntity.PURCHASE_ORDERS,
-        planFeature: PlanFeature.PURCHASE_ORDER
+        planFeature: PlanFeature.PURCHASE_ORDER,
+        disabled: true
       },
       {
         name: 'meters',
@@ -204,6 +207,7 @@ const ownMenuItems: MenuItems[] = [
         icon: GroupsTwoTone,
         permission: PermissionEntity.VENDORS_AND_CUSTOMERS,
         uiConfigKey: 'vendorsAndCustomers',
+        disabled: true,
         items: [
           {
             name: 'vendors',
@@ -226,7 +230,8 @@ const ownMenuItems: MenuItems[] = [
         link: '/app/files',
         icon: AttachFileTwoToneIcon,
         permission: PermissionEntity.FILES,
-        planFeature: PlanFeature.FILE
+        planFeature: PlanFeature.FILE,
+        disabled: true
       },
       {
         name: 'settings',

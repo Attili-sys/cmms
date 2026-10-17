@@ -2,7 +2,6 @@ import { lazy, Suspense } from 'react';
 import { Navigate } from 'react-router-dom';
 
 import SuspenseLoader from 'src/components/SuspenseLoader';
-import analyticsRoutes from './analytics';
 import { isCloudVersion } from '../config';
 
 const Loader = (Component) => (props) =>
@@ -129,20 +128,9 @@ const CostCategories = Loader(
 const SubscriptionPlans = Loader(
   lazy(() => import('../content/own/Subscription/Plans'))
 );
-const Files = Loader(lazy(() => import('../content/own/Files')));
 const Meters = Loader(lazy(() => import('../content/own/Meters')));
-const PurchaseOrders = Loader(
-  lazy(() => import('../content/own/PurchaseOrders'))
-);
-const CreatePurchaseOrders = Loader(
-  lazy(() => import('../content/own/PurchaseOrders/Create'))
-);
 const Locations = Loader(lazy(() => import('../content/own/Locations')));
 const WorkOrders = Loader(lazy(() => import('../content/own/WorkOrders')));
-
-const VendorsAndCustomers = Loader(
-  lazy(() => import('../content/own/VendorsAndCustomers'))
-);
 
 const Assets = Loader(lazy(() => import('../content/own/Assets')));
 const ShowAsset = Loader(lazy(() => import('../content/own/Assets/Show')));
@@ -289,7 +277,7 @@ const appRoutes = [
   },
   {
     path: 'files',
-    element: <Files />
+    element: <Navigate to="/app/work-orders" replace />
   },
   {
     path: 'meters',
@@ -332,20 +320,8 @@ const appRoutes = [
   },
   {
     path: 'purchase-orders',
-    children: [
-      {
-        path: '',
-        element: <PurchaseOrders />
-      },
-      {
-        path: ':purchaseOrderId',
-        element: <PurchaseOrders />
-      },
-      {
-        path: 'create',
-        element: <CreatePurchaseOrders />
-      }
-    ]
+    element: <Navigate to="/app/work-orders" replace />,
+    children: []
   },
   {
     path: 'locations',
@@ -400,7 +376,8 @@ const appRoutes = [
   },
   {
     path: 'analytics',
-    children: analyticsRoutes
+    element: <Navigate to="/app/work-orders" replace />,
+    children: []
   },
   {
     path: 'categories',
@@ -437,22 +414,8 @@ const appRoutes = [
   },
   {
     path: 'vendors-customers',
-    children: [
-      {
-        path: 'vendors',
-        children: [
-          { path: '', element: <VendorsAndCustomers /> },
-          { path: ':vendorId', element: <VendorsAndCustomers /> }
-        ]
-      },
-      {
-        path: 'customers',
-        children: [
-          { path: '', element: <VendorsAndCustomers /> },
-          { path: ':customerId', element: <VendorsAndCustomers /> }
-        ]
-      }
-    ]
+    element: <Navigate to="/app/work-orders" replace />,
+    children: []
   },
   {
     path: 'people-teams',

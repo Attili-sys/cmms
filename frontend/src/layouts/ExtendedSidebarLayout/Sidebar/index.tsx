@@ -5,23 +5,15 @@ import { SidebarContext } from 'src/contexts/SidebarContext';
 import {
   alpha,
   Box,
-  Button,
-  darken,
   Divider,
   Drawer,
   lighten,
-  Link,
-  Stack,
   styled,
-  Typography,
   useTheme
 } from '@mui/material';
 import SidebarMenu from './SidebarMenu';
 import SidebarFooter from './SidebarFooter';
 import Logo from 'src/components/LogoSign';
-import { isCloudVersion, isWhiteLabeled } from '../../../config';
-import useAuth from '../../../hooks/useAuth';
-import dayjs from 'dayjs';
 
 const SidebarWrapper = styled(Box)(
   ({ theme }) => `
@@ -54,7 +46,7 @@ function Sidebar() {
           background:
             theme.palette.mode === 'dark'
               ? alpha(lighten(theme.header.background, 0.1), 0.5)
-              : darken(theme.colors.alpha.black[100], 0.5),
+              : '#1D174E',
           boxShadow:
             theme.palette.mode === 'dark' ? theme.sidebar.boxShadow : 'none'
         }}
@@ -70,17 +62,6 @@ function Sidebar() {
             >
               <Box>
                 <Logo white />
-                {!isWhiteLabeled && (
-                  <Typography
-                    style={{ cursor: 'pointer', color: 'white' }}
-                    fontSize={13}
-                    onClick={() => {
-                      window.open('https://www.intel-loop.com/', '_blank');
-                    }}
-                  >
-                    Powered by Intelloop
-                  </Typography>
-                )}
               </Box>
             </Box>
           </Box>
@@ -115,7 +96,7 @@ function Sidebar() {
             background:
               theme.palette.mode === 'dark'
                 ? theme.colors.alpha.white[100]
-                : darken(theme.colors.alpha.black[100], 0.5)
+                : '#1D174E'
           }}
         >
           <Scrollbar>
@@ -129,17 +110,6 @@ function Sidebar() {
               >
                 <Box>
                   <Logo white />
-                  {!isWhiteLabeled && (
-                    <Typography
-                      style={{ cursor: 'pointer', color: 'white' }}
-                      fontSize={13}
-                      onClick={() => {
-                        window.open('https://www.intel-loop.com/', '_blank');
-                      }}
-                    >
-                      Powered by Intelloop
-                    </Typography>
-                  )}
                 </Box>
               </Box>
             </Box>
