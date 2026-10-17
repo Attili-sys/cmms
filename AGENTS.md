@@ -61,9 +61,24 @@ Secrets stay in `.env` and the environment. Never commit them.
 | `frontend/src/i18n/translations/AGENTS.md` | Editing translation JSON |
 | `dev-docs/` | Super-admin, LDAP, TLS, backup, upgrades |
 | `ATLAS_CAFM_DECISION_REPORT.md` | Choosing what to build next. It is an audit, not a description of code you have changed |
+| `UNRESTRICTED_SELFHOSTED.md` | Understanding which restrictions were removed on this branch and which controls are retained |
 | `cmms/AGENTS.md` | Any task inside `cmms/` |
 
 The three instruction files under `api/` and `frontend/` are not named `AGENTS.md` in a way every tool will auto-load (`Agents.md` and `agents.md`). Open them by the paths above.
+
+## Self-hosted edition (this branch)
+
+This branch (`unrestricted-selfhosted`) removes all commercial restrictions. The capability policy is:
+
+> When `CLOUD_VERSION=false`, every implemented feature is available without a subscription, activation key, license file, numerical quota, trial period, or connection to a licensing service.
+
+Rules for agents working on this branch:
+
+- **Do not re-add** Keygen validation, Paddle billing checks, license-file reads, trial-expiry scheduling, or feature-count quotas in any self-hosted code path.
+- `LicenseService.isUnrestrictedSelfHosted()` is the single gating method. Guard any cloud-only branch with `if (!licenseService.isUnrestrictedSelfHosted())` or `if (cloudVersion)`, not the reverse.
+- `SubscriptionPlan.getFeatures()` always returns `EnumSet.allOf(PlanFeatures.class)`. Do not use stored plan features as a gate; do not revert this getter.
+- Authentication, role/entity permissions, company isolation, approval rules, rate limits, and audit logging are **not** commercial restrictions and must remain unchanged.
+- Tests that assert an operation is forbidden due to a plan feature or user quota are testing removed behavior. Replace them with tests that assert the operation succeeds despite an empty stored features set or a low quota value.
 
 ## Done
 
