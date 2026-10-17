@@ -164,6 +164,39 @@ For a mobile build, set `API_URL` and `SOURCE_CODE_URL`, install exactly from
 the target platform. Publish the same exact source alongside any conveyed
 mobile binary.
 
+## Branding and UI
+
+The following upstream branding has been removed from the frontend:
+
+- "Atlas CMMS" removed from `index.html` meta/og tags, `manifest.json`
+  (name → "CMMS"), and logo icon references
+- "Powered by Intelloop" link removed from both sidebar instances
+- `grashjs.github.io/user-guide` removed from SidebarFooter and Header/Userbox
+- All upstream documentation links in the user-facing UI are gone
+
+### Color scheme
+
+| Token | Value | Applied to |
+|---|---|---|
+| Navy | `#1D174E` | Sidebar background, primary button color |
+| Gold | `#D69D10` | Active/selected sidebar item accent |
+| Pale gray | `#f2f5f9` | Page background (unchanged from upstream) |
+
+### Disabled navigation sections
+
+Four sections are intentionally locked — they appear grayed out in the sidebar
+(non-interactive) and redirect to `/app/work-orders` when accessed by URL:
+
+- **Statistics** — analytics dashboards
+- **Purchase orders**
+- **Vendors & customers**
+- **Files**
+
+These sections remain in the codebase and can be re-enabled by removing the
+`disabled: true` flag from their entries in
+`frontend/src/layouts/ExtendedSidebarLayout/Sidebar/SidebarMenu/items.ts` and
+restoring their route definitions in `frontend/src/router/app.tsx`.
+
 ## Verification
 
 Verification was performed in Docker toolchains:
