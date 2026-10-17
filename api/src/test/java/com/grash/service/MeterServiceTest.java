@@ -228,7 +228,10 @@ class MeterServiceTest {
         }
 
         @Test
-        void planWithoutMeterFeature_throwsForbidden() {
+        void emptyStoredPlanFeatures_doesNotRestrictCreation() {
+            // Old commercial quota: a plan with no stored features blocked meter creation.
+            // Unrestricted self-hosted: SubscriptionPlan.getFeatures() returns all features,
+            // so stored features no longer gate any implemented operation.
             SubscriptionPlan basicPlan = SubscriptionPlan.builder()
                     .id(2L)
                     .name("Basic")
@@ -243,10 +246,13 @@ class MeterServiceTest {
             User basicUser = buildUser(2L);
             basicUser.setCompany(basicCompany);
 
-            CustomException ex = assertThrows(CustomException.class,
-                    () -> meterService.create(new MeterPostDTO(), basicUser));
+            MeterPostDTO dto = new MeterPostDTO();
+            Meter mapped = buildMeter(1L);
+            when(meterMapper.fromPostDto(dto)).thenReturn(mapped);
+            when(licenseService.hasEntitlement(LicenseEntitlement.UNLIMITED_METERS)).thenReturn(true);
+            when(meterRepository.saveAndFlush(mapped)).thenReturn(mapped);
 
-            assertEquals(HttpStatus.FORBIDDEN, ex.getHttpStatus());
+            assertDoesNotThrow(() -> meterService.create(dto, basicUser));
         }
 
         @Test

@@ -62,6 +62,8 @@ class SubscriptionServiceTest {
     private Scheduler scheduler;
     @Mock
     private ScheduleRepository scheduleRepository;
+    @Mock
+    private LicenseService licenseService;
 
     private Company company;
     private User owner;
@@ -130,6 +132,20 @@ class SubscriptionServiceTest {
 
     @Nested
     class Upgrade {
+
+        @Test
+        void unrestrictedSelfHosted_enablesUserBeyondFormerSubscriptionCount() {
+            User target = buildUser(10L, false, false, false);
+            subscription.setUsersCount(1);
+            when(licenseService.isUnrestrictedSelfHosted()).thenReturn(true);
+            when(userRepository.findByIdAndCompany_Id(10L, 1L)).thenReturn(Optional.of(target));
+
+            subscriptionService.upgrade(List.of(10L), owner);
+
+            assertTrue(target.isEnabled());
+            assertTrue(target.isEnabledInSubscription());
+            verify(userRepository).saveAll(List.of(target));
+        }
 
         @Test
         void nonOwner_throwsForbidden() {
@@ -207,6 +223,20 @@ class SubscriptionServiceTest {
 
     @Nested
     class Downgrade {
+
+        @Test
+        void unrestrictedSelfHosted_clearsCommercialFlagWithoutDisablingUsers() {
+            User target = buildUser(10L, true, true, false);
+            subscription.setDowngradeNeeded(true);
+            when(licenseService.isUnrestrictedSelfHosted()).thenReturn(true);
+
+            subscriptionService.downgrade(List.of(10L), owner);
+
+            assertTrue(target.isEnabled());
+            assertTrue(target.isEnabledInSubscription());
+            assertFalse(subscription.isDowngradeNeeded());
+            verify(userRepository, never()).saveAll(anyCollection());
+        }
 
         @Test
         void nonOwner_throwsForbidden() {
@@ -360,6 +390,18 @@ class SubscriptionServiceTest {
     class ScheduleEnd {
 
         @Test
+        void unrestrictedSelfHosted_removesLegacyExpiryJobAndNeverSchedules() throws SchedulerException {
+            when(licenseService.isUnrestrictedSelfHosted()).thenReturn(true);
+            when(scheduler.checkExists(any(JobKey.class))).thenReturn(true);
+            subscription.setEndsOn(new Date(System.currentTimeMillis() + 60_000));
+
+            subscriptionService.scheduleEnd(subscription);
+
+            verify(scheduler).deleteJob(new JobKey("subscription-end-job-1", "subscription-group"));
+            verify(scheduler, never()).scheduleJob(any(JobDetail.class), any(Trigger.class));
+        }
+
+        @Test
         void freePlan_doesNotScheduleAndRemovesExistingJob() throws SchedulerException {
             subscription.setSubscriptionPlan(freePlan);
             subscription.setEndsOn(new Date());
@@ -458,6 +500,18 @@ class SubscriptionServiceTest {
 
     @Nested
     class ResetToFreePlan {
+
+        @Test
+        void unrestrictedSelfHosted_neverDowngradesOrDisablesSchedules() {
+            when(licenseService.isUnrestrictedSelfHosted()).thenReturn(true);
+
+            subscriptionService.resetToFreePlan(subscription);
+
+            verifyNoInteractions(companyRepository, scheduleRepository);
+            verify(subscriptionRepository, never()).save(any());
+            assertEquals(businessPlan, subscription.getSubscriptionPlan());
+            assertTrue(subscription.isActivated());
+        }
 
         @Test
         void noCompanyForSubscription_returnsEarly() {

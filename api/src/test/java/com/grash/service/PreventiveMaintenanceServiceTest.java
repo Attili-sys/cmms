@@ -214,7 +214,9 @@ class PreventiveMaintenanceServiceTest {
         }
 
         @Test
-        void create_planLacksFeature_throwsForbidden() {
+        void create_emptyStoredPlanFeatures_doesNotRestrictCreation() {
+            // Old commercial quota: a plan with no stored features blocked PM creation.
+            // Unrestricted self-hosted: getFeatures() returns all features unconditionally.
             SubscriptionPlan basicPlan = SubscriptionPlan.builder()
                     .id(2L)
                     .name("Basic")
@@ -229,10 +231,16 @@ class PreventiveMaintenanceServiceTest {
             PreventiveMaintenancePostDTO dto = buildPostDTO();
             PreventiveMaintenance mappedPM = buildPM(null);
             when(preventiveMaintenanceMapper.toModel(dto)).thenReturn(mappedPM);
+            when(licenseService.hasEntitlement(LicenseEntitlement.UNLIMITED_PM_SCHEDULES)).thenReturn(true);
+            when(customSequenceService.getNextPreventiveMaintenanceSequence(company)).thenReturn(1L);
+            when(preventiveMaintenanceRepository.saveAndFlush(any())).thenAnswer(inv -> {
+                PreventiveMaintenance saved = inv.getArgument(0);
+                saved.setId(1L);
+                return saved;
+            });
+            when(scheduleService.save(any())).thenAnswer(inv -> inv.getArgument(0));
 
-            CustomException ex = assertThrows(CustomException.class,
-                    () -> preventiveMaintenanceService.create(dto, user));
-            assertEquals(HttpStatus.FORBIDDEN, ex.getHttpStatus());
+            assertDoesNotThrow(() -> preventiveMaintenanceService.create(dto, user));
         }
 
         @Test
@@ -379,7 +387,9 @@ class PreventiveMaintenanceServiceTest {
         }
 
         @Test
-        void patch_planLacksFeature_throwsForbidden() {
+        void patch_emptyStoredPlanFeatures_doesNotRestrictUpdate() {
+            // Old commercial quota: a plan with no stored features blocked PM patch.
+            // Unrestricted self-hosted: getFeatures() returns all features unconditionally.
             PreventiveMaintenance pm = buildPM(1L);
             SubscriptionPlan basicPlan = SubscriptionPlan.builder()
                     .id(2L)
@@ -394,10 +404,11 @@ class PreventiveMaintenanceServiceTest {
 
             when(preventiveMaintenanceRepository.findById(1L)).thenReturn(Optional.of(pm));
             PreventiveMaintenancePatchDTO patchDTO = new PreventiveMaintenancePatchDTO();
+            patchDTO.setCustomFields(new ArrayList<>());
+            when(preventiveMaintenanceMapper.updatePreventiveMaintenance(eq(pm), eq(patchDTO))).thenReturn(pm);
+            when(preventiveMaintenanceRepository.saveAndFlush(any())).thenAnswer(inv -> inv.getArgument(0));
 
-            CustomException ex = assertThrows(CustomException.class,
-                    () -> preventiveMaintenanceService.patch(1L, patchDTO, user));
-            assertEquals(HttpStatus.FORBIDDEN, ex.getHttpStatus());
+            assertDoesNotThrow(() -> preventiveMaintenanceService.patch(1L, patchDTO, user));
         }
 
         @Test

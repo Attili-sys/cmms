@@ -1,4 +1,4 @@
-import { StyleSheet } from 'react-native';
+import { Linking, StyleSheet } from 'react-native';
 import { View } from '../components/Themed';
 import {
   ActivityIndicator,
@@ -127,6 +127,18 @@ export default function SettingsScreen({
           left={(props) => <IconButton icon={'information-outline'} />}
           title={t('Version')}
           description={Constants.expoConfig.version}
+        />
+        <List.Item
+          onPress={() =>
+            Linking.openURL(
+              Constants.expoConfig?.extra?.SOURCE_CODE_URL ??
+                'https://github.com/Attili-sys/cmms'
+            )
+          }
+          style={{ paddingHorizontal: 20 }}
+          left={(props) => <IconButton icon={'code-tags'} />}
+          title="Corresponding source"
+          description="GNU AGPLv3 source code for this build"
         />
       </View>
     </View>

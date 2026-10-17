@@ -9,6 +9,8 @@ const clarityId = process.env.CLARITY_ID;
 const googleServicesPlist = process.env.GOOGLE_SERVICES_PLIST;
 const sentryDsn = process.env.SENTRY_DSN;
 const sentryEnvironment = process.env.SENTRY_ENVIRONMENT || 'production';
+const sourceCodeUrl =
+  process.env.SOURCE_CODE_URL || 'https://github.com/Attili-sys/cmms';
 const gitHash = execSync('git rev-parse --short HEAD').toString().trim();
 const sentryRelease = process.env.SENTRY_RELEASE || gitHash;
 
@@ -118,6 +120,7 @@ export default ({ config }: ConfigContext): ExpoConfig => ({
     SENTRY_DSN: sentryDsn,
     SENTRY_ENVIRONMENT: sentryEnvironment,
     SENTRY_RELEASE: sentryRelease,
+    SOURCE_CODE_URL: sourceCodeUrl,
     eas: {
       projectId: '803b5007-0c60-4030-ac3a-c7630b223b92'
     }

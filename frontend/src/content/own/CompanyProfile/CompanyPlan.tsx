@@ -92,7 +92,7 @@ function CompanyPlan(props: CompanyPlanProps) {
           }}
           variant="h3"
         >
-          {t('upgrade_plan')}
+          {isCloudVersion ? t('upgrade_plan') : 'Self-Hosted Unrestricted'}
         </Typography>
         <Typography
           variant="subtitle2"
@@ -104,17 +104,18 @@ function CompanyPlan(props: CompanyPlanProps) {
             )}`
           }}
         >
-          {t('you_are_using_plan', {
-            planName: isCloudVersion
-              ? plan.name
-              : licensingState.planName ?? 'Free',
-            expiration: expiryDate
-              ? new Date(expiryDate).toLocaleString(
-                  getLanguage === 'fr' ? 'fr-FR' : undefined
-                )
-              : ''
-          })}
-          {company.subscription.scheduledChangeDate &&
+          {isCloudVersion
+            ? t('you_are_using_plan', {
+                planName: plan.name,
+                expiration: expiryDate
+                  ? new Date(expiryDate).toLocaleString(
+                      getLanguage === 'fr' ? 'fr-FR' : undefined
+                    )
+                  : ''
+              })
+            : 'All features implemented in this edition are available without a subscription or activation key.'}
+          {isCloudVersion &&
+          company.subscription.scheduledChangeDate &&
           company.subscription.scheduledChangeType === 'RESET_TO_FREE'
             ? ` ${t('subscription_will_cancel_on', {
                 date: new Date(
@@ -123,21 +124,12 @@ function CompanyPlan(props: CompanyPlanProps) {
               })}`
             : ''}
         </Typography>
-        <Box sx={{ mt: 2 }}>
+        {isCloudVersion && <Box sx={{ mt: 2 }}>
           <Button
             sx={{ mr: 2 }}
             variant="contained"
-            component={isCloudVersion ? RouterLink : 'a'}
-            {...(isCloudVersion
-              ? { to: '/app/subscription/plans' }
-              : {
-                  href: getLocalizedHomeUrl(
-                    'pricing?type=selfhosted',
-                    i18n.language
-                  ),
-                  target: '_blank',
-                  rel: 'noopener noreferrer'
-                })}
+            component={RouterLink}
+            to="/app/subscription/plans"
           >
             {t('upgrade_now')}
           </Button>
@@ -168,7 +160,7 @@ function CompanyPlan(props: CompanyPlanProps) {
               {t('go_to_billing')}
             </Button>
           )}
-        </Box>
+        </Box>}
       </Box>
     </Card>
   );

@@ -13,7 +13,9 @@ services:
       - postgres_data:/var/lib/postgresql/data
 
   api:
-    image: intelloop/atlas-cmms-backend
+    build:
+      context: ./api
+    image: atlas-cmms-backend:unrestricted-selfhosted
     container_name: atlas-cmms-backend
     depends_on:
       - postgres
@@ -36,7 +38,7 @@ services:
       SMTP_FROM: ${SMTP_FROM}
       SMTP_HOST: ${SMTP_HOST}
       SMTP_PORT: ${SMTP_PORT}
-      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE}
+      SPRING_PROFILES_ACTIVE: ${SPRING_PROFILES_ACTIVE:-prod}
       JWT_SECRET_KEY: ${JWT_SECRET_KEY}
       MINIO_ENDPOINT: http://minio:9000
       MINIO_BUCKET: atlas-bucket
@@ -47,21 +49,15 @@ services:
       INVITATION_VIA_EMAIL: ${INVITATION_VIA_EMAIL:-false}
       ENABLE_EMAIL_NOTIFICATIONS: ${ENABLE_EMAIL_NOTIFICATIONS:-false}
       ENABLE_SSO: ${ENABLE_SSO:-false}
+      CLOUD_VERSION: "false"
       OAUTH2_PROVIDER: ${OAUTH2_PROVIDER}
       OAUTH2_CLIENT_ID: ${OAUTH2_CLIENT_ID}
       OAUTH2_CLIENT_SECRET: ${OAUTH2_CLIENT_SECRET}
-      LICENSE_KEY: ${LICENSE_KEY:-}
-      LICENSE_FINGERPRINT_REQUIRED: ${LICENSE_FINGERPRINT_REQUIRED:-false}
-      LICENSE_FILE_PATH: ${LICENSE_FILE_PATH:-}
       ALLOWED_ORGANIZATION_ADMINS: ${ALLOWED_ORGANIZATION_ADMINS:-}
       LOGO_PATHS: ${LOGO_PATHS:-}
       CUSTOM_COLORS: ${CUSTOM_COLORS:-}
       BRAND_CONFIG: ${BRAND_CONFIG:-}
-      PADDLE_API_KEY: ${PADDLE_API_KEY:-}
-      PADDLE_WEBHOOK_SECRET_KEY: ${PADDLE_WEBHOOK_SECRET_KEY:-}
-      PADDLE_ENVIRONMENT: ${PADDLE_ENVIRONMENT:-sandbox}
       ENABLE_CORS: ${ENABLE_CORS:-false}
-      KEYGEN_PRODUCT_TOKEN: ${KEYGEN_PRODUCT_TOKEN:-}
       MAIL_TYPE: ${MAIL_TYPE:-smtp}
       SENDGRID_API_KEY: ${SENDGRID_API_KEY:-}
       SENDGRID_FROM_EMAIL: ${SENDGRID_FROM_EMAIL:-}
@@ -93,14 +89,16 @@ services:
       - "8080"
 
   frontend:
-    image: intelloop/atlas-cmms-frontend
+    build:
+      context: ./frontend
+    image: atlas-cmms-frontend:unrestricted-selfhosted
     container_name: atlas-cmms-frontend
     environment:
       API_URL: /api
       GOOGLE_KEY: ${GOOGLE_KEY:- }
       GOOGLE_TRACKING_ID: ${GOOGLE_TRACKING_ID:- }
       INVITATION_VIA_EMAIL: ${INVITATION_VIA_EMAIL:-false}
-      CLOUD_VERSION: ${CLOUD_VERSION:-false}
+      CLOUD_VERSION: "false"
       NODE_ENV: production
       ENABLE_SSO: ${ENABLE_SSO:-false}
       OAUTH2_PROVIDER: ${OAUTH2_PROVIDER:- }
@@ -109,8 +107,7 @@ services:
       BRAND_CONFIG: ${BRAND_CONFIG:- }
       DEMO_LINK: ${DEMO_LINK:- }
       HOME_URL: ${HOME_URL:-https://atlas-cmms.com}
-      PADDLE_SECRET_TOKEN: ${PADDLE_SECRET_TOKEN:- }
-      PADDLE_ENVIRONMENT: ${PADDLE_ENVIRONMENT:-sandbox}
+      SOURCE_CODE_URL: ${SOURCE_CODE_URL:-https://github.com/Attili-sys/cmms}
       RECAPTCHA_SITE_KEY: ${RECAPTCHA_SITE_KEY:- }
       LDAP_ENABLED: ${LDAP_ENABLED:-false}
       SENTRY_DSN: ${SENTRY_DSN:- }

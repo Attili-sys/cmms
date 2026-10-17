@@ -9,7 +9,7 @@ import { Divider, Text, useTheme } from 'react-native-paper';
 import { UserMiniDTO } from '../../../models/user';
 import { Customer } from '../../../models/customer';
 import { Vendor } from '../../../models/vendor';
-import Team from '../../../models/team';
+import { TeamMiniDTO } from '../../../models/team';
 import {
   getCustomerUrl,
   getTeamUrl,
@@ -166,8 +166,8 @@ export default function AssetDetails({
       <ListField
         values={asset?.teams}
         label={t('teams')}
-        getHref={(team: Team) => getTeamUrl(team.id)}
-        getValueLabel={(team: Team) => team.name}
+        getHref={(team: TeamMiniDTO) => getTeamUrl(team.id)}
+        getValueLabel={(team: TeamMiniDTO) => team.name}
       />
     </ScrollView>
   );

@@ -970,6 +970,16 @@ class UserServiceTest {
     class CheckUsageBasedLimit {
 
         @Test
+        void unrestrictedSelfHosted_ignoresFormerUserBoundary() {
+            when(licenseService.isUnrestrictedSelfHosted()).thenReturn(true);
+
+            assertDoesNotThrow(() -> userService.checkUsageBasedLimit(10_000));
+
+            verify(userRepository, never()).hasMorePaidUsersThan(anyInt());
+            verify(licenseService, never()).getLicensingState();
+        }
+
+        @Test
         void underLicenseLimit_noException() {
             when(licenseService.getLicensingState()).thenReturn(
                     LicensingState.builder().hasLicense(true).usersCount(10).build());

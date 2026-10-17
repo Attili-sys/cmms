@@ -69,6 +69,11 @@ class WebhookController {
 
     @PostMapping("/paddle-webhook")
     public ResponseEntity<String> handleWebhook(HttpServletRequest request) throws IOException {
+        if (!cloudVersion) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body("Billing webhooks are disabled in unrestricted self-hosted mode");
+        }
+
         String payload = request.getReader().lines().collect(Collectors.joining("\n"));
         String signature = request.getHeader("Paddle-Signature");
 

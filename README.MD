@@ -115,14 +115,14 @@ Need customization or production setup? Continue reading below ↓
 | GCP_PROJECT_ID              | No       | The Google Cloud project ID, also found in the `GCP_JSON` file.                                                                                                                                                                                                                                                     | (empty)               |
 | GCP_BUCKET_NAME             | No       | GCP Bucket Name                                                                                                                                                                                                                                                                                                     | (empty)               |
 | MAIL_RECIPIENTS             | No       | Comma-separated email addresses of the super admins where to send information emails like new signups. You can provide your email address.                                                                                                                                                                          | (empty)               |
-| LICENSE_KEY                 | No       | [Atlas CMMS license key](https://atlas-cmms.com/pricing?type=selfhosted) to get access to advanced features.                                                                                                                                                                                                        | (empty)               |
 | ENABLE_SSO                  | No       | Enables or disables SSO. (`true` or `false` ) Requires `OAUTH2_PROVIDER`, `OAUTH2_CLIENT_ID` and `OAUTH2_CLIENT_SECRET`. Make sure to add `PUBLIC_SERVER_URL` as authorized origin and `${PUBLIC_SERVER_URL}/api/oauth2/callback/${OAUTH2_PROVIDER}` as authorized redirection URI in your Oauth2 provider settings | false                 |
 | OAUTH2_PROVIDER             | No       | Oauth2 provider `google` or `microsoft`                                                                                                                                                                                                                                                                             | (empty)               |
 | OAUTH2_CLIENT_ID            | No       | Oauth2 Client ID                                                                                                                                                                                                                                                                                                    | (empty)               |
 | OAUTH2_CLIENT_SECRET        | No       | Oauth2 client secret                                                                                                                                                                                                                                                                                                | (empty)               |
-| LOGO_PATHS                  | No       | Logo names in this format. `{"dark": "dark.png","white": "white.png", }`. Add 2 logos in a folder named `logo` in the same folder as the `docker-compose.yml`.  Needs a license.                                                                                                                                    | (empty)               |
+| LOGO_PATHS                  | No       | Logo names in this format. `{"dark": "dark.png","white": "white.png", }`. Add 2 logos in a folder named `logo` in the same folder as the `docker-compose.yml`.                                                                                                                                                       | (empty)               |
 | CUSTOM_COLORS               | No       | Custom colors in JSON format. All colors should be in hexadecimal format. `{"emailColors":"#00A0E3","primary":"#EE4B2B","secondary":"#6E759F","success":"#57CA22","warning":"#FFA319","error":"#FF1943","info":"#33C2FF","black":"#223354","white":"#ffffff","primaryAlt":"#000C57"}`                               | (empty)               |
-| BRAND_CONFIG                | No       | Brand config for white labeling. Requires license. In format `{ "name": "Quantum Labs", "shortName": "QL", "website": "https://example.io", mail: "contact@example.io" }`                                                                                                                                           | (empty)               |
+| BRAND_CONFIG                | No       | Brand config for white labeling. In format `{ "name": "Quantum Labs", "shortName": "QL", "website": "https://example.io", mail: "contact@example.io" }`                                                                                                                                                             | (empty)               |
+| SOURCE_CODE_URL             | Yes      | Public URL for the exact Corresponding Source used to build the deployed images. Shown in the web and mobile applications.                                                                                                                                                                                          | repository URL        |
 | LDAP_ENABLED                | No       | Enables or disables LDAP. More variables are needed. You can get the full list [here](./dev-docs/LDAP_SETUP.md)                                                                                                                                                                                                     | false                 |
 
 For production deployments, it’s strongly recommended to use unique credentials and not rely on defaults. You should
@@ -192,13 +192,11 @@ You can also join our [Discord server](https://discord.gg/cHqyVRYpkA)
 
 ## Open source licensing info
 
-Atlas CMMS is dual-licensed:
-
-- [AGPLv3 License](./LICENSE) — Free and open source.
-- [Commercial License](./COMMERCIAL_LICENSE.MD) — Required for white labeling, custom branding, and advanced features.
-
-To enable commercial features, you must set a valid `LICENSE_KEY`.  
-For commercial licenses, visit [atlas-cmms.com/pricing?type=selfhosted](https://atlas-cmms.com/pricing?type=selfhosted)
-or email us at [contact@atlas-cmms.com](mailto:contact@atlas-cmms.com).
+This self-hosted edition is distributed under the [GNU AGPLv3](./LICENSE). Existing
+features implemented in this source tree are available without a commercial
+subscription, activation key, license file, or periodic licensing-service
+connection. Set `SOURCE_CODE_URL` to the public Corresponding Source for the exact
+version you deploy. See [UNRESTRICTED_SELFHOSTED.md](./UNRESTRICTED_SELFHOSTED.md)
+for policy, verification, build, and deployment-image details.
 
 <img src="https://star-history.dera.page/svg?repos=grashjs/cmms&type=Date"/>

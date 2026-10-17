@@ -180,7 +180,7 @@ class ApiKeyAuthFilterTest {
     }
 
     @Test
-    void validApiKeyWithoutPlanFeature_returns403_andStopsChain() throws Exception {
+    void validApiKeyWithLegacyEmptyPlanFeatures_authenticates() throws Exception {
         String rawKey = "no-feature-key";
         User user = createUserWithAccess();
         user.getCompany().getSubscription().getSubscriptionPlan().setFeatures(new HashSet<>());
@@ -191,8 +191,9 @@ class ApiKeyAuthFilterTest {
 
         filter.doFilterInternal(request, response, filterChain);
 
-        verify(response).setStatus(HttpStatus.FORBIDDEN.value());
-        verify(filterChain, never()).doFilter(request, response);
+        verify(apiKeyRepository).updateLastUsed(eq(1L), any());
+        verify(filterChain).doFilter(request, response);
+        verify(response, never()).setStatus(anyInt());
     }
 
     @Test

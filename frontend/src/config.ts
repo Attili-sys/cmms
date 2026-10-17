@@ -36,6 +36,10 @@ export const isEmailVerificationEnabled =
   getRuntimeValue('INVITATION_VIA_EMAIL') === 'true';
 
 export const isCloudVersion = getRuntimeValue('CLOUD_VERSION') === 'true';
+export const sourceCodeUrl = getRuntimeValue(
+  'SOURCE_CODE_URL',
+  'https://github.com/Attili-sys/cmms'
+);
 
 const apiHostName = new URL(apiUrl, window.location.origin).hostname;
 export const IS_LOCALHOST =
@@ -81,14 +85,6 @@ export const demoLink: string = getRuntimeValue('DEMO_LINK');
 export const isWhiteLabeled: boolean = !!(customLogoPaths || brandRawConfig);
 
 export const IS_ORIGINAL_CLOUD = !isWhiteLabeled && isCloudVersion;
-
-export const PADDLE_SECRET_TOKEN: string = getRuntimeValue(
-  'PADDLE_SECRET_TOKEN'
-);
-
-export const paddleEnvironment = getRuntimeValue('PADDLE_ENVIRONMENT') as
-  | 'sandbox'
-  | 'production';
 
 export const recaptchaSiteKey = getRuntimeValue('RECAPTCHA_SITE_KEY');
 

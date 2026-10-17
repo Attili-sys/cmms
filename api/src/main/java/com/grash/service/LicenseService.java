@@ -48,12 +48,19 @@ public class LicenseService {
     @Value("${license-file-path:#{null}}")
     private String licenseFilePath;
 
+    @Value("${cloud-version:false}")
+    private boolean cloudVersion;
+
     private volatile LicenseValidationResponse cachedLicenseResponse;
     private volatile DecryptedLicenseData cachedDecryptedLicenseData;
     private volatile Set<String> cachedEntitlements = new HashSet<>();
     private volatile long lastCheckedTime = 0;
 
     public synchronized LicensingState getLicensingState() {
+        if (isUnrestrictedSelfHosted()) {
+            return unrestrictedSelfHostedState();
+        }
+
         if (isCacheValid()) {
             return buildLicensingStateFromCache();
         }
@@ -75,9 +82,33 @@ public class LicenseService {
         return hasEntitlement(LicenseEntitlement.SSO);
     }
 
+    /**
+     * The self-hosted distribution is capability-based, not license-based. Every feature
+     * implemented in this source tree is available without activation, expiry checks, or
+     * calls to an external licensing service. Cloud billing remains isolated behind
+     * {@code cloud-version=true}.
+     */
+    public boolean isUnrestrictedSelfHosted() {
+        return !cloudVersion;
+    }
+
     public boolean hasEntitlement(LicenseEntitlement entitlement) {
         LicensingState state = getLicensingState();
         return state.isValid() && state.getEntitlements().contains(entitlement.toString());
+    }
+
+    private LicensingState unrestrictedSelfHostedState() {
+        Set<String> entitlements = Arrays.stream(LicenseEntitlement.values())
+                .map(Enum::name)
+                .collect(Collectors.toCollection(LinkedHashSet::new));
+        return LicensingState.builder()
+                .hasLicense(false)
+                .valid(true)
+                .planName("Self-Hosted Unrestricted")
+                .entitlements(entitlements)
+                .expirationDate(null)
+                .usersCount(0)
+                .build();
     }
 
     private boolean isCacheValid() {

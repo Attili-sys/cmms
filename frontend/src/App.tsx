@@ -20,8 +20,7 @@ import {
   IS_LOCALHOST,
   isCloudVersion,
   isWhiteLabeled,
-  PADDLE_SECRET_TOKEN,
-  paddleEnvironment
+  sourceCodeUrl
 } from './config';
 import Clarity from '@microsoft/clarity';
 import { useEffect, useState } from 'react';
@@ -32,7 +31,6 @@ import { useBrand } from './hooks/useBrand';
 import { useTranslation } from 'react-i18next';
 import { UtmTrackerProvider } from '@nik0di3m/utm-tracker-hook';
 import { useLicenseEntitlement } from './hooks/useLicenseEntitlement';
-import { initializePaddle } from '@paddle/paddle-js';
 import { getDateLocale, loadLanguage, supportedLanguages } from './i18n/i18n';
 import MobileAppDownloadDialog from './components/MobileAppDownloadDialog';
 import { useMobileAppPrompt } from './hooks/useMobileAppPrompt';
@@ -137,6 +135,7 @@ function App() {
   useEffect(() => {
     const arr = location.pathname.split('/');
     if (
+      isCloudVersion &&
       !['downgrade', 'upgrade'].includes(arr[arr.length - 1]) &&
       isInitialized &&
       isAuthenticated
@@ -191,17 +190,6 @@ function App() {
     }
   }, []);
 
-  useEffect(() => {
-    if (isCloudVersion) {
-      if (user && !user.paddleUserId) return;
-      initializePaddle({
-        environment: paddleEnvironment,
-        token: PADDLE_SECRET_TOKEN,
-        pwCustomer: user ? { id: user.paddleUserId } : undefined
-      });
-    }
-  }, [user]);
-
   return (
     <UtmTrackerProvider customParams={['msclkid', 'ref']}>
       <ThemeProvider>
@@ -226,6 +214,22 @@ function App() {
                   open={shouldShowPrompt}
                   onClose={dismissPrompt}
                 />
+                {!isCloudVersion && (
+                  <a
+                    href={sourceCodeUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    style={{
+                      position: 'fixed',
+                      right: 12,
+                      bottom: 8,
+                      zIndex: 1500,
+                      fontSize: 12
+                    }}
+                  >
+                    Source code (GNU AGPLv3)
+                  </a>
+                )}
               </CompanySettingsProvider>
             </CustomSnackBarProvider>
           </SnackbarProvider>

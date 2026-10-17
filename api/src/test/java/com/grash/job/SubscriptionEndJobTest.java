@@ -3,6 +3,7 @@ package com.grash.job;
 import com.grash.model.Subscription;
 import com.grash.model.SubscriptionPlan;
 import com.grash.repository.SubscriptionRepository;
+import com.grash.service.LicenseService;
 import com.grash.service.SubscriptionService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,6 +33,8 @@ class SubscriptionEndJobTest {
     private SubscriptionRepository subscriptionRepository;
     @Mock
     private SubscriptionService subscriptionService;
+    @Mock
+    private LicenseService licenseService;
 
     @InjectMocks
     private SubscriptionEndJob subscriptionEndJob;
@@ -58,6 +61,18 @@ class SubscriptionEndJobTest {
         JobExecutionContext context = mock(JobExecutionContext.class);
         when(context.getMergedJobDataMap()).thenReturn(jobDataMap);
         return context;
+    }
+
+    @Test
+    void unrestrictedSelfHosted_skipsExpiryWithoutReadingJobOrSubscription() {
+        when(licenseService.isUnrestrictedSelfHosted()).thenReturn(true);
+        JobExecutionContext context = mock(JobExecutionContext.class);
+
+        assertDoesNotThrow(() -> subscriptionEndJob.executeInternal(context));
+
+        verify(context, never()).getMergedJobDataMap();
+        verify(subscriptionRepository, never()).findById(anyLong());
+        verify(subscriptionService, never()).resetToFreePlan(any());
     }
 
     @Test

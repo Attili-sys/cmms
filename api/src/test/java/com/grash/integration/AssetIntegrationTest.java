@@ -283,27 +283,27 @@ class AssetIntegrationTest extends AbstractIntegrationTest {
         }
 
         @Test
-        void createByUser_parentAssetWithoutLicense_throwsForbidden() {
+        void createByUser_legacyPlanAllowsParentAsset() {
             Asset parent = createAsset("Parent");
 
             AssetPostDTO dto = buildPostDTO("Child");
             dto.setParentAsset(parent);
 
-            CustomException ex = assertThrows(CustomException.class,
-                    () -> assetService.createByUser(dto, user));
-            assertEquals(HttpStatus.FORBIDDEN, ex.getHttpStatus());
+            Asset child = assetService.createByUser(dto, user);
+
+            assertEquals(parent.getId(), child.getParentAsset().getId());
         }
 
         @Test
-        void createByUser_exceedsUsageLimit_throwsForbidden() {
+        void createByUser_exceedsFormerUsageLimit_succeeds() {
             int limit = usageBasedFreeLimits.get(LicenseEntitlement.UNLIMITED_ASSETS);
             for (int i = 0; i < limit; i++) {
                 assetService.createByUser(buildPostDTO("Limit " + i), user);
             }
 
-            CustomException ex = assertThrows(CustomException.class,
-                    () -> assetService.createByUser(buildPostDTO("Over Limit"), user));
-            assertEquals(HttpStatus.FORBIDDEN, ex.getHttpStatus());
+            Asset overLimit = assetService.createByUser(buildPostDTO("Over Limit"), user);
+
+            assertNotNull(overLimit.getId());
         }
 
         @Test
@@ -630,14 +630,14 @@ class AssetIntegrationTest extends AbstractIntegrationTest {
         }
 
         @Test
-        void getByNfcIdAndCompany_withoutLicense_throwsForbidden() {
+        void getByNfcIdAndCompany_withoutActivation_returnsAsset() {
             Asset asset = createAsset("NFC");
             asset.setNfcId("NFC-SCAN");
             assetRepository.saveAndFlush(asset);
 
-            CustomException ex = assertThrows(CustomException.class,
-                    () -> assetService.getByNfcIdAndCompany("NFC-SCAN", user));
-            assertEquals(HttpStatus.FORBIDDEN, ex.getHttpStatus());
+            Asset result = assetService.getByNfcIdAndCompany("NFC-SCAN", user);
+
+            assertEquals(asset.getId(), result.getId());
         }
     }
 

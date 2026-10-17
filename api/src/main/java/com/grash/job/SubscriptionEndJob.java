@@ -2,6 +2,7 @@ package com.grash.job;
 
 import com.grash.model.Subscription;
 import com.grash.repository.SubscriptionRepository;
+import com.grash.service.LicenseService;
 import com.grash.service.SubscriptionService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -18,10 +19,16 @@ public class SubscriptionEndJob extends QuartzJobBean {
 
     private final SubscriptionRepository subscriptionRepository;
     private final SubscriptionService subscriptionService;
+    private final LicenseService licenseService;
 
     @Override
     @Transactional
     public void executeInternal(JobExecutionContext context) throws JobExecutionException {
+        if (licenseService.isUnrestrictedSelfHosted()) {
+            log.info("Skipping commercial subscription expiry job in unrestricted self-hosted mode");
+            return;
+        }
+
         Long subscriptionId = context.getMergedJobDataMap().getLong("subscriptionId");
 
         Subscription subscription = subscriptionRepository.findById(subscriptionId).orElse(null);

@@ -402,6 +402,7 @@ class UserControllerTest extends AbstractControllerTest {
             setCurrentUser(clientUser);
             when(userService.whoami(any())).thenReturn(clientUser);
             when(userService.findWorkersByCompany(1L)).thenReturn(Collections.singletonList(clientUser));
+            when(userService.isEnabledForCurrentEdition(clientUser)).thenReturn(true);
             when(userMapper.toMiniDto(clientUser)).thenReturn(userMiniDto);
 
             mockMvc.perform(get("/users/mini"))

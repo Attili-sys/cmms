@@ -78,7 +78,7 @@ public class UserController {
                 userService.findByCompany(user.getCompany().getId()).stream()
                         .filter(User::isEnabled).map(userMapper::toMiniDto).collect(Collectors.toList()) :
                 userService.findWorkersByCompany(user.getCompany().getId()).stream()
-                        .filter(User::isEnabledInSubscription)
+                        .filter(userService::isEnabledForCurrentEdition)
                         .filter(User::isEnabled)
                         .map(userMapper::toMiniDto).collect(Collectors.toList());
     }
@@ -86,7 +86,10 @@ public class UserController {
     @GetMapping("/mini/disabled")
     @PreAuthorize("hasRole('ROLE_CLIENT')")
     public Collection<UserMiniDTO> getMiniDisabled(@Parameter(hidden = true) @CurrentUser User user) {
-        return userService.findByCompany(user.getCompany().getId()).stream().filter(user1 -> !user1.isEnabledInSubscription()).map(userMapper::toMiniDto).collect(Collectors.toList());
+        return userService.findByCompany(user.getCompany().getId()).stream()
+                .filter(user1 -> !userService.isEnabledForCurrentEdition(user1))
+                .map(userMapper::toMiniDto)
+                .collect(Collectors.toList());
     }
 
 

@@ -285,6 +285,8 @@ class OAuth2AuthenticationSuccessHandlerTest {
             assertTrue(result.startsWith(successUrl),
                     () -> "Expected success URL but got: " + result);
             verify(companyService).create(any(Company.class));
+            verify(subscriptionService).create(argThat(subscription ->
+                    subscription.getUsersCount() == 0 && subscription.getEndsOn() == null));
             verify(userRepository).save(any(User.class));
             assertTrue(result.contains("token=jwt-token"));
         }

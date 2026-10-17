@@ -9,6 +9,7 @@ declare global {
       GOOGLE_KEY: string;
       API_URL: string;
       NODE_ENV: string;
+      SOURCE_CODE_URL: string;
     };
   }
 }

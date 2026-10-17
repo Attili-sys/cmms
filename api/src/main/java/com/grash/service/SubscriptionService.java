@@ -36,10 +36,26 @@ public class SubscriptionService {
     private final UserRepository userRepository;
     private final Scheduler scheduler;
     private final ScheduleRepository scheduleRepository;
+    private final LicenseService licenseService;
 
     public void upgrade(Collection<Long> usersIds, User user) {
         if (usersIds.isEmpty()) return;
         if (user.isOwnsCompany()) {
+            if (licenseService.isUnrestrictedSelfHosted()) {
+                Collection<User> users = usersIds.stream()
+                        .map(userId -> findUserInCompany(userId, user.getCompany().getId()))
+                        .collect(Collectors.toList());
+                users.forEach(userToEnable -> {
+                    userToEnable.setEnabled(true);
+                    userToEnable.setEnabledInSubscription(true);
+                });
+                userRepository.saveAll(users);
+                Subscription subscription = user.getCompany().getSubscription();
+                subscription.setUpgradeNeeded(false);
+                subscription.setDowngradeNeeded(false);
+                save(subscription);
+                return;
+            }
             int enabledUsersCount =
                     (int) userRepository.findByCompany_Id(user.getCompany().getId()).stream().filter(User::isEnabledInSubscriptionAndPaid).count();
             Subscription subscription = user.getCompany().getSubscription();
@@ -66,6 +82,13 @@ public class SubscriptionService {
     public void downgrade(Collection<Long> usersIds, User user) {
         if (usersIds.isEmpty()) return;
         if (user.isOwnsCompany()) {
+            if (licenseService.isUnrestrictedSelfHosted()) {
+                Subscription subscription = user.getCompany().getSubscription();
+                subscription.setUpgradeNeeded(false);
+                subscription.setDowngradeNeeded(false);
+                save(subscription);
+                return;
+            }
             int enabledUsersCount =
                     (int) userRepository.findByCompany_Id(user.getCompany().getId()).stream().filter(User::isEnabledInSubscriptionAndPaid).count();
             Subscription subscription = user.getCompany().getSubscription();
@@ -117,9 +140,14 @@ public class SubscriptionService {
     }
 
     public void scheduleEnd(Subscription subscription) {
+        JobKey jobKey = new JobKey("subscription-end-job-" + subscription.getId(), "subscription-group");
+        if (licenseService.isUnrestrictedSelfHosted()) {
+            removeExpiryJob(jobKey, subscription.getId());
+            return;
+        }
+
         boolean shouldSchedule =
                 !subscription.getSubscriptionPlan().getCode().equals("FREE") && subscription.getEndsOn() != null && subscription.getPaddleSubscriptionId() == null;
-        JobKey jobKey = new JobKey("subscription-end-job-" + subscription.getId(), "subscription-group");
         if (shouldSchedule) {
             try {
                 JobDetail jobDetail = JobBuilder.newJob(SubscriptionEndJob.class)
@@ -140,13 +168,17 @@ public class SubscriptionService {
                 log.error("Error scheduling subscription end job for subscription " + subscription.getId(), e);
             }
         } else {
-            try {
-                if (scheduler.checkExists(jobKey)) {
-                    scheduler.deleteJob(jobKey);
-                }
-            } catch (SchedulerException e) {
-                log.error("Error removing subscription end job for subscription " + subscription.getId(), e);
+            removeExpiryJob(jobKey, subscription.getId());
+        }
+    }
+
+    private void removeExpiryJob(JobKey jobKey, Long subscriptionId) {
+        try {
+            if (scheduler.checkExists(jobKey)) {
+                scheduler.deleteJob(jobKey);
             }
+        } catch (SchedulerException e) {
+            log.error("Error removing subscription end job for subscription " + subscriptionId, e);
         }
     }
 
@@ -160,6 +192,12 @@ public class SubscriptionService {
     }
 
     public void resetToFreePlan(Subscription subscription) {
+        if (licenseService.isUnrestrictedSelfHosted()) {
+            log.info("Ignoring commercial subscription expiry for unrestricted self-hosted subscription ID: {}",
+                    subscription.getId());
+            return;
+        }
+
         Optional<Company> optionalCompany = companyRepository.findBySubscription_Id(subscription.getId());
         if (optionalCompany.isEmpty()) return;
 

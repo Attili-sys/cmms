@@ -1,9 +1,11 @@
 import { useSelector } from '../store';
 import { LicenseEntitlement, LicensingState } from '../models/owns/license';
+import { isCloudVersion } from '../config';
 
 export const useLicenseEntitlement = (entitlement: LicenseEntitlement) => {
   const licensingState = useSelector((state) => state.license.state);
 
+  if (!isCloudVersion) return true;
   return hasLicenseEntitlement(licensingState, entitlement);
 };
 const hasLicenseEntitlement = (

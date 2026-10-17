@@ -227,7 +227,7 @@ class PreventiveMaintenanceIntegrationTest extends AbstractIntegrationTest {
         }
 
         @Test
-        void create_planLacksFeature_throwsForbidden() {
+        void create_legacyPlanWithoutFeature_succeeds() {
             SubscriptionPlan basicPlan = SubscriptionPlan.builder()
                     .name("Basic")
                     .monthlyCostPerUser(5.0)
@@ -245,21 +245,23 @@ class PreventiveMaintenanceIntegrationTest extends AbstractIntegrationTest {
             company.setSubscription(basicSub);
             companyRepository.save(company);
 
-            CustomException ex = assertThrows(CustomException.class,
-                    () -> preventiveMaintenanceService.create(buildPostDTO("No Feature"), user));
-            assertEquals(HttpStatus.FORBIDDEN, ex.getHttpStatus());
+            PreventiveMaintenance result =
+                    preventiveMaintenanceService.create(buildPostDTO("No Feature"), user);
+
+            assertNotNull(result.getId());
         }
 
         @Test
-        void create_exceedsUsageLimit_throwsForbidden() {
+        void create_exceedsFormerUsageLimit_succeeds() {
             int limit = usageBasedFreeLimits.get(LicenseEntitlement.UNLIMITED_PM_SCHEDULES);
             for (int i = 0; i < limit; i++) {
                 preventiveMaintenanceService.create(buildPostDTO("Limit " + i), user);
             }
 
-            CustomException ex = assertThrows(CustomException.class,
-                    () -> preventiveMaintenanceService.create(buildPostDTO("Over Limit"), user));
-            assertEquals(HttpStatus.FORBIDDEN, ex.getHttpStatus());
+            PreventiveMaintenance overLimit =
+                    preventiveMaintenanceService.create(buildPostDTO("Over Limit"), user);
+
+            assertNotNull(overLimit.getId());
         }
     }
 

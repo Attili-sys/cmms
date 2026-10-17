@@ -63,6 +63,7 @@ public class PaddleService {
     }
 
     public CheckoutResponse createCheckoutSession(CheckoutRequest request, @Nullable String email) {
+        ensureCloudBillingEnabled();
         if (request.getUserId() == null && request.getEmail() == null)
             throw new CustomException("Email and ID cannot be null", HttpStatus.BAD_REQUEST);
         boolean selfHosted = request.getUserId() == null;
@@ -134,6 +135,7 @@ public class PaddleService {
     }
 
     public PaddleTransactionData retrieveTransaction(String transactionId) {
+        ensureCloudBillingEnabled();
         try {
             HttpHeaders headers = new HttpHeaders();
             headers.setBearerAuth(paddleApiKey);
@@ -161,6 +163,7 @@ public class PaddleService {
     public void updateSubscription(Subscription savedSubscription, String planCode, String paddleSubscriptionId,
                                    Date startsOn,
                                    Date endsOn, Long companyId, int usersCount) {
+        ensureCloudBillingEnabled();
         boolean monthly = planCode.toLowerCase().contains("monthly");
 
         Collection<User> companyUsers = userService.findByCompany(companyId);
@@ -204,6 +207,7 @@ public class PaddleService {
     }
 
     public String createCustomerPortalSession(String customerId, @Nullable String subscriptionId) {
+        ensureCloudBillingEnabled();
         HttpHeaders headers = getHttpHeaders();
         Map<String, Object> body = new HashMap<>();
         if (subscriptionId != null) body.put("subscription_ids", List.of(subscriptionId));
@@ -227,6 +231,7 @@ public class PaddleService {
     }
 
     public void pauseSubscription(String subscriptionId) {
+        ensureCloudBillingEnabled();
         HttpHeaders headers = getHttpHeaders();
         HttpEntity<Void> entity = new HttpEntity<>(headers);
 
@@ -239,6 +244,7 @@ public class PaddleService {
     }
 
     public void resumeSubscription(String subscriptionId) {
+        ensureCloudBillingEnabled();
         HttpHeaders headers = getHttpHeaders();
         Map<String, String> body = new HashMap<>();
         body.put("effective_from", "immediately");
@@ -365,6 +371,7 @@ public class PaddleService {
     }
 
     public String getCustomerEmail(String customerId) {
+        ensureCloudBillingEnabled();
         HttpHeaders headers = getHttpHeaders();
         HttpEntity<Void> entity = new HttpEntity<>(headers);
 
@@ -383,6 +390,7 @@ public class PaddleService {
     }
 
     public void updateSubscription(Subscription savedSubscription, UpdateSubscriptionRequest request) {
+        ensureCloudBillingEnabled();
         SubscriptionPlan newPlan =
                 subscriptionPlanService.findByCode(request.getPlanId().split("-")[0].toUpperCase())
                         .orElseThrow(() -> new CustomException("Plan not found", HttpStatus.BAD_REQUEST));
@@ -519,5 +527,11 @@ public class PaddleService {
         headers.setBearerAuth(paddleApiKey);
         headers.setContentType(MediaType.APPLICATION_JSON);
         return headers;
+    }
+
+    private void ensureCloudBillingEnabled() {
+        if (!cloudVersion) {
+            throw new CustomException("Billing is disabled in unrestricted self-hosted mode", HttpStatus.NOT_FOUND);
+        }
     }
 }

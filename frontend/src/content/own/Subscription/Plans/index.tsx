@@ -17,7 +17,7 @@ import {
   useTheme
 } from '@mui/material';
 import { Trans, useTranslation } from 'react-i18next';
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import PlanFeatures from './PlanFeatures';
 import { TitleContext } from '../../../../contexts/TitleContext';
 import { useDispatch, useSelector } from '../../../../store';
@@ -31,13 +31,7 @@ import { CompanySettingsContext } from '../../../../contexts/CompanySettingsCont
 import api from '../../../../utils/api';
 import { useBrand } from '../../../../hooks/useBrand';
 import { fireGa4Event } from '../../../../utils/overall';
-import { initializePaddle, Paddle } from '@paddle/paddle-js';
-import {
-  homeUrl,
-  isCloudVersion,
-  PADDLE_SECRET_TOKEN,
-  paddleEnvironment
-} from '../../../../config';
+import { homeUrl, isCloudVersion } from '../../../../config';
 import { getLocalizedHomeUrl } from '../../../../utils/urlPaths';
 
 function SubscriptionPlans() {
@@ -57,37 +51,8 @@ function SubscriptionPlans() {
   const { setTitle } = useContext(TitleContext);
   const { showSnackBar } = useContext(CustomSnackBarContext);
   const [submitting, setSubmitting] = useState(false);
-  const checkoutComplete = useRef<boolean>(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  let paddle = useRef<Paddle | null>(null);
-
-  useEffect(() => {
-    const initPaddle = async () => {
-      paddle.current = await initializePaddle({
-        token: PADDLE_SECRET_TOKEN,
-        eventCallback: function (data) {
-          if (data.name == 'checkout.completed') {
-            checkoutComplete.current = true;
-            fireGa4Event('checkout_completed');
-          } else if (
-            data.name == 'checkout.closed' &&
-            checkoutComplete.current
-          ) {
-            patchSubscription({
-              id: randomInt(),
-              usersCount,
-              monthly: period === 'monthly',
-              subscriptionPlan: selectedPlanObject,
-              activated: true
-            }).then(onSubcriptionPatchSuccess);
-          }
-        }
-      });
-      paddle.current.Environment.set(paddleEnvironment);
-    };
-    initPaddle();
-  }, [usersCount, period, selectedPlanObject?.code]);
 
   useEffect(() => {
     setTitle(t('plans'));
@@ -103,6 +68,13 @@ function SubscriptionPlans() {
   }, [subscriptionPlans]);
 
   const buyProduct = async () => {
+    if (!isCloudVersion) {
+      showSnackBar(
+        'All implemented features are already enabled in self-hosted mode.',
+        'success'
+      );
+      return;
+    }
     if (company.demo) {
       showSnackBar('Create a real account to upgrade', 'error');
       return;
@@ -136,24 +108,10 @@ function SubscriptionPlans() {
           showSnackBar(t("The Subscription couldn't be changed"), 'error');
         }
       } else {
-        // New checkout session
-        const data = await api.post<{ sessionId: string }>(
-          'paddle/create-checkout-session',
-          {
-            planId: path,
-            userId: user.id,
-            quantity: usersCount
-          }
+        showSnackBar(
+          'Commercial checkout is not included in this self-hosted edition.',
+          'error'
         );
-
-        if (data.sessionId) {
-          paddle.current.Checkout.open({
-            transactionId: data.sessionId,
-            customer: {
-              email: user.email.trim().toLowerCase()
-            }
-          });
-        }
       }
     } catch (error) {
       console.error('Failed to update subscription:', error);

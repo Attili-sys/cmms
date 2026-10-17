@@ -232,16 +232,16 @@ class MeterIntegrationTest extends AbstractIntegrationTest {
         }
 
         @Test
-        void create_exceedsUsageLimit_throwsForbidden() {
+        void create_exceedsFormerUsageLimit_succeeds() {
             int limit = usageBasedFreeLimits.get(LicenseEntitlement.UNLIMITED_METERS);
             Asset asset = createAsset("Limit Asset");
             for (int i = 0; i < limit; i++) {
                 meterService.create(buildPostDTO("Limit " + i, asset), user);
             }
 
-            CustomException ex = assertThrows(CustomException.class,
-                    () -> meterService.create(buildPostDTO("Over Limit", asset), user));
-            assertEquals(HttpStatus.FORBIDDEN, ex.getHttpStatus());
+            Meter overLimit = meterService.create(buildPostDTO("Over Limit", asset), user);
+
+            assertNotNull(overLimit.getId());
         }
 
         @Test
@@ -257,7 +257,7 @@ class MeterIntegrationTest extends AbstractIntegrationTest {
         }
 
         @Test
-        void createByUser_requiresMeterPlanFeature_throwsForbidden() {
+        void createByUser_legacyPlanWithoutMeterFeature_succeeds() {
             SubscriptionPlan altPlan = SubscriptionPlan.builder()
                     .name("No Meter Plan")
                     .monthlyCostPerUser(10.0)
@@ -321,11 +321,9 @@ class MeterIntegrationTest extends AbstractIntegrationTest {
             altAsset.setCustomFieldValues(new ArrayList<>());
             altAsset = assetRepository.saveAndFlush(altAsset);
 
-            Asset finalAltAsset = altAsset;
-            User finalAltUser = altUser;
-            CustomException ex = assertThrows(CustomException.class,
-                    () -> meterService.create(buildPostDTO("No Plan Meter", finalAltAsset), finalAltUser));
-            assertEquals(HttpStatus.FORBIDDEN, ex.getHttpStatus());
+            Meter result = meterService.create(buildPostDTO("No Plan Meter", altAsset), altUser);
+
+            assertNotNull(result.getId());
         }
     }
 

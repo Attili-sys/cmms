@@ -10,6 +10,7 @@ import jakarta.persistence.EntityManager;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,6 +25,8 @@ public class CompanyService {
     private final CompanyMapper companyMapper;
     private final EntityManager em;
     private PaddleService paddleService;
+    @Value("${cloud-version:false}")
+    private boolean cloudVersion;
     
     @Autowired
     public void setDeps(@Lazy PaddleService paddleService
@@ -48,7 +51,7 @@ public class CompanyService {
     public void delete(Long id) {
         Company company = companyRepository.findById(id).orElseThrow(() -> new CustomException("Company not found",
                 HttpStatus.NOT_FOUND));
-        if (company.getSubscription().getPaddleSubscriptionId() != null)
+        if (cloudVersion && company.getSubscription().getPaddleSubscriptionId() != null)
             paddleService.pauseSubscription(company.getSubscription().getPaddleSubscriptionId());
         companyRepository.deleteById(id);
     }

@@ -9,6 +9,7 @@ import lombok.NoArgsConstructor;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
+import java.util.EnumSet;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -48,6 +49,14 @@ public class SubscriptionPlan {
     @Schema(description = "Yearly Paddle price ID")
     private String yearlyPaddlePriceId;
 
+    /**
+     * Kept for wire and database compatibility. Plan feature sets used to be a
+     * commercial capability gate; all implemented features are now exposed by
+     * every plan.
+     */
+    public Set<PlanFeatures> getFeatures() {
+        return EnumSet.allOf(PlanFeatures.class);
+    }
 }
 
 

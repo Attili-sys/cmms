@@ -3,6 +3,7 @@ import { Navigate } from 'react-router-dom';
 
 import SuspenseLoader from 'src/components/SuspenseLoader';
 import analyticsRoutes from './analytics';
+import { isCloudVersion } from '../config';
 
 const Loader = (Component) => (props) =>
   (
@@ -278,7 +279,11 @@ const appRoutes = [
     children: [
       {
         path: 'plans',
-        element: <SubscriptionPlans />
+        element: isCloudVersion ? (
+          <SubscriptionPlans />
+        ) : (
+          <Navigate to="/app/account/company-profile" replace />
+        )
       }
     ]
   },
@@ -480,8 +485,22 @@ const appRoutes = [
       { path: 'preventive-maintenances', element: <Imports /> }
     ]
   },
-  { path: 'upgrade', element: <Upgrade /> },
-  { path: 'downgrade', element: <Downgrade /> },
+  {
+    path: 'upgrade',
+    element: isCloudVersion ? (
+      <Upgrade />
+    ) : (
+      <Navigate to="/app/work-orders" replace />
+    )
+  },
+  {
+    path: 'downgrade',
+    element: isCloudVersion ? (
+      <Downgrade />
+    ) : (
+      <Navigate to="/app/work-orders" replace />
+    )
+  },
   { path: 'switch-account', element: <SwitchAccount /> }
 ];
 

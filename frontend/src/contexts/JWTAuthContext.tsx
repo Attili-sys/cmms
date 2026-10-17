@@ -38,7 +38,7 @@ import { useUtmTracker } from '@nik0di3m/utm-tracker-hook';
 import { addDays } from 'date-fns';
 import { shutdown } from '@intercom/messenger-js-sdk';
 import Clarity from '@microsoft/clarity';
-import { clarityId, IS_LOCALHOST } from '../config';
+import { clarityId, IS_LOCALHOST, isCloudVersion } from '../config';
 
 interface AuthState {
   isInitialized: boolean;
@@ -1058,8 +1058,9 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
     );
   };
   const hasFeature = (feature: PlanFeature) => {
-    return state.company.subscription.subscriptionPlan.features.includes(
-      feature
+    return (
+      !isCloudVersion ||
+      state.company.subscription.subscriptionPlan.features.includes(feature)
     );
   };
   const getFilteredFields = (defaultFields: Array<IField>): IField[] => {

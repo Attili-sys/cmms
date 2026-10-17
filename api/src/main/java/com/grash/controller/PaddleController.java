@@ -97,6 +97,7 @@ public class PaddleController {
     @PostMapping("/create-checkout-session")
     public CheckoutResponse createCheckoutSession(@Parameter(description = "Checkout session request") @Valid @RequestBody CheckoutRequest request,
                                                   HttpServletRequest req) {
+        checkIfCloudVersion();
         String email = null;
         if (request.getUserId() != null) {
             User currentUser = userService.whoami(req);

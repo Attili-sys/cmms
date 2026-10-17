@@ -1213,10 +1213,10 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
       state.user.role.deleteOtherPermissions.includes(permissionEntity)
     );
   };
-  const hasFeature = (feature: PlanFeature) => {
-    return state.company.subscription.subscriptionPlan.features.includes(
-      feature
-    );
+  const hasFeature = (_feature: PlanFeature) => {
+    // This mobile build targets the unrestricted self-hosted edition. The
+    // legacy plan feature list remains in API responses for compatibility.
+    return true;
   };
   const getFilteredFields = (defaultFields: Array<IField>): IField[] => {
     let fields = [...defaultFields];

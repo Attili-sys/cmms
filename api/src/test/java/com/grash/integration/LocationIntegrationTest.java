@@ -212,15 +212,15 @@ class LocationIntegrationTest extends AbstractIntegrationTest {
         }
 
         @Test
-        void create_exceedsUsageLimit_throwsForbidden() {
+        void create_exceedsFormerUsageLimit_succeeds() {
             int limit = usageBasedFreeLimits.get(LicenseEntitlement.UNLIMITED_LOCATIONS);
             for (int i = 0; i < limit; i++) {
                 locationService.create(buildPostDTO("Limit " + i), user);
             }
 
-            CustomException ex = assertThrows(CustomException.class,
-                    () -> locationService.create(buildPostDTO("Over Limit"), user));
-            assertEquals(HttpStatus.FORBIDDEN, ex.getHttpStatus());
+            Location overLimit = locationService.create(buildPostDTO("Over Limit"), user);
+
+            assertNotNull(overLimit.getId());
         }
 
         @Test

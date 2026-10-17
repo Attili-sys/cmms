@@ -133,6 +133,9 @@ public class UserService {
     }
 
     public void checkUsageBasedLimit(int newUsersCount) {
+        if (licenseService.isUnrestrictedSelfHosted()) {
+            return;
+        }
         LicensingState licensingState = licenseService.getLicensingState();
         Integer freeTierThreshold = usageBasedFreeLimits.get(LicenseEntitlement.UNLIMITED_USERS);
         int limit = (licensingState.isHasLicense() ?
@@ -185,7 +188,7 @@ public class UserService {
                     throw new CustomException("Inviter not found", HttpStatus.NOT_ACCEPTABLE);
                 user.setCompany(optionalInviter.get().getCompany());
             } else user.setCompany(role.getCompanySettings().getCompany());
-            if (role.isPaid()) {
+            if (role.isPaid() && !licenseService.isUnrestrictedSelfHosted()) {
                 int companyUsersCount =
                         (int) findByCompany(user.getCompany().getId()).stream().filter(user1 -> user1.isEnabled() && user1.isEnabledInSubscriptionAndPaid()).count();
                 if (companyUsersCount + 1 > user.getCompany().getSubscription().getUsersCount())
@@ -198,7 +201,7 @@ public class UserService {
         if (!licenseService.hasEntitlement(LicenseEntitlement.MULTI_INSTANCE) && companyService.existsAtLeastOneWithMinWorkOrders())
             throw new CustomException("You need a license to create another company", HttpStatus.FORBIDDEN);
         Subscription subscription =
-                Subscription.builder().usersCount(300).monthly(cloudVersion)
+                Subscription.builder().usersCount(cloudVersion ? 300 : 0).monthly(cloudVersion)
                         .startsOn(new Date())
                         .endsOn(cloudVersion ? Helper.incrementDays(new Date(), 15) : null)
                         .subscriptionPlan(subscriptionPlanService.findByCode("BUSINESS").get()).build();
@@ -306,6 +309,10 @@ public class UserService {
         return userRepository.count();
     }
 
+    public boolean isEnabledForCurrentEdition(User user) {
+        return licenseService.isUnrestrictedSelfHosted() || user.isEnabledInSubscription();
+    }
+
     public Optional<User> findById(Long id) {
         return userRepository.findById(id);
     }
@@ -316,7 +323,7 @@ public class UserService {
     }
 
     public User enableUser(User user) {
-        if (user.getRole().isPaid()) {
+        if (user.getRole().isPaid() && !licenseService.isUnrestrictedSelfHosted()) {
             checkUsageBasedLimit(1);
             int companyUsersCount =
                     (int) findByCompany(user.getCompany().getId()).stream().filter(user1 -> user1.isEnabled() && user1.isEnabledInSubscriptionAndPaid()).count();
@@ -538,7 +545,8 @@ public class UserService {
         if (optionalRole.isEmpty() || !optionalRole.get().belongsToCompany(user.getCompany()))
             throw new CustomException("Not found", HttpStatus.NOT_FOUND);
         Role role = optionalRole.get();
-        if (role.isPaid() && companyUsersCount + invitation.getEmails().size() > user.getCompany().getSubscription().getUsersCount())
+        if (!licenseService.isUnrestrictedSelfHosted() && role.isPaid()
+                && companyUsersCount + invitation.getEmails().size() > user.getCompany().getSubscription().getUsersCount())
             throw new CustomException("Your current subscription doesn't allow you to invite that many users"
                     , HttpStatus.NOT_ACCEPTABLE);
         invitation.getEmails().forEach(email ->
@@ -575,7 +583,8 @@ public class UserService {
             throw new CustomException("You don't have permission", HttpStatus.NOT_ACCEPTABLE);
         int usersCount =
                 (int) findByCompany(requester.getCompany().getId()).stream().filter(User::isEnabledInSubscriptionAndPaid).count();
-        if (usersCount > requester.getCompany().getSubscription().getUsersCount())
+        if (!licenseService.isUnrestrictedSelfHosted()
+                && usersCount > requester.getCompany().getSubscription().getUsersCount())
             throw new CustomException("Company subscription users count doesn't allow this operation",
                     HttpStatus.NOT_ACCEPTABLE);
         User userToPatch = optionalUserToPatch.get();

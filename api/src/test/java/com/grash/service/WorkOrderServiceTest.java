@@ -1128,7 +1128,10 @@ class WorkOrderServiceTest {
         }
 
         @Test
-        void signatureWithEntitlementButPlanLacksFeature_throwsForbidden() {
+        void emptyStoredPlanFeatures_doesNotRestrictSignatureCapture() {
+            // Old commercial quota: a plan without SIGNATURE in stored features blocked capture
+            // even when the license entitlement was present.
+            // Unrestricted self-hosted: getFeatures() returns all features; both checks pass.
             stubBasic();
             dto.setSignature("data:image/png;base64,c2ln");
             SubscriptionPlan planWithoutSignature = SubscriptionPlan.builder()
@@ -1141,9 +1144,7 @@ class WorkOrderServiceTest {
                     .subscriptionPlan(planWithoutSignature)
                     .build();
             company.setSubscription(subscriptionWithoutSignature);
-            CustomException ex = assertThrows(CustomException.class,
-                    () -> workOrderService.changeStatus(dto, 1L, user, "ios"));
-            assertEquals(HttpStatus.FORBIDDEN, ex.getHttpStatus());
+            assertDoesNotThrow(() -> workOrderService.changeStatus(dto, 1L, user, "ios"));
         }
 
         @Test
@@ -1910,7 +1911,9 @@ class WorkOrderServiceTest {
         }
 
         @Test
-        void signatureWithoutPlanFeature_throwsForbidden() {
+        void emptyStoredPlanFeatures_doesNotRestrictSignatureInCreate() {
+            // Old commercial quota: a plan without SIGNATURE in stored features blocked creation.
+            // Unrestricted self-hosted: getFeatures() returns all features unconditionally.
             SubscriptionPlan planWithoutSignature = SubscriptionPlan.builder()
                     .id(2L).name("Basic")
                     .features(new HashSet<>(Collections.singletonList(PlanFeatures.WEBHOOK)))
@@ -1921,10 +1924,10 @@ class WorkOrderServiceTest {
 
             WorkOrderPostDTO postDto = basePostDto();
             postDto.setSignature("base64sig");
+            WorkOrder mapped = buildWorkOrder(1L);
+            stubCreateForUser(mapped);
 
-            CustomException ex = assertThrows(CustomException.class,
-                    () -> workOrderService.createByUser(postDto, user));
-            assertEquals(HttpStatus.FORBIDDEN, ex.getHttpStatus());
+            assertDoesNotThrow(() -> workOrderService.createByUser(postDto, user));
         }
 
         @Test

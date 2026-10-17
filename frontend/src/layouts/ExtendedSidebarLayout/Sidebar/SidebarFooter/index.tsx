@@ -15,7 +15,11 @@ import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import useAuth from 'src/hooks/useAuth';
 import UpgradeTwoToneIcon from '@mui/icons-material/UpgradeTwoTone';
 import QuestionMarkTwoToneIcon from '@mui/icons-material/QuestionMarkTwoTone';
-import { homeUrl, isCloudVersion } from '../../../../config';
+import CodeTwoToneIcon from '@mui/icons-material/CodeTwoTone';
+import {
+  isCloudVersion,
+  sourceCodeUrl
+} from '../../../../config';
 import { getLocalizedHomeUrl } from '../../../../utils/urlPaths';
 import { useContext } from 'react';
 import { CompanySettingsContext } from '../../../../contexts/CompanySettingsContext';
@@ -60,7 +64,9 @@ function SidebarFooter() {
       alignItems="center"
       justifyContent="center"
     >
-      {user.ownsCompany && user.superAccountRelations.length === 0 && (
+      {isCloudVersion &&
+        user.ownsCompany &&
+        user.superAccountRelations.length === 0 && (
         <LightTooltip placement="top" arrow title={t('upgrade_now')}>
           <IconButton
             sx={{
@@ -86,6 +92,27 @@ function SidebarFooter() {
                 })}
           >
             <UpgradeTwoToneIcon fontSize="small" />
+          </IconButton>
+        </LightTooltip>
+      )}
+      {!isCloudVersion && (
+        <LightTooltip placement="top" arrow title="Corresponding source">
+          <IconButton
+            sx={{
+              background: `${theme.colors.alpha.trueWhite[10]}`,
+              color: `${theme.colors.alpha.trueWhite[70]}`,
+              transition: `${theme.transitions.create(['all'])}`,
+              '&:hover': {
+                background: `${alpha(theme.colors.alpha.trueWhite[100], 0.2)}`,
+                color: `${theme.colors.alpha.trueWhite[100]}`
+              }
+            }}
+            component="a"
+            href={sourceCodeUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            <CodeTwoToneIcon fontSize="small" />
           </IconButton>
         </LightTooltip>
       )}

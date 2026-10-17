@@ -28,8 +28,11 @@ const licenseEntitlements = [
   'UNLIMITED_PARTS',
   'UNLIMITED_PM_SCHEDULES',
   'UNLIMITED_ACTIVE_WORK_ORDERS',
-  'UNLIMITED_CHECKLIST',
-  'UNLIMITED_METERS'
+  'UNLIMITED_CHECKLISTS',
+  'UNLIMITED_METERS',
+  'UNLIMITED_USERS',
+  'REQUEST_PORTAL',
+  'RESOURCE_PLANNING'
 ] as const;
 export type LicensingState = {
   valid: boolean;
