@@ -59,6 +59,19 @@ const slice = createSlice({
     ) {
       const { location } = action.payload;
       state.locations.content.push(location);
+      state.locations.totalElements = (state.locations.totalElements || 0) + 1;
+      const parentId = location.parentLocation?.id ?? 0;
+      const parentInState = state.locationsHierarchy.find(
+        (l) => l.id === parentId
+      );
+      const parents = parentInState?.hierarchy ?? [];
+      const locationWithHierarchy = {
+        ...location,
+        hierarchy: [...parents, location.id]
+      } as LocationRow;
+      if (!state.locationsHierarchy.some((l) => l.id === location.id)) {
+        state.locationsHierarchy.push(locationWithHierarchy);
+      }
     },
     editLocation(
       state: LocationState,
@@ -71,7 +84,16 @@ const slice = createSlice({
       if (locationIndex === -1) {
         state.locations.content = [...state.locations.content, location];
       } else {
-        state.locations[locationIndex] = location;
+        state.locations.content[locationIndex] = location;
+      }
+      const hierarchyIdx = state.locationsHierarchy.findIndex(
+        (loc) => loc.id === location.id
+      );
+      if (hierarchyIdx !== -1) {
+        state.locationsHierarchy[hierarchyIdx] = {
+          ...state.locationsHierarchy[hierarchyIdx],
+          ...location
+        };
       }
     },
     deleteLocation(

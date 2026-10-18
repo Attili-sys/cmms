@@ -67,6 +67,24 @@ def get_part_by_barcode(
     return _serialize_part(part, db)
 
 
+@parts_router.post("/{part_id:int}/restock")
+def restock_part(
+    part_id: int,
+    payload: dict[str, Any] = Body(default_factory=dict),
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> dict[str, Any]:
+    part = db.get(Part, part_id)
+    if not part:
+        raise CustomException(status_code=404, message="Part not found")
+    assert_company_access(current_user, part, is_super_admin=is_super_admin(current_user, db))
+    qty = float(payload.get("quantity", 0) or 0)
+    part.quantity = (part.quantity or 0.0) + qty
+    db.commit()
+    db.refresh(part)
+    return _serialize_part(part, db)
+
+
 router.include_router(parts_router)
 
 
@@ -116,6 +134,22 @@ def update_pq_for_work_order(
 @pq_router.get("/purchase-order/{po_id:int}")
 def get_pq_by_purchase_order(
     po_id: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> list[dict[str, Any]]:
+    rows = db.scalars(
+        select(PartQuantity).where(
+            PartQuantity.purchase_order_id == po_id,
+            PartQuantity.company_id == current_user.company_id,
+        )
+    ).all()
+    return [_serialize_part_quantity(r, db) for r in rows]
+
+
+@pq_router.patch("/purchase-order/{po_id:int}")
+def update_pq_for_purchase_order(
+    po_id: int,
+    payload: list[dict[str, Any]] = Body(default_factory=list),
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> list[dict[str, Any]]:

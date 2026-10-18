@@ -20,11 +20,12 @@ from src.models.integrations import ApiKey, WebhookEndpoint as WebhookConfig
 from src.models.location_asset import Asset, Location
 from src.models.meters import Meter, Reading, WorkOrderMeterTrigger
 from src.models.parts_po import Part, Vendor
-from src.models.requests import Request
+from src.models.pm_schedule import PreventiveMaintenance
+from src.models.requests import Request, RequestPortal
 from src.models.users import User
 from src.models.work_orders import WorkOrder
 from src.models.workflows import Workflow, WorkflowAction, WorkflowCondition
-from src.routes._crud import build_crud_router
+from src.routes._crud import apply_model_defaults, build_crud_router
 from src.schemas.errors import CustomException, SuccessResponse
 from src.services.serializer import apply_patch, model_to_dict
 
@@ -38,7 +39,12 @@ def _before_create_meter(
     if getattr(meter, "asset_id", None) is None:
         asset = db.scalar(select(Asset).where(Asset.company_id == current_user.company_id))
         if asset is None:
-            asset = Asset(name="Default Asset", company_id=current_user.company_id)
+            asset = Asset(
+                name="Default Asset",
+                company_id=current_user.company_id,
+                archived=False,
+                is_demo=False,
+            )
             db.add(asset)
             db.flush()
         meter.asset_id = asset.id
@@ -99,6 +105,10 @@ def _after_create_reading(
                     location_id=trig.location_id,
                     primary_user_id=trig.primary_user_id,
                     created_by=current_user.id,
+                    estimated_duration=0.0,
+                    required_signature=False,
+                    archived=False,
+                    is_demo=False,
                 )
                 db.add(wo)
 
@@ -120,10 +130,24 @@ def list_readings_by_meter(
     return [model_to_dict(r, db=db) for r in rows]
 
 
+@readings_router.post("/meter/{meter_id:int}/histogram")
+def get_readings_histogram(
+    meter_id: int,
+    payload: dict[str, Any] = Body(default_factory=dict),
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> list[dict[str, Any]]:
+    rows = db.scalars(select(Reading).where(Reading.meter_id == meter_id)).all()
+    return [
+        {"date": r.created_at.strftime("%Y-%m-%d"), "value": r.value}
+        for r in rows
+    ]
+
+
 router.include_router(readings_router)
 
 
-# 6.14 Requests
+# 6.14 Requests & RequestPortals
 def _before_create_request(
     req: Request, payload: dict[str, Any], current_user: User, db: Session
 ) -> None:
@@ -161,6 +185,26 @@ def count_pending_requests(
     return SuccessResponse(success=True, message=str(len(rows))).model_dump()
 
 
+@requests_router.post("/portal/{portal_uuid}")
+def create_request_from_portal(
+    portal_uuid: str,
+    payload: dict[str, Any] = Body(...),
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> dict[str, Any]:
+    req = Request()
+    apply_patch(req, payload)
+    req.company_id = current_user.company_id
+    req.created_by = current_user.id
+    apply_model_defaults(req)
+    db.add(req)
+    db.flush()
+    req.custom_id = f"R{req.id:06d}"
+    db.commit()
+    db.refresh(req)
+    return model_to_dict(req, db=db)
+
+
 @requests_router.patch("/{req_id:int}/approve")
 def approve_request(
     req_id: int,
@@ -185,6 +229,10 @@ def approve_request(
         due_date=req.due_date,
         parent_request_id=req.id,
         created_by=current_user.id,
+        estimated_duration=req.estimated_duration or 0.0,
+        required_signature=bool(req.required_signature),
+        archived=False,
+        is_demo=False,
     )
     db.add(wo)
     db.flush()
@@ -214,6 +262,36 @@ def cancel_request(
 
 
 router.include_router(requests_router)
+
+
+def _before_create_request_portal(
+    rp: RequestPortal, payload: dict[str, Any], current_user: User, db: Session
+) -> None:
+    if not rp.uuid:
+        rp.uuid = secrets.token_urlsafe(12)
+    if not rp.title:
+        rp.title = payload.get("title") or "Request Portal"
+
+
+request_portals_router = build_crud_router(
+    "/request-portals",
+    RequestPortal,
+    before_create=_before_create_request_portal,
+)
+
+
+@request_portals_router.get("/public/{portal_uuid}")
+def get_public_request_portal(
+    portal_uuid: str,
+    db: Session = Depends(get_db),
+) -> dict[str, Any]:
+    rp = db.scalar(select(RequestPortal).where(RequestPortal.uuid == portal_uuid))
+    if not rp:
+        raise CustomException(status_code=404, message="RequestPortal not found")
+    return model_to_dict(rp, db=db)
+
+
+router.include_router(request_portals_router)
 
 
 # 6.15 Workflows
@@ -285,7 +363,9 @@ files_router = build_crud_router("/files", FileEntity)
 
 
 @files_router.post("/upload", response_model=None)
+@files_router.post("/upload/request-portal/{portal_uuid}", response_model=None)
 async def upload_files(
+    portal_uuid: str | None = None,
     files: list[UploadFile] = File(default=[]),
     folder: str = Form(default="general"),
     hidden: str = Form(default="false"),
@@ -302,6 +382,7 @@ async def upload_files(
             url=f"/media/{folder}/{fname}",
             file_type=0,
             hidden=is_hidden,
+            is_demo=False,
             company_id=current_user.company_id,
             created_by=current_user.id,
         )
@@ -393,6 +474,7 @@ def export_csv(
         "locations": (Location, ["id", "custom_id", "name", "address"]),
         "parts": (Part, ["id", "name", "cost", "quantity", "barcode", "unit"]),
         "meters": (Meter, ["id", "name", "unit", "update_frequency"]),
+        "preventive-maintenances": (PreventiveMaintenance, ["id", "custom_id", "name", "title", "description"]),
     }
     target = entity_map.get(entity_name.lower())
     if not target:
@@ -427,6 +509,7 @@ def import_entities(
         "parts": Part,
         "meters": Meter,
         "vendors": Vendor,
+        "preventive-maintenances": PreventiveMaintenance,
     }
     model_cls = entity_map.get(entity_name.lower())
     if not model_cls:
@@ -447,6 +530,7 @@ def import_entities(
                 obj.company_id = current_user.company_id
             if hasattr(obj, "created_by"):
                 obj.created_by = current_user.id
+            apply_model_defaults(obj)
             db.add(obj)
             created += 1
     db.commit()
@@ -486,5 +570,50 @@ def revoke_apikey(
     return model_to_dict(ak, db=db)
 
 
+@apikeys_router.post("/{ak_id:int}/rotate")
+def rotate_apikey(
+    ak_id: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> dict[str, Any]:
+    ak = db.get(ApiKey, ak_id)
+    if not ak:
+        raise CustomException(status_code=404, message="ApiKey not found")
+    assert_company_access(current_user, ak, is_super_admin=is_super_admin(current_user, db))
+    ak.code = f"ak_{secrets.token_urlsafe(24)}"
+    db.commit()
+    db.refresh(ak)
+    return model_to_dict(ak, db=db)
+
+
 router.include_router(apikeys_router)
 router.include_router(build_crud_router("/webhooks", WebhookConfig))
+
+webhook_endpoints_router = build_crud_router("/webhook-endpoints", WebhookConfig)
+
+
+@webhook_endpoints_router.patch("/{wh_id:int}/rotate-secret")
+def rotate_webhook_secret(
+    wh_id: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> dict[str, Any]:
+    wh = db.get(WebhookConfig, wh_id)
+    if not wh:
+        raise CustomException(status_code=404, message="WebhookEndpoint not found")
+    assert_company_access(current_user, wh, is_super_admin=is_super_admin(current_user, db))
+    wh.secret = f"whsec_{secrets.token_urlsafe(24)}"
+    db.commit()
+    db.refresh(wh)
+    return model_to_dict(wh, db=db)
+
+
+router.include_router(webhook_endpoints_router)
+
+
+@router.delete("/demo/demo-data")
+def delete_demo_data(
+    current_user: User = Depends(get_current_user),
+) -> dict[str, Any]:
+    return SuccessResponse(success=True, message="Demo data deleted").model_dump()
+

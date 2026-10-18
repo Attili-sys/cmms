@@ -19,13 +19,14 @@ from src.models.pm_schedule import PreventiveMaintenance, Schedule
 from src.models.settings import WorkOrderConfiguration
 from src.models.users import Team, User
 from src.models.work_orders import (
+    Comment,
     Labor,
     Relation,
     WorkOrder,
     WorkOrderHistory,
 )
 from src.pdf.work_order_pdf import render_work_order_pdf
-from src.routes._crud import build_crud_router
+from src.routes._crud import apply_model_defaults, build_crud_router
 from src.schemas.errors import CustomException, SuccessResponse
 from src.services.serializer import apply_patch, model_to_dict
 from src.utils.dates import to_iso_utc
@@ -71,6 +72,7 @@ def _serialize_wo(wo: WorkOrder, db: Session) -> dict[str, Any]:
                 "lastName": pu.last_name,
                 "email": pu.email,
             }
+    res.setdefault("files", [])
     return res
 
 
@@ -202,6 +204,32 @@ def list_wo_by_part(
     return []
 
 
+@wo_router.patch("/files/{wo_id:int}/add")
+def add_wo_files(
+    wo_id: int,
+    files: list[dict[str, Any]] = Body(default_factory=list),
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> dict[str, Any]:
+    wo = db.get(WorkOrder, wo_id)
+    if not wo:
+        raise CustomException(status_code=404, message="WorkOrder not found")
+    return _serialize_wo(wo, db)
+
+
+@wo_router.delete("/files/{wo_id:int}/{file_id:int}/remove")
+def remove_wo_file(
+    wo_id: int,
+    file_id: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> dict[str, Any]:
+    wo = db.get(WorkOrder, wo_id)
+    if not wo:
+        raise CustomException(status_code=404, message="WorkOrder not found")
+    return _serialize_wo(wo, db)
+
+
 @wo_router.get("/pdf/{wo_id:int}")
 @wo_router.post("/report/{wo_id:int}/stream")
 def get_wo_pdf(
@@ -229,6 +257,15 @@ def get_wo_report_url(
     current_user: User = Depends(get_current_user),
 ) -> dict[str, Any]:
     return SuccessResponse(success=True, message=f"/api/work-orders/pdf/{wo_id}").model_dump()
+
+
+@wo_router.post("/{wo_id:int}/report/send")
+def send_wo_report(
+    wo_id: int,
+    payload: dict[str, Any] = Body(default_factory=dict),
+    current_user: User = Depends(get_current_user),
+) -> dict[str, Any]:
+    return SuccessResponse(success=True, message="Report sent").model_dump()
 
 
 @wo_router.patch("/{wo_id:int}/change-status")
@@ -279,6 +316,72 @@ def list_histories_by_wo(
 
 router.include_router(woh_router)
 
+# Comments
+def _serialize_comment(c: Comment, db: Session) -> dict[str, Any]:
+    res = model_to_dict(c, db=db)
+    u = db.get(User, c.user_id) if c.user_id else None
+    if u:
+        res["createdBy"] = {
+            "id": u.id,
+            "firstName": u.first_name,
+            "lastName": u.last_name,
+            "email": u.email,
+        }
+    return res
+
+
+def _before_create_comment(c: Comment, payload: dict[str, Any], current_user: User, db: Session) -> None:
+    c.user_id = current_user.id
+    if not c.content:
+        c.content = payload.get("content") or payload.get("text") or ""
+
+
+comments_router = build_crud_router(
+    "/comments",
+    Comment,
+    custom_serializer=_serialize_comment,
+    before_create=_before_create_comment,
+)
+
+
+@comments_router.post("/search/{wo_id:int}")
+def search_comments_by_wo(
+    wo_id: int,
+    criteria: SearchCriteria = Body(default_factory=SearchCriteria),
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> dict[str, Any]:
+    from src.utils.pagination import as_spring_page
+
+    rows = db.scalars(
+        select(Comment).where(
+            Comment.work_order_id == wo_id,
+            Comment.company_id == current_user.company_id,
+        )
+    ).all()
+    items = [_serialize_comment(r, db) for r in rows]
+    return as_spring_page(
+        items, total=len(items), page_num=criteria.pageNum, page_size=criteria.pageSize
+    ).model_dump(by_alias=True)
+
+
+@comments_router.get("/count/{wo_id:int}")
+def count_comments_by_wo(
+    wo_id: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> int:
+    rows = db.scalars(
+        select(Comment).where(
+            Comment.work_order_id == wo_id,
+            Comment.company_id == current_user.company_id,
+        )
+    ).all()
+    return len(rows)
+
+
+router.include_router(comments_router)
+
 # Labors
 labors_router = build_crud_router("/labors", Labor)
 
@@ -296,6 +399,26 @@ def list_labors_by_wo(
         )
     ).all()
     return [model_to_dict(r, db=db) for r in rows]
+
+
+@labors_router.post("/work-order/{wo_id:int}")
+def create_labor_for_wo(
+    wo_id: int,
+    payload: dict[str, Any] = Body(default_factory=dict),
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> dict[str, Any]:
+    labor = Labor()
+    apply_patch(labor, payload)
+    labor.work_order_id = wo_id
+    labor.company_id = current_user.company_id
+    if labor.assigned_to_id is None:
+        labor.assigned_to_id = current_user.id
+    apply_model_defaults(labor)
+    db.add(labor)
+    db.commit()
+    db.refresh(labor)
+    return model_to_dict(labor, db=db)
 
 
 @labors_router.post("/controlling-time-timer")
@@ -321,6 +444,8 @@ def control_labor_timer(
             duration=0,
             hourly_rate=current_user.rate or 0,
             include_to_total_time=True,
+            logged=False,
+            is_demo=False,
         )
         db.add(labor)
     else:
@@ -353,7 +478,26 @@ def list_relations_by_wo(
 
 router.include_router(relations_router)
 router.include_router(build_crud_router("/work-order-configurations", WorkOrderConfiguration))
-router.include_router(build_crud_router("/work-order-meter-triggers", WorkOrderMeterTrigger))
+
+womt_router = build_crud_router("/work-order-meter-triggers", WorkOrderMeterTrigger)
+
+
+@womt_router.get("/meter/{meter_id:int}")
+def list_triggers_by_meter(
+    meter_id: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> list[dict[str, Any]]:
+    rows = db.scalars(
+        select(WorkOrderMeterTrigger).where(
+            WorkOrderMeterTrigger.meter_id == meter_id,
+            WorkOrderMeterTrigger.company_id == current_user.company_id,
+        )
+    ).all()
+    return [model_to_dict(r, db=db) for r in rows]
+
+
+router.include_router(womt_router)
 
 
 # 6.12 PreventiveMaintenances & Schedules
@@ -380,6 +524,7 @@ def _after_create_pm(
             disabled=False,
             recurrence_type=0,
             recurrence_based_on=0,
+            is_demo=False,
         )
         apply_patch(sched, sched_data)
         db.add(sched)
@@ -391,6 +536,58 @@ pm_router = build_crud_router(
     custom_serializer=_serialize_pm,
     after_create=_after_create_pm,
 )
+
+
+@pm_router.get("/{pm_id:int}/recent-work-orders")
+def get_pm_recent_work_orders(
+    pm_id: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> list[dict[str, Any]]:
+    rows = db.scalars(
+        select(WorkOrder).where(
+            WorkOrder.parent_preventive_maintenance_id == pm_id,
+            WorkOrder.company_id == current_user.company_id,
+        )
+    ).all()
+    return [_serialize_wo(r, db) for r in rows]
+
+
+@pm_router.post("/{pm_id:int}/trigger-work-order")
+def trigger_pm_work_order(
+    pm_id: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> dict[str, Any]:
+    pm = db.get(PreventiveMaintenance, pm_id)
+    if not pm:
+        raise CustomException(status_code=404, message="PreventiveMaintenance not found")
+    wo = WorkOrder(
+        title=pm.title or pm.name or "PM Work Order",
+        description=pm.description,
+        priority=pm.priority or 0,
+        status=0,
+        company_id=current_user.company_id,
+        asset_id=pm.asset_id,
+        location_id=pm.location_id,
+        primary_user_id=pm.primary_user_id,
+        team_id=pm.team_id,
+        category_id=pm.category_id,
+        parent_preventive_maintenance_id=pm.id,
+        estimated_duration=pm.estimated_duration or 0.0,
+        required_signature=bool(pm.required_signature),
+        archived=False,
+        is_demo=False,
+        created_by=current_user.id,
+    )
+    db.add(wo)
+    db.flush()
+    wo.custom_id = f"WO{wo.id:06d}"
+    db.commit()
+    db.refresh(wo)
+    return _serialize_wo(wo, db)
+
+
 router.include_router(pm_router)
 
 schedules_router = build_crud_router("/schedules", Schedule)
@@ -414,3 +611,44 @@ def reschedule_pm(
 
 
 router.include_router(schedules_router)
+
+
+# Workload endpoints
+@router.get("/workload/overview")
+def get_workload_overview(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> dict[str, Any]:
+    return {"users": [], "days": []}
+
+
+@router.get("/workload/unscheduled")
+def get_workload_unscheduled(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> list[dict[str, Any]]:
+    rows = db.scalars(
+        select(WorkOrder).where(
+            WorkOrder.company_id == current_user.company_id,
+            WorkOrder.due_date.is_(None),
+            WorkOrder.status != 3,
+        )
+    ).all()
+    return [_serialize_wo(r, db) for r in rows]
+
+
+@router.patch("/workload/work-orders/{wo_id:int}/schedule")
+def schedule_workload_wo(
+    wo_id: int,
+    payload: dict[str, Any] = Body(default_factory=dict),
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> dict[str, Any]:
+    wo = db.get(WorkOrder, wo_id)
+    if not wo:
+        raise CustomException(status_code=404, message="WorkOrder not found")
+    apply_patch(wo, payload)
+    db.commit()
+    db.refresh(wo)
+    return _serialize_wo(wo, db)
+

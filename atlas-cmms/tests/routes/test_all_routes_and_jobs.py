@@ -127,6 +127,11 @@ def test_locations_assets_categories_vendors_customers(api_client: TestClient) -
     assert len(children) == 1
     assert children[0]["name"] == "Floor 1"
 
+    loc_root_page = api_client.get("/api/locations/children/0/paginated?page=0&size=10").json()
+    assert loc_root_page["totalElements"] == 1
+    assert loc_root_page["content"][0]["id"] == loc_id
+    assert loc_root_page["content"][0]["hasChildren"] is True
+
     # Create AssetCategory
     cat = api_client.post("/api/asset-categories", json={"name": "Rotating Equipment"}).json()
     assert cat["name"] == "Rotating Equipment"
@@ -138,6 +143,14 @@ def test_locations_assets_categories_vendors_customers(api_client: TestClient) -
     ).json()
     assert asset["name"] == "Main Compressor"
     assert asset["customId"].startswith("A")
+
+    asset_root_page = api_client.get("/api/assets/children/0/paginated?page=0&size=10").json()
+    assert asset_root_page["totalElements"] == 1
+    assert asset_root_page["content"][0]["name"] == "Main Compressor"
+
+    assets_mini_empty_loc = api_client.get("/api/assets/mini?locationId=")
+    assert assets_mini_empty_loc.status_code == 200
+    assert len(assets_mini_empty_loc.json()) == 1
 
     # Search Assets
     search_res = api_client.post("/api/assets/search", json={"pageNum": 0, "pageSize": 10}).json()

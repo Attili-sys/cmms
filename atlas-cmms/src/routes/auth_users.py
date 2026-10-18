@@ -323,13 +323,43 @@ def confirm_reset_password(payload: dict[str, Any] = Body(default_factory=dict))
 
 
 @router.patch("/auth/updatePassword")
+@router.post("/auth/updatepwd")
 def update_password(payload: dict[str, Any] = Body(default_factory=dict)) -> dict[str, Any]:
     return {"success": True, "message": "Password managed by Canvas SSO"}
+
+
+@router.post("/auth/logout")
+def logout() -> dict[str, Any]:
+    return {"success": True, "message": "Logged out"}
+
+
+@router.post("/auth/delete-account-request")
+def delete_account_request(payload: dict[str, Any] = Body(default_factory=dict)) -> dict[str, Any]:
+    return {"success": True, "message": "Request submitted"}
+
+
+@router.get("/auth/switch-account")
+def switch_account(id: int = Query(default=1)) -> dict[str, Any]:
+    return {
+        "accessToken": _DEFAULT_JWT,
+        "refreshToken": "canvas-sso-refresh",
+        "tokenType": "Bearer",
+        "expiresAt": "2099-12-31T23:59:59.000Z",
+    }
 
 
 @router.get("/license/validity")
 def get_license_validity() -> dict[str, Any]:
     return {"valid": LicenseService.is_license_valid(), "unrestricted": LicenseService.is_unrestricted_self_hosted()}
+
+
+@router.get("/license/state")
+def get_license_state() -> dict[str, Any]:
+    return {
+        "valid": True,
+        "unrestricted": True,
+        "state": "VALID",
+    }
 
 
 @router.get("/subscription-plans")
@@ -524,16 +554,77 @@ def list_users(
     return [serialize_user(u, db) for u in rows]
 
 
+@router.post("/users")
+def create_user(
+    payload: dict[str, Any] = Body(...),
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> dict[str, Any]:
+    role_id = payload.get("role", {}).get("id") if isinstance(payload.get("role"), dict) else payload.get("roleId")
+    if not role_id:
+        role = db.scalar(select(Role).order_by(Role.id))
+        role_id = role.id if role else 1
+    u = User(
+        first_name=payload.get("firstName", "New"),
+        last_name=payload.get("lastName", "User"),
+        email=(payload.get("email") or "user@canvas.local").strip().lower(),
+        phone=payload.get("phone") or "",
+        job_title=payload.get("jobTitle"),
+        username=(payload.get("email") or "user@canvas.local").strip().lower(),
+        password="sso-managed-account",  # noqa: S106
+        rate=float(payload.get("rate") or 0.0),
+        enabled=True,
+        owns_company=False,
+        is_demo=False,
+        role_id=role_id,
+        company_id=current_user.company_id,
+        user_settings_id=current_user.user_settings_id,
+    )
+    db.add(u)
+    db.commit()
+    db.refresh(u)
+    return serialize_user(u, db)
+
+
 @router.get("/users/mini")
 def list_users_mini(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> list[dict[str, Any]]:
-    rows = db.scalars(select(User).where(User.company_id == current_user.company_id)).all()
+    rows = db.scalars(
+        select(User).where(
+            User.company_id == current_user.company_id,
+            User.enabled.is_(True),
+        )
+    ).all()
     return [
         {"id": u.id, "firstName": u.first_name, "lastName": u.last_name, "email": u.email}
         for u in rows
     ]
+
+
+@router.get("/users/mini/disabled")
+def list_disabled_users_mini(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> list[dict[str, Any]]:
+    rows = db.scalars(
+        select(User).where(
+            User.company_id == current_user.company_id,
+            User.enabled.is_(False),
+        )
+    ).all()
+    return [
+        {"id": u.id, "firstName": u.first_name, "lastName": u.last_name, "email": u.email}
+        for u in rows
+    ]
+
+
+@router.get("/users/invitations/last-week")
+def get_last_week_invitations(
+    current_user: User = Depends(get_current_user),
+) -> int:
+    return 0
 
 
 @router.post("/users/invite")
@@ -580,6 +671,83 @@ def patch_user(
     apply_patch(u, payload, exclude={"password"})
     db.commit()
     db.refresh(u)
+    return serialize_user(u, db)
+
+
+@router.patch("/users/{user_id:int}/disable")
+def disable_user(
+    user_id: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> dict[str, Any]:
+    u = db.get(User, user_id)
+    if not u:
+        raise CustomException(status_code=404, message="User not found")
+    assert_company_access(current_user, u, is_super_admin=is_super_admin(current_user, db))
+    u.enabled = False
+    db.commit()
+    db.refresh(u)
+    return serialize_user(u, db)
+
+
+@router.patch("/users/{user_id:int}/enable")
+def enable_user(
+    user_id: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> dict[str, Any]:
+    u = db.get(User, user_id)
+    if not u:
+        raise CustomException(status_code=404, message="User not found")
+    assert_company_access(current_user, u, is_super_admin=is_super_admin(current_user, db))
+    u.enabled = True
+    db.commit()
+    db.refresh(u)
+    return serialize_user(u, db)
+
+
+@router.patch("/users/{user_id:int}/role")
+def update_user_role(
+    user_id: int,
+    role: int = Query(default=1),
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> dict[str, Any]:
+    u = db.get(User, user_id)
+    if not u:
+        raise CustomException(status_code=404, message="User not found")
+    assert_company_access(current_user, u, is_super_admin=is_super_admin(current_user, db))
+    u.role_id = role
+    db.commit()
+    db.refresh(u)
+    return serialize_user(u, db)
+
+
+@router.delete("/users/{user_id:int}")
+def delete_user(
+    user_id: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> dict[str, Any]:
+    u = db.get(User, user_id)
+    if not u:
+        raise CustomException(status_code=404, message="User not found")
+    assert_company_access(current_user, u, is_super_admin=is_super_admin(current_user, db))
+    db.delete(u)
+    db.commit()
+    return SuccessResponse(success=True, message="User deleted").model_dump()
+
+
+@router.patch("/shift-configurations/user/{user_id:int}")
+def patch_shift_configuration(
+    user_id: int,
+    payload: dict[str, Any] = Body(default_factory=dict),
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> dict[str, Any]:
+    u = db.get(User, user_id)
+    if not u:
+        raise CustomException(status_code=404, message="User not found")
     return serialize_user(u, db)
 
 

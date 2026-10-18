@@ -19,6 +19,59 @@ from src.services.serializer import apply_patch, model_to_dict
 from src.utils.search import SearchCriteria, execute_search
 
 
+def apply_model_defaults(obj: Any) -> None:
+    """Ensure non-nullable boolean/numeric columns have sensible defaults when omitted by frontend."""
+    bool_defaults = {
+        "is_demo": False,
+        "archived": False,
+        "required_signature": False,
+        "cancelled": False,
+        "non_stock": False,
+        "include_to_total_cost": True,
+        "include_to_total_time": True,
+        "logged": True,
+        "disabled": False,
+        "recurrent": False,
+        "required": False,
+        "copy_on_repeat": False,
+        "enabled": True,
+        "hidden": False,
+        "seen": False,
+    }
+    num_defaults: dict[str, int | float] = {
+        "estimated_duration": 0.0,
+        "cost": 0.0,
+        "min_quantity": 0.0,
+        "quantity": 0.0,
+        "version": 0,
+        "rate": 0,
+        "duration": 0,
+        "hourly_rate": 0,
+        "frequency": 1,
+        "update_frequency": 1,
+        "trigger_condition": 0,
+        "value": 0,
+        "wait_before": 0,
+        "field_order": 0,
+        "current_value": 0,
+        "purchase_price": 0,
+        "area": 0,
+    }
+    for attr_name, default_val in bool_defaults.items():
+        if hasattr(obj, attr_name) and getattr(obj, attr_name, None) is None:
+            setattr(obj, attr_name, default_val)
+    for attr_name, default_val in num_defaults.items():
+        if hasattr(obj, attr_name) and getattr(obj, attr_name, None) is None:
+            # Only set numeric default if column is non-nullable (e.g. FloorPlan.area vs Asset.area)
+            col = obj.__class__.__table__.columns.get(attr_name) if hasattr(obj.__class__, "__table__") else None
+            if col is not None and not col.nullable:
+                setattr(obj, attr_name, default_val)
+    if hasattr(obj, "company_name") and getattr(obj, "company_name", None) is None:
+        obj.company_name = getattr(obj, "name", None) or "Vendor"
+    if hasattr(obj, "path") and getattr(obj, "path", None) is None and hasattr(obj, "url"):
+        obj.path = getattr(obj, "url", None) or "/media/file"
+
+
 def _ensure_company_settings_id(current_user: User, db: Session) -> int:
     cs = db.scalar(select(CompanySettings).where(CompanySettings.company_id == current_user.company_id))
     if cs is None:
@@ -82,6 +135,7 @@ def build_crud_router(
     ) -> dict[str, Any]:
         obj = model_cls()
         apply_patch(obj, payload)
+        apply_model_defaults(obj)
         if hasattr(obj, "company_id") and getattr(obj, "company_id", None) is None:
             obj.company_id = current_user.company_id
         if hasattr(obj, "company_settings_id") and getattr(obj, "company_settings_id", None) is None:
@@ -90,6 +144,7 @@ def build_crud_router(
             obj.created_by = current_user.id
         if before_create is not None:
             before_create(obj, payload, current_user, db)
+        apply_model_defaults(obj)
         db.add(obj)
         db.commit()
         db.refresh(obj)

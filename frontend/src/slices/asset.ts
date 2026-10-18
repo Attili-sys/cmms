@@ -63,19 +63,44 @@ const slice = createSlice({
     addAsset(state: AssetState, action: PayloadAction<{ asset: AssetDTO }>) {
       const { asset } = action.payload;
       state.assets.content = [...state.assets.content, asset];
+      state.assets.totalElements = (state.assets.totalElements || 0) + 1;
+      if (!state.assetsHierarchy.some((a) => a.id === asset.id)) {
+        state.assetsHierarchy.push(asset);
+      }
     },
     editAsset(state: AssetState, action: PayloadAction<{ asset: AssetDTO }>) {
       const { asset } = action.payload;
       if (state.assetInfos[asset.id]) {
         state.assetInfos[asset.id].asset = asset;
       } else state.assetInfos[asset.id] = { asset, workOrders: [] };
+      const assetIdx = state.assets.content.findIndex((a) => a.id === asset.id);
+      if (assetIdx !== -1) {
+        state.assets.content[assetIdx] = asset;
+      }
+      const hierarchyIdx = state.assetsHierarchy.findIndex(
+        (a) => a.id === asset.id
+      );
+      if (hierarchyIdx !== -1) {
+        state.assetsHierarchy[hierarchyIdx] = {
+          ...state.assetsHierarchy[hierarchyIdx],
+          ...asset
+        };
+      }
     },
     deleteAsset(state: AssetState, action: PayloadAction<{ id: number }>) {
       const { id } = action.payload;
       const assetIndex = state.assets.content.findIndex(
         (asset) => asset.id === id
       );
-      state.assets.content.splice(assetIndex, 1);
+      if (assetIndex !== -1) {
+        state.assets.content.splice(assetIndex, 1);
+      }
+      const hierarchyIndex = state.assetsHierarchy.findIndex(
+        (asset) => asset.id === id
+      );
+      if (hierarchyIndex !== -1) {
+        state.assetsHierarchy.splice(hierarchyIndex, 1);
+      }
     },
     setLoadingGet(
       state: AssetState,

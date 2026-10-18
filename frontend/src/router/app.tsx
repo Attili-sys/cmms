@@ -440,6 +440,7 @@ const appRoutes = [
   {
     path: 'imports',
     children: [
+      { index: true, element: <Navigate to="work-orders" replace /> },
       { path: 'work-orders', element: <Imports /> },
       { path: 'assets', element: <Imports /> },
       { path: 'locations', element: <Imports /> },
