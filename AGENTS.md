@@ -1,6 +1,6 @@
 # Atlas CMMS
 
-Self-hosted maintenance system. The product in this repo is three apps: a Java API (`api/`), a React web app (`frontend/`), and an Expo mobile app (`mobile/`). `home/` is the marketing site. `cmms/` is a separate Canvas app with its own `cmms/AGENTS.md`; follow that file when the task is about `cmms/`, and leave `cmms/` alone otherwise.
+Self-hosted maintenance system. The product in this repo is three apps: a Java API (`api/`), a React web app (`frontend/`), and an Expo mobile app (`mobile/`). `home/` is the marketing site. `cmms/` is a leftover venv — ignore. The Canvas Python port lives in `atlas-cmms/` (see `.kilo/plans/1792315864782-java-to-python-migration.v2.md`).
 
 `README.MD` is for people installing the product. This file is the operating sheet for coding agents.
 
@@ -62,7 +62,6 @@ Secrets stay in `.env` and the environment. Never commit them.
 | `dev-docs/` | Super-admin, LDAP, TLS, backup, upgrades |
 | `ATLAS_CAFM_DECISION_REPORT.md` | Choosing what to build next. It is an audit, not a description of code you have changed |
 | `UNRESTRICTED_SELFHOSTED.md` | Understanding which restrictions were removed on this branch and which controls are retained |
-| `cmms/AGENTS.md` | Any task inside `cmms/` |
 
 The three instruction files under `api/` and `frontend/` are not named `AGENTS.md` in a way every tool will auto-load (`Agents.md` and `agents.md`). Open them by the paths above.
 
