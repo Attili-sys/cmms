@@ -1,8 +1,5 @@
 import { Box, Typography } from '@mui/material';
 
-import Logo from 'src/components/LogoSign';
-import { isWhiteLabeled } from '../../config';
-
 function AppInit() {
   return (
     <Box
@@ -19,19 +16,10 @@ function AppInit() {
       alignItems="center"
       justifyContent="center"
     >
-      <Box>
-        <Logo />
-        {!isWhiteLabeled && (
-          <Typography
-            style={{ cursor: 'pointer' }}
-            fontSize={13}
-            onClick={() => {
-              window.open('https://www.intel-loop.com/', '_blank');
-            }}
-          >
-            Powered by Intelloop
-          </Typography>
-        )}
+      <Box textAlign="center">
+        <Typography fontSize={15} fontWeight={700}>
+          Powered by Canvas
+        </Typography>
       </Box>
     </Box>
   );

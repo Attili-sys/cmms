@@ -1,0 +1,12 @@
+# The start command, and buildpacks need it stated.
+#
+# Without this the image BUILDS AND RUNS AND DOES NOTHING: Paketo's python-start
+# buildpack looks for a conventional entrypoint — main.py, app.py, manage.py — or
+# a Procfile, finds neither, and produces an image whose web process is empty.
+# The container then exits 0 immediately, so the pod CrashLoopBackOffs with no
+# logs and the probe reports "connection refused". Nothing anywhere says "no
+# start command".
+#
+# `run.py` is the entrypoint by convention in this template (see its docstring);
+# this is the line that tells the platform so.
+web: python run.py

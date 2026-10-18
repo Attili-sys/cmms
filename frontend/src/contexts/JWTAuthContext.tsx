@@ -564,6 +564,7 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
       const refreshToken = window.localStorage.getItem('refreshToken');
 
       let authenticated = false;
+      let preloadedUser: UserResponseDTO | null = null;
       if (accessToken && (await verify(accessToken))) {
         authenticated = true;
       } else if (refreshToken) {
@@ -572,12 +573,24 @@ export const AuthProvider: FC<AuthProviderProps> = (props) => {
           authenticated = true;
         }
       }
+      if (!authenticated) {
+        try {
+          preloadedUser = await updateUserInfos();
+          if (preloadedUser && preloadedUser.id) {
+            authenticated = true;
+          }
+        } catch {
+          authenticated = false;
+        }
+      }
 
       if (authenticated) {
         const newAccessToken = window.localStorage.getItem('accessToken');
         const newRefreshToken = window.localStorage.getItem('refreshToken');
-        setSession(newAccessToken, newRefreshToken);
-        const user = await updateUserInfos();
+        if (newAccessToken) {
+          setSession(newAccessToken, newRefreshToken);
+        }
+        const user = preloadedUser || (await updateUserInfos());
         const company = await api.get<Company>(`companies/${user.companyId}`);
         await setupUser(user, company.companySettings);
         dispatch({

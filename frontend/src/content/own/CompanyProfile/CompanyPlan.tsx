@@ -15,7 +15,6 @@ import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import useAuth from '../../../hooks/useAuth';
 import i18n from 'i18next';
 import { useContext, useEffect, useState } from 'react';
-import mailToLink from 'mailto-link';
 import { CompanySettingsContext } from '../../../contexts/CompanySettingsContext';
 import { homeUrl, isCloudVersion } from '../../../config';
 import { getLicenseValidity } from '../../../slices/license';

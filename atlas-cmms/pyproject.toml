@@ -1,0 +1,86 @@
+# Python + FastAPI + SQLAlchemy is THE stack (WS-09 §2). Pinned, not suggested.
+# Add what your app needs; do not remove what is here.
+[project]
+name = "atlas-cmms"
+version = "0.1.0"
+# The platform builds and runs 3.14.7 (.python-version, the platform's file; `canvas contract dev runtimes.python`).
+# ruff judges the code by this line.
+requires-python = ">=3.14"
+dependencies = [
+  "fastapi",
+  "uvicorn[standard]",
+  "sqlalchemy",
+  "psycopg[binary]",
+  "jinja2",              # templates/
+  "python-multipart",    # form posts
+  "httpx",               # ajnkit.http
+  "reportlab",           # PDF generation
+  "pyyaml",              # YAML configuration
+  "ajnkit-core",         # the platform's code (packages/); a feature's package by its skill: `canvas app add llm`
+]
+
+# PACKAGE MODE OFF. Without this the Paketo Python buildpack fails at the very
+# last step of an otherwise successful build:
+#
+#   Installing the current project: cmms (0.1.0)
+#   Error: The current project could not be installed:
+#          No file/folder found for package changeme
+#
+# Poetry assumes a project is a LIBRARY and tries to install it as one, looking
+# for a `changeme/` package to match `name`. A Canvas app is an application: the
+# code lives in `src/` and nothing imports it by distribution name. Dependency
+# management is all Poetry is wanted for here.
+#
+# This is the blueprint, so the defect was in every app scaffolded from it —
+# every one of them would have installed all its dependencies and then failed on
+# the last line.
+[tool.poetry]
+package-mode = false
+
+# The platform's packages, from packages/ — never PyPI, where the names are someone else's to take.
+# The core here; a feature's line comes with its package (`canvas app add llm`). `canvas update`
+# brings the next version there, and names it here and in uv.lock.
+[tool.uv.sources]
+ajnkit-core = { path = "packages/ajnkit_core-0.5.21-py3-none-any.whl" }
+
+[dependency-groups]
+dev = ["pytest", "httpx", "alembic", "ruff"]
+
+[tool.canvas]
+# true: after each change passes its tests, your AI assistant deploys it, so you can try it at once.
+# false: it asks first. Say "turn auto-deploy off" (or on) and it changes this line.
+auto_deploy = true
+# true: `canvas deploy` first brings this app's assistant files (AGENTS.md, the skills) and core
+# (run.py, CI, the packages) up to the canvas you have — never over your uncommitted edits to them.
+# false: it only says they are behind, and `canvas app update` does it.
+auto_update = true
+
+[tool.ruff]
+line-length = 100
+# .canvas/legacy/ is an old app copied in by `canvas app adapt` — not this app's code
+extend-exclude = [".canvas"]
+
+[tool.ruff.lint]
+# Named, so every ruff version checks the same: errors (F, E9), likely bugs (B), security (S — an
+# injection, a hard-coded secret, a shell call) and what blocks the server inside `async def` (ASYNC).
+select = ["E9", "F", "B", "S", "ASYNC"]
+
+[tool.ruff.lint.flake8-bugbear]
+extend-immutable-calls = [
+  "fastapi.Depends",
+  "fastapi.Body",
+  "fastapi.Query",
+  "fastapi.File",
+  "fastapi.Form",
+  "fastapi.Header",
+  "fastapi.Path",
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["S101", "S105", "S106"]    # pytest's assert and test token literals
+"run.py" = ["S104"]     # a container listens on every address
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+# The app's own root, so `from src import ...` works however pytest is started (`uv run pytest`).
+pythonpath = ["."]

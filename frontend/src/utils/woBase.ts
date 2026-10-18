@@ -133,13 +133,13 @@ export const getWOBaseValues = <T extends WorkOrderBase>(t: any, entity: T) => {
           value: entity.primaryUser.id.toString()
         }
       : null,
-    assignedTo: entity?.assignedTo.map((worker) => {
+    assignedTo: (entity?.assignedTo ?? []).map((worker) => {
       return {
         label: `${worker.firstName} ${worker.lastName}`,
         value: worker.id.toString()
       };
     }),
-    customers: entity?.customers.map((customer) => {
+    customers: (entity?.customers ?? []).map((customer) => {
       return {
         label: customer.name,
         value: customer.id.toString()

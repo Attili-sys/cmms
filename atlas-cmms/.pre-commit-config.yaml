@@ -1,0 +1,13 @@
+# Secrets never reach Git, and the code stays formatted (WS-12 §3b). Opt in once per clone:
+# `uvx pre-commit install`. Versions are pinned; raise them deliberately.
+repos:
+  - repo: https://github.com/gitleaks/gitleaks
+    rev: v8.30.1
+    hooks:
+      - id: gitleaks
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.16.9
+    hooks:
+      - id: ruff
+      - id: ruff-format

@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% from "platform/ui.html" import page_header, card %}
+{% block content %}
+  {{ page_header(about().title, about().description) }}
+  {% call card() %}
+    <p class="m-0 text-[14px] text-body">{% if user %}Signed in as {{ user }}.{% else %}Nobody is signed in — this app has no sign-in, or you are running it on your computer.{% endif %}</p>
+  {% endcall %}
+{% endblock %}

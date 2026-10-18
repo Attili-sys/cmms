@@ -1,0 +1,49 @@
+# THE ONLY FILE EDITED FOR DEPLOY CONFIG.
+# Checked by `canvas validate` (and again by `canvas deploy`) before anything is uploaded.
+apiVersion: score.dev/v1b1
+
+metadata:
+  name: atlas-cmms                # also the hostname: atlas-cmms--<team>.<base>
+  # What people call it and what it does, shown in the console — `describe-app` writes them.
+  annotations:
+    canvas.dev/visibility: private
+    canvas.dev/title: Atlas CMMS
+    canvas.dev/description: Self-hosted work orders, assets, parts, preventive maintenance, and requests.
+    canvas.dev/category: operations
+    canvas.dev/tags: workflow, scheduling
+  #   canvas.dev/title: Team Notes                       # free text, up to 60 — not the name above
+  #   canvas.dev/description: Notes the team shares.     # one sentence, up to 280
+  #   canvas.dev/category: editorial                     # one, from the list in .canvas/contracts/
+  #   canvas.dev/tags: news, workflow                    # up to three, from the same list
+  #   canvas.dev/icon: src/static/icon.png               # square, ≤100 KB — asked for before deploy
+  #   canvas.dev/cover: src/static/cover.jpg             # 1600×600, ≤300 KB — none: one is drawn for it
+
+containers:
+  app:                                # exactly one container, named `app`
+    image: .                          # built by the platform; never a registry reference
+    variables:
+      PORT: ${resources.www.PORT}
+      CLOUD_VERSION: "false"
+      # DATA_DIR: /data               # with the `data` volume below — src/envs.py reads it
+    # volumes:                        # with the `data` volume below: its disk, always at /data
+    #   /data:
+    #     source: ${resources.data}
+
+resources:
+  www:
+    type: route
+    params:
+      port: 8080
+      path: /healthz                  # MUST match src/views.py — a mismatch is `probe.path`
+      auth: sso                       # a company sign-in before anyone reaches the app; none: open to the company network
+      access:
+        read: ["attiliab@aljazeera.net"]
+  db:
+    type: postgres
+    params: {size: 1Gi}
+  # data:                         # a disk of its own, kept across restarts — request-volume
+  #   type: volume                # mounted at /data (above); deleted with the app, no backup
+  #   params: {size: 1Gi}         # 1Gi-10Gi; more, to 100Gi, a team owner approves on the app's page
+  # ai:                           # the app's own AI key: OPENAI_BASE_URL, OPENAI_API_KEY
+  #   type: llm                   # and PLATFORM_LLM_MODELS — the request-llm skill
+  #   params: {models: [gemini-flash-lite]}   # optional: which models; default every one

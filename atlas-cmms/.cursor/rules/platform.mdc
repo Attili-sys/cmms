@@ -1,0 +1,6 @@
+---
+description: Canvas platform contract — applies to every file in this repo
+alwaysApply: true
+---
+
+See AGENTS.md. It is the single source of truth; this file only points at it.

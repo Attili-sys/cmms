@@ -294,7 +294,7 @@ export default function WorkOrderDetails(props: WorkOrderDetailsProps) {
         workOrderConfiguration.workOrderFieldConfigurations.find(
           (woFC) => woFC.fieldName === field.name
         );
-      if (fieldConfig.fieldType === 'REQUIRED' && field.condition) {
+      if (fieldConfig?.fieldType === 'REQUIRED' && field.condition) {
         showSnackBar(t(field.message), 'error');
         error = true;
         return false;

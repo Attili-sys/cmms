@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunkatlas_cmms=self.webpackChunkatlas_cmms||[]).push([[6568],{86568(e,s,t){t.r(s),t.d(s,{default:()=>k});var n=t(5544),r=t(62237),a=t(65043),c=t(51318),o=t(86971),u=t(27752),l=t(64172),f=t(70579);function k(){const e=(0,c.ok)(),s=(0,n.A)(e,2),t=s[0],k=(s[1],(0,u.A)().loginInternal,t.get("error")),h=(0,a.useContext)(l.s).showSnackBar,i=(0,o.Zp)();return(0,a.useEffect)(()=>{k&&(h(k,"error"),i("/account/login"))},[k]),(0,f.jsx)(r.A,{})}}}]);
+//# sourceMappingURL=6568.c31d1e88.chunk.js.map

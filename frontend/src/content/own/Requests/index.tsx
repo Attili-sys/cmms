@@ -368,7 +368,7 @@ function Requests() {
       const fieldIndexInFields = fields.findIndex(
         (field) => field.name === name
       );
-      if (fieldConfig.fieldType === 'REQUIRED') {
+      if (fieldConfig?.fieldType === 'REQUIRED') {
         fields[fieldIndexInFields] = {
           ...fields[fieldIndexInFields],
           required: true
@@ -390,7 +390,7 @@ function Requests() {
             break;
         }
         shape[name] = yupSchema;
-      } else if (fieldConfig.fieldType === 'HIDDEN') {
+      } else if (fieldConfig?.fieldType === 'HIDDEN') {
         fields.splice(fieldIndexInFields, 1);
       }
     });

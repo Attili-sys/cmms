@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunkatlas_cmms=self.webpackChunkatlas_cmms||[]).push([[5712],{45712(e,t){t.default={code:"hu",week:{dow:1,doy:4},buttonText:{prev:"vissza",next:"el\u0151re",today:"ma",month:"H\xf3nap",week:"H\xe9t",day:"Nap",list:"Lista"},weekText:"H\xe9t",allDayText:"Eg\xe9sz nap",moreLinkText:"tov\xe1bbi",noEventsText:"Nincs megjelen\xedthet\u0151 esem\xe9ny"}}}]);
+//# sourceMappingURL=5712.42d136e0.chunk.js.map

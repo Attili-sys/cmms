@@ -1,0 +1,8 @@
+{#- Every page of this app extends this — yours. It extends the platform's page shell
+    (platform/shell.html: the header, Sign out, the footer), so a page fills only `content`:
+
+      {% extends "base.html" %}
+      {% block content %}…{% endblock %}
+
+    Add to <head> here, for every page, in a `head` block. Never draw a header or a footer. -#}
+{% extends "platform/shell.html" %}

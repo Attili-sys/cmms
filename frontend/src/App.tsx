@@ -172,7 +172,7 @@ function App() {
   }, []);
 
   useEffect(() => {
-    if (customLogoPaths && hasBrandingEntitlement) {
+    if (customLogoPaths && hasBrandingEntitlement && logo.dark) {
       let link: HTMLLinkElement = document.querySelector("link[rel~='icon']");
       if (!link) {
         link = document.createElement('link');
@@ -215,20 +215,18 @@ function App() {
                   onClose={dismissPrompt}
                 />
                 {!isCloudVersion && (
-                  <a
-                    href={sourceCodeUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  <span
                     style={{
                       position: 'fixed',
                       right: 12,
                       bottom: 8,
                       zIndex: 1500,
-                      fontSize: 12
+                      fontSize: 12,
+                      opacity: 0.75
                     }}
                   >
-                    Source code (GNU AGPLv3)
-                  </a>
+                    Powered by Canvas
+                  </span>
                 )}
               </CompanySettingsProvider>
             </CustomSnackBarProvider>

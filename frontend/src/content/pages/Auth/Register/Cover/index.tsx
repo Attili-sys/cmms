@@ -245,13 +245,6 @@ function RegisterCover() {
                   {sliders.map((slider, index) => (
                     <SwiperSlide key={index}>
                       <Box textAlign="center">
-                        <CardImg>
-                          <img
-                            height={40}
-                            alt="JSON Web Token"
-                            src={slider.image}
-                          />
-                        </CardImg>
                         <TypographyPrimary
                           align="center"
                           variant="h3"

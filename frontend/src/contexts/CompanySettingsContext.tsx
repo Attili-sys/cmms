@@ -8,10 +8,22 @@ import { IField } from '../content/own/type';
 import * as Yup from 'yup';
 import { useTranslation } from 'react-i18next';
 import { CustomSnackBarContext } from './CustomSnackBarContext';
-import mailToLink from 'mailto-link';
 import { useBrand } from '../hooks/useBrand';
 import { format } from 'date-fns';
 import { utcToZonedTime } from 'date-fns-tz';
+
+const mailToLink = ({
+  to,
+  subject,
+  body
+}: {
+  to: string;
+  subject: string;
+  body: string;
+}) =>
+  `mailto:${to}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(
+    body
+  )}`;
 
 type CompanySettingsContext = {
   getFormattedDate: (dateString: string, hideTime?: boolean) => string;
@@ -149,7 +161,7 @@ export const CompanySettingsProvider: FC = ({ children }) => {
         (field) => field.name === trueFieldName
       );
       if (fieldIndexInFields !== -1) {
-        if (fieldConfig.fieldType === 'REQUIRED') {
+        if (fieldConfig?.fieldType === 'REQUIRED') {
           fields[fieldIndexInFields] = {
             ...fields[fieldIndexInFields],
             required: true
@@ -181,7 +193,7 @@ export const CompanySettingsProvider: FC = ({ children }) => {
               break;
           }
           shape[trueFieldName] = yupSchema;
-        } else if (fieldConfig.fieldType === 'HIDDEN') {
+        } else if (fieldConfig?.fieldType === 'HIDDEN') {
           fields.splice(fieldIndexInFields, 1);
         }
       }

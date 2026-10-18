@@ -2,3 +2,7 @@
 dist
 build
 node_modules/
+commitlint.config.ts
+config-overrides.js
+index-now.js
+sitemap-builder.js

@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunkatlas_cmms=self.webpackChunkatlas_cmms||[]).push([[7610],{77610(e,t){t.default={code:"ja",buttonText:{prev:"\u524d",next:"\u6b21",today:"\u4eca\u65e5",month:"\u6708",week:"\u9031",day:"\u65e5",list:"\u4e88\u5b9a\u30ea\u30b9\u30c8"},weekText:"\u9031",allDayText:"\u7d42\u65e5",moreLinkText:function(e){return"\u4ed6 "+e+" \u4ef6"},noEventsText:"\u8868\u793a\u3059\u308b\u4e88\u5b9a\u306f\u3042\u308a\u307e\u305b\u3093"}}}]);
+//# sourceMappingURL=7610.12b9bfb5.chunk.js.map

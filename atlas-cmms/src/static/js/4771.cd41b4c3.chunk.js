@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunkatlas_cmms=self.webpackChunkatlas_cmms||[]).push([[4771],{4771(e,s,t){t.r(s),t.d(s,{default:()=>k});var n=t(5544),a=t(62237),c=t(65043),r=t(51318),u=t(27752),f=t(70579);function k(){const e=(0,r.ok)(),s=(0,n.A)(e,2),t=s[0],k=(s[1],(0,u.A)().loginInternal),l=t.get("token"),o=t.get("refreshToken");return(0,c.useEffect)(()=>{l&&k(l,o)},[l,o]),(0,f.jsx)(a.A,{})}}}]);
+//# sourceMappingURL=4771.cd41b4c3.chunk.js.map

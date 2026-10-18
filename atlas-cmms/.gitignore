@@ -1,0 +1,36 @@
+# Never committed: what tools generate, what canvas writes for itself, and anything secret.
+
+# score-compose writes this from score.yaml + .canvas/provisioners/
+compose.yaml
+compose.override.yaml
+docker-compose.yaml
+
+.canvas/secrets.env
+.canvas/blueprint-version
+.canvas/contracts-version
+.canvas/contracts/
+# a report's draft (canvas report --from), the user's to read before it goes
+.canvas/report.md
+# an old app copied in by `canvas app adapt`, to port from — a reference, not the app
+.canvas/legacy/
+
+# score-compose's own working state
+.score-compose/
+
+# never the platform's, never yours
+.env
+.env.*
+.secrets/
+
+*.pyc
+__pycache__/
+.venv/
+.pytest_cache/
+.ruff_cache/
+
+# The volume, on your computer (src/envs.py DATA_DIR) — the app's files, never committed.
+/data/
+
+!src/static/**/logo/
+!src/static/**/logo/**
+

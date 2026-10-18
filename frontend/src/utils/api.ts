@@ -2,7 +2,13 @@ import { apiUrl } from '../config';
 
 type Options = RequestInit & { raw?: boolean; headers?: HeadersInit };
 
-const REFRESH_URL = `${apiUrl}auth/refresh`;
+const resolveUrl = (url: string): string => {
+  const base = apiUrl.endsWith('/') ? apiUrl : `${apiUrl}/`;
+  const cleanUrl = url.startsWith('/') ? url.slice(1) : url;
+  return `${base}${cleanUrl}`;
+};
+
+const REFRESH_URL = resolveUrl('auth/refresh');
 
 let refreshPromise: Promise<boolean> | null = null;
 
@@ -19,6 +25,7 @@ async function performRefresh(): Promise<boolean> {
   try {
     const response = await fetch(REFRESH_URL, {
       method: 'POST',
+      credentials: 'include',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json'
@@ -72,7 +79,11 @@ async function doFetch<T>(
   options: Options,
   retried: boolean
 ): Promise<T> {
-  const response = await fetch(url, { headers: authHeader(false), ...options });
+  const response = await fetch(url, {
+    credentials: 'include',
+    headers: authHeader(false),
+    ...options
+  });
   if (!response.ok) {
     if (response.status === 401 && !retried && !isRefreshRequest(url)) {
       const refreshed = await refreshAccessToken();
@@ -103,11 +114,11 @@ function api<T>(url: string, options: Options): Promise<T> {
 }
 
 function get<T>(url, options?: Options) {
-  return api<T>(apiUrl + url, options);
+  return api<T>(resolveUrl(url), options);
 }
 
 function post<T>(url, data, options?: Options, isNotJson?: boolean) {
-  return api<T>(apiUrl + url, {
+  return api<T>(resolveUrl(url), {
     ...options,
     method: 'POST',
     body: isNotJson ? data : JSON.stringify(data)
@@ -115,7 +126,7 @@ function post<T>(url, data, options?: Options, isNotJson?: boolean) {
 }
 
 function patch<T>(url, data, options?: Options) {
-  return api<T>(apiUrl + url, {
+  return api<T>(resolveUrl(url), {
     ...options,
     method: 'PATCH',
     body: JSON.stringify(data)
@@ -123,7 +134,7 @@ function patch<T>(url, data, options?: Options) {
 }
 
 function deletes<T>(url, options?: Options) {
-  return api<T>(apiUrl + url, { ...options, method: 'DELETE' });
+  return api<T>(resolveUrl(url), { ...options, method: 'DELETE' });
 }
 
 export function authHeader(publicRoute: boolean): HeadersInit {

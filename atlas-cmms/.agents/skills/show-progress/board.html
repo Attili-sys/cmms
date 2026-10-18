@@ -1,0 +1,150 @@
+<title>{{TITLE}}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: one column. A status line, a progress rail, then the work as rows grouped by phase. The same on every Canvas app (the blueprint's show-progress skill). */
+:root {
+  --bg: #f5f7f8; --panel: #ffffff; --fg: #17222b; --muted: #5d6b76; --rule: #dbe2e7;
+  --done: #1f7a4d; --done-bg: #e3f3ea;
+  --run: #9a5b00; --run-bg: #fbeed6;
+  --wait: #5d6b76; --wait-bg: #ebeff2;
+  --stop: #b3261e; --stop-bg: #fbe5e3;
+  --sans: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) {
+  --bg: #10171c; --panel: #172128; --fg: #e3eaef; --muted: #93a3ae; --rule: #273540;
+  --done: #6fd39d; --done-bg: #16301f; --run: #f0b458; --run-bg: #33260f;
+  --wait: #93a3ae; --wait-bg: #1f2b33; --stop: #f08a82; --stop-bg: #3a1a18; color-scheme: dark } }
+:root[data-theme="dark"] {
+  --bg: #10171c; --panel: #172128; --fg: #e3eaef; --muted: #93a3ae; --rule: #273540;
+  --done: #6fd39d; --done-bg: #16301f; --run: #f0b458; --run-bg: #33260f;
+  --wait: #93a3ae; --wait-bg: #1f2b33; --stop: #f08a82; --stop-bg: #3a1a18; color-scheme: dark }
+
+body { background: var(--bg); color: var(--fg); font: 15px/1.5 var(--sans); padding: 28px 16px 40px; }
+main { max-width: 1040px; margin: 0 auto; display: grid; gap: 20px; }
+header { display: grid; gap: 4px; }
+h1 { margin: 0; font-size: 22px; font-weight: 600; letter-spacing: -0.01em; text-wrap: balance; }
+h2 { margin: 0; font-size: 16px; font-weight: 600; text-wrap: balance; }
+.sub { color: var(--muted); font-size: 13px; max-width: 75ch; }
+.sub b { font-family: var(--mono); font-weight: 500; color: var(--fg); }
+
+.summary { display: grid; gap: 10px; }
+.counts { display: flex; flex-wrap: wrap; gap: 8px 18px; font-size: 14px; }
+.counts span { display: inline-flex; align-items: center; gap: 7px; font-variant-numeric: tabular-nums; }
+.counts i { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+.rail { height: 8px; border-radius: 4px; background: var(--wait-bg); overflow: hidden; display: flex; }
+.rail div { height: 100%; transition: width .4s ease; }
+@media (prefers-reduced-motion: reduce) { .rail div { transition: none; } }
+
+.now { background: var(--run-bg); border-radius: 8px; padding: 12px 14px; font-size: 14px; }
+.now strong { color: var(--run); font-weight: 600; margin-right: 6px; }
+
+.phase { display: grid; gap: 8px; }
+.phase-top { display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 12px; }
+.phase-top .tally { font-family: var(--mono); font-size: 12.5px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.table { background: var(--panel); border: 1px solid var(--rule); border-radius: 8px; container-type: inline-size; }
+table { width: 100%; border-collapse: collapse; }
+th { text-align: left; font-size: 11.5px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase;
+     color: var(--muted); padding: 10px 14px; border-bottom: 1px solid var(--rule); }
+td { padding: 11px 14px; border-bottom: 1px solid var(--rule); vertical-align: top; }
+tr:last-child td { border-bottom: 0; }
+td.n { font-family: var(--mono); color: var(--muted); width: 32px; font-variant-numeric: tabular-nums; }
+td.task { font-weight: 500; min-width: 220px; }
+td.task code, td.note code { font-family: var(--mono); font-size: 12.5px; font-weight: 400; }
+td.note { color: var(--muted); font-size: 13.5px; }
+tr.progress td { background: color-mix(in srgb, var(--run-bg) 55%, transparent); }
+/* Narrow: each row a block — number and task, the state, then the note. */
+@container (width < 640px) {
+  thead { display: none; }
+  tr { display: grid; grid-template-columns: auto 1fr auto; gap: 4px 10px; padding: 11px 14px; border-bottom: 1px solid var(--rule); }
+  tr:last-child { border-bottom: 0; }
+  td { padding: 0; border: 0; min-width: 0 !important; }
+  td.note { grid-column: 1 / -1; }
+}
+
+.pill { display: inline-block; font-size: 12px; font-weight: 600; padding: 2px 9px; border-radius: 999px; white-space: nowrap; }
+.pill.done { color: var(--done); background: var(--done-bg); }
+.pill.progress { color: var(--run); background: var(--run-bg); }
+.pill.pending { color: var(--wait); background: var(--wait-bg); }
+.pill.blocked { color: var(--stop); background: var(--stop-bg); }
+
+.empty { padding: 28px 16px; text-align: center; color: var(--muted); background: var(--panel); border: 1px solid var(--rule); border-radius: 8px; }
+footer { color: var(--muted); font-size: 12.5px; max-width: 80ch; }
+</style>
+
+<main>
+  <header>
+    <h1>{{TITLE}}</h1>
+    <div class="sub">{{WHAT}} · updated <b id="updated">—</b></div>
+  </header>
+
+  <section class="summary" aria-label="Progress">
+    <div class="counts" id="counts"></div>
+    <div class="rail" id="rail" role="img" aria-label="Progress bar"></div>
+  </section>
+
+  <div class="now" id="now" hidden></div>
+
+  <div id="phases"><div class="empty">Loading the board… tasks appear here grouped by phase as they are recorded.</div></div>
+
+  <footer id="footer" hidden></footer>
+</main>
+
+<script>
+const STATES = { done: "Done", progress: "In progress", pending: "Pending", blocked: "Blocked" };
+const COLORS = { done: "var(--done)", progress: "var(--run)", pending: "var(--wait)", blocked: "var(--stop)" };
+const $ = (id) => document.getElementById(id);
+const esc = (s) => { const d = document.createElement("div"); d.textContent = s == null ? "" : String(s); return d.innerHTML; };
+// Backticks in a task or note render as code; everything else is escaped text.
+const fmt = (s) => esc(s).replace(/`([^`]+)`/g, "<code>$1</code>");
+const stateOf = (t) => (STATES[t.state] ? t.state : "pending");
+
+function render(tasks) {
+  const box = $("phases");
+  if (!tasks.length) { box.innerHTML = '<div class="empty">No tasks recorded yet.</div>'; return; }
+
+  const n = { done: 0, progress: 0, pending: 0, blocked: 0 };
+  tasks.forEach((t) => n[stateOf(t)]++);
+  $("counts").innerHTML = Object.keys(STATES).map((k) =>
+    `<span><i style="background:${COLORS[k]}"></i>${STATES[k]} <b>${n[k]}</b></span>`).join("") +
+    `<span style="color:var(--muted)">of ${tasks.length}</span>`;
+  $("rail").innerHTML = ["done", "progress", "blocked"].map((k) =>
+    `<div style="width:${(100 * n[k] / tasks.length).toFixed(2)}%;background:${COLORS[k]}"></div>`).join("");
+
+  const phases = [];
+  tasks.forEach((t) => {
+    let p = phases.find((x) => x.name === t.phase);
+    if (!p) phases.push(p = { name: t.phase, items: [] });
+    p.items.push(t);
+  });
+  box.style.display = "grid"; box.style.gap = "20px";
+  box.innerHTML = phases.map((p) => {
+    const done = p.items.filter((t) => stateOf(t) === "done").length;
+    return `<section class="phase"><div class="phase-top"><h2>${esc(p.name || "Unphased")}</h2>` +
+      `<span class="tally">${done}/${p.items.length} done</span></div><div class="table"><table>` +
+      `<thead><tr><th>#</th><th>Task</th><th>State</th><th>Why / what was verified</th></tr></thead><tbody>` +
+      p.items.map((t) => { const st = stateOf(t);
+        return `<tr class="${st}"><td class="n">${esc(t.order)}</td><td class="task">${fmt(t.title)}</td>` +
+          `<td><span class="pill ${st}">${STATES[st]}</span></td><td class="note">${fmt(t.note)}</td></tr>`; }).join("") +
+      `</tbody></table></div></section>`;
+  }).join("");
+}
+
+function renderMeta(m) {
+  if (!m) return;
+  if (m.updated) $("updated").textContent = m.updated;
+  if (m.decided) { $("footer").innerHTML = fmt(m.decided); $("footer").hidden = false; }
+  const now = $("now");
+  if (m.now) { now.innerHTML = `<strong>Now</strong>${fmt(m.now)}`; now.hidden = false; } else { now.hidden = true; }
+}
+
+(async () => {
+  const db = await claude.use("db");
+  if (!db) { $("phases").innerHTML = '<div class="empty">The live board is not available in this view.</div>'; return; }
+  db.collection("tasks").orderBy("order").onSnapshot(
+    (snap) => render(snap.docs.map((d) => d.data())),
+    () => { $("phases").innerHTML = '<div class="empty">Lost the connection to the board. Reload to reconnect.</div>'; });
+  db.doc("meta/board").onSnapshot((snap) => renderMeta(snap.exists ? snap.data() : null), () => {});
+})();
+</script>
