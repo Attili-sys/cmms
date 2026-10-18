@@ -1,6 +1,6 @@
 <h1 align="center">AJ CAFM — Powered by Canvas</h1>
 
-**AJ CAFM** is a self-hosted maintenance management system (CMMS / CAFM) running on **Canvas** (`https://aj-cafm--innovation.canvas.ajnai.net`) as well as Docker. It simplifies and automates the management of maintenance activities, work orders, preventive maintenance, assets, parts, locations, and service requests.
+**AJ CAFM** is a self-hosted maintenance management system (CMMS / CAFM) running on **Canvas** (`https://aj-cafm--innovation.canvas.ajnai.net`) as well as Docker. It simplifies and automates the management of maintenance activities, work orders, preventive maintenance, assets, parts, locations, meters, checklists, and service requests.
 
 **Example industries**
 
@@ -25,7 +25,7 @@
 
 - 📝 Create, assign, and track work orders.
 - ⏱️ Log time, set priorities, and track history.
-- 🤖 Automate work orders with triggers.
+- 🤖 Automate work orders with preventive maintenance schedules and meter triggers.
 - 📊 Export reports and view analytics.
 
 ### Analytics & Reporting
@@ -36,65 +36,80 @@
 
 ### Equipment & Inventory
 
-- ⚙️ Track equipment, downtime, and maintenance costs.
-- 📦 Manage inventory with stock alerts.
+- ⚙️ Track equipment hierarchies, downtime, and maintenance costs.
+- 📦 Manage parts and multi-part sets with stock alerts.
 - 🛒 Automate purchase orders and approvals.
 
 ### User & Workflow Management
 
-- 👥 Assign tasks to teams or service providers.
-- 🧑‍💼 Customizable user roles and permissions.
-- 🔄 Define workflows with automation logic.
+- 👥 Assign tasks to people, teams, or external vendors.
+- 🧑‍💼 Customizable RBAC user roles and entity permissions.
+- 🔄 Define conditional workflows with automation actions.
 
 ### Locations & Requests
 
-- 📍 Manage locations with Google Maps integration.
-- 📑 Create and track service requests.
+- 📍 Manage hierarchical locations and floor plans.
+- 📑 Create, approve, and track service requests.
 
-You can check out the [complete list of features](api/Current%20features.pdf).
+---
 
-We'd love to have **new contributors**, so feel free to join us!  
-⭐ **Star this repo to support us!**
+## ☁️ Deploy on Canvas (`aj-cafm`) or Run Locally
 
-## Deploy on Canvas (`aj-cafm`) or Run Locally
+### 1. Canvas Deployment (`atlas-cmms/`)
 
-### ☁️ Canvas Deployment (`atlas-cmms/`)
-
-The Python FastAPI + SQLAlchemy 2.0 port (`atlas-cmms/`) bundles the compiled React SPA and deploys directly to Canvas as **`aj-cafm`**:
+The Python 3.14 + FastAPI + SQLAlchemy 2.0 application (`atlas-cmms/`) bundles the compiled React SPA (`src/static/ui/`) and deploys directly to Canvas as **`aj-cafm`**:
 
 ```bash
 cd atlas-cmms
+.venv/bin/pytest -q && .venv/bin/ruff check .
 canvas validate
 canvas deploy
 ```
 
-Live URL: `https://aj-cafm--innovation.canvas.ajnai.net`
+- **Live Canvas URL:** `https://aj-cafm--innovation.canvas.ajnai.net`
+- **Local Development:**
+  ```bash
+  cd atlas-cmms
+  PORT=8080 .venv/bin/python run.py
+  ```
 
-### ⚡ Docker Quick Start (2 minutes)
+### 2. Legacy Docker Quick Start
 
-1. Download:
-
-- [docker-compose.yml](./docker-compose.yml)
-- [nginx.conf](./nginx.conf)
-- [.env.example](.env.example) → rename to `.env`
-
+1. Prepare configuration:
+   - [docker-compose.yml](./docker-compose.yml)
+   - [nginx.conf](./nginx.conf)
+   - [.env.example](.env.example) → copy to `.env`
 2. Run:
    ```bash
    docker-compose up -d
    ```
+   Open http://localhost:3000 to access the application.
 
-Go to http://localhost:3000 to access the application.
+---
 
-Need customization or production setup? Continue reading below ↓
+## 📚 Architecture & Engineering Documentation
 
-### Set environment variables
+| Document | Purpose |
+|---|---|
+| **[AGENTS.md](./AGENTS.md)** | Root operating guide for coding agents and contributors across all subprojects |
+| **[atlas-cmms/README.md](./atlas-cmms/README.md)** | Canvas Python backend & bundled SPA overview, commands, and layout |
+| **[atlas-cmms/DATABASE.md](./atlas-cmms/DATABASE.md)** | SQLAlchemy 2.0 / PostgreSQL schema reference (72 ORM models, 53 association tables, 44 enums, sequences, and tenant scoping) |
+| **[atlas-cmms/API_CONTRACTS.md](./atlas-cmms/API_CONTRACTS.md)** | REST API router catalog, foreign-key mini-DTO hydration, hierarchy pagination, and `SearchCriteria` engine |
+| **[atlas-cmms/MIGRATION_NOTES.md](./atlas-cmms/MIGRATION_NOTES.md)** | Java-to-Python migration architecture and Reviewer Agent verification notes |
+| **[frontend/README.md](./frontend/README.md)** | React/TypeScript frontend architecture, build/lint commands, and static bundle sync |
+| **[UNRESTRICTED_SELFHOSTED.md](./UNRESTRICTED_SELFHOSTED.md)** | Self-hosted capability policy (`CLOUD_VERSION=false`), branding changes, and retained security controls |
+| **[dev-docs/](./dev-docs)** | Operator guides (LDAP, TLS, backups, upgrades, factory reset) |
+
+---
+
+## 🔧 Environment Variables (Docker / Self-Hosted)
 
 | Name                        | Required | Description                                                                                                                                                                                                                                                                                                         | Default Value         |
 |-----------------------------|----------|---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-----------------------|
 | POSTGRES_USER               | Yes      | Postgres user                                                                                                                                                                                                                                                                                                       | rootUser              |
 | POSTGRES_PWD                | Yes      | Postgres password                                                                                                                                                                                                                                                                                                   | mypassword            |
-| MINIO_USER                  | Yes      | MiniO user                                                                                                                                                                                                                                                                                                          | minio                 |
-| MINIO_PWD                   | Yes      | MiniO password                                                                                                                                                                                                                                                                                                      | minio123              |
+| MINIO_USER                  | Yes      | MinIO user                                                                                                                                                                                                                                                                                                          | minio                 |
+| MINIO_PWD                   | Yes      | MinIO password                                                                                                                                                                                                                                                                                                      | minio123              |
 | JWT_SECRET_KEY              | Yes      | JWT secret key. Generate with `openssl rand -base64 32`                                                                                                                                                                                                                                                             | your_jwt_secret       |
 | PUBLIC_SERVER_URL           | No       | Website URL in this format `http://your.public.ip`                                                                                                                                                                                                                                                                  | http://localhost:3000 |
 | ENABLE_EMAIL_NOTIFICATIONS  | No       | Enables or disables email notifications (`true` or `false`). Requires SMTP if enabled.                                                                                                                                                                                                                              | false                 |
@@ -102,8 +117,8 @@ Need customization or production setup? Continue reading below ↓
 | MAIL_TYPE                   | No       | Mail type: `SMTP` or `SENDGRID`                                                                                                                                                                                                                                                                                     | smtp                  |
 | SMTP_HOST                   | No       | The SMTP host                                                                                                                                                                                                                                                                                                       | smtp.gmail.com        |
 | SMTP_PORT                   | No       | The SMTP port                                                                                                                                                                                                                                                                                                       | 587                   |
-| SMTP_USER                   | No       | The SMTP username. If using Gmail, [Learn how to create an app password](https://support.google.com/accounts/answer/185833?hl=en)                                                                                                                                                                                   | (empty)               |
-| SMTP_PWD                    | No       | The SMTP password. If using Gmail, [Learn how to create an app password](https://support.google.com/accounts/answer/185833?hl=en)                                                                                                                                                                                   | (empty)               |
+| SMTP_USER                   | No       | The SMTP username                                                                                                                                                                                                                                                                                                   | (empty)               |
+| SMTP_PWD                    | No       | The SMTP password                                                                                                                                                                                                                                                                                                   | (empty)               |
 | SMTP_FROM                   | No       | The SMTP from address, if different from the username.                                                                                                                                                                                                                                                              | (empty)               |
 | SENDGRID_API_KEY            | No       | The Sendgrid API key                                                                                                                                                                                                                                                                                                | (empty)               |
 | SENDGRID_FROM_EMAIL         | No       | The Sendgrid sender email                                                                                                                                                                                                                                                                                           | (empty)               |
@@ -114,90 +129,29 @@ Need customization or production setup? Continue reading below ↓
 | GCP_JSON                    | No       | The Google Cloud JSON key after following [these instructions](./GCP-setup.md).                                                                                                                                                                                                                                     | (empty)               |
 | GCP_PROJECT_ID              | No       | The Google Cloud project ID, also found in the `GCP_JSON` file.                                                                                                                                                                                                                                                     | (empty)               |
 | GCP_BUCKET_NAME             | No       | GCP Bucket Name                                                                                                                                                                                                                                                                                                     | (empty)               |
-| MAIL_RECIPIENTS             | No       | Comma-separated email addresses of the super admins where to send information emails like new signups. You can provide your email address.                                                                                                                                                                          | (empty)               |
-| ENABLE_SSO                  | No       | Enables or disables SSO. (`true` or `false` ) Requires `OAUTH2_PROVIDER`, `OAUTH2_CLIENT_ID` and `OAUTH2_CLIENT_SECRET`. Make sure to add `PUBLIC_SERVER_URL` as authorized origin and `${PUBLIC_SERVER_URL}/api/oauth2/callback/${OAUTH2_PROVIDER}` as authorized redirection URI in your Oauth2 provider settings | false                 |
-| OAUTH2_PROVIDER             | No       | Oauth2 provider `google` or `microsoft`                                                                                                                                                                                                                                                                             | (empty)               |
-| OAUTH2_CLIENT_ID            | No       | Oauth2 Client ID                                                                                                                                                                                                                                                                                                    | (empty)               |
-| OAUTH2_CLIENT_SECRET        | No       | Oauth2 client secret                                                                                                                                                                                                                                                                                                | (empty)               |
-| LOGO_PATHS                  | No       | Logo names in this format. `{"dark": "dark.png","white": "white.png", }`. Add 2 logos in a folder named `logo` in the same folder as the `docker-compose.yml`.                                                                                                                                                       | (empty)               |
-| CUSTOM_COLORS               | No       | Custom colors in JSON format. All colors should be in hexadecimal format. `{"emailColors":"#00A0E3","primary":"#EE4B2B","secondary":"#6E759F","success":"#57CA22","warning":"#FFA319","error":"#FF1943","info":"#33C2FF","black":"#223354","white":"#ffffff","primaryAlt":"#000C57"}`                               | (empty)               |
-| BRAND_CONFIG                | No       | Brand config for white labeling. In format `{ "name": "Quantum Labs", "shortName": "QL", "website": "https://example.io", mail: "contact@example.io" }`                                                                                                                                                             | (empty)               |
-| SOURCE_CODE_URL             | Yes      | Public URL for the exact Corresponding Source used to build the deployed images. Shown in the web and mobile applications.                                                                                                                                                                                          | repository URL        |
-| LDAP_ENABLED                | No       | Enables or disables LDAP. More variables are needed. You can get the full list [here](./dev-docs/LDAP_SETUP.md)                                                                                                                                                                                                     | false                 |
+| MAIL_RECIPIENTS             | No       | Comma-separated email addresses of the super admins where to send information emails like new signups.                                                                                                                                                                                                              | (empty)               |
+| ENABLE_SSO                  | No       | Enables or disables SSO (`true` or `false`). Requires `OAUTH2_PROVIDER`, `OAUTH2_CLIENT_ID` and `OAUTH2_CLIENT_SECRET`.                                                                                                                                                                                             | false                 |
+| OAUTH2_PROVIDER             | No       | OAuth2 provider `google` or `microsoft`                                                                                                                                                                                                                                                                             | (empty)               |
+| OAUTH2_CLIENT_ID            | No       | OAuth2 Client ID                                                                                                                                                                                                                                                                                                    | (empty)               |
+| OAUTH2_CLIENT_SECRET        | No       | OAuth2 client secret                                                                                                                                                                                                                                                                                                | (empty)               |
+| CUSTOM_COLORS               | No       | Custom colors in JSON format (hexadecimal).                                                                                                                                                                                                                                                                         | (empty)               |
+| BRAND_CONFIG                | No       | Brand config for white labeling (`{ "name": "Powered by Canvas", "shortName": "Canvas" }`).                                                                                                                                                                                                                         | (empty)               |
+| SOURCE_CODE_URL             | Yes      | Public URL for the exact Corresponding Source used to build the deployed images.                                                                                                                                                                                                                                    | repository URL        |
+| LDAP_ENABLED                | No       | Enables or disables LDAP. Full list in [LDAP_SETUP.md](./dev-docs/LDAP_SETUP.md).                                                                                                                                                                                                                                   | false                 |
 
-For production deployments, it’s strongly recommended to use unique credentials and not rely on defaults. You should
-also [setup TLS](./dev-docs/Set%20up%20TLS.md)
+---
 
-### Mobile app
+## 🌐 Supported Languages
 
-You can use the [Android app](https://play.google.com/store/apps/details?id=com.atlas.cmms)
-or [iOS App](https://apps.apple.com/fr/app/atlas-cmms/id6751547284) and configure it with
-your custom backend server url: `${PUBLIC_SERVER_URL}/api`
-
-## Getting help
-
-### Docs
-
-[Usage guide](https://docs.atlas-cmms.com)
-
-[Super admin docs](./dev-docs)
-
-[Join our Discord server](https://discord.gg/cHqyVRYpkA)
-
-If you still have questions after reading the docs, concerns, bug reports, etc., please file an issue in this
-repository's Issue Tracker or email [contact@atlas-cmms.com](8mailto:contact@atlas-cmms.com).
-
-## Supported languages
-
-- English
-- Spanish
-- French
-- German
-- Turkish
-- Polish
-- Portuguese (Brazil)
-- Arabic
-- Swedish
-- Italian
-- Russian
-- Dutch
-- Chinese
-- Hungarian
-- Bosnian
-- Japanese
+English, Spanish, French, German, Turkish, Polish, Portuguese (Brazil), Arabic, Swedish, Italian, Russian, Dutch, Chinese, Hungarian, Bosnian, Japanese.
 
 ## 🏗️ **Tech Stack**
 
-- [Canvas Backend & Bundled SPA](atlas-cmms) with Python 3.14, FastAPI, SQLAlchemy 2.0, and `ajnkit-core`
-- [Website](frontend) with React/TypeScript ("Powered by Canvas")
-- [Legacy Backend](api) with Java Spring Boot
-- [Mobile](mobile) with React Native.
+- **[Canvas Backend & Bundled SPA](atlas-cmms)** — Python 3.14, FastAPI, SQLAlchemy 2.0, `ajnkit-core`, Alembic
+- **[Web Frontend](frontend)** — React, TypeScript, Redux Toolkit, MUI ("Powered by Canvas")
+- **[Legacy Backend Reference](api)** — Java 17, Spring Boot, Liquibase
+- **[Mobile App](mobile)** — React Native (Expo)
 
-## Need Professional Help?
+## Open Source Licensing Info
 
-Don't want to handle the maintenance and management yourself? We offer a complete done-for-you
-service. [Please reach out to us](mailto:contact@atlas-cmms.com)
-
-## 🤝 Looking to contribute?
-
-We welcome contributions! You can help by:
-
-- ✅ Reporting bugs
-- ✅ Suggesting new features
-- ✅ Improving documentation
-- ✅ Submitting pull requests
-
-Check CONTRIBUTING.md inside each subproject for details.
-
-You can also join our [Discord server](https://discord.gg/cHqyVRYpkA)
-
-## Open source licensing info
-
-This self-hosted edition is distributed under the [GNU AGPLv3](./LICENSE). Existing
-features implemented in this source tree are available without a commercial
-subscription, activation key, license file, or periodic licensing-service
-connection. Set `SOURCE_CODE_URL` to the public Corresponding Source for the exact
-version you deploy. See [UNRESTRICTED_SELFHOSTED.md](./UNRESTRICTED_SELFHOSTED.md)
-for policy, verification, build, and deployment-image details.
-
-<img src="https://star-history.dera.page/svg?repos=grashjs/cmms&type=Date"/>
+This self-hosted edition is distributed under the [GNU AGPLv3](./LICENSE). Existing features implemented in this source tree are available without a commercial subscription, activation key, license file, or periodic licensing-service connection. Set `SOURCE_CODE_URL` to the public Corresponding Source for the exact version you deploy. See [UNRESTRICTED_SELFHOSTED.md](./UNRESTRICTED_SELFHOSTED.md) for policy, verification, build, and deployment details.
