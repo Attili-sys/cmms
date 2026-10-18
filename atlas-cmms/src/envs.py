@@ -53,7 +53,7 @@ PLATFORM_EMAIL_TOKEN = os.environ.get("PLATFORM_EMAIL_TOKEN")
 
 # Self-hosted unrestricted edition flag (CLOUD_VERSION=false unlocks all PlanFeatures)
 CLOUD_VERSION = os.environ.get("CLOUD_VERSION", "false").lower() in {"true", "1", "yes"}
-COMPANY_NAME = os.environ.get("COMPANY_NAME", "Atlas CMMS")
+COMPANY_NAME = os.environ.get("COMPANY_NAME", "AJ CAFM")
 
 
 # secret — one variable per declared key: `envs.secret("PARTNER_API_KEY")`, where it is used. Never a

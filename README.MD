@@ -1,11 +1,6 @@
-<p align="center"><img src="frontend/public/static/images/logo/logo.png" width="80"></p>
-<h1 align="center">Atlas CMMS</h1>
+<h1 align="center">AJ CAFM — Powered by Canvas</h1>
 
-[Atlas CMMS](https://github.com/grashjs/cmms) is a powerful, self-hosted maintenance management system designed for both
-web and mobile platforms using Docker. It simplifies and automates the management of maintenance activities, making it
-ideal for IT managers or developers looking to implement solutions that keep their organization's assets running
-smoothly.
-Think of it like **Jira for technicians**.
+**AJ CAFM** is a self-hosted maintenance management system (CMMS / CAFM) running on **Canvas** (`https://aj-cafm--innovation.canvas.ajnai.net`) as well as Docker. It simplifies and automates the management of maintenance activities, work orders, preventive maintenance, assets, parts, locations, and service requests.
 
 **Example industries**
 
@@ -17,18 +12,11 @@ Think of it like **Jira for technicians**.
 - Educational Institutions (campus maintenance)
 - Utility Companies (power, water, and energy systems)
 
-**Demo website**
-
-- https://atlas-cmms.com
-
 **Screenshots**:
 <div align="center">
 
 ![work_orders_screenshot.png](images/work_orders_screenshot.png)
 
-![](https://i.ibb.co/7tGYCtv/Screenshot-502.png)
-
-<img src="https://i.ibb.co/B39dVjC/Screenshot-20230320-110652.jpg" width="300"/>
 </div>
 
 ## ⚡ **Features**
@@ -68,9 +56,21 @@ You can check out the [complete list of features](api/Current%20features.pdf).
 We'd love to have **new contributors**, so feel free to join us!  
 ⭐ **Star this repo to support us!**
 
-## Self-Host / Run locally
+## Deploy on Canvas (`aj-cafm`) or Run Locally
 
-### ⚡ Quick Start (2 minutes)
+### ☁️ Canvas Deployment (`atlas-cmms/`)
+
+The Python FastAPI + SQLAlchemy 2.0 port (`atlas-cmms/`) bundles the compiled React SPA and deploys directly to Canvas as **`aj-cafm`**:
+
+```bash
+cd atlas-cmms
+canvas validate
+canvas deploy
+```
+
+Live URL: `https://aj-cafm--innovation.canvas.ajnai.net`
+
+### ⚡ Docker Quick Start (2 minutes)
 
 1. Download:
 
@@ -83,7 +83,7 @@ We'd love to have **new contributors**, so feel free to join us!
    docker-compose up -d
    ```
 
-Go to http://localhost:3000 to access Atlas CMMS.
+Go to http://localhost:3000 to access the application.
 
 Need customization or production setup? Continue reading below ↓
 
@@ -168,8 +168,9 @@ repository's Issue Tracker or email [contact@atlas-cmms.com](8mailto:contact@atl
 
 ## 🏗️ **Tech Stack**
 
-- [Backend](api) with java Spring Boot
-- [Website](frontend) with React/Typescript
+- [Canvas Backend & Bundled SPA](atlas-cmms) with Python 3.14, FastAPI, SQLAlchemy 2.0, and `ajnkit-core`
+- [Website](frontend) with React/TypeScript ("Powered by Canvas")
+- [Legacy Backend](api) with Java Spring Boot
 - [Mobile](mobile) with React Native.
 
 ## Need Professional Help?

@@ -1,50 +1,44 @@
-# ajcmms
+# aj-cafm (Powered by Canvas)
 
-Work orders, assets, parts, and requests for this team.
+Self-hosted maintenance management system (Work Orders, Preventive Maintenance, Assets, Parts, Locations, Meters, Checklists, and Requests) running on Canvas.
 
-Built on Canvas — **Python, FastAPI, SQLAlchemy**. You edit `score.yaml` and `src/`; the platform
-does the rest. The address stays `cmms` (`https://cmms--innovation.canvas.ajnai.net`). Changing
-`metadata.name` would create a new app and an empty database.
+Built on Canvas — **Python 3.14, FastAPI, SQLAlchemy 2.0, `ajnkit-core`**, serving the bundled React SPA (`src/static/ui/`).
+The Canvas app name is **`aj-cafm`** (`https://aj-cafm--innovation.canvas.ajnai.net`), configured in `score.yaml`.
 
-## Run it
+## Run & Deploy
 
 ```bash
-canvas validate   # score.yaml and the files every app must have — before anything is uploaded
-canvas deploy     # validate, then build on the platform and put it online
-canvas status     # where it stands; canvas logs for what it printed
+canvas validate   # checks score.yaml and required platform files
+canvas deploy     # validates, builds on Canvas, runs smoke tests, and deploys aj-cafm
+canvas status     # checks deployment health; `canvas logs` for runtime output
 ```
 
-Needs only `canvas` and your company sign-in (`canvas login`): the platform builds the image.
-To try it on your computer first, `PORT=8080 uv run python run.py`, and `uv run pytest` for the tests.
-
-## Where are the Dockerfile and requirements.txt?
-
-**Generated, not written.**
-
-| | |
-|---|---|
-| dependencies | `pyproject.toml` — FastAPI and SQLAlchemy are pinned; add what else you need |
-| the image | buildpacks build it from source — which is what keeps you covered by fleet-wide base-image patching. There is no `Dockerfile`, and the platform would not use one: an app made from an earlier blueprint may still have one, and can delete it |
-
-Editing a generated file does nothing. `score.yaml` is the source.
+To run locally:
+```bash
+PORT=8080 .venv/bin/python run.py
+.venv/bin/pytest -q && .venv/bin/ruff check .
+```
 
 ## Layout
 
 ```
-run.py            starts the server
-src/app.py        builds the app — mounts, routers
-src/views.py      HTML pages        src/api.py    JSON, at /api
-src/models.py     the schema        src/envs.py   injected variables
-packages/         the platform's packages (ajnkit), installed from here — never edited
+run.py                        starts Uvicorn and runs Alembic migrations when DATABASE_URL is set
+score.yaml                    Canvas deployment manifest (name: aj-cafm, Postgres 1Gi, SSO auth)
+src/app.py                    builds the FastAPI app, wires ajnkit.web.platform(app), routers, and SPA
+src/envs.py                   platform-injected environment variables (the only module reading os.environ)
+src/tasks.py                  background maintenance loop (PM generator, PM notifier, downtime notifier, cleanup)
+src/spa.py                    serves /runtime-env.js and the compiled React SPA fallback
+src/models/                   56 SQLAlchemy 2.0 ORM tables (tables.py) and 38 enums (enums.py)
+src/deps/                     database session, Authentik SSO user provisioning, RBAC permission checks
+src/routes/                   6 domain routers covering all 241 REST API endpoints
+src/services/                 nested camelCase entity serializer, license service, PDF generator
+src/static/ & src/static/ui/  compiled React frontend bundle ("Powered by Canvas")
+migrations/                   Alembic migration baseline (0001_initial_schema.py)
+tests/                        56 unit, schema parity, OpenAPI contract, route, and smoke tests
+packages/                     platform wheel (ajnkit_core) — never edited
 ```
 
 ## Where things go
 
-See [AGENTS.md](AGENTS.md) — it is the contract, and your agent reads it on every invocation.
+See [AGENTS.md](AGENTS.md) and [MIGRATION_NOTES.md](MIGRATION_NOTES.md).
 
-## Building it with an AI assistant
-
-Tested with **Claude Code**, **Cursor** and **Antigravity**. All three use the skills in
-`.agents/skills` (Claude Code through `.claude/skills`) — the step-by-step for each kind of change,
-starting with `build-feature` — and follow `AGENTS.md`. Other assistants that read `AGENTS.md` —
-Copilot, Codex, Gemini CLI — follow the same rules, without the skills.

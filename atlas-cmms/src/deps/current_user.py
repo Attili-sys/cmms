@@ -199,7 +199,7 @@ def _bootstrap_first_company_and_admin(db: Session, who: Caller) -> User:
     company = db.scalar(select(Company).limit(1))
     if not company:
         company = Company(
-            name=getattr(envs, "COMPANY_NAME", "Atlas CMMS"),
+            name=getattr(envs, "COMPANY_NAME", "AJ CAFM"),
             employees_count=1,
             first_work_order_created=False,
             invited_users=False,

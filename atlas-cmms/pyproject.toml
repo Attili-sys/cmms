@@ -1,7 +1,7 @@
 # Python + FastAPI + SQLAlchemy is THE stack (WS-09 §2). Pinned, not suggested.
 # Add what your app needs; do not remove what is here.
 [project]
-name = "atlas-cmms"
+name = "aj-cafm"
 version = "0.1.0"
 # The platform builds and runs 3.14.7 (.python-version, the platform's file; `canvas contract dev runtimes.python`).
 # ruff judges the code by this line.

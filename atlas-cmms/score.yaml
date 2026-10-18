@@ -3,11 +3,11 @@
 apiVersion: score.dev/v1b1
 
 metadata:
-  name: atlas-cmms                # also the hostname: atlas-cmms--<team>.<base>
+  name: aj-cafm                   # also the hostname: aj-cafm--<team>.<base>
   # What people call it and what it does, shown in the console — `describe-app` writes them.
   annotations:
     canvas.dev/visibility: private
-    canvas.dev/title: Atlas CMMS
+    canvas.dev/title: AJ CAFM
     canvas.dev/description: Self-hosted work orders, assets, parts, preventive maintenance, and requests.
     canvas.dev/category: operations
     canvas.dev/tags: workflow, scheduling

@@ -166,13 +166,12 @@ mobile binary.
 
 ## Branding and UI
 
-The following upstream branding has been removed from the frontend:
+All product logos and upstream branding have been removed and replaced with **"Powered by Canvas"**:
 
-- "Atlas CMMS" removed from `index.html` meta/og tags, `manifest.json`
-  (name → "CMMS"), and logo icon references
-- "Powered by Intelloop" link removed from both sidebar instances
-- `grashjs.github.io/user-guide` removed from SidebarFooter and Header/Userbox
-- All upstream documentation links in the user-facing UI are gone
+- Deleted `logo.png`, `logo-white.png`, and `favicon*` from `frontend/public/`
+- Replaced `LogoSign` and `Logo` components (`frontend/src/components/LogoSign/index.tsx`, `frontend/src/components/Logo/index.tsx`) and loading screen (`frontend/src/components/AppInit/index.tsx`) with **"Powered by Canvas"** text badge
+- Replaced `useBrand` defaults (`frontend/src/hooks/useBrand.ts`) with `name: "Powered by Canvas"`, `shortName: "Canvas"`
+- Removed "Powered by Intelloop" and upstream documentation links from the sidebar and header
 
 ### Color scheme
 
@@ -197,30 +196,23 @@ These sections remain in the codebase and can be re-enabled by removing the
 `frontend/src/layouts/ExtendedSidebarLayout/Sidebar/SidebarMenu/items.ts` and
 restoring their route definitions in `frontend/src/router/app.tsx`.
 
+## Canvas Python Port (`atlas-cmms/` / `aj-cafm`)
+
+The entire Java Spring Boot backend (`api/`) has been ported to Python (`atlas-cmms/`) using **FastAPI**, **SQLAlchemy 2.0**, **Alembic**, and **`ajnkit-core`**, and deployed to Canvas under the app name **`aj-cafm`** (`https://aj-cafm--innovation.canvas.ajnai.net`):
+
+- **56 SQLAlchemy ORM tables** (`atlas-cmms/src/models/tables.py`) and **38 enums** (`atlas-cmms/src/models/enums.py`) with 100% schema parity against the Liquibase/PostgreSQL baseline (`migrations/versions/0001_initial_schema.py`).
+- **241 REST API endpoints** across 6 modular routers (`atlas-cmms/src/routes/`) matching the frontend's expected paths and camelCase DTO shapes (`atlas-cmms/src/services/serializer.py`).
+- **Authentik SSO auto-provisioning** (`atlas-cmms/src/deps/current_user.py`): reads `ajnkit.identity.caller(request.headers)`, provisions the initial Company, `CompanySettings`, `GeneralPreferences`, `WorkOrderConfiguration`, `WorkOrderRequestConfiguration`, all 24 default `FieldConfiguration` rows, and `ROLE_SUPER_ADMIN` user on first sign-in.
+- **Unrestricted Self-Hosted Policy**: `CLOUD_VERSION="false"` in `atlas-cmms/score.yaml`; `SubscriptionPlan.features` always returns all 20 `PlanFeatures` values (`atlas-cmms/src/services/license_service.py`).
+- **Bundled React SPA**: Compiled `frontend/build/` assets are served directly by FastAPI (`atlas-cmms/src/spa.py`) with `/runtime-env.js` injected at runtime.
+
 ## Verification
 
-Verification was performed in Docker toolchains:
+- **Canvas Python Test Suite (`atlas-cmms/`)**: 56 pytest tests pass (`.venv/bin/pytest -q`), including:
+  - `tests/test_schema_matches_dump.py` (56-table DDL parity)
+  - `tests/contract/test_openapi_covers_catalog.py` (241-endpoint OpenAPI contract check)
+  - `tests/routes/test_all_routes_and_jobs.py` (end-to-end CRUD, search, permissions, workflows, analytics, PDF generation, and background jobs)
+  - `tests/test_smoke.py` (40-endpoint Canvas post-deploy smoke test)
+- **Ruff Linter (`atlas-cmms/`)**: `.venv/bin/ruff check .` passes with zero warnings (`E9`, `F`, `B`, `S`, `ASYNC`).
+- **React Frontend (`frontend/`)**: `npm run lint` and `npm run build` pass cleanly.
 
-- The focused Java policy tests cover entitlement resolution without Keygen,
-  user quotas beyond the old boundary, plan-gated API-key access, creation of
-  a second workflow, denied workflow access without Settings permission,
-  self-hosted subscription-expiry scheduling/job execution, and Paddle calls
-  being skipped or rejected before billing access.
-- The React production build completed. It reports only missing third-party
-  source-map sources from `@jackstenglein/mui-mentions` and
-  `stylis-plugin-rtl`.
-- The production bundle was opened in a localhost-only browser preview; the
-  login screen rendered the public `Source code (GNU AGPLv3)` link with the
-  configured repository URL. Authenticated screens were not exercised because
-  no application stack was deployed.
-- ESLint passed for every changed React source file. Repository-wide
-  `npm run lint` remains blocked by the existing parser-project configuration
-  excluding `commitlint.config.ts`, `config-overrides.js`, `index-now.js`, and
-  `sitemap-builder.js`.
-- Mobile TypeScript checking, Jest, and native Android and iOS Expo exports
-  completed. The container has no Firebase service files or generated native
-  Sentry configuration, so Expo reports those expected environment warnings.
-- `docker compose --env-file .env.example config --quiet` completed.
-
-No service or image was deployed. Deployment image builds were not run; the
-commands above are the operator instructions for producing them.
