@@ -265,7 +265,7 @@ router.include_router(ac_router)
 def _serialize_task_base(tb: TaskBase, db: Session) -> dict[str, Any]:
     res = model_to_dict(tb, db=db)
     opts = db.scalars(select(TaskOption).where(TaskOption.task_base_id == tb.id)).all()
-    res["options"] = [o.value for o in opts if o.value is not None]
+    res["options"] = [{"id": o.id, "label": o.label} for o in opts if o.label is not None]
     return res
 
 
@@ -309,10 +309,15 @@ def create_tasks_for_wo(
         tb_data = item.get("taskBase") or item
         tb = TaskBase(
             label=tb_data.get("label", "Task"),
-            task_type=0,
+            task_type=tb_data.get("taskType", 0) if isinstance(tb_data.get("taskType"), int) else 0,
             company_id=current_user.company_id,
         )
         db.add(tb)
+        db.flush()
+        for opt in tb_data.get("options") or []:
+            opt_label = opt.get("label") if isinstance(opt, dict) else str(opt)
+            if opt_label:
+                db.add(TaskOption(label=opt_label, task_base_id=tb.id, company_id=current_user.company_id))
         db.flush()
         t = Task(
             task_base_id=tb.id,
@@ -350,6 +355,32 @@ def patch_tasks_for_pm(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> list[dict[str, Any]]:
+    created: list[Task] = []
+    for item in payload:
+        tb_data = item.get("taskBase") or item
+        tb = TaskBase(
+            label=tb_data.get("label", "Task"),
+            task_type=tb_data.get("taskType", 0) if isinstance(tb_data.get("taskType"), int) else 0,
+            company_id=current_user.company_id,
+        )
+        db.add(tb)
+        db.flush()
+        for opt in tb_data.get("options") or []:
+            opt_label = opt.get("label") if isinstance(opt, dict) else str(opt)
+            if opt_label:
+                db.add(TaskOption(label=opt_label, task_base_id=tb.id, company_id=current_user.company_id))
+        db.flush()
+        t = Task(
+            task_base_id=tb.id,
+            preventive_maintenance_id=pm_id,
+            company_id=current_user.company_id,
+            value=item.get("value"),
+            notes=item.get("notes"),
+        )
+        db.add(t)
+        db.flush()
+        created.append(t)
+    db.commit()
     rows = db.scalars(
         select(Task).where(
             Task.preventive_maintenance_id == pm_id,
@@ -376,7 +407,49 @@ def _serialize_checklist(cl: Checklist, db: Session) -> dict[str, Any]:
     return res
 
 
-checklists_router = build_crud_router("/checklists", Checklist, custom_serializer=_serialize_checklist)
+def _sync_checklist_task_bases(
+    cl: Checklist, payload: dict[str, Any], current_user: User, db: Session
+) -> None:
+    from sqlalchemy import delete, insert
+    from src.models.associations import checklist_task_bases
+
+    if "taskBases" not in payload or not isinstance(payload["taskBases"], list):
+        return
+    db.execute(delete(checklist_task_bases).where(checklist_task_bases.c.checklist_id == cl.id))
+    for item in payload["taskBases"]:
+        tb_data = item.get("taskBase") if isinstance(item, dict) and "taskBase" in item else item
+        if not isinstance(tb_data, dict):
+            continue
+        tb = TaskBase(
+            label=tb_data.get("label", "Task"),
+            task_type=tb_data.get("taskType", 0) if isinstance(tb_data.get("taskType"), int) else 0,
+            company_id=current_user.company_id,
+            asset_id=tb_data.get("asset", {}).get("id") if isinstance(tb_data.get("asset"), dict) else tb_data.get("assetId"),
+            user_id=tb_data.get("user", {}).get("id") if isinstance(tb_data.get("user"), dict) else tb_data.get("userId"),
+            meter_id=tb_data.get("meter", {}).get("id") if isinstance(tb_data.get("meter"), dict) else tb_data.get("meterId"),
+        )
+        db.add(tb)
+        db.flush()
+        for opt in tb_data.get("options") or []:
+            opt_label = opt.get("label") if isinstance(opt, dict) else str(opt)
+            if opt_label:
+                db.add(TaskOption(label=opt_label, task_base_id=tb.id, company_id=current_user.company_id))
+        db.flush()
+        db.execute(
+            insert(checklist_task_bases).values(
+                checklist_id=cl.id,
+                task_bases_id=tb.id,
+            )
+        )
+
+
+checklists_router = build_crud_router(
+    "/checklists",
+    Checklist,
+    custom_serializer=_serialize_checklist,
+    after_create=_sync_checklist_task_bases,
+    after_patch=_sync_checklist_task_bases,
+)
 
 
 @checklists_router.get("/mini")

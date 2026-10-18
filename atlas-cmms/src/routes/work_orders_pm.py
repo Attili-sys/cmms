@@ -503,8 +503,29 @@ router.include_router(womt_router)
 # 6.12 PreventiveMaintenances & Schedules
 def _serialize_pm(pm: PreventiveMaintenance, db: Session) -> dict[str, Any]:
     res = model_to_dict(pm, db=db)
-    sched = db.scalar(select(Schedule).where(Schedule.preventive_maintenance_id == pm.id))
-    res["schedule"] = model_to_dict(sched, db=db) if sched else None
+    sched = None
+    if pm.schedule_id:
+        sched = db.get(Schedule, pm.schedule_id)
+    if not sched:
+        sched = db.scalar(select(Schedule).where(Schedule.preventive_maintenance_id == pm.id))
+    if sched:
+        sched_dict = model_to_dict(sched, db=db)
+        sched_dict.setdefault("daysOfWeek", [])
+        res["schedule"] = sched_dict
+        res["nextWorkOrderDate"] = sched_dict.get("startsOn")
+    else:
+        res["schedule"] = {
+            "id": pm.id,
+            "startsOn": res.get("createdAt"),
+            "endsOn": None,
+            "frequency": 7,
+            "dueDateDelay": None,
+            "disabled": False,
+            "recurrenceType": "DAILY",
+            "recurrenceBasedOn": "SCHEDULED_DATE",
+            "daysOfWeek": [],
+        }
+        res["nextWorkOrderDate"] = res.get("createdAt")
     return res
 
 
@@ -518,16 +539,31 @@ def _after_create_pm(
         sched_data = payload.get("schedule") if isinstance(payload.get("schedule"), dict) else {}
         sched = Schedule(
             preventive_maintenance_id=pm.id,
-            company_id=current_user.company_id,
             starts_on=utcnow(),
-            frequency=sched_data.get("frequency", 7),
-            disabled=False,
-            recurrence_type=0,
-            recurrence_based_on=0,
+            frequency=int(sched_data.get("frequency") or 7),
+            disabled=bool(sched_data.get("disabled", False)),
+            recurrence_type=str(sched_data.get("recurrenceType") or "DAILY"),
+            recurrence_based_on=str(sched_data.get("recurrenceBasedOn") or "SCHEDULED_DATE"),
             is_demo=False,
         )
         apply_patch(sched, sched_data)
         db.add(sched)
+        db.flush()
+    pm.schedule_id = sched.id
+
+
+def _after_patch_pm(
+    pm: PreventiveMaintenance, payload: dict[str, Any], current_user: User, db: Session
+) -> None:
+    sched_data = payload.get("schedule")
+    if isinstance(sched_data, dict):
+        sched = (
+            db.get(Schedule, pm.schedule_id)
+            if pm.schedule_id
+            else db.scalar(select(Schedule).where(Schedule.preventive_maintenance_id == pm.id))
+        )
+        if sched:
+            apply_patch(sched, sched_data)
 
 
 pm_router = build_crud_router(
@@ -535,6 +571,7 @@ pm_router = build_crud_router(
     PreventiveMaintenance,
     custom_serializer=_serialize_pm,
     after_create=_after_create_pm,
+    after_patch=_after_patch_pm,
 )
 
 

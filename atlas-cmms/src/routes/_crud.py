@@ -124,6 +124,9 @@ def build_crud_router(
         stmt = select(model_cls)
         if hasattr(model_cls, "company_id") and current_user.company_id is not None:
             stmt = stmt.where(model_cls.company_id == current_user.company_id)
+        elif hasattr(model_cls, "company_settings_id") and current_user.company_id is not None:
+            cs_id = _ensure_company_settings_id(current_user, db)
+            stmt = stmt.where(model_cls.company_settings_id == cs_id)
         rows = db.scalars(stmt).all()
         return [_serialize(r, db) for r in rows]
 

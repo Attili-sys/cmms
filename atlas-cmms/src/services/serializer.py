@@ -118,12 +118,186 @@ _MODEL_DEFAULT_LISTS: dict[str, tuple[str, ...]] = {
         "locations",
         "customFieldValues",
     ),
-    "Meter": ("users", "locations"),
+    "Meter": ("users", "locations", "customFieldValues"),
     "PurchaseOrder": ("partQuantities", "customFieldValues"),
     "Vendor": ("files", "customFieldValues"),
     "Customer": ("files", "customFieldValues"),
     "CustomField": ("options",),
+    "Task": ("images",),
+    "TaskBase": ("options",),
+    "Checklist": ("taskBases",),
+    "Comment": ("files",),
+    "Team": ("users",),
+    "MultiParts": ("parts",),
+    "Schedule": ("daysOfWeek",),
 }
+
+
+def _hydrate_foreign_key(target_table: str | None, raw_val: Any, db: Session | None) -> dict[str, Any]:
+    """Hydrate a foreign key ID into the expected mini-DTO dictionary when db session is available."""
+    if db is None or not target_table or raw_val is None:
+        return {"id": raw_val}
+
+    try:
+        if target_table == "location":
+            from src.models.location_asset import Location
+
+            loc = db.get(Location, raw_val)
+            if loc:
+                return {
+                    "id": loc.id,
+                    "name": loc.name,
+                    "address": loc.address,
+                    "customId": loc.custom_id,
+                }
+        elif target_table == "asset":
+            from src.models.location_asset import Asset
+
+            asset = db.get(Asset, raw_val)
+            if asset:
+                return {
+                    "id": asset.id,
+                    "name": asset.name,
+                    "customId": asset.custom_id,
+                    "status": resolve_enum_value("status", asset.status, "Asset"),
+                }
+        elif target_table == "own_user":
+            from src.models.users import User
+
+            u = db.get(User, raw_val)
+            if u:
+                return {
+                    "id": u.id,
+                    "firstName": u.first_name,
+                    "lastName": u.last_name,
+                    "email": u.email,
+                    "jobTitle": u.job_title,
+                    "hourlyRate": u.rate,
+                }
+        elif target_table == "team":
+            from src.models.users import Team
+
+            t = db.get(Team, raw_val)
+            if t:
+                return {"id": t.id, "name": t.name, "description": t.description}
+        elif target_table == "vendor":
+            from src.models.parts_po import Vendor
+
+            v = db.get(Vendor, raw_val)
+            if v:
+                return {
+                    "id": v.id,
+                    "name": v.name,
+                    "companyName": v.company_name,
+                    "email": v.email,
+                    "phone": v.phone,
+                    "vendorType": v.vendor_type,
+                }
+        elif target_table == "customer":
+            from src.models.parts_po import Customer
+
+            c = db.get(Customer, raw_val)
+            if c:
+                return {
+                    "id": c.id,
+                    "name": c.name,
+                    "email": c.email,
+                    "phone": c.phone,
+                    "customerType": c.customer_type,
+                }
+        elif target_table == "file":
+            from src.models.files_custom import File
+
+            f = db.get(File, raw_val)
+            if f:
+                return {
+                    "id": f.id,
+                    "name": f.name,
+                    "url": f.url,
+                    "type": resolve_enum_value("type", f.type, "File"),
+                }
+        elif target_table == "part":
+            from src.models.parts_po import Part
+
+            p = db.get(Part, raw_val)
+            if p:
+                return {
+                    "id": p.id,
+                    "name": p.name,
+                    "cost": p.cost,
+                    "quantity": p.quantity,
+                    "minQuantity": p.min_quantity,
+                    "unit": p.unit,
+                    "barcode": p.barcode,
+                    "area": p.area,
+                    "description": p.description,
+                    "nonStock": p.non_stock,
+                }
+        elif target_table == "meter":
+            from src.models.meters import Meter
+
+            m = db.get(Meter, raw_val)
+            if m:
+                return {
+                    "id": m.id,
+                    "name": m.name,
+                    "unit": m.unit,
+                    "updateFrequency": m.update_frequency,
+                }
+        elif target_table == "role":
+            from src.models.users import Role
+
+            r = db.get(Role, raw_val)
+            if r:
+                return {
+                    "id": r.id,
+                    "name": r.name,
+                    "code": resolve_enum_value("code", r.code, "Role"),
+                    "roleType": resolve_enum_value("role_type", r.role_type, "Role"),
+                }
+        elif target_table == "currency":
+            from src.models.company import Currency
+
+            cur = db.get(Currency, raw_val)
+            if cur:
+                return {"id": cur.id, "name": cur.name, "code": cur.code}
+        elif target_table == "work_order":
+            from src.models.work_orders import WorkOrder
+
+            wo = db.get(WorkOrder, raw_val)
+            if wo:
+                return {
+                    "id": wo.id,
+                    "title": wo.title,
+                    "customId": wo.custom_id,
+                    "status": resolve_enum_value("status", wo.status, "WorkOrder"),
+                    "priority": resolve_enum_value("priority", wo.priority, "WorkOrder"),
+                }
+        elif target_table.endswith("_category"):
+            from src.models import categories as cat_models
+
+            cat_map = {
+                "asset_category": cat_models.AssetCategory,
+                "meter_category": cat_models.MeterCategory,
+                "part_category": cat_models.PartCategory,
+                "purchase_order_category": cat_models.PurchaseOrderCategory,
+                "work_order_category": cat_models.WorkOrderCategory,
+                "cost_category": cat_models.CostCategory,
+                "time_category": cat_models.TimeCategory,
+            }
+            cat_cls = cat_map.get(target_table)
+            if cat_cls is not None:
+                cat = db.get(cat_cls, raw_val)
+                if cat:
+                    return {
+                        "id": cat.id,
+                        "name": cat.name,
+                        "description": getattr(cat, "description", None),
+                    }
+    except Exception:
+        return {"id": raw_val}
+
+    return {"id": raw_val}
 
 
 def model_to_dict(
@@ -153,7 +327,7 @@ def model_to_dict(
             camel_key = to_camel(key)
             result[camel_key] = serialize_value(resolved_val)
 
-            # Also expose nested minimal id stub for *_id foreign keys if not already populated
+            # Expose hydrated nested mini-DTO for *_id foreign keys
             if (
                 key.endswith("_id")
                 and key not in ("company_id", "custom_id")
@@ -162,7 +336,13 @@ def model_to_dict(
                 rel_name = key[:-3]
                 camel_rel = to_camel(rel_name)
                 if camel_rel not in result:
-                    result[camel_rel] = {"id": raw_val}
+                    col = mapper.columns.get(key)
+                    target_table = (
+                        next(iter(col.foreign_keys)).column.table.name
+                        if (col is not None and col.foreign_keys)
+                        else None
+                    )
+                    result[camel_rel] = _hydrate_foreign_key(target_table, raw_val, db)
     else:
         for k, v in vars(obj).items():
             if not k.startswith("_") and k not in exclude_cols:
