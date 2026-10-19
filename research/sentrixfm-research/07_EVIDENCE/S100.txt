@@ -1,0 +1,408 @@
+Browser tab: 1405043950, Title: "SentrixFm - Business Process Management", URL: "https://sentrixfm.com/manager/business/operations/my-tasks".
+1 AXWebArea SentrixFm - Business Process Management, URL: sentrixfm.com/manager/business/operations/my-tasks
+	2 container
+		3 container layout-wrapper
+			4 container page-topbar
+				5 link Description: SentrixFM, Value: sentrixfm.com/manager/
+				6 button , ID: vertical-menu-btn
+					7 text 
+				8 button Select location
+					9 text 
+					10 text Main Office
+					11 text 
+					12 text  Main
+					13 text T
+				14 button Select location
+					15 text 
+					16 text Main Office
+					17 text 
+					18 text  Main
+					19 text T
+				20 pop up button (collapsed) ID: page-header-search-dropdown, Secondary Actions: Expand
+				21 pop up button (collapsed) Header Language, ID: page-header-user-dropdown, Secondary Actions: Expand
+					22 image Header Language
+				23 pop up button (collapsed) , ID: page-header-notifications-dropdown, Secondary Actions: Expand
+					24 text 
+				25 pop up button (collapsed) SentrixFM Avatar, ID: page-header-user-dropdown, Secondary Actions: Expand
+					26 image SentrixFM Avatar
+			27 container
+				28 text 
+				29 heading WORK ORDERS, Value: 4
+					30 text WORK ORDERS
+				31 text 12 total work orders • 12 active • 0 completed
+				32 content list
+					33 link Description:  Home, Value: javascript:void(0);
+					34 container
+						35 text /
+						36 link Description: E Business Hub, Value: javascript:void(0);
+					37 container
+						38 text /
+						39 link Description: ~ Operations, Value: javascript:void(0);
+					40 container
+						41 text /  Work Orders
+				42 container Filter options
+					43 button Advanced Filter
+				44 button Create
+					45 text 
+					46 text Create
+				47 button Z, Help: Refresh
+				48 text Total Work Orders
+				49 heading 12, Value: 4
+					50 text 12
+				51 text R
+				52 text Active Work Orders
+				53 heading 12, Value: 4
+					54 text 12
+				55 text Z
+				56 text Completed Work Orders
+				57 heading 0, Value: 4
+					58 text 0
+				59 text S
+				60 text Overdue Work Orders
+				61 heading 0, Value: 4
+					62 text 0
+				63 text Y
+				64 container
+					65 button  All Work Orders
+						66 text 
+						67 text  All Work Orders
+					68 button Corrective
+					69 button  Predictive
+						70 text 
+						71 text  Predictive
+					72 button  Emergency
+						73 text 
+						74 text  Emergency
+				75 container
+					76 button  Table View
+						77 text 
+						78 text  Table View
+					79 button  Kanban View
+						80 text 
+						81 text  Kanban View
+					82 button M Calendar View
+						83 text M
+						84 text  Calendar View
+				85 table
+					86 row
+						87 cell
+							88 checkbox (settable, integer) 0
+						89 cell
+							90 text 
+							91 text Work Order
+							92 text 
+						93 cell
+							94 text 
+							95 text Assignee
+							96 text 
+						97 cell
+							98 text 
+							99 text Created At
+							100 text 
+						101 cell
+							102 text 
+							103 text Status
+							104 text 
+						105 cell
+							106 text 
+							107 text Priority
+							108 text 
+						109 cell
+							110 text 
+							111 text Labels
+						112 cell
+							113 text 
+							114 text Actions
+					115 row
+						116 cell
+							117 checkbox (settable, integer) 0
+						118 cell
+							119 text 
+							120 text Corrective Hard - Mechanical System Failure
+							121 text Corrective maintenance for hard service mechanical system breakdown
+							122 text `
+							123 text Electrical Systems
+						124 cell
+							125 text   Unassigned
+						126 cell
+							127 text Y Oct 17, 2026
+							128 text 10/17/26, 9:56 PM
+						129 cell
+							130 text ^  Pending
+						131 cell
+							132 text   High
+						133 cell
+							134 text   Label 1 ^  Important
+						135 cell
+							136 button Description: View details for Corrective Hard - Mechanical System Failure, Help: View
+							137 button Description: Edit Corrective Hard - Mechanical System Failure, Help: Edit
+							138 button Description: Delete Corrective Hard - Mechanical System Failure, Help: Delete
+					139 row
+						140 cell
+							141 checkbox (settable, integer) 0
+						142 cell
+							143 text 
+							144 text Emergency Soft - Water Damage Cleanup
+							145 text Emergency soft service response for water damage and cleanup
+							146 text `
+							147 text Electrical Systems
+						148 cell
+							149 text   Unassigned
+						150 cell
+							151 text Y Oct 17, 2026
+							152 text 10/17/26, 9:56 PM
+						153 cell
+							154 text ^  Pending
+						155 cell
+							156 text ^  Low
+						157 cell
+							158 text   Label 3   Label 4
+						159 cell
+							160 button Description: View details for Emergency Soft - Water Damage Cleanup, Help: View
+							161 button Description: Edit Emergency Soft - Water Damage Cleanup, Help: Edit
+							162 button Description: Delete Emergency Soft - Water Damage Cleanup, Help: Delete
+					163 row
+						164 cell
+							165 checkbox (settable, integer) 0
+						166 cell
+							167 text 
+							168 text Emergency Safety - Hazardous Material Response
+							169 text Emergency safety service response for hazardous material incidents
+							170 text `
+							171 text Electrical Systems
+						172 cell
+							173 text   Unassigned
+						174 cell
+							175 text Y Oct 17, 2026
+							176 text 10/17/26, 9:56 PM
+						177 cell
+							178 text ^  Pending
+						179 cell
+							180 text ^  Medium
+						181 cell
+							182 text ^  Important   Urgent
+						183 cell
+							184 button Description: View details for Emergency Safety - Hazardous Material Response, Help: View
+							185 button Description: Edit Emergency Safety - Hazardous Material Response, Help: Edit
+							186 button Description: Delete Emergency Safety - Hazardous Material Response, Help: Delete
+					187 row
+						188 cell
+							189 checkbox (settable, integer) 0
+						190 cell
+							191 text 
+							192 text Predictive Safety - Emergency System Test
+							193 text Predictive maintenance for safety service emergency system testing
+							194 text `
+							195 text Electrical Systems
+						196 cell
+							197 text   Unassigned
+						198 cell
+							199 text Y Oct 17, 2026
+							200 text 10/17/26, 9:56 PM
+						201 cell
+							202 text ^  Pending
+						203 cell
+							204 text ^  Medium
+						205 cell
+							206 text   Label 1   Label 5
+						207 cell
+							208 button Description: View details for Predictive Safety - Emergency System Test, Help: View
+							209 button Description: Edit Predictive Safety - Emergency System Test, Help: Edit
+							210 button Description: Delete Predictive Safety - Emergency System Test, Help: Delete
+					211 row
+						212 cell
+							213 checkbox (settable, integer) 0
+						214 cell
+							215 text 
+							216 text Corrective Safety - Security Breach Response
+							217 text Corrective maintenance for safety service security system breach
+							218 text `
+							219 text Electrical Systems
+						220 cell
+							221 text   Unassigned
+						222 cell
+							223 text Y Oct 17, 2026
+							224 text 10/17/26, 9:56 PM
+						225 cell
+							226 text ^  Pending
+						227 cell
+							228 text ^  Critical
+						229 cell
+							230 text   Label 2   Label 3
+						231 cell
+							232 button Description: View details for Corrective Safety - Security Breach Response, Help: View
+							233 button Description: Edit Corrective Safety - Security Breach Response, Help: Edit
+							234 button Description: Delete Corrective Safety - Security Breach Response, Help: Delete
+					235 row
+						236 cell
+							237 checkbox (settable, integer) 0
+						238 cell
+							239 text 
+							240 text Final Re-energization & Certification Task
+							241 text Alii ulterius vinco.
+							242 text Workflow Related
+							243 container Package Execution Rules
+								244 text S
+								245 text Has Rules
+						246 cell
+							247 text   Unassigned
+						248 cell
+							249 text Y Oct 17, 2026
+							250 text 10/17/26, 9:56 PM
+						251 cell
+							252 text ^  N/A
+						253 cell
+							254 text ^  Critical
+						255 cell
+							256 text   Urgent   Label 5
+						257 cell
+							258 button Description: View details for Final Re-energization & Certification Task, Help: View
+							259 button Description: Edit Final Re-energization & Certification Task, Help: Edit
+							260 button Description: Delete Final Re-energization & Certification Task, Help: Delete
+					261 row
+						262 cell
+							263 checkbox (settable, integer) 0
+						264 cell
+							265 text 
+							266 text Corrective Soft - Cleaning Service
+							267 text Corrective maintenance for soft service cleaning requirements
+							268 text `
+							269 text Electrical Systems
+						270 cell
+							271 text   Unassigned
+						272 cell
+							273 text Y Oct 17, 2026
+							274 text 10/17/26, 9:56 PM
+						275 cell
+							276 text ^  Pending
+						277 cell
+							278 text ^  Low
+						279 cell
+							280 text   Label 2   Label 1
+						281 cell
+							282 button Description: View details for Corrective Soft - Cleaning Service, Help: View
+							283 button Description: Edit Corrective Soft - Cleaning Service, Help: Edit
+							284 button Description: Delete Corrective Soft - Cleaning Service, Help: Delete
+					285 row
+						286 cell
+							287 checkbox (settable, integer) 0
+						288 cell
+							289 text 
+							290 text Corrective Hard - Electrical System Repair
+							291 text Corrective maintenance for hard service electrical system failure
+							292 text `
+							293 text Electrical Systems
+						294 cell
+							295 text   Unassigned
+						296 cell
+							297 text Y Oct 17, 2026
+							298 text 10/17/26, 9:56 PM
+						299 cell
+							300 text ^  Pending
+						301 cell
+							302 text ^  Critical
+						303 cell
+							304 text   Urgent ^  Important
+						305 cell
+							306 button Description: View details for Corrective Hard - Electrical System Repair, Help: View
+							307 button Description: Edit Corrective Hard - Electrical System Repair, Help: Edit
+							308 button Description: Delete Corrective Hard - Electrical System Repair, Help: Delete
+					309 row
+						310 cell
+							311 checkbox (settable, integer) 0
+						312 cell
+							313 text 
+							314 text Corrective Soft - Pest Infestation Treatment
+							315 text Corrective maintenance for soft service pest infestation treatment
+							316 text `
+							317 text Electrical Systems
+						318 cell
+							319 text   Unassigned
+						320 cell
+							321 text Y Oct 17, 2026
+							322 text 10/17/26, 9:56 PM
+						323 cell
+							324 text ^  Pending
+						325 cell
+							326 text ^  Low
+						327 cell
+							328 text   Label 4   Label 1
+						329 cell
+							330 button Description: View details for Corrective Soft - Pest Infestation Treatment, Help: View
+							331 button Description: Edit Corrective Soft - Pest Infestation Treatment, Help: Edit
+							332 button Description: Delete Corrective Soft - Pest Infestation Treatment, Help: Delete
+					333 row
+						334 cell
+							335 checkbox (settable, integer) 0
+						336 cell
+							337 text 
+							338 text Predictive Hard - Equipment Condition Monitoring
+							339 text Predictive maintenance for hard service mechanical equipment
+							340 text `
+							341 text Electrical Systems
+						342 cell
+							343 text   Unassigned
+						344 cell
+							345 text Y Oct 17, 2026
+							346 text 10/17/26, 9:56 PM
+						347 cell
+							348 text ^  Pending
+						349 cell
+							350 text ^  Medium
+						351 cell
+							352 text   Label 4   Label 3
+						353 cell
+							354 button Description: View details for Predictive Hard - Equipment Condition Monitoring, Help: View
+							355 button Description: Edit Predictive Hard - Equipment Condition Monitoring, Help: Edit
+							356 button Description: Delete Predictive Hard - Equipment Condition Monitoring, Help: Delete
+				357 container
+					358 container Table pagination
+						359 content list
+							360 link First
+								361 text First
+							362 link Previous
+								363 text Previous
+							364 link Go to page 1
+								365 text 1
+							366 link Go to page 2
+								367 text 2
+							368 link Next
+								369 text Next
+							370 link Last
+								371 text Last
+					372 text Showing 1 to 10 of 13 entries
+			373 container
+				374 text © 2026 SentrixFm. All rights reserved.  v1.2
+		375 container
+			376 container scrollable content
+				377 link javascript:void(0);
+				378 heading Settings, Value: 5
+					379 text Settings
+				380 heading Layout, Value: 6
+					381 text Layout
+				382 checkbox (settable, integer) Description: Vertical, Value: 1, ID: is-layout
+				383 heading Width, Value: 6
+					384 text Width
+				385 radio button (settable, integer) Description: Fluid, Value: 1, ID: layout-width-fuild
+				386 radio button (settable, integer) Description: Boxed, Value: 0, ID: layout-width-boxed
+				387 radio button (settable, integer) Description: Scrolable, Value: 0, ID: layout-width-scrollable
+				388 heading Sidebar Color, Value: 6
+					389 text Sidebar Color
+				390 radio button (settable, integer) Description: Light, Value: 0, ID: sidebar-color-light
+				391 radio button (settable, integer) Description: Dark, Value: 1, ID: sidebar-color-dark
+				392 radio button (settable, integer) Description: Compact, Value: 0, ID: sidebar-color-brand
+				393 radio button (settable, integer) Description: Icon, Value: 0, ID: sidebar-color-icon
+				394 radio button (settable, integer) Description: Colored, Value: 0, ID: sidebar-color
+				395 heading Theme Mode, Value: 6
+					396 text Theme Mode
+				397 radio button (settable, integer) Description: Light, Value: 1, ID: theme-color-light
+				398 radio button (settable, integer) Description: Dark, Value: 0, ID: theme-color-dark
+				399 heading Choose Layouts, Value: 6
+					400 text Choose Layouts
+				401 link
+				402 link
+				403 link
+		404 button Open AI Assistant
+			405 text 
+
+The focused UI element is 1 AXWebArea SentrixFm - Business Process Management, URL: sentrixfm.com/manager/business/operations/my-tasks

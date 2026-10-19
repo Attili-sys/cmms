@@ -1,0 +1,235 @@
+Browser tab: 1405043949, Title: "SentrixFm - Business Process Management", URL: "https://sentrixfm.com/manager/dashboards/location-dashboard".
+The following is a diff from the previous accessibility tree with ~ and + representing changed and added elements, respectively. Removed elements are summarized by ID range.
+Removed element IDs: 129-228, 257-364, 401
+~					73 button  Load
+~						399 text 
+~						75 text Load
++				400 heading 0, Value: 3
++					401 text 0
++				402 heading 0, Value: 3
++					403 text 0
++				404 heading 0.0%, Value: 3
++					405 text 0.0%
++				406 heading 0, Value: 3
++					407 text 0
++				408 container
++					409 text Active
++					410 heading 10, Value: 5
++						411 text 10
++				412 container
++					413 text Maint.
++					414 heading 0, Value: 5
++						415 text 0
++				416 container
++					417 text Down
++					418 heading 0, Value: 5
++						419 text 0
++					420 row
++						421 cell
++							422 text I
++							423 heading Industrial Power Tools Set, Value: 6
++								424 text Industrial Power Tools Set
++							425 text Next PPM: N/A
++						426 cell
++							427 text 7
++						428 cell
++							429 text Operational
++					430 row
++						431 cell
++							432 text P
++							433 heading Powered Forklift Unit #1, Value: 6
++								434 text Powered Forklift Unit #1
++							435 text Next PPM: N/A
++						436 cell
++							437 text 6
++						438 cell
++							439 text Operational
++					440 row
++						441 cell
++							442 text D
++							443 heading Diagnostic Testing Equipment, Value: 6
++								444 text Diagnostic Testing Equipment
++							445 text Next PPM: N/A
++						446 cell
++							447 text 5
++						448 cell
++							449 text Operational
++					450 row
++						451 cell
++							452 text W
++							453 heading Water Distribution System, Value: 6
++								454 text Water Distribution System
++							455 text Next PPM: N/A
++						456 cell
++							457 text 3
++						458 cell
++							459 text Operational
++					460 row
++						461 cell
++							462 text C
++							463 heading CNC Machining Center Unit A, Value: 6
++								464 text CNC Machining Center Unit A
++							465 text Next PPM: N/A
++						466 cell
++							467 text 3
++						468 cell
++							469 text Operational
++					470 row
++						471 cell
++							472 text B
++							473 heading Boiler System Primary, Value: 6
++								474 text Boiler System Primary
++							475 text Next PPM: N/A
++						476 cell
++							477 text 3
++						478 cell
++							479 text Operational
++					480 row
++						481 cell
++							482 text P
++							483 heading Portable Generator Unit, Value: 6
++								484 text Portable Generator Unit
++							485 text Next PPM: N/A
++						486 cell
++							487 text 2
++						488 cell
++							489 text Operational
++					490 row
++						491 cell
++							492 text C
++							493 heading Chiller System Main, Value: 6
++								494 text Chiller System Main
++							495 text Next PPM: N/A
++						496 cell
++							497 text 2
++						498 cell
++							499 text Operational
++					500 row
++						501 cell
++							502 text M
++							503 heading Main Electrical Panel Room 101, Value: 6
++								504 text Main Electrical Panel Room 101
++							505 text Next PPM: N/A
++						506 cell
++							507 text 1
++						508 cell
++							509 text Operational
++					510 row
++						511 cell
++							512 text R
++							513 heading Rooftop HVAC Unit #1, Value: 6
++								514 text Rooftop HVAC Unit #1
++							515 text Next PPM: N/A
++						516 cell
++							517 text 0
++						518 cell
++							519 text Operational
++								520 row
++									521 cell
++										522 text 1
++									523 cell
++										524 link Description: Corrective Hard - Mechanical System Failure, Value: javascript:%20void(0);
++									525 cell
++										526 text ? .
++									527 cell
++										528 text 09:56 PM
++									529 cell
++										530 text Pending
++								531 row
++									532 cell
++										533 text 2
++									534 cell
++										535 link Description: Predictive Hard - Structural Monitoring, Value: javascript:%20void(0);
++									536 cell
++										537 text ? .
++									538 cell
++										539 text 09:56 PM
++									540 cell
++										541 text Pending
++								542 row
++									543 cell
++										544 text 3
++									545 cell
++										546 link Description: Preventive Hard - Monthly Fire Safety Check, Value: javascript:%20void(0);
++									547 cell
++										548 text ? .
++									549 cell
++										550 text 09:56 PM
++									551 cell
++										552 text Scheduled
++								553 row
++									554 cell
++										555 text 4
++									556 cell
++										557 link Description: Preventive Soft - Environmental Compliance Audit, Value: javascript:%20void(0);
++									558 cell
++										559 text ? .
++									560 cell
++										561 text 09:56 PM
++									562 cell
++										563 text Scheduled
++								564 row
++									565 cell
++										566 text 5
++									567 cell
++										568 link Description: Pre-Maintenance Inspection & LOTO Task, Value: javascript:%20void(0);
++									569 cell
++										570 text ? .
++									571 cell
++										572 text 09:56 PM
++								573 row
++									574 cell
++										575 text 6
++									576 cell
++										577 link Description: Predictive Safety - Security System Review, Value: javascript:%20void(0);
++									578 cell
++										579 text ? .
++									580 cell
++										581 text 09:56 PM
++									582 cell
++										583 text Scheduled
++								584 row
++									585 cell
++										586 text 7
++									587 cell
++										588 link Description: Preventive Hard - Annual Equipment Calibration, Value: javascript:%20void(0);
++									589 cell
++										590 text ? .
++									591 cell
++										592 text 09:56 PM
++									593 cell
++										594 text Scheduled
++								595 row
++									596 cell
++										597 text 8
++									598 cell
++										599 link Description: Predictive Soft - Facility Monitoring, Value: javascript:%20void(0);
++									600 cell
++										601 text ? .
++									602 cell
++										603 text 09:56 PM
++									604 cell
++										605 text Pending
++								606 row
++									607 cell
++										608 text 9
++									609 cell
++										610 link Description: Corrective Soft - Cleaning Service, Value: javascript:%20void(0);
++									611 cell
++										612 text ? .
++									613 cell
++										614 text 09:56 PM
++									615 cell
++										616 text Pending
++								617 row
++									618 cell
++										619 text 10
++									620 cell
++										621 link Description: Predictive Hard - Equipment Condition Monitoring, Value: javascript:%20void(0);
++									622 cell
++										623 text ? .
++									624 cell
++										625 text 09:56 PM
++									626 cell
++										627 text Pending
+The focused UI element is 1 AXWebArea SentrixFm - Business Process Management, URL: sentrixfm.com/manager/dashboards/location-dashboard

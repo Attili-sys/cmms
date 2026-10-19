@@ -1,0 +1,267 @@
+{
+  "pageUrl": "https://sentrixfm.com/manager/business/operations/work-orders/working-item-61b197a8-262c-4beb-87c2-16e0944f857c",
+  "summary": {
+    "byKind": {
+      "font": 3,
+      "image": 13,
+      "other": 20,
+      "script": 44,
+      "stylesheet": 3,
+      "video": 0
+    },
+    "inlineSvgCount": 0,
+    "totalCount": 83
+  },
+  "assets": [
+    {
+      "kind": "stylesheet",
+      "name": "boxicons.min.css",
+      "url": "https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+    },
+    {
+      "kind": "script",
+      "name": "firebase-app.js",
+      "url": "https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"
+    },
+    {
+      "kind": "script",
+      "name": "firebase-messaging.js",
+      "url": "https://www.gstatic.com/firebasejs/8.10.0/firebase-messaging.js"
+    },
+    {
+      "kind": "stylesheet",
+      "name": "styles.css",
+      "url": "https://sentrixfm.com/manager/styles.css"
+    },
+    {
+      "kind": "script",
+      "name": "js",
+      "url": "https://maps.googleapis.com/maps/api/js"
+    },
+    {
+      "kind": "script",
+      "name": "runtime.js",
+      "url": "https://sentrixfm.com/manager/runtime.js"
+    },
+    {
+      "kind": "script",
+      "name": "polyfills.js",
+      "url": "https://sentrixfm.com/manager/polyfills.js"
+    },
+    {
+      "kind": "script",
+      "name": "scripts.js",
+      "url": "https://sentrixfm.com/manager/scripts.js"
+    },
+    {
+      "kind": "script",
+      "name": "vendor.js",
+      "url": "https://sentrixfm.com/manager/vendor.js"
+    },
+    {
+      "kind": "script",
+      "name": "main.js",
+      "url": "https://sentrixfm.com/manager/main.js"
+    },
+    {
+      "kind": "script",
+      "name": "main.js",
+      "url": "https://maps.googleapis.com/maps-api-v3/api/js/66/9d/main.js"
+    },
+    {
+      "kind": "stylesheet",
+      "name": "css",
+      "url": "https://fonts.googleapis.com/css"
+    },
+    {
+      "kind": "script",
+      "name": "default-src_app_core_constants_system-images_ts-src_app_shared_components_tn-ui_forms_tn-butt-3633d1.js",
+      "url": "https://sentrixfm.com/manager/default-src_app_core_constants_system-images_ts-src_app_shared_components_tn-ui_forms_tn-butt-3633d1.js"
+    },
+    {
+      "kind": "script",
+      "name": "common.js",
+      "url": "https://sentrixfm.com/manager/common.js"
+    },
+    {
+      "kind": "script",
+      "name": "src_app_pages_pages_module_ts.js",
+      "url": "https://sentrixfm.com/manager/src_app_pages_pages_module_ts.js"
+    },
+    {
+      "kind": "font",
+      "name": "fa-solid-900.woff2",
+      "url": "https://sentrixfm.com/manager/fa-solid-900.woff2"
+    },
+    {
+      "kind": "script",
+      "name": "default-src_app_shared_components_tn-ui_forms_tn-datepicker_tn-datepicker_component_ts-src_ap-dcdf82.js",
+      "url": "https://sentrixfm.com/manager/default-src_app_shared_components_tn-ui_forms_tn-datepicker_tn-datepicker_component_ts-src_ap-dcdf82.js"
+    },
+    {
+      "kind": "script",
+      "name": "default-src_app_shared_components_tn-ui_filter-mangement_tn-advanced-filter_advanced-filter-t-8c4eb9.js",
+      "url": "https://sentrixfm.com/manager/default-src_app_shared_components_tn-ui_filter-mangement_tn-advanced-filter_advanced-filter-t-8c4eb9.js"
+    },
+    {
+      "kind": "script",
+      "name": "default-src_app_shared_components_tn-ui_filter-mangement_tn-advanced-filter_tn-advanced-filte-d21663.js",
+      "url": "https://sentrixfm.com/manager/default-src_app_shared_components_tn-ui_filter-mangement_tn-advanced-filter_tn-advanced-filte-d21663.js"
+    },
+    {
+      "kind": "script",
+      "name": "default-src_app_shared_utils_sort_factory_ts.js",
+      "url": "https://sentrixfm.com/manager/default-src_app_shared_utils_sort_factory_ts.js"
+    },
+    {
+      "kind": "script",
+      "name": "default-src_app_shared_components_tn-paginator_tn-paginator_component_ts.js",
+      "url": "https://sentrixfm.com/manager/default-src_app_shared_components_tn-paginator_tn-paginator_component_ts.js"
+    },
+    {
+      "kind": "script",
+      "name": "default-src_app_shared_components_tn-ui_feedback_tn-modal_tn-modal_component_ts.js",
+      "url": "https://sentrixfm.com/manager/default-src_app_shared_components_tn-ui_feedback_tn-modal_tn-modal_component_ts.js"
+    },
+    {
+      "kind": "script",
+      "name": "default-src_app_modules_teams-management_services_user-group_service_ts-src_app_modules_user--4ceee7.js",
+      "url": "https://sentrixfm.com/manager/default-src_app_modules_teams-management_services_user-group_service_ts-src_app_modules_user--4ceee7.js"
+    },
+    {
+      "kind": "script",
+      "name": "default-src_app_core_location_guards_location_guard_ts.js",
+      "url": "https://sentrixfm.com/manager/default-src_app_core_location_guards_location_guard_ts.js"
+    },
+    {
+      "kind": "script",
+      "name": "default-src_app_shared_drawer_core-drawer_service_ts.js",
+      "url": "https://sentrixfm.com/manager/default-src_app_shared_drawer_core-drawer_service_ts.js"
+    },
+    {
+      "kind": "script",
+      "name": "default-src_app_shared_components_tn-ui_display_tn-badge_tn-badge_component_ts.js",
+      "url": "https://sentrixfm.com/manager/default-src_app_shared_components_tn-ui_display_tn-badge_tn-badge_component_ts.js"
+    },
+    {
+      "kind": "script",
+      "name": "default-src_app_modules_categories-management_services_category-management_service_ts.js",
+      "url": "https://sentrixfm.com/manager/default-src_app_modules_categories-management_services_category-management_service_ts.js"
+    },
+    {
+      "kind": "script",
+      "name": "default-node_modules_pnpm_fullcalendar_daygrid_6_1_20__fullcalendar_core_6_1_20_node_modules_-2c65ab.js",
+      "url": "https://sentrixfm.com/manager/default-node_modules_pnpm_fullcalendar_daygrid_6_1_20__fullcalendar_core_6_1_20_node_modules_-2c65ab.js"
+    },
+    {
+      "kind": "script",
+      "name": "default-src_app_shared_components_spare-parts-tab_spare-parts-tab_component_ts-src_app_shared-d98ac2.js",
+      "url": "https://sentrixfm.com/manager/default-src_app_shared_components_spare-parts-tab_spare-parts-tab_component_ts-src_app_shared-d98ac2.js"
+    },
+    {
+      "kind": "script",
+      "name": "default-src_app_core_services_priority_service_ts-src_app_shared_components_tn-ui_feedback_tn-644cc7.js",
+      "url": "https://sentrixfm.com/manager/default-src_app_core_services_priority_service_ts-src_app_shared_components_tn-ui_feedback_tn-644cc7.js"
+    },
+    {
+      "kind": "script",
+      "name": "default-src_app_shared_shared_module_ts.js",
+      "url": "https://sentrixfm.com/manager/default-src_app_shared_shared_module_ts.js"
+    },
+    {
+      "kind": "script",
+      "name": "default-src_app_shared_components_tn-ui_rich-text-editor_rich-text-editor_component_ts.js",
+      "url": "https://sentrixfm.com/manager/default-src_app_shared_components_tn-ui_rich-text-editor_rich-text-editor_component_ts.js"
+    },
+    {
+      "kind": "script",
+      "name": "default-src_app_core_services_base-working-item-management_service_ts-src_app_core_services_m-7dbe86.js",
+      "url": "https://sentrixfm.com/manager/default-src_app_core_services_base-working-item-management_service_ts-src_app_core_services_m-7dbe86.js"
+    },
+    {
+      "kind": "script",
+      "name": "default-src_app_core_services_working-item_service_ts.js",
+      "url": "https://sentrixfm.com/manager/default-src_app_core_services_working-item_service_ts.js"
+    },
+    {
+      "kind": "script",
+      "name": "default-src_app_modules_sop-management_sop_service_ts.js",
+      "url": "https://sentrixfm.com/manager/default-src_app_modules_sop-management_sop_service_ts.js"
+    },
+    {
+      "kind": "script",
+      "name": "default-src_app_core_services_asset_service_ts-src_app_core_services_working-item_working-ite-83c923.js",
+      "url": "https://sentrixfm.com/manager/default-src_app_core_services_asset_service_ts-src_app_core_services_working-item_working-ite-83c923.js"
+    },
+    {
+      "kind": "script",
+      "name": "default-src_app_core_utils_maintenance-type-filter_util_ts-src_app_shared_components_sop-temp-e7d57b.js",
+      "url": "https://sentrixfm.com/manager/default-src_app_core_utils_maintenance-type-filter_util_ts-src_app_shared_components_sop-temp-e7d57b.js"
+    },
+    {
+      "kind": "script",
+      "name": "default-src_app_shared_components_tn-ui_attachments_tn-attachment-uploader_tn-attachment-uplo-956105.js",
+      "url": "https://sentrixfm.com/manager/default-src_app_shared_components_tn-ui_attachments_tn-attachment-uploader_tn-attachment-uplo-956105.js"
+    },
+    {
+      "kind": "script",
+      "name": "default-src_app_modules_work-order-management_work-order_service_ts.js",
+      "url": "https://sentrixfm.com/manager/default-src_app_modules_work-order-management_work-order_service_ts.js"
+    },
+    {
+      "kind": "script",
+      "name": "default-src_app_modules_labels-management_services_label_service_ts.js",
+      "url": "https://sentrixfm.com/manager/default-src_app_modules_labels-management_services_label_service_ts.js"
+    },
+    {
+      "kind": "script",
+      "name": "default-src_app_core_services_confirmation_service_ts-src_app_core_services_status-display_se-e04d7a.js",
+      "url": "https://sentrixfm.com/manager/default-src_app_core_services_confirmation_service_ts-src_app_core_services_status-display_se-e04d7a.js"
+    },
+    {
+      "kind": "script",
+      "name": "default-src_app_modules_sop-management_components_sop-execution-viewer_sop-execution-viewer_c-4bab3c.js",
+      "url": "https://sentrixfm.com/manager/default-src_app_modules_sop-management_components_sop-execution-viewer_sop-execution-viewer_c-4bab3c.js"
+    },
+    {
+      "kind": "script",
+      "name": "default-src_app_shared_components_sop-display_universal-sop-display_component_ts.js",
+      "url": "https://sentrixfm.com/manager/default-src_app_shared_components_sop-display_universal-sop-display_component_ts.js"
+    },
+    {
+      "kind": "script",
+      "name": "default-src_app_modules_work-order-management_components_work-order-details-page_work-order-d-502aba.js",
+      "url": "https://sentrixfm.com/manager/default-src_app_modules_work-order-management_components_work-order-details-page_work-order-d-502aba.js"
+    },
+    {
+      "kind": "script",
+      "name": "default-src_app_modules_work-order-management_work-order-management_module_ts.js",
+      "url": "https://sentrixfm.com/manager/default-src_app_modules_work-order-management_work-order-management_module_ts.js"
+    },
+    {
+      "kind": "script",
+      "name": "src_app_modules_my-tasks-management_my-tasks-management_module_ts.js",
+      "url": "https://sentrixfm.com/manager/src_app_modules_my-tasks-management_my-tasks-management_module_ts.js"
+    },
+    {
+      "kind": "font",
+      "name": "boxicons.woff2",
+      "url": "https://sentrixfm.com/manager/boxicons.woff2"
+    },
+    {
+      "kind": "font",
+      "name": "dripicons-v2.woff",
+      "url": "https://sentrixfm.com/manager/dripicons-v2.woff"
+    },
+    {
+      "kind": "script",
+      "name": "common.js",
+      "url": "https://maps.googleapis.com/maps-api-v3/api/js/66/9d/common.js"
+    },
+    {
+      "kind": "script",
+      "name": "util.js",
+      "url": "https://maps.googleapis.com/maps-api-v3/api/js/66/9d/util.js"
+    }
+  ]
+}

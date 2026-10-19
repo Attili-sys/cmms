@@ -1,0 +1,39 @@
+Browser tab: 1405043949, Title: "SentrixFm - Business Process Management", URL: "https://sentrixfm.com/manager/business/reports/api-powered-reports".
+The following is a diff from the previous accessibility tree with ~ and + representing changed and added elements, respectively. Removed elements are summarized by ID range.
+Removed element IDs: 16, 838-849, 883
++				887 button Select location
++					888 text 
++					889 text Main Office
++					890 text 
++					891 text  Main
++					892 text T
++				893 container
++					894 button (expanded) Description: Business Hub - Access all business functions, Secondary Actions: Collapse
++					895 button Close Business Hub
++					896 container
++						897 heading 🏢 FACILITY MANAGEMENT, Value: 5
++							898 text 🏢 FACILITY MANAGEMENT
++						899 content list
++							900 link Description: Locations, Value: javascript:void(0);
++							901 link Description: Categories, Value: javascript:void(0);
++							902 link Description: Maintenance Requests, Value: javascript:void(0);
++						903 heading 🔧 MAINTENANCE OPERATIONS, Value: 5
++							904 text 🔧 MAINTENANCE OPERATIONS
++						905 content list
++							906 link Description: Workflows, Value: javascript:void(0);
++							907 link Description: Maintenance Packages, Value: javascript:void(0);
++							908 link Description: Working Items, Value: javascript:void(0);
++						909 heading 📊 ANALYTICS & REPORTS, Value: 5
++							910 text 📊 ANALYTICS & REPORTS
++						911 content list
++							912 link Description: Dashboard, Value: javascript:void(0);
++							913 link Description: Reports, Value: javascript:void(0);
++					914 container
++						915 heading ⚡ QUICK ACTIONS, Value: 5
++							916 text ⚡ QUICK ACTIONS
++						917 link Description: New Working Item, Value: javascript:void(0);
++						918 link Description: New Workflow, Value: javascript:void(0);
++						919 link Description: Maintenance Request, Value: javascript:void(0);
++					920 text 
++					921 text 
+The focused UI element is 894 button (expanded) Description: Business Hub - Access all business functions, Secondary Actions: Collapse

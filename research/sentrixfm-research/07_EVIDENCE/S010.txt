@@ -1,0 +1,25 @@
+Browser tab: 1405043949, Title: "SentrixFm - Business Process Management", URL: "https://sentrixfm.com/manager/business/operations/my-tasks".
+The following is a diff from the previous accessibility tree with ~ and + representing changed and added elements, respectively. Removed elements are summarized by ID range.
+Removed element IDs: 773-774, 781, 784-785
+~					696 tab (selectable, settable, boolean) Description: WORK_ORDERS.FORM.TABS.SOP_PROCEDURES
+Tab complete, Value: 0
+SOP & Procedures
+~					697 tab (selected, settable, boolean) Description: WORK_ORDERS.FORM.TABS.ATTACHMENTS, Value: 1
++						773 text  Attachments 
++						774 container Tab complete
+~				775 container wo-tab-4
+~					776 heading  Attachments, Value: 6
+~						777 text 
+~						778 text Attachments
+~					779 text Upload relevant documents, photos, and files to support the maintenance task.
+~					780 container
++						781 text  Please save the work order before attaching files
+~					782 container
+~						783 text  Drag & drop images here or click to browse Supports: JPG, PNG, GIF, WebP (Max 5MB)
++						784 button (disabled)  Upload
++							785 text 
++							786 text Upload
++					787 text 2
++					788 text ATTACHMENTS.NO_ATTACHMENTS
++					789 text ATTACHMENTS.UPLOAD_HINT
+The focused UI element is 697 tab (selected, settable, boolean) Description: WORK_ORDERS.FORM.TABS.ATTACHMENTS, Value: 1

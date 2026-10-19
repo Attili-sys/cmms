@@ -1,0 +1,527 @@
+Browser tab: 1405043949, Title: "SentrixFm - Business Process Management", URL: "https://sentrixfm.com/manager/business/operations/ppm-scheduled?serviceType=hard".
+1 AXWebArea SentrixFm - Business Process Management, URL: sentrixfm.com/manager/business/operations/ppm-scheduled?serviceType=hard
+	2 container
+		3 container layout-wrapper
+			4 container page-topbar
+				5 link Description: SentrixFM demo, Value: sentrixfm.com/manager/
+				6 button , ID: vertical-menu-btn
+					7 text 
+				8 container
+					9 text field (settable)
+					450 text 
+				11 button Select location
+					12 text 
+					13 text Main Office
+					14 text 
+					15 text  Main
+					16 text T
+				17 button (collapsed) Description: Business Hub - Access all business functions, Secondary Actions: Expand
+				18 pop up button (collapsed) Header Language, ID: page-header-user-dropdown, Secondary Actions: Expand
+					19 image Header Language
+				20 pop up button (collapsed) , Secondary Actions: Expand
+					21 text 
+				22 button 
+					23 text 
+				24 pop up button (collapsed) , ID: page-header-notifications-dropdown, Secondary Actions: Expand
+					563 text 
+				26 pop up button (collapsed) SentrixFM Avatar, ID: page-header-user-dropdown, Secondary Actions: Expand
+					27 image SentrixFM Avatar
+			28 container
+				29 container scrollable content
+					30 content list side-menu
+						31 text DASHBOARD
+						32 link Description:  Analytics Dashboard, Value: sentrixfm.com/manager/dashboard
+						33 link Description:  Location Dashboard, Value: sentrixfm.com/manager/dashboards/location-dashboard
+						34 link (collapsed) Description:  Reporting , Value: sentrixfm.com/manager/business/reports, Secondary Actions: Expand
+						35 text FACILITY STRUCTURE
+						36 link Description:  Locations / Sublocations, Value: sentrixfm.com/manager/business/locations
+						37 link Description:  Store & Inventory, Value: sentrixfm.com/manager/business/store
+						38 link Description:  Assets, Value: sentrixfm.com/manager/business/assets
+						39 link Description: D Consumables, Value: sentrixfm.com/manager/business/store/consumables
+						40 text WORK MANAGEMENT
+						41 link Description:  My Tasks, Value: sentrixfm.com/manager/business/operations/my-tasks
+						42 container
+							43 link (collapsed) Description:  Hard Service , Value: javascript:void(0);, Secondary Actions: Expand
+							44 content list
+								45 link Description:  Work Orders, Value: sentrixfm.com/manager/business/operations/work-orders?serviceType=hard
+								46 link Description:  PPM Scheduled, Value: sentrixfm.com/manager/business/operations/ppm-scheduled?serviceType=hard
+								47 link Description:  Inspections, Value: sentrixfm.com/manager/business/operations/inspections?serviceType=hard
+						48 link (collapsed) Description:  Soft Service , Value: javascript:void(0);, Secondary Actions: Expand
+						49 link Description:  Maintenance Requests, Value: sentrixfm.com/manager/business/maintenance-requests
+						50 link Description:  Categories, Value: sentrixfm.com/manager/business/categories
+						51 link Description: ( SOP Management, Value: sentrixfm.com/manager/business/operations/sop-management
+						52 text WORKFLOWS & PROCEDURES
+						53 link (collapsed) Description:  Workflows , Value: javascript:void(0);, Secondary Actions: Expand
+						54 text ORGANIZATION
+						55 link (collapsed) Description:  User Management , Value: javascript:void(0);, Secondary Actions: Expand
+						56 link (collapsed) Description:  Roles and Permissions , Value: javascript:void(0);, Secondary Actions: Expand
+						57 text COMMUNICATION
+						58 link Description:  Location Chat, Value: sentrixfm.com/manager/chat
+						59 link Description:  Demo AI, Value: sentrixfm.com/manager/business/utilities/company-ai-chat
+						60 link Description: ` File Manager, Value: sentrixfm.com/manager/business/utilities/file-manager
+						61 link (collapsed) Description:  Email Center , Value: javascript:void(0);, Secondary Actions: Expand
+						62 text BUSINESS OPERATIONS
+						63 link (collapsed) Description:  Projects , Value: javascript:void(0);, Secondary Actions: Expand
+						64 link (collapsed) Description:  Invoices , Value: javascript:void(0);, Secondary Actions: Expand
+						65 link Description:  Settings, Value: sentrixfm.com/manager/business/settings
+			66 container
+				67 container
+					68 text M
+					69 heading PPM SCHEDULED, Value: 4
+						70 text PPM SCHEDULED
+					71 text PPM_SCHEDULED.STATS_SUBTITLE
+					72 content list
+						73 link Description:  Home, Value: javascript:void(0);
+						74 container
+							75 text /
+							76 link Description: E Business Hub, Value: javascript:void(0);
+						77 container
+							78 text /
+							79 link Description: ~ Operations, Value: javascript:void(0);
+						80 container
+							81 text / R PPM_SCHEDULED.LIST_TITLE
+					82 container Filter options
+						83 button Advanced Filter
+					84 button PPM_SCHEDULED.CREATE_TASK
+					85 button Z, Help: Refresh
+				86 container
+					87 text PPM_SCHEDULED.STATS.TOTAL
+					88 heading 12, Value: 4
+						89 text 12
+					90 text R
+				91 container
+					92 text PPM_SCHEDULED.STATS.ACTIVE
+					93 heading 12, Value: 4
+						94 text 12
+					95 text Z
+				96 container
+					97 text PPM_SCHEDULED.STATS.COMPLETED
+					98 heading 0, Value: 4
+						99 text 0
+					100 text S
+				101 container
+					102 text PPM_SCHEDULED.STATS.OVERDUE
+					103 heading 0, Value: 4
+						104 text 0
+					105 text Y
+				106 container
+					107 button  PPM_SCHEDULED.FILTERS.ALL
+						108 text 
+						109 text  PPM_SCHEDULED.FILTERS.ALL
+					110 button S PPM_SCHEDULED.FILTERS.PREVENTIVE
+						111 text S
+						112 text  PPM_SCHEDULED.FILTERS.PREVENTIVE
+					113 button  PPM_SCHEDULED.FILTERS.PREDICTIVE
+						114 text 
+						115 text  PPM_SCHEDULED.FILTERS.PREDICTIVE
+					116 button  Table View
+						117 text 
+						118 text  Table View
+					119 button  Kanban View
+						120 text 
+						121 text  Kanban View
+					122 button M Calendar View
+						123 text M
+						124 text  Calendar View
+				125 container
+					126 table
+						127 row
+							128 cell
+								129 checkbox (settable, integer) 0
+							130 cell
+								131 text 
+								132 text PPM_SCHEDULED.TABLE.COLUMNS.PPM_SCHEDULED
+								133 text 
+							134 cell
+								135 text 
+								136 text PPM_SCHEDULED.TABLE.COLUMNS.STATUS
+								137 text 
+							138 cell
+								139 text 
+								140 text PPM_SCHEDULED.TABLE.COLUMNS.ASSIGNEE
+								141 text 
+							142 cell
+								143 text 
+								144 text PPM_SCHEDULED.TABLE.COLUMNS.DUE_DATE
+								145 text 
+							146 cell
+								147 text 
+								148 text PPM_SCHEDULED.TABLE.COLUMNS.FREQUENCY
+								149 text 
+							150 cell
+								151 text 
+								152 text PPM_SCHEDULED.TABLE.COLUMNS.NEXT_SCHEDULED
+								153 text 
+							154 cell
+								155 text 
+								156 text PPM_SCHEDULED.TABLE.COLUMNS.INTERVAL
+								157 text 
+							158 cell
+								159 text 
+								160 text PPM_SCHEDULED.TABLE.COLUMNS.PRIORITY
+								161 text 
+							162 cell
+								163 text 
+								164 text PPM_SCHEDULED.TABLE.COLUMNS.LABELS
+							165 cell
+								166 text 
+								167 text PPM_SCHEDULED.TABLE.COLUMNS.ACTIONS
+						168 row
+							169 cell
+								170 checkbox (settable, integer) 0
+							171 cell
+								172 text 
+								173 text Preventive Hard - Quarterly HVAC Inspection
+							174 cell
+								175 text ^  Scheduled
+							176 cell
+								177 text 
+								178 text  PPM_SCHEDULED.COMMON.UNASSIGNED
+							179 cell
+								180 container
+									181 text M Nov 16, 2026
+							182 cell
+								183 text Quarterly
+							184 cell
+								185 container
+									186 text Nov 16, 2026
+									187 text PPM_SCHEDULED.COMMON.DUE_IN_DAYS
+							188 cell
+								189 container
+									190 text Z  14 PPM_SCHEDULED.TABLE.DAYS
+							191 cell
+								192 text   High
+							193 cell
+								194 text   Label 2   Urgent
+							195 cell
+								196 button Description: View details for Preventive Hard - Quarterly HVAC Inspection, Help: PPM_SCHEDULED.ACTIONS.VIEW
+								197 button Description: Edit Preventive Hard - Quarterly HVAC Inspection, Help: PPM_SCHEDULED.ACTIONS.EDIT
+								198 button Description: Delete Preventive Hard - Quarterly HVAC Inspection, Help: PPM_SCHEDULED.ACTIONS.DELETE
+						199 row
+							200 cell
+								201 checkbox (settable, integer) 0
+							202 cell
+								203 text 
+								204 text Preventive Hard - Monthly Fire Safety Check
+							205 cell
+								206 text ^  Scheduled
+							207 cell
+								208 text 
+								209 text  PPM_SCHEDULED.COMMON.UNASSIGNED
+							210 cell
+								211 container
+									212 text M Feb 10, 2027
+							213 cell
+								214 text Monthly
+							215 cell
+								216 container
+									217 text Feb 10, 2027
+									218 text PPM_SCHEDULED.COMMON.DUE_IN_DAYS
+							219 cell
+								220 container
+									221 text Z  7 PPM_SCHEDULED.TABLE.DAYS
+							222 cell
+								223 text ^  Critical
+							224 cell
+								225 text   Label 2   Label 5
+							226 cell
+								227 button Description: View details for Preventive Hard - Monthly Fire Safety Check, Help: PPM_SCHEDULED.ACTIONS.VIEW
+								228 button Description: Edit Preventive Hard - Monthly Fire Safety Check, Help: PPM_SCHEDULED.ACTIONS.EDIT
+								229 button Description: Delete Preventive Hard - Monthly Fire Safety Check, Help: PPM_SCHEDULED.ACTIONS.DELETE
+						230 row
+							231 cell
+								232 checkbox (settable, integer) 0
+							233 cell
+								234 text 
+								235 text Predictive Hard - Vibration Analysis Schedule
+							236 cell
+								237 text ^  Scheduled
+							238 cell
+								239 text 
+								240 text  PPM_SCHEDULED.COMMON.UNASSIGNED
+							241 cell
+								242 container
+									243 text M Mar 07, 2027
+							244 cell
+								245 text Quarterly
+							246 cell
+								247 container
+									248 text Mar 07, 2027
+									249 text PPM_SCHEDULED.COMMON.DUE_IN_DAYS
+							250 cell
+								251 container
+									252 text Z  30 PPM_SCHEDULED.TABLE.DAYS
+							253 cell
+								254 text ^  Low
+							255 cell
+								256 text   Label 4   Urgent
+							257 cell
+								258 button Description: View details for Predictive Hard - Vibration Analysis Schedule, Help: PPM_SCHEDULED.ACTIONS.VIEW
+								259 button Description: Edit Predictive Hard - Vibration Analysis Schedule, Help: PPM_SCHEDULED.ACTIONS.EDIT
+								260 button Description: Delete Predictive Hard - Vibration Analysis Schedule, Help: PPM_SCHEDULED.ACTIONS.DELETE
+						261 row
+							262 cell
+								263 checkbox (settable, integer) 0
+							264 cell
+								265 text 
+								266 text Predictive Hard - Thermal Imaging Inspection
+							267 cell
+								268 text ^  Scheduled
+							269 cell
+								270 text 
+								271 text  PPM_SCHEDULED.COMMON.UNASSIGNED
+							272 cell
+								273 container
+									274 text M Mar 13, 2027
+							275 cell
+								276 text semi annually
+							277 cell
+								278 container
+									279 text Mar 13, 2027
+									280 text PPM_SCHEDULED.COMMON.DUE_IN_DAYS
+							281 cell
+								282 container
+									283 text Z  7 PPM_SCHEDULED.TABLE.DAYS
+							284 cell
+								285 text ^  Critical
+							286 cell
+								287 text   Label 3   Label 5
+							288 cell
+								289 button Description: View details for Predictive Hard - Thermal Imaging Inspection, Help: PPM_SCHEDULED.ACTIONS.VIEW
+								290 button Description: Edit Predictive Hard - Thermal Imaging Inspection, Help: PPM_SCHEDULED.ACTIONS.EDIT
+								291 button Description: Delete Predictive Hard - Thermal Imaging Inspection, Help: PPM_SCHEDULED.ACTIONS.DELETE
+						292 row
+							293 cell
+								294 checkbox (settable, integer) 0
+							295 cell
+								296 text 
+								297 text Predictive Hard - Equipment Monitoring Schedule
+							298 cell
+								299 text ^  Scheduled
+							300 cell
+								301 text 
+								302 text  PPM_SCHEDULED.COMMON.UNASSIGNED
+							303 cell
+								304 container
+									305 text M May 06, 2027
+							306 cell
+								307 text Monthly
+							308 cell
+								309 container
+									310 text May 06, 2027
+									311 text PPM_SCHEDULED.COMMON.DUE_IN_DAYS
+							312 cell
+								313 container
+									314 text Z  90 PPM_SCHEDULED.TABLE.DAYS
+							315 cell
+								316 text ^  Critical
+							317 cell
+								318 text   Label 1   Label 2
+							319 cell
+								320 button Description: View details for Predictive Hard - Equipment Monitoring Schedule, Help: PPM_SCHEDULED.ACTIONS.VIEW
+								321 button Description: Edit Predictive Hard - Equipment Monitoring Schedule, Help: PPM_SCHEDULED.ACTIONS.EDIT
+								322 button Description: Delete Predictive Hard - Equipment Monitoring Schedule, Help: PPM_SCHEDULED.ACTIONS.DELETE
+						323 row
+							324 cell
+								325 checkbox (settable, integer) 0
+							326 cell
+								327 text 
+								328 text Preventive Hard - Annual Equipment Calibration
+							329 cell
+								330 text ^  Scheduled
+							331 cell
+								332 text 
+								333 text  PPM_SCHEDULED.COMMON.UNASSIGNED
+							334 cell
+								335 container
+									336 text M Jul 06, 2027
+							337 cell
+								338 text yearly
+							339 cell
+								340 container
+									341 text Jul 06, 2027
+									342 text PPM_SCHEDULED.COMMON.DUE_IN_DAYS
+							343 cell
+								344 container
+									345 text Z  30 PPM_SCHEDULED.TABLE.DAYS
+							346 cell
+								347 text ^  Medium
+							348 cell
+								349 text   Label 4   Label 5
+							350 cell
+								351 button Description: View details for Preventive Hard - Annual Equipment Calibration, Help: PPM_SCHEDULED.ACTIONS.VIEW
+								352 button Description: Edit Preventive Hard - Annual Equipment Calibration, Help: PPM_SCHEDULED.ACTIONS.EDIT
+								353 button Description: Delete Preventive Hard - Annual Equipment Calibration, Help: PPM_SCHEDULED.ACTIONS.DELETE
+						354 row
+							355 cell
+								356 checkbox (settable, integer) 0
+							357 cell
+								358 text 
+								359 text Equipment Inspection Task
+								360 text PPM_SCHEDULED.EXECUTION_RULES.WORKFLOW_RELATED
+								361 container PPM_SCHEDULED.EXECUTION_RULES.PACKAGE_RULES
+									362 text S  PPM_SCHEDULED.EXECUTION_RULES.HAS_RULES
+							363 cell
+								364 text ^  PPM_SCHEDULED.COMMON.N_A
+							365 cell
+								366 text 
+								367 text  PPM_SCHEDULED.COMMON.UNASSIGNED
+							368 cell
+								369 text M  No due date
+							370 cell
+								371 text PPM_SCHEDULED.COMMON.N_A
+							372 cell
+								373 text PPM_SCHEDULED.COMMON.NOT_SCHEDULED
+							374 cell
+								375 text Z  PPM_SCHEDULED.COMMON.N_A
+							376 cell
+								377 text   High
+							378 cell
+								379 text   Label 5   Urgent
+							380 cell
+								381 button Description: View details for Equipment Inspection Task, Help: PPM_SCHEDULED.ACTIONS.VIEW
+								382 button Description: Edit Equipment Inspection Task, Help: PPM_SCHEDULED.ACTIONS.EDIT
+								383 button Description: Delete Equipment Inspection Task, Help: PPM_SCHEDULED.ACTIONS.DELETE
+								384 button PPM_SCHEDULED.ACTIONS.FORCE_SYNC
+						385 row
+							386 cell
+								387 checkbox (settable, integer) 0
+							388 cell
+								389 text 
+								390 text UPS & Battery Component Replacement Task
+								391 text PPM_SCHEDULED.EXECUTION_RULES.WORKFLOW_RELATED
+								392 container PPM_SCHEDULED.EXECUTION_RULES.PACKAGE_RULES
+									393 text S  PPM_SCHEDULED.EXECUTION_RULES.HAS_RULES
+							394 cell
+								395 text ^  PPM_SCHEDULED.COMMON.N_A
+							396 cell
+								397 text 
+								398 text  PPM_SCHEDULED.COMMON.UNASSIGNED
+							399 cell
+								400 text M  No due date
+							401 cell
+								402 text PPM_SCHEDULED.COMMON.N_A
+							403 cell
+								404 text PPM_SCHEDULED.COMMON.NOT_SCHEDULED
+							405 cell
+								406 text Z  PPM_SCHEDULED.COMMON.N_A
+							407 cell
+								408 text ^  Low
+							409 cell
+								410 text ^  Important   Label 4
+							411 cell
+								412 button Description: View details for UPS & Battery Component Replacement Task, Help: PPM_SCHEDULED.ACTIONS.VIEW
+								413 button Description: Edit UPS & Battery Component Replacement Task, Help: PPM_SCHEDULED.ACTIONS.EDIT
+								414 button Description: Delete UPS & Battery Component Replacement Task, Help: PPM_SCHEDULED.ACTIONS.DELETE
+								415 button PPM_SCHEDULED.ACTIONS.FORCE_SYNC
+					416 text Showing 1 to 8 of 8 entries
+				417 container
+					418 text © 2026 SentrixFm. All rights reserved.  v1.2
+		419 container
+			420 container scrollable content
+				421 link javascript:void(0);
+				422 heading Settings, Value: 5
+					423 text Settings
+				424 heading Layout, Value: 6
+					425 text Layout
+				426 checkbox (settable, integer) Description: Vertical, Value: 1, ID: is-layout
+				427 heading Width, Value: 6
+					428 text Width
+				429 radio button (settable, integer) Description: Fluid, Value: 1, ID: layout-width-fuild
+				430 radio button (settable, integer) Description: Boxed, Value: 0, ID: layout-width-boxed
+				431 radio button (settable, integer) Description: Scrolable, Value: 0, ID: layout-width-scrollable
+				432 heading Sidebar Color, Value: 6
+					433 text Sidebar Color
+				434 radio button (settable, integer) Description: Light, Value: 0, ID: sidebar-color-light
+				435 radio button (settable, integer) Description: Dark, Value: 1, ID: sidebar-color-dark
+				436 radio button (settable, integer) Description: Compact, Value: 0, ID: sidebar-color-brand
+				437 radio button (settable, integer) Description: Icon, Value: 0, ID: sidebar-color-icon
+				438 radio button (settable, integer) Description: Colored, Value: 0, ID: sidebar-color
+				439 heading Theme Mode, Value: 6
+					440 text Theme Mode
+				441 radio button (settable, integer) Description: Light, Value: 1, ID: theme-color-light
+				442 radio button (settable, integer) Description: Dark, Value: 0, ID: theme-color-dark
+				443 heading Choose Layouts, Value: 6
+					444 text Choose Layouts
+				445 link
+				446 link
+				447 link
+		448 button Open AI Assistant
+			449 text 
+		452 container
+			453 heading M PPM_SCHEDULED.FORM.CREATE_TITLE, Value: 5
+				515 text M  PPM_SCHEDULED.FORM.CREATE_TITLE
+			455 button ×
+				456 text ×
+			457 container
+				458 tab group PPM_SCHEDULED.FORM.TABS_NAVIGATION
+					459 tab (selectable, settable, boolean) Description: PPM_SCHEDULED.FORM.TABS.DETAILS *, Value: 0
+					460 tab (selectable, settable, boolean) Description: PPM_SCHEDULED.FORM.TABS.LOCATION_ASSET * - 1 errors
+1 errors, Value: 0
+PPM_SCHEDULED.FORM.TABS.LOCATION_ASSET *
+1
+					461 tab (selected, settable, boolean) Description: PPM_SCHEDULED.FORM.TABS.SCHEDULING *, Value: 1
+					462 tab (selectable, settable, boolean) Description: PPM_SCHEDULED.FORM.TABS.LIFECYCLE
+Tab complete, Value: 0
+PPM_SCHEDULED.FORM.TABS.LIFECYCLE
+					463 tab (selectable, settable, boolean) Description: Spare Parts
+Tab complete, Value: 0
+Spare Parts
+					464 tab (selectable, settable, boolean) Description: PPM_SCHEDULED.FORM.TABS.INCOMING_TASKS - 1 errors
+1 errors, Value: 0
+PPM_SCHEDULED.FORM.TABS.INCOMING_TASKS
+1
+					465 tab (selectable, settable, boolean) Description: PPM_SCHEDULED.FORM.TABS.SOPS *
+Tab complete, Value: 0
+PPM_SCHEDULED.FORM.TABS.SOPS *
+					466 tab (selectable, settable, boolean) Description: PPM_SCHEDULED.FORM.TABS.ATTACHMENTS, Value: 0
+				517 container ppm-tab-2
+					518 heading  PPM_SCHEDULED.FORM.CUSTOM_SCHEDULING, Value: 6
+						519 text 
+						520 text PPM_SCHEDULED.FORM.CUSTOM_SCHEDULING
+					521 container
+						522 text PPM_SCHEDULED.FORM.REQUIRED_MONTHS
+						523 button (collapsed)  PPM_SCHEDULED.FORM.SELECT_MONTHS , Secondary Actions: Expand
+							524 text 
+							525 text PPM_SCHEDULED.FORM.SELECT_MONTHS
+							526 text 
+					527 container
+						528 text PPM_SCHEDULED.FORM.REQUIRED_WEEKS
+						529 button (collapsed)  PPM_SCHEDULED.FORM.SELECT_WEEKS , Secondary Actions: Expand
+							530 text 
+							531 text PPM_SCHEDULED.FORM.SELECT_WEEKS
+							532 text 
+					533 container
+						534 text PPM_SCHEDULED.FORM.REQUIRED_DAYS
+						535 button (collapsed)  PPM_SCHEDULED.FORM.SELECT_DAYS , Secondary Actions: Expand
+							536 text 
+							537 text PPM_SCHEDULED.FORM.SELECT_DAYS
+							538 text 
+					539 heading  PPM_SCHEDULED.FORM.DATE_RANGE, Value: 6
+						540 text 
+						541 text PPM_SCHEDULED.FORM.DATE_RANGE
+					542 container
+						543 text PPM_SCHEDULED.FORM.START_ON  *
+						544 text field (settable)
+					545 container
+						546 text PPM_SCHEDULED.FORM.UNTIL  *
+						547 text field (settable)
+					548 container
+						549 text PPM_SCHEDULED.FORM.EXECUTION_TIME  *
+						550 time field (settable) Value: 09:00, ID: tn-input-26yen5ssa
+							551 container
+								552 stepper
+								553 stepper
+								554 stepper
+							555 pop up button Show time picker
+					556 container
+						557 text PPM_SCHEDULED.FORM.EXECUTION_TIMEZONE
+						558 button (collapsed) PPM_SCHEDULED.FORM.EXECUTION_TIMEZONE, ID: tn-dropdown-8g3xyx36n, Secondary Actions: Expand
+							559 text 
+							560 text Asia/Qatar
+							561 text 
+						562 text PPM_SCHEDULED.FORM.EXECUTION_TIMEZONE_HELP
+			512 button Cancel
+			513 button (disabled) Create
+
+The focused UI element is 461 tab (selected, settable, boolean) Description: PPM_SCHEDULED.FORM.TABS.SCHEDULING *, Value: 1

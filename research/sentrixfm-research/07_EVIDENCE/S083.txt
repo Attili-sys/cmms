@@ -1,0 +1,9 @@
+Browser tab: 1405043949, Title: "SentrixFm - Business Process Management", URL: "https://sentrixfm.com/manager/business/utilities/file-manager".
+1 AXWebArea SentrixFm - Business Process Management, URL: sentrixfm.com/manager/business/utilities/file-manager
+	2 container Not Found
+		3 heading Not Found, Value: 2, ID: swal2-title
+			4 text Not Found
+		5 text Cannot GET /api/storage/browse/location/location-7eff1521-07fa-4093-97fa-175efdc2539e?types=location,work-orders,assets,ppm,sop-templates,company-settings
+		6 button OK
+
+The focused UI element is 6 button OK

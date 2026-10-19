@@ -1,0 +1,69 @@
+Browser tab: 1405043949, Title: "SentrixFm - Business Process Management", URL: "https://sentrixfm.com/manager/business/operations/my-tasks".
+The following is a diff from the previous accessibility tree with ~ and + representing changed and added elements, respectively. Removed elements are summarized by ID range.
+Removed element IDs: 451, 464-466, 501, 504, 507, 509, 512, 514, 516
++					756 text 
++						757 text 
++						758 text 
++						759 text M
++							760 text 
++							761 text `
++							762 text   Unassigned
++							763 text Y Oct 17, 2026
++							764 text ^  Pending
++							765 text   High
++							766 text   Label 1 ^  Important
++		767 container
++			768 text 
++			769 heading Corrective Hard - Mechanical System Failure, Value: 4
++				770 text Corrective Hard - Mechanical System Failure
++			771 button m, Help: View Full Details
++				772 text m
++			773 button , Help: Expand
++				774 text 
++			775 button , Help: Close
++				776 text 
++			777 heading Corrective Hard - Mechanical System Failure, Value: 5
++				778 text Corrective Hard - Mechanical System Failure
++			779 text Corrective maintenance for hard service mechanical system breakdown
++			780 text (
++			781 text Pending
++			782 text ^
++			783 text High
++			784 container This work order is standalone (not part of a workflow)
++				785 text (
++				786 text Standalone
++			787 heading  BASIC INFORMATION, Value: 6
++				788 text 
++				789 text BASIC INFORMATION
++			790 text Y
++			791 text CREATED AT: 10/17/2026, 9:56:04 PM UPDATED AT: 10/17/2026, 9:56:04 PM
++			792 heading  ASSIGNMENT, Value: 6
++				793 text 
++				794 text ASSIGNMENT
++			795 text 
++			796 text ASSIGNED TO:   Unassigned
++			797 heading  CAFM CLASSIFICATION, Value: 6
++				798 text 
++				799 text CAFM CLASSIFICATION
++			800 text 
++			801 text MAINTENANCE TYPE: Corrective
++			802 text 
++			803 text SERVICE TYPE:
++			804 text ~
++			805 text Hard
++			806 heading ` CONTEXT, Value: 6
++				807 text `
++				808 text CONTEXT
++			809 text `
++			810 text CATEGORY / WORKFLOW:
++			811 text `
++			812 text Electrical Systems
++			813 heading  LABELS, Value: 6
++				814 text 
++				815 text LABELS
++			816 text 
++			817 text Label 1
++			818 text ^
++			819 text Important
++			820 button Close
+The focused UI element is 518 button Description: View details for Corrective Hard - Mechanical System Failure, Help: View

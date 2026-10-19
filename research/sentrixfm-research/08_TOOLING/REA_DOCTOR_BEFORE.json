@@ -1,0 +1,62 @@
+{
+  "healthy": false,
+  "scope": {
+    "mode": "explicit",
+    "clients": [
+      "codex"
+    ],
+    "providers": [],
+    "skill": false,
+    "target": null
+  },
+  "scope_checks": [
+    {
+      "name": "node",
+      "ok": true,
+      "classification": "healthy",
+      "detail": "26.11.1",
+      "details": {
+        "runtime": "node",
+        "version": "26.11.1"
+      }
+    },
+    {
+      "name": "registration:codex",
+      "ok": false,
+      "classification": "config_drift",
+      "detail": "/Users/attiliab/.codex/config.toml",
+      "remediation": "Run rea setup to refresh this registration, then restart the client."
+    }
+  ],
+  "identity": {
+    "cli_package_version": "6.5.0",
+    "skill": {
+      "installed_version": "42",
+      "installed_tool_count": 207,
+      "state": "aligned",
+      "remediation": null
+    },
+    "registrations": [
+      {
+        "client": "codex",
+        "config_path": "/Users/attiliab/.codex/config.toml",
+        "command": [],
+        "state": "missing",
+        "remediation": "Run rea setup to refresh this registration, then restart the client."
+      },
+      {
+        "client": "cursor",
+        "config_path": "/Users/attiliab/.cursor/mcp.json",
+        "command": [
+          "npx",
+          "-y",
+          "rea-agents@6.5.0",
+          "mcp"
+        ],
+        "package_reference": "rea-agents@6.5.0",
+        "state": "aligned",
+        "remediation": null
+      }
+    ]
+  }
+}

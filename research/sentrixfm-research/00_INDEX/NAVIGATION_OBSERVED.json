@@ -1,0 +1,1472 @@
+{
+  "Hard service expanded": [
+    {
+      "href": "/manager/",
+      "text": "demo"
+    },
+    {
+      "href": "/manager/dashboard",
+      "text": "Analytics Dashboard"
+    },
+    {
+      "href": "/manager/dashboards/location-dashboard",
+      "text": "Location Dashboard"
+    },
+    {
+      "href": "/manager/business/reports",
+      "text": "Reporting"
+    },
+    {
+      "href": "/manager/business/locations",
+      "text": "Locations / Sublocations"
+    },
+    {
+      "href": "/manager/business/store",
+      "text": "Store & Inventory"
+    },
+    {
+      "href": "/manager/business/assets",
+      "text": "Assets"
+    },
+    {
+      "href": "/manager/business/store/consumables",
+      "text": "Consumables"
+    },
+    {
+      "href": "/manager/business/operations/my-tasks",
+      "text": "My Tasks"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Hard Service"
+    },
+    {
+      "href": "/manager/business/operations/work-orders?serviceType=hard",
+      "text": "Work Orders"
+    },
+    {
+      "href": "/manager/business/operations/ppm-scheduled?serviceType=hard",
+      "text": "PPM Scheduled"
+    },
+    {
+      "href": "/manager/business/operations/inspections?serviceType=hard",
+      "text": "Inspections"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Soft Service"
+    },
+    {
+      "href": "/manager/business/maintenance-requests",
+      "text": "Maintenance Requests"
+    },
+    {
+      "href": "/manager/business/categories",
+      "text": "Categories"
+    },
+    {
+      "href": "/manager/business/operations/sop-management",
+      "text": "SOP Management"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Workflows"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "User Management"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Roles and Permissions"
+    },
+    {
+      "href": "/manager/chat",
+      "text": "Location Chat"
+    },
+    {
+      "href": "/manager/business/utilities/company-ai-chat",
+      "text": "Demo AI"
+    },
+    {
+      "href": "/manager/business/utilities/file-manager",
+      "text": "File Manager"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Email Center"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Projects"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Invoices"
+    },
+    {
+      "href": "/manager/business/settings",
+      "text": "Settings"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Home"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Business Hub"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Operations"
+    },
+    {
+      "href": null,
+      "text": "First"
+    },
+    {
+      "href": null,
+      "text": "Previous"
+    },
+    {
+      "href": null,
+      "text": "1"
+    },
+    {
+      "href": null,
+      "text": "2"
+    },
+    {
+      "href": null,
+      "text": "Next"
+    },
+    {
+      "href": null,
+      "text": "Last"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": ""
+    },
+    {
+      "href": "//SentrixFm-v-light.angular.Wize Cube.com/",
+      "text": ""
+    },
+    {
+      "href": "//SentrixFm-v-dark.angular.Wize Cube.com/",
+      "text": ""
+    },
+    {
+      "href": "//SentrixFm-v-rtl.angular.Wize Cube.com/",
+      "text": ""
+    }
+  ],
+  "Soft service expanded": [
+    {
+      "href": "/manager/",
+      "text": "demo"
+    },
+    {
+      "href": "/manager/dashboard",
+      "text": "Analytics Dashboard"
+    },
+    {
+      "href": "/manager/dashboards/location-dashboard",
+      "text": "Location Dashboard"
+    },
+    {
+      "href": "/manager/business/reports",
+      "text": "Reporting"
+    },
+    {
+      "href": "/manager/business/locations",
+      "text": "Locations / Sublocations"
+    },
+    {
+      "href": "/manager/business/store",
+      "text": "Store & Inventory"
+    },
+    {
+      "href": "/manager/business/assets",
+      "text": "Assets"
+    },
+    {
+      "href": "/manager/business/store/consumables",
+      "text": "Consumables"
+    },
+    {
+      "href": "/manager/business/operations/my-tasks",
+      "text": "My Tasks"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Hard Service"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Soft Service"
+    },
+    {
+      "href": "/manager/business/operations/work-orders?serviceType=soft",
+      "text": "Work Orders"
+    },
+    {
+      "href": "/manager/business/operations/ppm-scheduled?serviceType=soft",
+      "text": "PPM Scheduled"
+    },
+    {
+      "href": "/manager/business/operations/inspections?serviceType=soft",
+      "text": "Inspections"
+    },
+    {
+      "href": "/manager/business/maintenance-requests",
+      "text": "Maintenance Requests"
+    },
+    {
+      "href": "/manager/business/categories",
+      "text": "Categories"
+    },
+    {
+      "href": "/manager/business/operations/sop-management",
+      "text": "SOP Management"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Workflows"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "User Management"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Roles and Permissions"
+    },
+    {
+      "href": "/manager/chat",
+      "text": "Location Chat"
+    },
+    {
+      "href": "/manager/business/utilities/company-ai-chat",
+      "text": "Demo AI"
+    },
+    {
+      "href": "/manager/business/utilities/file-manager",
+      "text": "File Manager"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Email Center"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Projects"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Invoices"
+    },
+    {
+      "href": "/manager/business/settings",
+      "text": "Settings"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Home"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Business Hub"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Operations"
+    },
+    {
+      "href": null,
+      "text": "First"
+    },
+    {
+      "href": null,
+      "text": "Previous"
+    },
+    {
+      "href": null,
+      "text": "1"
+    },
+    {
+      "href": null,
+      "text": "2"
+    },
+    {
+      "href": null,
+      "text": "Next"
+    },
+    {
+      "href": null,
+      "text": "Last"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": ""
+    },
+    {
+      "href": "//SentrixFm-v-light.angular.Wize Cube.com/",
+      "text": ""
+    },
+    {
+      "href": "//SentrixFm-v-dark.angular.Wize Cube.com/",
+      "text": ""
+    },
+    {
+      "href": "//SentrixFm-v-rtl.angular.Wize Cube.com/",
+      "text": ""
+    }
+  ],
+  "Workflows expanded": [
+    {
+      "href": "/manager/",
+      "text": "demo"
+    },
+    {
+      "href": "/manager/dashboard",
+      "text": "Analytics Dashboard"
+    },
+    {
+      "href": "/manager/dashboards/location-dashboard",
+      "text": "Location Dashboard"
+    },
+    {
+      "href": "/manager/business/reports",
+      "text": "Reporting"
+    },
+    {
+      "href": "/manager/business/locations",
+      "text": "Locations / Sublocations"
+    },
+    {
+      "href": "/manager/business/store",
+      "text": "Store & Inventory"
+    },
+    {
+      "href": "/manager/business/assets",
+      "text": "Assets"
+    },
+    {
+      "href": "/manager/business/store/consumables",
+      "text": "Consumables"
+    },
+    {
+      "href": "/manager/business/operations/my-tasks",
+      "text": "My Tasks"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Hard Service"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Soft Service"
+    },
+    {
+      "href": "/manager/business/maintenance-requests",
+      "text": "Maintenance Requests"
+    },
+    {
+      "href": "/manager/business/categories",
+      "text": "Categories"
+    },
+    {
+      "href": "/manager/business/operations/sop-management",
+      "text": "SOP Management"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Workflows"
+    },
+    {
+      "href": "/manager/business/workflows",
+      "text": "Workflow List"
+    },
+    {
+      "href": "/manager/business/maintenance-packages",
+      "text": "Maintenance Packages"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "User Management"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Roles and Permissions"
+    },
+    {
+      "href": "/manager/chat",
+      "text": "Location Chat"
+    },
+    {
+      "href": "/manager/business/utilities/company-ai-chat",
+      "text": "Demo AI"
+    },
+    {
+      "href": "/manager/business/utilities/file-manager",
+      "text": "File Manager"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Email Center"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Projects"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Invoices"
+    },
+    {
+      "href": "/manager/business/settings",
+      "text": "Settings"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Home"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Business Hub"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Operations"
+    },
+    {
+      "href": null,
+      "text": "First"
+    },
+    {
+      "href": null,
+      "text": "Previous"
+    },
+    {
+      "href": null,
+      "text": "1"
+    },
+    {
+      "href": null,
+      "text": "2"
+    },
+    {
+      "href": null,
+      "text": "Next"
+    },
+    {
+      "href": null,
+      "text": "Last"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": ""
+    },
+    {
+      "href": "//SentrixFm-v-light.angular.Wize Cube.com/",
+      "text": ""
+    },
+    {
+      "href": "//SentrixFm-v-dark.angular.Wize Cube.com/",
+      "text": ""
+    },
+    {
+      "href": "//SentrixFm-v-rtl.angular.Wize Cube.com/",
+      "text": ""
+    }
+  ],
+  "User management expanded": [
+    {
+      "href": "/manager/",
+      "text": "demo"
+    },
+    {
+      "href": "/manager/dashboard",
+      "text": "Analytics Dashboard"
+    },
+    {
+      "href": "/manager/dashboards/location-dashboard",
+      "text": "Location Dashboard"
+    },
+    {
+      "href": "/manager/business/reports",
+      "text": "Reporting"
+    },
+    {
+      "href": "/manager/business/locations",
+      "text": "Locations / Sublocations"
+    },
+    {
+      "href": "/manager/business/store",
+      "text": "Store & Inventory"
+    },
+    {
+      "href": "/manager/business/assets",
+      "text": "Assets"
+    },
+    {
+      "href": "/manager/business/store/consumables",
+      "text": "Consumables"
+    },
+    {
+      "href": "/manager/business/operations/my-tasks",
+      "text": "My Tasks"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Hard Service"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Soft Service"
+    },
+    {
+      "href": "/manager/business/maintenance-requests",
+      "text": "Maintenance Requests"
+    },
+    {
+      "href": "/manager/business/categories",
+      "text": "Categories"
+    },
+    {
+      "href": "/manager/business/operations/sop-management",
+      "text": "SOP Management"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Workflows"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "User Management"
+    },
+    {
+      "href": "/manager/business/user-groups",
+      "text": "Teams"
+    },
+    {
+      "href": "/manager/business/users",
+      "text": "Users"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Roles and Permissions"
+    },
+    {
+      "href": "/manager/chat",
+      "text": "Location Chat"
+    },
+    {
+      "href": "/manager/business/utilities/company-ai-chat",
+      "text": "Demo AI"
+    },
+    {
+      "href": "/manager/business/utilities/file-manager",
+      "text": "File Manager"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Email Center"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Projects"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Invoices"
+    },
+    {
+      "href": "/manager/business/settings",
+      "text": "Settings"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Home"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Business Hub"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Operations"
+    },
+    {
+      "href": null,
+      "text": "First"
+    },
+    {
+      "href": null,
+      "text": "Previous"
+    },
+    {
+      "href": null,
+      "text": "1"
+    },
+    {
+      "href": null,
+      "text": "2"
+    },
+    {
+      "href": null,
+      "text": "Next"
+    },
+    {
+      "href": null,
+      "text": "Last"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": ""
+    },
+    {
+      "href": "//SentrixFm-v-light.angular.Wize Cube.com/",
+      "text": ""
+    },
+    {
+      "href": "//SentrixFm-v-dark.angular.Wize Cube.com/",
+      "text": ""
+    },
+    {
+      "href": "//SentrixFm-v-rtl.angular.Wize Cube.com/",
+      "text": ""
+    }
+  ],
+  "Roles and permissions expanded": [
+    {
+      "href": "/manager/",
+      "text": "demo"
+    },
+    {
+      "href": "/manager/dashboard",
+      "text": "Analytics Dashboard"
+    },
+    {
+      "href": "/manager/dashboards/location-dashboard",
+      "text": "Location Dashboard"
+    },
+    {
+      "href": "/manager/business/reports",
+      "text": "Reporting"
+    },
+    {
+      "href": "/manager/business/locations",
+      "text": "Locations / Sublocations"
+    },
+    {
+      "href": "/manager/business/store",
+      "text": "Store & Inventory"
+    },
+    {
+      "href": "/manager/business/assets",
+      "text": "Assets"
+    },
+    {
+      "href": "/manager/business/store/consumables",
+      "text": "Consumables"
+    },
+    {
+      "href": "/manager/business/operations/my-tasks",
+      "text": "My Tasks"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Hard Service"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Soft Service"
+    },
+    {
+      "href": "/manager/business/maintenance-requests",
+      "text": "Maintenance Requests"
+    },
+    {
+      "href": "/manager/business/categories",
+      "text": "Categories"
+    },
+    {
+      "href": "/manager/business/operations/sop-management",
+      "text": "SOP Management"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Workflows"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "User Management"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Roles and Permissions"
+    },
+    {
+      "href": "/manager/business/roles-permissions-managements/roles",
+      "text": "Roles"
+    },
+    {
+      "href": "/manager/business/roles-permissions-managements/permissions",
+      "text": "Permissions"
+    },
+    {
+      "href": "/manager/business/roles-permissions-managements/matrix",
+      "text": "Permission Matrix"
+    },
+    {
+      "href": "/manager/chat",
+      "text": "Location Chat"
+    },
+    {
+      "href": "/manager/business/utilities/company-ai-chat",
+      "text": "Demo AI"
+    },
+    {
+      "href": "/manager/business/utilities/file-manager",
+      "text": "File Manager"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Email Center"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Projects"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Invoices"
+    },
+    {
+      "href": "/manager/business/settings",
+      "text": "Settings"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Home"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Business Hub"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Operations"
+    },
+    {
+      "href": null,
+      "text": "First"
+    },
+    {
+      "href": null,
+      "text": "Previous"
+    },
+    {
+      "href": null,
+      "text": "1"
+    },
+    {
+      "href": null,
+      "text": "2"
+    },
+    {
+      "href": null,
+      "text": "Next"
+    },
+    {
+      "href": null,
+      "text": "Last"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": ""
+    },
+    {
+      "href": "//SentrixFm-v-light.angular.Wize Cube.com/",
+      "text": ""
+    },
+    {
+      "href": "//SentrixFm-v-dark.angular.Wize Cube.com/",
+      "text": ""
+    },
+    {
+      "href": "//SentrixFm-v-rtl.angular.Wize Cube.com/",
+      "text": ""
+    }
+  ],
+  "Email center expanded": [
+    {
+      "href": "/manager/",
+      "text": "demo"
+    },
+    {
+      "href": "/manager/dashboard",
+      "text": "Analytics Dashboard"
+    },
+    {
+      "href": "/manager/dashboards/location-dashboard",
+      "text": "Location Dashboard"
+    },
+    {
+      "href": "/manager/business/reports",
+      "text": "Reporting"
+    },
+    {
+      "href": "/manager/business/locations",
+      "text": "Locations / Sublocations"
+    },
+    {
+      "href": "/manager/business/store",
+      "text": "Store & Inventory"
+    },
+    {
+      "href": "/manager/business/assets",
+      "text": "Assets"
+    },
+    {
+      "href": "/manager/business/store/consumables",
+      "text": "Consumables"
+    },
+    {
+      "href": "/manager/business/operations/my-tasks",
+      "text": "My Tasks"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Hard Service"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Soft Service"
+    },
+    {
+      "href": "/manager/business/maintenance-requests",
+      "text": "Maintenance Requests"
+    },
+    {
+      "href": "/manager/business/categories",
+      "text": "Categories"
+    },
+    {
+      "href": "/manager/business/operations/sop-management",
+      "text": "SOP Management"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Workflows"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "User Management"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Roles and Permissions"
+    },
+    {
+      "href": "/manager/chat",
+      "text": "Location Chat"
+    },
+    {
+      "href": "/manager/business/utilities/company-ai-chat",
+      "text": "Demo AI"
+    },
+    {
+      "href": "/manager/business/utilities/file-manager",
+      "text": "File Manager"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Email Center"
+    },
+    {
+      "href": "/manager/email/inbox",
+      "text": "Inbox"
+    },
+    {
+      "href": "/manager/email/read/1",
+      "text": "Read Email"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Projects"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Invoices"
+    },
+    {
+      "href": "/manager/business/settings",
+      "text": "Settings"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Home"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Business Hub"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Operations"
+    },
+    {
+      "href": null,
+      "text": "First"
+    },
+    {
+      "href": null,
+      "text": "Previous"
+    },
+    {
+      "href": null,
+      "text": "1"
+    },
+    {
+      "href": null,
+      "text": "2"
+    },
+    {
+      "href": null,
+      "text": "Next"
+    },
+    {
+      "href": null,
+      "text": "Last"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": ""
+    },
+    {
+      "href": "//SentrixFm-v-light.angular.Wize Cube.com/",
+      "text": ""
+    },
+    {
+      "href": "//SentrixFm-v-dark.angular.Wize Cube.com/",
+      "text": ""
+    },
+    {
+      "href": "//SentrixFm-v-rtl.angular.Wize Cube.com/",
+      "text": ""
+    }
+  ],
+  "Projects expanded": [
+    {
+      "href": "/manager/",
+      "text": "demo"
+    },
+    {
+      "href": "/manager/dashboard",
+      "text": "Analytics Dashboard"
+    },
+    {
+      "href": "/manager/dashboards/location-dashboard",
+      "text": "Location Dashboard"
+    },
+    {
+      "href": "/manager/business/reports",
+      "text": "Reporting"
+    },
+    {
+      "href": "/manager/business/locations",
+      "text": "Locations / Sublocations"
+    },
+    {
+      "href": "/manager/business/store",
+      "text": "Store & Inventory"
+    },
+    {
+      "href": "/manager/business/assets",
+      "text": "Assets"
+    },
+    {
+      "href": "/manager/business/store/consumables",
+      "text": "Consumables"
+    },
+    {
+      "href": "/manager/business/operations/my-tasks",
+      "text": "My Tasks"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Hard Service"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Soft Service"
+    },
+    {
+      "href": "/manager/business/maintenance-requests",
+      "text": "Maintenance Requests"
+    },
+    {
+      "href": "/manager/business/categories",
+      "text": "Categories"
+    },
+    {
+      "href": "/manager/business/operations/sop-management",
+      "text": "SOP Management"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Workflows"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "User Management"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Roles and Permissions"
+    },
+    {
+      "href": "/manager/chat",
+      "text": "Location Chat"
+    },
+    {
+      "href": "/manager/business/utilities/company-ai-chat",
+      "text": "Demo AI"
+    },
+    {
+      "href": "/manager/business/utilities/file-manager",
+      "text": "File Manager"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Email Center"
+    },
+    {
+      "href": "/manager/email/inbox",
+      "text": "Inbox"
+    },
+    {
+      "href": "/manager/email/read/1",
+      "text": "Read Email"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Projects"
+    },
+    {
+      "href": "/manager/projects/grid",
+      "text": "Project Grid"
+    },
+    {
+      "href": "/manager/projects/list",
+      "text": "Project List"
+    },
+    {
+      "href": "/manager/projects/overview",
+      "text": "Project Overview"
+    },
+    {
+      "href": "/manager/projects/create",
+      "text": "Create Project"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Invoices"
+    },
+    {
+      "href": "/manager/business/settings",
+      "text": "Settings"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Home"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Business Hub"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Operations"
+    },
+    {
+      "href": null,
+      "text": "First"
+    },
+    {
+      "href": null,
+      "text": "Previous"
+    },
+    {
+      "href": null,
+      "text": "1"
+    },
+    {
+      "href": null,
+      "text": "2"
+    },
+    {
+      "href": null,
+      "text": "Next"
+    },
+    {
+      "href": null,
+      "text": "Last"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": ""
+    },
+    {
+      "href": "//SentrixFm-v-light.angular.Wize Cube.com/",
+      "text": ""
+    },
+    {
+      "href": "//SentrixFm-v-dark.angular.Wize Cube.com/",
+      "text": ""
+    },
+    {
+      "href": "//SentrixFm-v-rtl.angular.Wize Cube.com/",
+      "text": ""
+    }
+  ],
+  "Invoices expanded": [
+    {
+      "href": "/manager/",
+      "text": "demo"
+    },
+    {
+      "href": "/manager/dashboard",
+      "text": "Analytics Dashboard"
+    },
+    {
+      "href": "/manager/dashboards/location-dashboard",
+      "text": "Location Dashboard"
+    },
+    {
+      "href": "/manager/business/reports",
+      "text": "Reporting"
+    },
+    {
+      "href": "/manager/business/locations",
+      "text": "Locations / Sublocations"
+    },
+    {
+      "href": "/manager/business/store",
+      "text": "Store & Inventory"
+    },
+    {
+      "href": "/manager/business/assets",
+      "text": "Assets"
+    },
+    {
+      "href": "/manager/business/store/consumables",
+      "text": "Consumables"
+    },
+    {
+      "href": "/manager/business/operations/my-tasks",
+      "text": "My Tasks"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Hard Service"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Soft Service"
+    },
+    {
+      "href": "/manager/business/maintenance-requests",
+      "text": "Maintenance Requests"
+    },
+    {
+      "href": "/manager/business/categories",
+      "text": "Categories"
+    },
+    {
+      "href": "/manager/business/operations/sop-management",
+      "text": "SOP Management"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Workflows"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "User Management"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Roles and Permissions"
+    },
+    {
+      "href": "/manager/chat",
+      "text": "Location Chat"
+    },
+    {
+      "href": "/manager/business/utilities/company-ai-chat",
+      "text": "Demo AI"
+    },
+    {
+      "href": "/manager/business/utilities/file-manager",
+      "text": "File Manager"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Email Center"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Projects"
+    },
+    {
+      "href": "/manager/projects/grid",
+      "text": "Project Grid"
+    },
+    {
+      "href": "/manager/projects/list",
+      "text": "Project List"
+    },
+    {
+      "href": "/manager/projects/overview",
+      "text": "Project Overview"
+    },
+    {
+      "href": "/manager/projects/create",
+      "text": "Create Project"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Invoices"
+    },
+    {
+      "href": "/manager/invoices/list",
+      "text": "Invoice List"
+    },
+    {
+      "href": "/manager/invoices/detail",
+      "text": "Invoice Detail"
+    },
+    {
+      "href": "/manager/business/settings",
+      "text": "Settings"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Home"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Business Hub"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Operations"
+    },
+    {
+      "href": null,
+      "text": "First"
+    },
+    {
+      "href": null,
+      "text": "Previous"
+    },
+    {
+      "href": null,
+      "text": "1"
+    },
+    {
+      "href": null,
+      "text": "2"
+    },
+    {
+      "href": null,
+      "text": "Next"
+    },
+    {
+      "href": null,
+      "text": "Last"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": ""
+    },
+    {
+      "href": "//SentrixFm-v-light.angular.Wize Cube.com/",
+      "text": ""
+    },
+    {
+      "href": "//SentrixFm-v-dark.angular.Wize Cube.com/",
+      "text": ""
+    },
+    {
+      "href": "//SentrixFm-v-rtl.angular.Wize Cube.com/",
+      "text": ""
+    }
+  ],
+  "Reporting expanded": [
+    {
+      "href": "/manager/",
+      "text": "demo"
+    },
+    {
+      "href": "/manager/dashboard",
+      "text": "Analytics Dashboard"
+    },
+    {
+      "href": "/manager/dashboards/location-dashboard",
+      "text": "Location Dashboard"
+    },
+    {
+      "href": "/manager/business/reports",
+      "text": "Reporting"
+    },
+    {
+      "href": "/manager/business/reports/standard-reports",
+      "text": "API Powered Reports"
+    },
+    {
+      "href": "/manager/business/locations",
+      "text": "Locations / Sublocations"
+    },
+    {
+      "href": "/manager/business/store",
+      "text": "Store & Inventory"
+    },
+    {
+      "href": "/manager/business/assets",
+      "text": "Assets"
+    },
+    {
+      "href": "/manager/business/store/consumables",
+      "text": "Consumables"
+    },
+    {
+      "href": "/manager/business/operations/my-tasks",
+      "text": "My Tasks"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Hard Service"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Soft Service"
+    },
+    {
+      "href": "/manager/business/maintenance-requests",
+      "text": "Maintenance Requests"
+    },
+    {
+      "href": "/manager/business/categories",
+      "text": "Categories"
+    },
+    {
+      "href": "/manager/business/operations/sop-management",
+      "text": "SOP Management"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Workflows"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "User Management"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Roles and Permissions"
+    },
+    {
+      "href": "/manager/chat",
+      "text": "Location Chat"
+    },
+    {
+      "href": "/manager/business/utilities/company-ai-chat",
+      "text": "Demo AI"
+    },
+    {
+      "href": "/manager/business/utilities/file-manager",
+      "text": "File Manager"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Email Center"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Projects"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Invoices"
+    },
+    {
+      "href": "/manager/invoices/list",
+      "text": "Invoice List"
+    },
+    {
+      "href": "/manager/invoices/detail",
+      "text": "Invoice Detail"
+    },
+    {
+      "href": "/manager/business/settings",
+      "text": "Settings"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Home"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Business Hub"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": "Operations"
+    },
+    {
+      "href": null,
+      "text": "First"
+    },
+    {
+      "href": null,
+      "text": "Previous"
+    },
+    {
+      "href": null,
+      "text": "1"
+    },
+    {
+      "href": null,
+      "text": "2"
+    },
+    {
+      "href": null,
+      "text": "Next"
+    },
+    {
+      "href": null,
+      "text": "Last"
+    },
+    {
+      "href": "javascript:void(0);",
+      "text": ""
+    },
+    {
+      "href": "//SentrixFm-v-light.angular.Wize Cube.com/",
+      "text": ""
+    },
+    {
+      "href": "//SentrixFm-v-dark.angular.Wize Cube.com/",
+      "text": ""
+    },
+    {
+      "href": "//SentrixFm-v-rtl.angular.Wize Cube.com/",
+      "text": ""
+    }
+  ]
+}

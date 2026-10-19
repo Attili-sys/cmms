@@ -1,0 +1,75 @@
+Browser tab: 1405043949, Title: "SentrixFm - Business Process Management", URL: "https://sentrixfm.com/manager/business/locations/edit/location-7eff1521-07fa-4093-97fa-175efdc2539e".
+The following is a diff from the previous accessibility tree with ~ and + representing changed and added elements, respectively. Removed elements are summarized by ID range.
+Removed element IDs: 398, 405, 408, 410
++					410 text 
++						411 text /
++						412 text /  Edit Location
++				413 button (disabled) Update
++				414 container
++					415 container
++						416 text Name  *
++						417 text field (settable) Value: Main Office, ID: tn-input-ammvv5u5d
++					418 container
++						419 text Manager  *
++						420 button (collapsed) Manager *, ID: tn-dropdown-bxxg4sccf, Secondary Actions: Expand
++							421 text Enter manager user ID
++							422 text 
++					423 container
++						424 text Address  *
++						425 text field (settable) tn-input-mtzqwokhx
++					426 container
++						427 text City  *
++						428 text field (settable) Value: London, ID: tn-input-0qkw7rdqu
++					429 container
++						430 text State/Province  *
++						431 text field (settable) tn-input-kvv05r20x
++					432 container
++						433 text Country  *
++						434 text field (settable) Value: UK, ID: tn-input-typbmf9yi
++					435 container
++						436 text Postal Code  *
++						437 text field (settable) tn-input-js6a1m3o4
++					438 container
++						439 text Description
++						440 text entry area (settable) Value: Headquarters, ID: tn-input-bizheftyi
++					441 container
++						442 text   LOCATIONS.FORM.HELP.MANAGER_REQUIRED_LEVEL0
++					443 container
++						444 text Location Image
++						445 text 
++						446 text Drag & drop image here or click to browse
++						447 text Supports: JPG, PNG, GIF, WebP (Max 5MB)
++						448 button  Choose Image
++							449 text 
++							450 text  Choose Image
++					451 heading  Coordinates, Value: 6
++						452 text 
++						453 text Coordinates
++					454 container
++						455 button  Get from Address
++							456 text 
++							457 text Get from Address
++						458 button  My Location
++							459 text 
++							460 text My Location
++						461 button 9 Clear
++							462 text 9
++							463 text Clear
++						464 button How to use the map
++						465 container
++							466 text  LATITUDE
++							467 stepper (settable, float) Value: 51.472564697265625, Details: 51.47256372
++						468 container
++							469 text  LONGITUDE
++							470 stepper (settable, float) Value: -0.16263628005981445, Details: -0.16263628
++						471 container
++							472 button Description: Marker, Help: Selected Location
++							473 container
++								474 button Zoom in
++								475 button Zoom out
++							476 container
++								477 link Description:  Leaflet, Help: A JavaScript library for interactive maps, Value: leafletjs.com/
++								478 text  © 
++								479 link Description: OpenStreetMap, Value: openstreetmap.org/copyright
++								480 text  contributors
+The focused UI element is 1 AXWebArea SentrixFm - Business Process Management, URL: sentrixfm.com/manager/business/locations/edit/location-7eff1521-07fa-4093-97fa-175efdc2539e

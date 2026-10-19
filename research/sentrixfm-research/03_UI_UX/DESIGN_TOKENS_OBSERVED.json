@@ -1,0 +1,871 @@
+{
+  "body": {
+    "class": "ng-tns-0-0",
+    "rect": {
+      "height": 729.3359375,
+      "width": 1280,
+      "x": 0,
+      "y": 0
+    },
+    "style": {
+      "backgroundColor": "rgb(248, 248, 251)",
+      "borderColor": "rgb(73, 80, 87)",
+      "borderRadius": "0px",
+      "boxShadow": "none",
+      "color": "rgb(73, 80, 87)",
+      "fontFamily": "Poppins, sans-serif",
+      "fontSize": "13px",
+      "fontWeight": "400",
+      "gap": "normal",
+      "lineHeight": "19.5px",
+      "padding": "0px"
+    },
+    "tag": "BODY",
+    "text": "demo\nMain Office\n Main\nBusiness Hub\nDASHBOARD\nAnalytics Dashboard\nLocation Dashb"
+  },
+  "buttons": [
+    {
+      "class": "btn btn-sm px-3 font-size-16 header-item",
+      "rect": {
+        "height": 70,
+        "width": 52,
+        "x": 250,
+        "y": 0
+      },
+      "style": {
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "borderColor": "rgb(85, 91, 109)",
+        "borderRadius": "0px",
+        "boxShadow": "none",
+        "color": "rgb(85, 91, 109)",
+        "fontFamily": "Poppins, sans-serif",
+        "fontSize": "16px",
+        "fontWeight": "600",
+        "gap": "normal",
+        "lineHeight": "24px",
+        "padding": "6px 16px"
+      },
+      "tag": "BUTTON",
+      "text": ""
+    },
+    {
+      "class": "btn btn-outline-primary btn-sm w-100 d-flex align-items-center justify-content-between",
+      "rect": {
+        "height": 32,
+        "width": 187.5078125,
+        "x": 502,
+        "y": 19
+      },
+      "style": {
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "borderColor": "rgb(85, 110, 230)",
+        "borderRadius": "0px",
+        "boxShadow": "none",
+        "color": "rgb(85, 110, 230)",
+        "fontFamily": "Poppins, sans-serif",
+        "fontSize": "12px",
+        "fontWeight": "600",
+        "gap": "normal",
+        "lineHeight": "18px",
+        "padding": "6px 12px"
+      },
+      "tag": "BUTTON",
+      "text": "Main Office\n Main"
+    },
+    {
+      "class": "btn dropdown-toggle tn-business-hub-btn btn-primary header-item",
+      "rect": {
+        "height": 38,
+        "width": 157.84375,
+        "x": 697.5078125,
+        "y": 16
+      },
+      "style": {
+        "backgroundColor": "rgb(255, 255, 255)",
+        "borderColor": "rgb(51, 65, 85)",
+        "borderRadius": "0px",
+        "boxShadow": "none",
+        "color": "rgb(51, 65, 85)",
+        "fontFamily": "Poppins, sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "500",
+        "gap": "normal",
+        "lineHeight": "21px",
+        "padding": "8px 12px"
+      },
+      "tag": "BUTTON",
+      "text": "Business Hub"
+    },
+    {
+      "class": "btn header-item",
+      "rect": {
+        "height": 70,
+        "width": 56.375,
+        "x": 969.625,
+        "y": 0
+      },
+      "style": {
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "borderColor": "rgb(85, 91, 109)",
+        "borderRadius": "0px",
+        "boxShadow": "none",
+        "color": "rgb(85, 91, 109)",
+        "fontFamily": "Poppins, sans-serif",
+        "fontSize": "13px",
+        "fontWeight": "600",
+        "gap": "normal",
+        "lineHeight": "19.5px",
+        "padding": "6.5px 16px"
+      },
+      "tag": "BUTTON",
+      "text": ""
+    },
+    {
+      "class": "btn header-item noti-icon",
+      "rect": {
+        "height": 70,
+        "width": 54,
+        "x": 1030,
+        "y": 0
+      },
+      "style": {
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "borderColor": "rgb(85, 91, 109)",
+        "borderRadius": "0px",
+        "boxShadow": "none",
+        "color": "rgb(85, 91, 109)",
+        "fontFamily": "Poppins, sans-serif",
+        "fontSize": "13px",
+        "fontWeight": "600",
+        "gap": "normal",
+        "lineHeight": "19.5px",
+        "padding": "6.5px 16px"
+      },
+      "tag": "BUTTON",
+      "text": ""
+    },
+    {
+      "class": "btn header-item noti-icon waves-effect",
+      "rect": {
+        "height": 70,
+        "width": 54,
+        "x": 1088,
+        "y": 0
+      },
+      "style": {
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "borderColor": "rgb(85, 91, 109)",
+        "borderRadius": "0px",
+        "boxShadow": "none",
+        "color": "rgb(85, 91, 109)",
+        "fontFamily": "Poppins, sans-serif",
+        "fontSize": "13px",
+        "fontWeight": "600",
+        "gap": "normal",
+        "lineHeight": "19.5px",
+        "padding": "6.5px 16px"
+      },
+      "tag": "BUTTON",
+      "text": ""
+    },
+    {
+      "class": "btn header-item noti-icon",
+      "rect": {
+        "height": 70,
+        "width": 54,
+        "x": 1142,
+        "y": 0
+      },
+      "style": {
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "borderColor": "rgb(85, 91, 109)",
+        "borderRadius": "0px",
+        "boxShadow": "none",
+        "color": "rgb(85, 91, 109)",
+        "fontFamily": "Poppins, sans-serif",
+        "fontSize": "13px",
+        "fontWeight": "600",
+        "gap": "normal",
+        "lineHeight": "19.5px",
+        "padding": "6.5px 16px"
+      },
+      "tag": "BUTTON",
+      "text": ""
+    },
+    {
+      "class": "btn header-item",
+      "rect": {
+        "height": 70,
+        "width": 72,
+        "x": 1196,
+        "y": 0
+      },
+      "style": {
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "borderColor": "rgb(85, 91, 109)",
+        "borderRadius": "0px",
+        "boxShadow": "none",
+        "color": "rgb(85, 91, 109)",
+        "fontFamily": "Poppins, sans-serif",
+        "fontSize": "13px",
+        "fontWeight": "600",
+        "gap": "normal",
+        "lineHeight": "19.5px",
+        "padding": "6.5px 16px"
+      },
+      "tag": "BUTTON",
+      "text": ""
+    },
+    {
+      "class": "tn-dropdown-button tn-dropdown-outline tn-dropdown-sm",
+      "rect": {
+        "height": 32,
+        "width": 160,
+        "x": 809.0859375,
+        "y": 120.84375
+      },
+      "style": {
+        "backgroundColor": "rgb(255, 255, 255)",
+        "borderColor": "rgb(239, 242, 247)",
+        "borderRadius": "0px",
+        "boxShadow": "none",
+        "color": "rgb(73, 80, 87)",
+        "fontFamily": "Poppins, sans-serif",
+        "fontSize": "12px",
+        "fontWeight": "600",
+        "gap": "normal",
+        "lineHeight": "18px",
+        "padding": "6px 12px"
+      },
+      "tag": "BUTTON",
+      "text": "Last 30 Days"
+    },
+    {
+      "class": "btn btn-light btn-sm tn-button",
+      "rect": {
+        "height": 32,
+        "width": 128.21875,
+        "x": 1001.0859375,
+        "y": 120.84375
+      },
+      "style": {
+        "backgroundColor": "rgb(239, 242, 247)",
+        "borderColor": "rgb(239, 242, 247)",
+        "borderRadius": "0px",
+        "boxShadow": "none",
+        "color": "rgb(0, 0, 0)",
+        "fontFamily": "Poppins, sans-serif",
+        "fontSize": "12px",
+        "fontWeight": "600",
+        "gap": "normal",
+        "lineHeight": "18px",
+        "padding": "6px 12px"
+      },
+      "tag": "BUTTON",
+      "text": "Live Sync OFF"
+    },
+    {
+      "class": "btn btn-primary btn-sm tn-button",
+      "rect": {
+        "height": 32,
+        "width": 118.6953125,
+        "x": 1137.3046875,
+        "y": 120.84375
+      },
+      "style": {
+        "backgroundColor": "rgb(85, 110, 230)",
+        "borderColor": "rgb(255, 255, 255)",
+        "borderRadius": "0px",
+        "boxShadow": "none",
+        "color": "rgb(255, 255, 255)",
+        "fontFamily": "Poppins, sans-serif",
+        "fontSize": "12px",
+        "fontWeight": "600",
+        "gap": "normal",
+        "lineHeight": "18px",
+        "padding": "6px 12px"
+      },
+      "tag": "BUTTON",
+      "text": "Refresh Hub"
+    },
+    {
+      "class": "sentrix-ai-chat-button",
+      "rect": {
+        "height": 60,
+        "width": 60,
+        "x": 1200,
+        "y": 577
+      },
+      "style": {
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "borderColor": "rgb(255, 255, 255)",
+        "borderRadius": "50%",
+        "boxShadow": "rgba(0, 0, 0, 0.15) 0px 4px 20px 0px",
+        "color": "rgb(255, 255, 255)",
+        "fontFamily": "Poppins, sans-serif",
+        "fontSize": "24px",
+        "fontWeight": "400",
+        "gap": "normal",
+        "lineHeight": "36px",
+        "padding": "1px 6px"
+      },
+      "tag": "BUTTON",
+      "text": ""
+    },
+    {
+      "class": "sentrix-ai-action-btn",
+      "rect": {
+        "height": 30.40000915527344,
+        "width": 30.4000244140625,
+        "x": 1163.0999755859375,
+        "y": 124.6999969482422
+      },
+      "style": {
+        "backgroundColor": "rgba(255, 255, 255, 0.2)",
+        "borderColor": "rgb(255, 255, 255)",
+        "borderRadius": "6px",
+        "boxShadow": "none",
+        "color": "rgb(255, 255, 255)",
+        "fontFamily": "Poppins, sans-serif",
+        "fontSize": "13px",
+        "fontWeight": "400",
+        "gap": "normal",
+        "lineHeight": "19.5px",
+        "padding": "1px 6px"
+      },
+      "tag": "BUTTON",
+      "text": ""
+    },
+    {
+      "class": "sentrix-ai-action-btn",
+      "rect": {
+        "height": 30.40000915527344,
+        "width": 30.4000244140625,
+        "x": 1201.0999755859375,
+        "y": 124.6999969482422
+      },
+      "style": {
+        "backgroundColor": "rgba(255, 255, 255, 0.2)",
+        "borderColor": "rgb(255, 255, 255)",
+        "borderRadius": "6px",
+        "boxShadow": "none",
+        "color": "rgb(255, 255, 255)",
+        "fontFamily": "Poppins, sans-serif",
+        "fontSize": "13px",
+        "fontWeight": "400",
+        "gap": "normal",
+        "lineHeight": "19.5px",
+        "padding": "1px 6px"
+      },
+      "tag": "BUTTON",
+      "text": ""
+    },
+    {
+      "class": "sentrix-ai-send-button",
+      "rect": {
+        "height": 37.999969482421875,
+        "width": 38,
+        "x": 1197.300048828125,
+        "y": 492.8249816894531
+      },
+      "style": {
+        "backgroundColor": "rgb(233, 236, 239)",
+        "borderColor": "rgb(108, 117, 125)",
+        "borderRadius": "50%",
+        "boxShadow": "none",
+        "color": "rgb(108, 117, 125)",
+        "fontFamily": "Poppins, sans-serif",
+        "fontSize": "13px",
+        "fontWeight": "400",
+        "gap": "normal",
+        "lineHeight": "19.5px",
+        "padding": "1px 6px"
+      },
+      "tag": "BUTTON",
+      "text": ""
+    }
+  ],
+  "cssVariables": {
+    "--bs-black": "#000",
+    "--bs-black-rgb": "0, 0, 0",
+    "--bs-blue": "#556ee6",
+    "--bs-body-bg": "#f8f8fb",
+    "--bs-body-bg-rgb": "248, 248, 251",
+    "--bs-body-color": "#495057",
+    "--bs-body-color-rgb": "73, 80, 87",
+    "--bs-body-font-family": "\"Poppins\", sans-serif",
+    "--bs-body-font-size": "0.8125rem",
+    "--bs-body-font-weight": "400",
+    "--bs-body-line-height": "1.5",
+    "--bs-border-color": "#eff2f7",
+    "--bs-border-color-translucent": "#ced4da",
+    "--bs-border-radius": "0",
+    "--bs-border-radius-2xl": "0",
+    "--bs-border-radius-lg": "0",
+    "--bs-border-radius-pill": "50rem",
+    "--bs-border-radius-sm": "0",
+    "--bs-border-radius-xl": "0",
+    "--bs-border-radius-xxl": "0",
+    "--bs-border-style": "solid",
+    "--bs-border-width": "1px",
+    "--bs-box-shadow": "0 0.75rem 1.5rem rgba(18, 38, 63, 0.03)",
+    "--bs-box-shadow-inset": "inset 0 1px 2px rgba(0, 0, 0, 0.075)",
+    "--bs-box-shadow-lg": "0 1rem 3rem rgba(0, 0, 0, 0.175)",
+    "--bs-box-shadow-sm": "0 0.125rem 0.25rem rgba(0, 0, 0, 0.075)",
+    "--bs-boxed-body-bg": "#ebebf4",
+    "--bs-breakpoint-lg": "992px",
+    "--bs-breakpoint-md": "768px",
+    "--bs-breakpoint-sm": "576px",
+    "--bs-breakpoint-xl": "1200px",
+    "--bs-breakpoint-xs": "0",
+    "--bs-breakpoint-xxl": "1400px",
+    "--bs-code-color": "#e83e8c",
+    "--bs-cyan": "#50a5f1",
+    "--bs-danger": "#f46a6a",
+    "--bs-danger-bg-subtle": "rgba(244, 106, 106, 0.25)",
+    "--bs-danger-border-subtle": "#fbc3c3",
+    "--bs-danger-rgb": "244, 106, 106",
+    "--bs-danger-text-emphasis": "#622a2a",
+    "--bs-dark": "#343a40",
+    "--bs-dark-bg-subtle": "rgba(52, 58, 64, 0.25)",
+    "--bs-dark-border-subtle": "#adb5bd",
+    "--bs-dark-rgb": "52, 58, 64",
+    "--bs-dark-text-emphasis": "#495057",
+    "--bs-display-block": "block",
+    "--bs-display-none": "none",
+    "--bs-emphasis-color": "#343a40",
+    "--bs-emphasis-color-rgb": "52, 58, 64",
+    "--bs-focus-ring-color": "rgba(85, 110, 230, 0.25)",
+    "--bs-focus-ring-opacity": "0.25",
+    "--bs-focus-ring-width": "0.15rem",
+    "--bs-font-monospace": "SFMono-Regular, Menlo, Monaco, Consolas, \"Liberation Mono\", \"Courier New\", monospace",
+    "--bs-font-sans-serif": "\"Poppins\", sans-serif",
+    "--bs-footer-bg": "#f2f2f5",
+    "--bs-footer-color": "#74788d",
+    "--bs-form-invalid-border-color": "#f46a6a",
+    "--bs-form-invalid-color": "#f46a6a",
+    "--bs-form-valid-border-color": "#34c38f",
+    "--bs-form-valid-color": "#34c38f",
+    "--bs-gradient": "linear-gradient(180deg, rgba(255, 255, 255, 0.15), rgba(255, 255, 255, 0))",
+    "--bs-gray": "#74788d",
+    "--bs-gray-100": "#f8f9fa",
+    "--bs-gray-200": "#eff2f7",
+    "--bs-gray-300": "#f6f6f6",
+    "--bs-gray-400": "#ced4da",
+    "--bs-gray-500": "#adb5bd",
+    "--bs-gray-600": "#74788d",
+    "--bs-gray-700": "#495057",
+    "--bs-gray-800": "#343a40",
+    "--bs-gray-900": "#212529",
+    "--bs-gray-dark": "#343a40",
+    "--bs-green": "#34c38f",
+    "--bs-header-bg": "#fff",
+    "--bs-header-dark-bg": "#2a3042",
+    "--bs-header-dark-item-color": "#e9ecef",
+    "--bs-header-item-color": "#555b6d",
+    "--bs-heading-color": "",
+    "--bs-highlight-bg": "#fcf8e3",
+    "--bs-highlight-color": "#212529",
+    "--bs-indigo": "#564ab1",
+    "--bs-info": "#50a5f1",
+    "--bs-info-bg-subtle": "rgba(80, 165, 241, 0.25)",
+    "--bs-info-border-subtle": "#b9dbf9",
+    "--bs-info-rgb": "80, 165, 241",
+    "--bs-info-text-emphasis": "#204260",
+    "--bs-light": "#eff2f7",
+    "--bs-light-bg-subtle": "#fcfcfd",
+    "--bs-light-border-subtle": "#eff2f7",
+    "--bs-light-rgb": "239, 242, 247",
+    "--bs-light-text-emphasis": "#495057",
+    "--bs-link-color": "#556ee6",
+    "--bs-link-color-rgb": "85, 110, 230",
+    "--bs-link-decoration": "none",
+    "--bs-link-hover-color": "#4458b8",
+    "--bs-link-hover-color-rgb": "68, 88, 184",
+    "--bs-link-hover-decoration": "underline",
+    "--bs-menu-item-active-color": "#556ee6",
+    "--bs-menu-item-color": "#545a6d",
+    "--bs-orange": "#f1734f",
+    "--bs-pink": "#e83e8c",
+    "--bs-pink-rgb": "232, 62, 140",
+    "--bs-primary": "#556ee6",
+    "--bs-primary-bg-subtle": "rgba(85, 110, 230, 0.25)",
+    "--bs-primary-border-subtle": "#bbc5f5",
+    "--bs-primary-rgb": "85, 110, 230",
+    "--bs-primary-text-emphasis": "#222c5c",
+    "--bs-purple": "#6f42c1",
+    "--bs-red": "#f46a6a",
+    "--bs-secondary": "#74788d",
+    "--bs-secondary-bg": "#fff",
+    "--bs-secondary-bg-rgb": "255, 255, 255",
+    "--bs-secondary-bg-subtle": "rgba(116, 120, 141, 0.25)",
+    "--bs-secondary-border-subtle": "#c7c9d1",
+    "--bs-secondary-color": "#74788d",
+    "--bs-secondary-color-rgb": "116, 120, 141",
+    "--bs-secondary-rgb": "116, 120, 141",
+    "--bs-secondary-text-emphasis": "#2e3038",
+    "--bs-success": "#34c38f",
+    "--bs-success-bg-subtle": "rgba(52, 195, 143, 0.25)",
+    "--bs-success-border-subtle": "#aee7d2",
+    "--bs-success-rgb": "52, 195, 143",
+    "--bs-success-text-emphasis": "#154e39",
+    "--bs-teal": "#050505",
+    "--bs-tertiary-bg": "#f8f9fa",
+    "--bs-tertiary-bg-rgb": "248, 249, 250",
+    "--bs-tertiary-color": "rgba(73, 80, 87, 0.5)",
+    "--bs-tertiary-color-rgb": "73, 80, 87",
+    "--bs-topbar-search-bg": "#f3f3f9",
+    "--bs-topnav-bg": "#fff",
+    "--bs-warning": "#f1b44c",
+    "--bs-warning-bg-subtle": "rgba(241, 180, 76, 0.25)",
+    "--bs-warning-border-subtle": "#f9e1b7",
+    "--bs-warning-rgb": "241, 180, 76",
+    "--bs-warning-text-emphasis": "#60481e",
+    "--bs-white": "#fff",
+    "--bs-white-rgb": "255, 255, 255",
+    "--bs-yellow": "#f1b44c"
+  },
+  "headings": [
+    {
+      "class": "",
+      "rect": {
+        "height": 21.59375,
+        "width": 53.6640625,
+        "x": 84,
+        "y": 30.703125
+      },
+      "style": {
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "borderColor": "rgb(255, 255, 255)",
+        "borderRadius": "0px",
+        "boxShadow": "none",
+        "color": "rgb(255, 255, 255)",
+        "fontFamily": "Poppins, sans-serif",
+        "fontSize": "18px",
+        "fontWeight": "600",
+        "gap": "normal",
+        "lineHeight": "21.6px",
+        "padding": "0px"
+      },
+      "tag": "H5",
+      "text": "demo"
+    },
+    {
+      "class": "mb-0 font-size-18",
+      "rect": {
+        "height": 19.1953125,
+        "width": 535.0859375,
+        "x": 274,
+        "y": 94
+      },
+      "style": {
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "borderColor": "rgb(73, 80, 87)",
+        "borderRadius": "0px",
+        "boxShadow": "none",
+        "color": "rgb(73, 80, 87)",
+        "fontFamily": "Poppins, sans-serif",
+        "fontSize": "16px",
+        "fontWeight": "600",
+        "gap": "normal",
+        "lineHeight": "19.2px",
+        "padding": "0px"
+      },
+      "tag": "H4",
+      "text": "STRATEGIC ANALYTICS HUB"
+    },
+    {
+      "class": "card-title mb-4 d-flex align-items-center",
+      "rect": {
+        "height": 19,
+        "width": 932,
+        "x": 299,
+        "y": 320.6953125
+      },
+      "style": {
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "borderColor": "rgb(52, 58, 64)",
+        "borderRadius": "0px",
+        "boxShadow": "none",
+        "color": "rgb(52, 58, 64)",
+        "fontFamily": "Poppins, sans-serif",
+        "fontSize": "15px",
+        "fontWeight": "600",
+        "gap": "normal",
+        "lineHeight": "18px",
+        "padding": "0px"
+      },
+      "tag": "H4",
+      "text": "Financial Performance"
+    },
+    {
+      "class": "text-success text-uppercase font-size-12 fw-bold letter-spacing-1 mb-3",
+      "rect": {
+        "height": 14.3984375,
+        "width": 167,
+        "x": 323,
+        "y": 387.6953125
+      },
+      "style": {
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "borderColor": "rgb(52, 195, 143)",
+        "borderRadius": "0px",
+        "boxShadow": "none",
+        "color": "rgb(52, 195, 143)",
+        "fontFamily": "Poppins, sans-serif",
+        "fontSize": "12px",
+        "fontWeight": "600",
+        "gap": "normal",
+        "lineHeight": "14.4px",
+        "padding": "0px"
+      },
+      "tag": "H5",
+      "text": "ESTIMATED BUDGET"
+    },
+    {
+      "class": "text-primary text-uppercase font-size-12 fw-bold letter-spacing-1 mb-3",
+      "rect": {
+        "height": 14.3984375,
+        "width": 167,
+        "x": 562,
+        "y": 387.6953125
+      },
+      "style": {
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "borderColor": "rgb(85, 110, 230)",
+        "borderRadius": "0px",
+        "boxShadow": "none",
+        "color": "rgb(85, 110, 230)",
+        "fontFamily": "Poppins, sans-serif",
+        "fontSize": "12px",
+        "fontWeight": "600",
+        "gap": "normal",
+        "lineHeight": "14.4px",
+        "padding": "0px"
+      },
+      "tag": "H5",
+      "text": "ACTUAL SPEND"
+    },
+    {
+      "class": "text-warning text-uppercase font-size-12 fw-bold letter-spacing-1 mb-3",
+      "rect": {
+        "height": 14.3984375,
+        "width": 167,
+        "x": 801,
+        "y": 387.6953125
+      },
+      "style": {
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "borderColor": "rgb(241, 180, 76)",
+        "borderRadius": "0px",
+        "boxShadow": "none",
+        "color": "rgb(241, 180, 76)",
+        "fontFamily": "Poppins, sans-serif",
+        "fontSize": "12px",
+        "fontWeight": "600",
+        "gap": "normal",
+        "lineHeight": "14.4px",
+        "padding": "0px"
+      },
+      "tag": "H5",
+      "text": "COST VARIANCE"
+    },
+    {
+      "class": "text-info text-uppercase font-size-12 fw-bold letter-spacing-1 mb-3",
+      "rect": {
+        "height": 14.3984375,
+        "width": 167,
+        "x": 1040,
+        "y": 387.6953125
+      },
+      "style": {
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "borderColor": "rgb(80, 165, 241)",
+        "borderRadius": "0px",
+        "boxShadow": "none",
+        "color": "rgb(80, 165, 241)",
+        "fontFamily": "Poppins, sans-serif",
+        "fontSize": "12px",
+        "fontWeight": "600",
+        "gap": "normal",
+        "lineHeight": "14.4px",
+        "padding": "0px"
+      },
+      "tag": "H5",
+      "text": "WORK VOLUME"
+    },
+    {
+      "class": "alert-heading font-size-14 fw-bold mb-1",
+      "rect": {
+        "height": 16.796875,
+        "width": 846,
+        "x": 361,
+        "y": 538.5390625
+      },
+      "style": {
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "borderColor": "rgb(73, 80, 87)",
+        "borderRadius": "0px",
+        "boxShadow": "none",
+        "color": "rgb(73, 80, 87)",
+        "fontFamily": "Poppins, sans-serif",
+        "fontSize": "14px",
+        "fontWeight": "600",
+        "gap": "normal",
+        "lineHeight": "16.8px",
+        "padding": "0px"
+      },
+      "tag": "H6",
+      "text": "Financial Data Note"
+    },
+    {
+      "class": "m-0",
+      "rect": {
+        "height": 19.5,
+        "width": 248,
+        "x": 1306,
+        "y": 24
+      },
+      "style": {
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "borderColor": "rgb(73, 80, 87)",
+        "borderRadius": "0px",
+        "boxShadow": "none",
+        "color": "rgb(73, 80, 87)",
+        "fontFamily": "Poppins, sans-serif",
+        "fontSize": "16.25px",
+        "fontWeight": "500",
+        "gap": "normal",
+        "lineHeight": "19.5px",
+        "padding": "0px"
+      },
+      "tag": "H5",
+      "text": "Settings"
+    },
+    {
+      "class": "mt-4 mb-3",
+      "rect": {
+        "height": 15.59375,
+        "width": 248,
+        "x": 1306,
+        "y": 67.5
+      },
+      "style": {
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "borderColor": "rgb(73, 80, 87)",
+        "borderRadius": "0px",
+        "boxShadow": "none",
+        "color": "rgb(73, 80, 87)",
+        "fontFamily": "Poppins, sans-serif",
+        "fontSize": "13px",
+        "fontWeight": "500",
+        "gap": "normal",
+        "lineHeight": "15.6px",
+        "padding": "0px"
+      },
+      "tag": "H6",
+      "text": "Layout"
+    },
+    {
+      "class": "mt-4 mb-3",
+      "rect": {
+        "height": 15.59375,
+        "width": 248,
+        "x": 1306,
+        "y": 159.59375
+      },
+      "style": {
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "borderColor": "rgb(73, 80, 87)",
+        "borderRadius": "0px",
+        "boxShadow": "none",
+        "color": "rgb(73, 80, 87)",
+        "fontFamily": "Poppins, sans-serif",
+        "fontSize": "13px",
+        "fontWeight": "500",
+        "gap": "normal",
+        "lineHeight": "15.6px",
+        "padding": "0px"
+      },
+      "tag": "H6",
+      "text": "Width"
+    },
+    {
+      "class": "mt-4 mb-3",
+      "rect": {
+        "height": 15.59375,
+        "width": 248,
+        "x": 1306,
+        "y": 290.6875
+      },
+      "style": {
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "borderColor": "rgb(73, 80, 87)",
+        "borderRadius": "0px",
+        "boxShadow": "none",
+        "color": "rgb(73, 80, 87)",
+        "fontFamily": "Poppins, sans-serif",
+        "fontSize": "13px",
+        "fontWeight": "500",
+        "gap": "normal",
+        "lineHeight": "15.6px",
+        "padding": "0px"
+      },
+      "tag": "H6",
+      "text": "Sidebar Color"
+    },
+    {
+      "class": "mt-4 mb-3",
+      "rect": {
+        "height": 15.59375,
+        "width": 248,
+        "x": 1306,
+        "y": 460.78125
+      },
+      "style": {
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "borderColor": "rgb(73, 80, 87)",
+        "borderRadius": "0px",
+        "boxShadow": "none",
+        "color": "rgb(73, 80, 87)",
+        "fontFamily": "Poppins, sans-serif",
+        "fontSize": "13px",
+        "fontWeight": "500",
+        "gap": "normal",
+        "lineHeight": "15.6px",
+        "padding": "0px"
+      },
+      "tag": "H6",
+      "text": "Theme Mode"
+    },
+    {
+      "class": "text-center mb-0 mt-4",
+      "rect": {
+        "height": 15.59375,
+        "width": 248,
+        "x": 1306,
+        "y": 572.375
+      },
+      "style": {
+        "backgroundColor": "rgba(0, 0, 0, 0)",
+        "borderColor": "rgb(73, 80, 87)",
+        "borderRadius": "0px",
+        "boxShadow": "none",
+        "color": "rgb(73, 80, 87)",
+        "fontFamily": "Poppins, sans-serif",
+        "fontSize": "13px",
+        "fontWeight": "500",
+        "gap": "normal",
+        "lineHeight": "15.6px",
+        "padding": "0px"
+      },
+      "tag": "H6",
+      "text": "Choose Layouts"
+    }
+  ],
+  "viewport": {
+    "dpr": 2,
+    "height": 657,
+    "width": 1280
+  }
+}

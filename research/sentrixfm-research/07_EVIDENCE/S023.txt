@@ -1,0 +1,35 @@
+Browser tab: 1405043949, Title: "SentrixFm - Business Process Management", URL: "https://sentrixfm.com/manager/dashboards/analytics-dashboard".
+The following is a diff from the previous accessibility tree with ~ and + representing changed and added elements, respectively. Removed elements are summarized by ID range.
+Removed element IDs: 174-201, 204-217
+~					172 heading  Financial Performance, Value: 4
+~						173 text 
++						174 text Financial Performance
++					175 container
++						176 heading ESTIMATED BUDGET, Value: 5
++							177 text ESTIMATED BUDGET
++						178 heading $0, Value: 2
++							179 text $0
++						180 text Planned allocation
++					181 container
++						182 heading ACTUAL SPEND, Value: 5
++							183 text ACTUAL SPEND
++						184 heading $0, Value: 2
++							185 text $0
++						186 text Realized expenditures
++					187 container
++						188 heading COST VARIANCE, Value: 5
++							189 text COST VARIANCE
++						190 heading $0, Value: 2
++							191 text $0
++						192 text 0.0% Variance
++					193 container
++						194 heading WORK VOLUME, Value: 5
++							195 text WORK VOLUME
++						196 heading 0, Value: 2
++							197 text 0
++						198 text Avg. $0 / unit
++					199 text 
++					200 heading Financial Data Note, Value: 6
++						201 text Financial Data Note
+~						203 text Displaying analytics for the last  days.  Financial column mapping is in progress  — actual values will populate as cost-tracking fields are deployed to production work orders.
+The focused UI element is 1 AXWebArea SentrixFm - Business Process Management, URL: sentrixfm.com/manager/dashboards/analytics-dashboard

@@ -1,0 +1,33 @@
+Browser tab: 1405043949, Title: "SentrixFm - Business Process Management", URL: "https://sentrixfm.com/manager/business/operations/my-tasks".
+The following is a diff from the previous accessibility tree with ~ and + representing changed and added elements, respectively. Removed elements are summarized by ID range.
+Removed element IDs: 682, 699-769
++					772 text 
+~					693 tab (selectable, settable, boolean) Description: WORK_ORDERS.FORM.TABS.BASIC_DETAILS - 5 errors
+5 errors, Value: 0
+Basic Details
+5
+~					694 tab (selected, settable, boolean) Description: WORK_ORDERS.FORM.TABS.LOCATION_ASSET - 1 errors, Value: 1
++						773 text  Location & Asset 
++						774 container 1 errors
++							775 text 1
++				776 container wo-tab-1
++					777 search text field (settable) tn-input-797bc5xu0
++					778 text 
++					779 text  ASSETS SELECTED 
++					780 text 0
++					781 text No assets selected
++					782 text 
++					783 text SELECT LOCATION
++					784 container
++						785 button Toggle location expansion
++							786 text 
++						787 text  Main Office
++					788 container
++						789 button Toggle location expansion
++							790 text 
++						791 text  Floor 101
++					792 container
++						793 button Toggle location expansion
++							794 text 
++						795 text  Floor 102
+The focused UI element is 694 tab (selected, settable, boolean) Description: WORK_ORDERS.FORM.TABS.LOCATION_ASSET - 1 errors, Value: 1

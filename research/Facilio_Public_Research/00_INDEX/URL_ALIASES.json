@@ -1,0 +1,363 @@
+[
+  {
+    "alias_url": "https://facilio.com/help/docs/remote-monitoring/getting-started/launching-remote-monitoring-app/resetting-password/",
+    "alias_title": "Remote Monitoring: Resetting Password | Facilio Docs",
+    "retrieved": "2026-10-17T19:18:40Z",
+    "dates": {},
+    "http_last_modified": "Fri, 14 Aug 2026 16:39:18 GMT",
+    "sha256": "ce5220fbf96ab000b1faa56e6c5e216ce6e74ea302a9396f5d0390efb040ce48",
+    "canonical_url": "https://facilio.com/help/docs/field-service-management/getting-started/launching-fsm-app/resetting-password/",
+    "local_file": "02_WORK_ORDERS_MAINTENANCE/sources/launching-fsm-app-resetting-password--8e4462bf8b.md",
+    "deduplication_basis": "exact extracted body"
+  },
+  {
+    "alias_url": "https://facilio.com/help/docs/remote-monitoring/portfolio-management/illustrating-portfolio-management/assigning-operating-hours/",
+    "alias_title": "Assigning Operating Hours (RM) | Facilio Docs",
+    "retrieved": "2026-10-17T19:18:42Z",
+    "dates": {},
+    "http_last_modified": "Fri, 14 Aug 2026 16:39:18 GMT",
+    "sha256": "7d67aced57eca1d44c463a0194c6fe95701cc6b45a0e29ffcb3ce7c3c59dfa4b",
+    "canonical_url": "https://facilio.com/help/docs/field-service-management/portfolio-management/managing-portfolio-and-territory/illustrating-portfolio-management/assigning-operating-hours/",
+    "local_file": "03_ASSETS_SPACES/sources/assigning-operating-hours-fsm--c9dc9ad9ac.md",
+    "deduplication_basis": "exact extracted body"
+  },
+  {
+    "alias_url": "https://facilio.com/help/docs/user-guide/facilio-modules/maintenance-management/benefits-of-maintenance/",
+    "alias_title": "Benefits of Maintenance | Facilio Docs",
+    "retrieved": "2026-10-17T19:18:59Z",
+    "dates": {},
+    "http_last_modified": "Fri, 14 Aug 2026 16:39:18 GMT",
+    "sha256": "e0e75d85ce628a4b15e9940d156b43a072466adb73fc166d4a7486cd925e1fd1",
+    "canonical_url": "https://facilio.com/help/docs/mobile-guide/WorkQ-Modules/Maintenance-Management/Benefits-of-Maintenance/",
+    "local_file": "02_WORK_ORDERS_MAINTENANCE/sources/benefits-of-maintenance-mobile--34d49a4146.md",
+    "deduplication_basis": "exact extracted body"
+  },
+  {
+    "alias_url": "https://facilio.com/help/docs/user-guide/facilio-modules/maintenance-management/types-of-maintenance/",
+    "alias_title": "Maintenance Types: Preventive & Reactive | Facilio Docs",
+    "retrieved": "2026-10-17T19:19:03Z",
+    "dates": {},
+    "http_last_modified": "Fri, 14 Aug 2026 16:39:18 GMT",
+    "sha256": "7ccc4cc902f3179244ed88aa89ce7dc7f9046bfa6c2961954be6910fd34aa391",
+    "canonical_url": "https://facilio.com/help/docs/mobile-guide/WorkQ-Modules/Maintenance-Management/Types-of-Maintenance/",
+    "local_file": "02_WORK_ORDERS_MAINTENANCE/sources/types-of-maintenance-mobile--e4be4921e8.md",
+    "deduplication_basis": "exact extracted body"
+  },
+  {
+    "alias_url": "https://facilio.com/help/docs/user-guide/facilio-modules/utility-management/digitizing-the-bills/",
+    "alias_title": "Utility Management: Digitizing the Bills | Facilio Docs",
+    "retrieved": "2026-10-17T19:19:17Z",
+    "dates": {},
+    "http_last_modified": "Fri, 14 Aug 2026 16:39:19 GMT",
+    "sha256": "c10055f185e19953f76fe351af44b66d3858ca64b59bdbd10ee90700e02af808",
+    "canonical_url": "https://facilio.com/help/docs/user-guide/facilio-modules/utility-management-2.0/digitizing-the-bills/",
+    "local_file": "07_DASHBOARDS_ANALYTICS/sources/digitizing-the-bills-um-2-0--089a23155c.md",
+    "deduplication_basis": "exact extracted body"
+  },
+  {
+    "alias_url": "https://facilio.com/help/docs/user-guide/facilio-modules/utility-management/digitizing-the-bills/accessing-the-approved-bills/",
+    "alias_title": "Accessing the Approved Bills (UM) | Facilio Docs",
+    "retrieved": "2026-10-17T19:19:17Z",
+    "dates": {},
+    "http_last_modified": "Fri, 14 Aug 2026 16:39:19 GMT",
+    "sha256": "f92c8b3079149b8a69f616cd1c3407999b0d5825c56a0637b3ad666a68fca045",
+    "canonical_url": "https://facilio.com/help/docs/user-guide/facilio-modules/utility-management-2.0/digitizing-the-bills/accessing-the-approved-bills/",
+    "local_file": "07_DASHBOARDS_ANALYTICS/sources/accessing-the-approved-bills-um-2-0--7d9689a254.md",
+    "deduplication_basis": "exact extracted body"
+  },
+  {
+    "alias_url": "https://facilio.com/help/docs/user-guide/facilio-modules/utility-management/digitizing-the-bills/accessing-the-parsed-bills/",
+    "alias_title": "Accessing the Parsed Bills (UM) | Facilio Docs",
+    "retrieved": "2026-10-17T19:19:18Z",
+    "dates": {},
+    "http_last_modified": "Fri, 14 Aug 2026 16:39:19 GMT",
+    "sha256": "f6080dfe588a7c3c7b52b95b82826bc2ef2ae58bfa33366d42f9378eee8ec2af",
+    "canonical_url": "https://facilio.com/help/docs/user-guide/facilio-modules/utility-management-2.0/digitizing-the-bills/accessing-the-parsed-bills/",
+    "local_file": "07_DASHBOARDS_ANALYTICS/sources/accessing-the-parsed-bills-um-2-0--5b0065bc5f.md",
+    "deduplication_basis": "exact extracted body"
+  },
+  {
+    "alias_url": "https://facilio.com/help/docs/user-guide/facilio-modules/utility-management/managing-the-utility-account-and-bills/",
+    "alias_title": "Utility Account & Bills Management | Facilio Docs",
+    "retrieved": "2026-10-17T19:19:20Z",
+    "dates": {},
+    "http_last_modified": "Fri, 14 Aug 2026 16:39:19 GMT",
+    "sha256": "62f23605f0f3b78939ee0e3a0e318a09dad89654486d88f149ea0ad649121002",
+    "canonical_url": "https://facilio.com/help/docs/user-guide/facilio-modules/utility-management-2.0/managing-the-utility-account-and-bills/",
+    "local_file": "07_DASHBOARDS_ANALYTICS/sources/utility-account-bills-management-2-0--20732469f5.md",
+    "deduplication_basis": "exact extracted body"
+  },
+  {
+    "alias_url": "https://facilio.com/help/docs/user-guide/facilio-modules/utility-management/managing-the-utility-account-and-bills/creating-new-utility-account-bills/",
+    "alias_title": "Creating New Utility Account Bills (UM) | Facilio Docs",
+    "retrieved": "2026-10-17T19:19:20Z",
+    "dates": {},
+    "http_last_modified": "Fri, 14 Aug 2026 16:39:19 GMT",
+    "sha256": "07b913d3e0f09368e29e74fb2fd278da078ba8a469f7e7ae4dd4f15edecd2256",
+    "canonical_url": "https://facilio.com/help/docs/user-guide/facilio-modules/utility-management-2.0/managing-the-utility-account-and-bills/creating-new-utility-account-bills/",
+    "local_file": "07_DASHBOARDS_ANALYTICS/sources/utility-account-bills-um-2-0--fbe7d0c81b.md",
+    "deduplication_basis": "exact extracted body"
+  },
+  {
+    "alias_url": "https://facilio.com/help/docs/user-guide/facilio-modules/utility-management/managing-the-utility-account-and-bills/creating-new-utility-account/",
+    "alias_title": "Creating New Utility Account (UM) | Facilio Docs",
+    "retrieved": "2026-10-17T19:19:20Z",
+    "dates": {},
+    "http_last_modified": "Fri, 14 Aug 2026 16:39:19 GMT",
+    "sha256": "9f4fa38d388b560f70e10ae8d811a1b92fc6c20b2a2ea8556c3114278f6ba868",
+    "canonical_url": "https://facilio.com/help/docs/user-guide/facilio-modules/utility-management-2.0/managing-the-utility-account-and-bills/creating-new-utility-account/",
+    "local_file": "07_DASHBOARDS_ANALYTICS/sources/creating-new-utility-account-um-2-0--4ce4514180.md",
+    "deduplication_basis": "exact extracted body"
+  },
+  {
+    "alias_url": "https://facilio.com/help/docs/user-guide/facilio-modules/utility-management/managing-the-utility-account-and-bills/viewing-utility-account-details/",
+    "alias_title": "Viewing Utility Account Details (UM) | Facilio Docs",
+    "retrieved": "2026-10-17T19:19:21Z",
+    "dates": {},
+    "http_last_modified": "Fri, 14 Aug 2026 16:39:19 GMT",
+    "sha256": "423477b923a726d2824516b936212915391212aa3f35153ff5c201abdcee36a0",
+    "canonical_url": "https://facilio.com/help/docs/user-guide/facilio-modules/utility-management-2.0/managing-the-utility-account-and-bills/viewing-utility-account-details/",
+    "local_file": "07_DASHBOARDS_ANALYTICS/sources/viewing-utility-account-details-um-2-0--d21f18ce3e.md",
+    "deduplication_basis": "exact extracted body"
+  },
+  {
+    "alias_url": "https://facilio.com/help/docs/user-guide/facilio-modules/utility-management/ocr-in-utility-management/",
+    "alias_title": "OCR in Utility Management | Facilio Docs",
+    "retrieved": "2026-10-17T19:19:21Z",
+    "dates": {},
+    "http_last_modified": "Fri, 14 Aug 2026 16:39:19 GMT",
+    "sha256": "a1406530c8048024b18574244ad0cd9876ad5d94201a82a90c7e0693e5f50e88",
+    "canonical_url": "https://facilio.com/help/docs/user-guide/facilio-modules/utility-management-2.0/ocr-in-utility-management/",
+    "local_file": "07_DASHBOARDS_ANALYTICS/sources/ocr-in-utility-management-um-2-0--f0145b5e88.md",
+    "deduplication_basis": "exact extracted body"
+  },
+  {
+    "alias_url": "https://facilio.com/help/docs/user-guide/facilio-modules/utility-management/resolving-disputes/",
+    "alias_title": "Utility Management: Resolving Disputes | Facilio Docs",
+    "retrieved": "2026-10-17T19:19:21Z",
+    "dates": {},
+    "http_last_modified": "Fri, 14 Aug 2026 16:39:19 GMT",
+    "sha256": "1b0904ef84ed3d37eff0b97573eca74a17cb74aaebca0210dfeb9332706b8264",
+    "canonical_url": "https://facilio.com/help/docs/user-guide/facilio-modules/utility-management-2.0/resolving-disputes/",
+    "local_file": "07_DASHBOARDS_ANALYTICS/sources/resolving-disputes-um-2-0--2947a91f56.md",
+    "deduplication_basis": "exact extracted body"
+  },
+  {
+    "alias_url": "https://facilio.com/help/docs/user-guide/facilio-modules/utility-management/significance-of-ocr-based-utility-management/",
+    "alias_title": "OCR-Based Utility Management | Facilio Docs",
+    "retrieved": "2026-10-17T19:19:22Z",
+    "dates": {},
+    "http_last_modified": "Fri, 14 Aug 2026 16:39:19 GMT",
+    "sha256": "288baa27d1ccdeec8496cefc3a9e11ab66d88448500e67dc1706a39a695756aa",
+    "canonical_url": "https://facilio.com/help/docs/user-guide/facilio-modules/utility-management-2.0/significance-of-ocr-based-utility-management/",
+    "local_file": "07_DASHBOARDS_ANALYTICS/sources/ocr-based-utility-management-2-0--06f66b7b3f.md",
+    "deduplication_basis": "exact extracted body"
+  },
+  {
+    "alias_url": "https://facilio.com/help/docs/user-guide/facilio-modules/utility-management/utility-management-in-facilio/",
+    "alias_title": "Utility Management in Facilio | Facilio Docs",
+    "retrieved": "2026-10-17T19:19:22Z",
+    "dates": {},
+    "http_last_modified": "Fri, 14 Aug 2026 16:39:19 GMT",
+    "sha256": "c0b6c3d70bef658d24e2a006bce81b887d4c22998cc90708318c264e9d85c235",
+    "canonical_url": "https://facilio.com/help/docs/user-guide/facilio-modules/utility-management-2.0/utility-management-in-facilio/",
+    "local_file": "07_DASHBOARDS_ANALYTICS/sources/utility-management-in-facilio-um-2-0--19fca6fd4b.md",
+    "deduplication_basis": "exact extracted body"
+  },
+  {
+    "alias_url": "https://facilio.com/help/docs/service-request-management/managing-help-center-services/working-with-service-catalog",
+    "alias_title": "Working with Service Catalog | Facilio Docs",
+    "retrieved": "2026-10-17T19:20:20Z",
+    "dates": {},
+    "http_last_modified": "Fri, 14 Aug 2026 16:39:18 GMT",
+    "sha256": "3af9c3eaee05963b26b7618b9bef85e7619a9e1e7c2796ced2064d988c23d220",
+    "canonical_url": "https://facilio.com/help/docs/service-request-management/managing-help-center-services/working-with-service-catalog/",
+    "local_file": "02_WORK_ORDERS_MAINTENANCE/sources/working-with-service-catalog--f543faece3.md",
+    "deduplication_basis": "exact extracted body"
+  },
+  {
+    "alias_url": "https://facilio.com/help/docs/service-request-management/introduction",
+    "alias_title": "Service Request Management: Introduction | Facilio Docs",
+    "retrieved": "2026-10-17T19:20:20Z",
+    "dates": {},
+    "http_last_modified": "Fri, 14 Aug 2026 16:39:18 GMT",
+    "sha256": "33d89e2bf39c3cba83686897fdc8a45e571e5fdbb09e13765738eb2b2269825e",
+    "canonical_url": "https://facilio.com/help/docs/service-request-management/introduction/",
+    "local_file": "02_WORK_ORDERS_MAINTENANCE/sources/service-request-management-introduction--67b4192080.md",
+    "deduplication_basis": "exact extracted body"
+  },
+  {
+    "alias_url": "https://facilio.com/developers/docs/script-reference/index",
+    "alias_title": "Introduction to Facilio Script | Facilio Developers",
+    "retrieved": "2026-10-17T19:20:21Z",
+    "dates": {},
+    "http_last_modified": "Thu, 03 Sep 2026 08:31:50 GMT",
+    "sha256": "c6a25d080c1bb6e4078437e4e6ced56dccecec758a1ecdbef005f68694fba088",
+    "canonical_url": "https://facilio.com/developers/docs/script-reference/index/",
+    "local_file": "11_SCRIPTING_CONNECTED_APPS_VIBE/sources/introduction-to-facilio-script--bde063bae0.md",
+    "deduplication_basis": "exact extracted body"
+  },
+  {
+    "alias_url": "https://facilio.com/help/docs/analytics-dashboards/data-analytics/working-with-analytics",
+    "alias_title": "Working with Analytics | Facilio Docs",
+    "retrieved": "2026-10-17T19:20:22Z",
+    "dates": {},
+    "http_last_modified": "Fri, 14 Aug 2026 16:39:17 GMT",
+    "sha256": "3577ac3d283d7a0368f6528fceac30ce723b32d9b767a54339a8b44542af704d",
+    "canonical_url": "https://facilio.com/help/docs/analytics-dashboards/data-analytics/working-with-analytics/",
+    "local_file": "07_DASHBOARDS_ANALYTICS/sources/working-with-analytics--2d412f5288.md",
+    "deduplication_basis": "exact extracted body"
+  },
+  {
+    "alias_url": "http://facilio.com/help/docs/user-guide/getting-started/views-and-dashboards",
+    "alias_title": "Views and Dashboards | Facilio Docs",
+    "retrieved": "2026-10-17T19:20:22Z",
+    "dates": {},
+    "http_last_modified": "Fri, 14 Aug 2026 16:39:19 GMT",
+    "sha256": "e9ddda082fb8969bcf79dba4d1cfe7ed21d906b950389099e113ee28734c48bf",
+    "canonical_url": "https://facilio.com/help/docs/user-guide/getting-started/views-and-dashboards/",
+    "local_file": "07_DASHBOARDS_ANALYTICS/sources/views-and-dashboards--1bc174cae1.md",
+    "deduplication_basis": "exact extracted body"
+  },
+  {
+    "alias_url": "https://facilio.com/help/docs/user-guide/managing-user-account/managing-api-clients",
+    "alias_title": "Managing API Clients | Facilio Docs",
+    "retrieved": "2026-10-17T19:20:27Z",
+    "dates": {},
+    "http_last_modified": "Fri, 14 Aug 2026 16:39:19 GMT",
+    "sha256": "5cc50d6e257c26e85b32741eac6d975460d2c5c84a702a1addb34af7938ec9ff",
+    "canonical_url": "https://facilio.com/help/docs/user-guide/managing-user-account/managing-api-clients/",
+    "local_file": "10_DEVELOPER_API/sources/managing-api-clients--09e0529dcb.md",
+    "deduplication_basis": "exact extracted body"
+  },
+  {
+    "alias_url": "https://videos.facilio.com/rN7y3Yhz7tGcYe5xQ3MitQ/iNALASSX4d29t4sYVU74dw",
+    "alias_title": "Maintenance Management",
+    "retrieved": "2026-10-17T19:30:10Z",
+    "dates": {
+      "body_last_updated": "Jan 16, 2024"
+    },
+    "http_last_modified": null,
+    "sha256": "d9df60973fccd0b21805128bd62012c8af44558ec5321634cde25d5ec5ccaa51",
+    "canonical_url": "https://videos.facilio.com/videos/iNALASSX4d29t4sYVU74dw",
+    "local_file": "14_VIDEOS_LINKS/sources/operational-visibility-for-maintenance--bb6098bf74.md",
+    "deduplication_basis": "same public library video identifier"
+  },
+  {
+    "alias_url": "https://videos.facilio.com/rN7y3Yhz7tGcYe5xQ3MitQ/NqqDbVr5Xpj18zCDHkZsqA",
+    "alias_title": "Maintenance Management",
+    "retrieved": "2026-10-17T19:30:39Z",
+    "dates": {
+      "body_last_updated": "Dec 22, 2023"
+    },
+    "http_last_modified": null,
+    "sha256": "3f25a4e2f207c93d030dbb90a967d25dd0f8b4daca038c0007b4c77ab59f3612",
+    "canonical_url": "https://videos.facilio.com/videos/NqqDbVr5Xpj18zCDHkZsqA",
+    "local_file": "14_VIDEOS_LINKS/sources/ppm-overview--c41d9bacbf.md",
+    "deduplication_basis": "same public library video identifier"
+  },
+  {
+    "alias_url": "https://videos.facilio.com/rN7y3Yhz7tGcYe5xQ3MitQ/PrfveGhaRkz28MBf7PiZHA",
+    "alias_title": "Maintenance Management",
+    "retrieved": "2026-10-17T19:30:44Z",
+    "dates": {
+      "body_last_updated": "Dec 22, 2023"
+    },
+    "http_last_modified": null,
+    "sha256": "1b41d6879760fb9f08d3ce0a21fe01db1e1e8eb6904bd83703279a5d22a35e4c",
+    "canonical_url": "https://videos.facilio.com/videos/PrfveGhaRkz28MBf7PiZHA",
+    "local_file": "14_VIDEOS_LINKS/sources/integrated-inventory-management--9f8181ad39.md",
+    "deduplication_basis": "same public library video identifier"
+  },
+  {
+    "alias_url": "https://videos.facilio.com/4EvOgYqsJ28I3Im4t2osOA/iNALASSX4d29t4sYVU74dw",
+    "alias_title": "Recommended videos",
+    "retrieved": "2026-10-17T19:30:54Z",
+    "dates": {
+      "body_last_updated": "Jan 16, 2024"
+    },
+    "http_last_modified": null,
+    "sha256": "08211ccff8a289a6f752e8584602c9c36c18abfd3dd180b0fc070854268f3939",
+    "canonical_url": "https://videos.facilio.com/videos/iNALASSX4d29t4sYVU74dw",
+    "local_file": "14_VIDEOS_LINKS/sources/operational-visibility-for-maintenance--bb6098bf74.md",
+    "deduplication_basis": "same public library video identifier"
+  },
+  {
+    "alias_url": "https://videos.facilio.com/4EvOgYqsJ28I3Im4t2osOA/B9bKpkfSZwhVL5fku0xp7Q",
+    "alias_title": "Recommended videos",
+    "retrieved": "2026-10-17T19:30:55Z",
+    "dates": {
+      "body_last_updated": "Dec 20, 2022"
+    },
+    "http_last_modified": null,
+    "sha256": "9db17a753600f0b1b0dab0310936b0318c429250cddb13b683bc2dc8ceca9229",
+    "canonical_url": "https://videos.facilio.com/videos/B9bKpkfSZwhVL5fku0xp7Q",
+    "local_file": "14_VIDEOS_LINKS/sources/vendor-portal--e096ca484e.md",
+    "deduplication_basis": "same public library video identifier"
+  },
+  {
+    "alias_url": "https://videos.facilio.com/4EvOgYqsJ28I3Im4t2osOA/xMb1a12cJ88rX7673ZE4uA",
+    "alias_title": "Recommended videos",
+    "retrieved": "2026-10-17T19:30:57Z",
+    "dates": {
+      "body_last_updated": "Dec 20, 2022"
+    },
+    "http_last_modified": null,
+    "sha256": "b812c663d2b7310ac4b786f3bf11f30d039c744ca564d9e4e959a6552c15ba1f",
+    "canonical_url": "https://videos.facilio.com/videos/xMb1a12cJ88rX7673ZE4uA",
+    "local_file": "14_VIDEOS_LINKS/sources/tenant-service-portal--76893a111a.md",
+    "deduplication_basis": "same public library video identifier"
+  },
+  {
+    "alias_url": "https://videos.facilio.com/4EvOgYqsJ28I3Im4t2osOA/PrfveGhaRkz28MBf7PiZHA",
+    "alias_title": "Recommended videos",
+    "retrieved": "2026-10-17T19:30:59Z",
+    "dates": {
+      "body_last_updated": "Dec 22, 2023"
+    },
+    "http_last_modified": null,
+    "sha256": "899f66006dd62d4c5d8b996cc32744cc14268210aefaa754bcbf29e15c7dc553",
+    "canonical_url": "https://videos.facilio.com/videos/PrfveGhaRkz28MBf7PiZHA",
+    "local_file": "14_VIDEOS_LINKS/sources/integrated-inventory-management--9f8181ad39.md",
+    "deduplication_basis": "same public library video identifier"
+  },
+  {
+    "alias_url": "https://videos.facilio.com/nJqfJ94J80dhGFKxM3fDSQ/B9bKpkfSZwhVL5fku0xp7Q",
+    "alias_title": "Vendor Management",
+    "retrieved": "2026-10-17T19:31:29Z",
+    "dates": {
+      "body_last_updated": "Dec 20, 2022"
+    },
+    "http_last_modified": null,
+    "sha256": "ff27a61946baeb25104be5dbf5958ee36af5fdef125899cc40c32d8824011ce1",
+    "canonical_url": "https://videos.facilio.com/videos/B9bKpkfSZwhVL5fku0xp7Q",
+    "local_file": "14_VIDEOS_LINKS/sources/vendor-portal--e096ca484e.md",
+    "deduplication_basis": "same public library video identifier"
+  },
+  {
+    "alias_url": "https://videos.facilio.com/Je26xhpBWZN8udT89S2hlw/xMb1a12cJ88rX7673ZE4uA",
+    "alias_title": "Tenant Management",
+    "retrieved": "2026-10-17T19:31:31Z",
+    "dates": {
+      "body_last_updated": "Dec 20, 2022"
+    },
+    "http_last_modified": null,
+    "sha256": "909fe22526145fd8e42d183b0be761df6c814daf71efbea2260869f5421293ce",
+    "canonical_url": "https://videos.facilio.com/videos/xMb1a12cJ88rX7673ZE4uA",
+    "local_file": "14_VIDEOS_LINKS/sources/tenant-service-portal--76893a111a.md",
+    "deduplication_basis": "same public library video identifier"
+  },
+  {
+    "alias_url": "https://videos.facilio.com/s7zcQ0TfhZtwJC1KBArXRQ/drQSsLzclD4i18rOqs763g",
+    "alias_title": "Facilio Connected Buildings Solution",
+    "retrieved": "2026-10-17T19:31:36Z",
+    "dates": {
+      "body_last_updated": "Mar 27, 2023"
+    },
+    "http_last_modified": null,
+    "sha256": "fba97bc58367b48f865ec362d8a66a9354da6427b48f56436e6a6b2adf549236",
+    "canonical_url": "https://videos.facilio.com/d71cfdgHBU2qydi1fQEw4w/drQSsLzclD4i18rOqs763g",
+    "local_file": "14_VIDEOS_LINKS/sources/decarbonization--ea906e9129.md",
+    "deduplication_basis": "same public library video identifier"
+  }
+]

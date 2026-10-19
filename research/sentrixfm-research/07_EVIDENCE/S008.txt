@@ -1,0 +1,19 @@
+Browser tab: 1405043949, Title: "SentrixFm - Business Process Management", URL: "https://sentrixfm.com/manager/business/operations/my-tasks".
+The following is a diff from the previous accessibility tree with ~ and + representing changed and added elements, respectively. Removed elements are summarized by ID range.
+Removed element IDs: 773-795
+~					694 tab (selectable, settable, boolean) Description: WORK_ORDERS.FORM.TABS.LOCATION_ASSET - 1 errors
+1 errors, Value: 0
+Location & Asset
+1
+~					695 tab (selected, settable, boolean) Description: WORK_ORDERS.FORM.TABS.SPARE_PARTS, Value: 1
++						773 text  Spare Parts 
++						774 container Tab complete
++				775 container wo-tab-2
++					776 text 
++					777 heading No spare parts added, Value: 6
++						778 text No spare parts added
++					779 text Add consumables or spare parts required for this work order.
++					780 button  Add Spare Part
++						781 text 
++						782 text Add Spare Part
+The focused UI element is 695 tab (selected, settable, boolean) Description: WORK_ORDERS.FORM.TABS.SPARE_PARTS, Value: 1

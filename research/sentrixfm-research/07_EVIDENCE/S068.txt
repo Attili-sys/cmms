@@ -1,0 +1,399 @@
+Browser tab: 1405043949, Title: "SentrixFm - Business Process Management", URL: "https://sentrixfm.com/manager/business/roles-permissions-managements/matrix".
+1 AXWebArea SentrixFm - Business Process Management, URL: sentrixfm.com/manager/business/roles-permissions-managements/matrix
+	2 container
+		3 container layout-wrapper
+			4 container page-topbar
+				5 link Description: SentrixFM demo, Value: sentrixfm.com/manager/
+				6 button , ID: vertical-menu-btn
+					7 text 
+				8 container
+					9 text field (settable)
+					10 text 
+				11 button Select location
+					12 text 
+					13 text Main Office
+					14 text 
+					15 text  Main
+					16 text T
+				17 button (collapsed) Description: Business Hub - Access all business functions, Secondary Actions: Expand
+				18 pop up button (collapsed) Header Language, ID: page-header-user-dropdown, Secondary Actions: Expand
+					19 image Header Language
+				20 pop up button (collapsed) , Secondary Actions: Expand
+					21 text 
+				22 button 
+					23 text 
+				24 pop up button (collapsed) , ID: page-header-notifications-dropdown, Secondary Actions: Expand
+					403 text 
+				26 pop up button (collapsed) SentrixFM Avatar, ID: page-header-user-dropdown, Secondary Actions: Expand
+					27 image SentrixFM Avatar
+			28 container
+				29 container scrollable content
+					30 content list side-menu
+						31 text DASHBOARD
+						32 link Description:  Analytics Dashboard, Value: sentrixfm.com/manager/dashboard
+						33 link Description:  Location Dashboard, Value: sentrixfm.com/manager/dashboards/location-dashboard
+						34 link (collapsed) Description:  Reporting , Value: sentrixfm.com/manager/business/reports, Secondary Actions: Expand
+						35 text FACILITY STRUCTURE
+						36 link Description:  Locations / Sublocations, Value: sentrixfm.com/manager/business/locations
+						37 link Description:  Store & Inventory, Value: sentrixfm.com/manager/business/store
+						38 link Description:  Assets, Value: sentrixfm.com/manager/business/assets
+						39 link Description: D Consumables, Value: sentrixfm.com/manager/business/store/consumables
+						40 text WORK MANAGEMENT
+						41 link Description:  My Tasks, Value: sentrixfm.com/manager/business/operations/my-tasks
+						42 link (collapsed) Description:  Hard Service , Value: javascript:void(0);, Secondary Actions: Expand
+						43 link (collapsed) Description:  Soft Service , Value: javascript:void(0);, Secondary Actions: Expand
+						44 link Description:  Maintenance Requests, Value: sentrixfm.com/manager/business/maintenance-requests
+						45 link Description:  Categories, Value: sentrixfm.com/manager/business/categories
+						46 link Description: ( SOP Management, Value: sentrixfm.com/manager/business/operations/sop-management
+						47 text WORKFLOWS & PROCEDURES
+						48 link (collapsed) Description:  Workflows , Value: javascript:void(0);, Secondary Actions: Expand
+						49 text ORGANIZATION
+						50 link (collapsed) Description:  User Management , Value: javascript:void(0);, Secondary Actions: Expand
+						51 container
+							52 link (collapsed) Description:  Roles and Permissions , Value: javascript:void(0);, Secondary Actions: Expand
+							53 content list
+								54 link Description:  Roles, Value: sentrixfm.com/manager/business/roles-permissions-managements/roles
+								55 link Description:  Permissions, Value: sentrixfm.com/manager/business/roles-permissions-managements/permissions
+								56 link Description:  Permission Matrix, Value: sentrixfm.com/manager/business/roles-permissions-managements/matrix
+						57 text COMMUNICATION
+						58 link Description:  Location Chat, Value: sentrixfm.com/manager/chat
+						59 link Description:  Demo AI, Value: sentrixfm.com/manager/business/utilities/company-ai-chat
+						60 link Description: ` File Manager, Value: sentrixfm.com/manager/business/utilities/file-manager
+						61 link (collapsed) Description:  Email Center , Value: javascript:void(0);, Secondary Actions: Expand
+						62 text BUSINESS OPERATIONS
+						63 link (collapsed) Description:  Projects , Value: javascript:void(0);, Secondary Actions: Expand
+						64 link (collapsed) Description:  Invoices , Value: javascript:void(0);, Secondary Actions: Expand
+						65 link Description:  Settings, Value: sentrixfm.com/manager/business/settings
+			66 container
+				67 heading PERMISSION MATRIX, Value: 4
+					68 text PERMISSION MATRIX
+				69 text 
+				70 text System Defined
+				71 content list
+					72 link Description:  Home, Value: javascript:void(0);
+					73 container
+						74 text /
+						75 link Description:  Access Control, Value: javascript:void(0);
+					76 container
+						77 text /  Permission Matrix
+				78 container
+					79 button  Expand All Categories
+						404 text 
+						81 text Expand All Categories
+					82 button  Collapse All Categories
+						83 text 
+						84 text Collapse All Categories
+				85 button  Toggle Compact View
+					86 text 
+					87 text Toggle Compact View
+				88 button  Refresh
+					89 text 
+					90 text Refresh
+				91 text 
+				92 text PERMISSIONS
+				93 text 👑
+				94 text 
+				95 text Company Owner
+				96 text 12 perms
+				97 button , Help: Select all permissions for this role
+					98 text 
+				99 button , Help: Deselect all permissions for this role
+					100 text 
+				101 text 🏢
+				102 text 
+				103 text Facility Manager
+				104 text 8 perms
+				105 button , Help: Select all permissions for this role
+					106 text 
+				107 button , Help: Deselect all permissions for this role
+					108 text 
+				109 text 🔧
+				110 text Technician
+				111 text 3 perms
+				112 button , Help: Select all permissions for this role
+					113 text 
+				114 button , Help: Deselect all permissions for this role
+					115 text 
+				116 text 👤
+				117 text 
+				118 text User
+				119 text 1 perms
+				120 button , Help: Select all permissions for this role
+					121 text 
+				122 button , Help: Deselect all permissions for this role
+					123 text 
+				405 text 
+				125 text 
+				126 heading Core Management, Value: 6
+					127 text Core Management
+				128 text User & company administration (users, roles, teams, company settings)
+				129 text 3
+				184 heading Company Settings, Value: 6
+					185 text Company Settings
+				186 text  COMPANY_MANAGE Access to company-wide settings, configuration, branding, and system preferences. Can modify company profile and default settings.  company  manage
+				187 container Assign to all roles
+					188 button 
+						189 text 
+				190 container Remove from all roles
+					191 button 
+						192 text 
+				193 text  1 roles
+				194 checkbox (settable, integer) 1
+				195 text Assigned
+				196 checkbox (settable, integer) 0
+				197 text Not Assigned
+				198 checkbox (settable, integer) 0
+				199 text Not Assigned
+				200 checkbox (settable, integer) 0
+				201 text Not Assigned
+				202 heading Manage Roles & Permissions, Value: 6
+					203 text Manage Roles & Permissions
+				204 text  ACCESS_CONTROL_MANAGE Manage security roles, permissions, and access matrix. Control who can access what within the system.  access_control  manage
+				205 container Assign to all roles
+					206 button 
+						207 text 
+				208 container Remove from all roles
+					209 button 
+						210 text 
+				211 text  1 roles
+				212 checkbox (settable, integer) 1
+				213 text Assigned
+				214 checkbox (settable, integer) 0
+				215 text Not Assigned
+				216 checkbox (settable, integer) 0
+				217 text Not Assigned
+				218 checkbox (settable, integer) 0
+				219 text Not Assigned
+				220 heading User Management, Value: 6
+					221 text User Management
+				222 text  USER_MANAGE Full access to create, edit, delete, and manage users, roles, and teams. Can assign users to locations and manage their permissions.  user  manage
+				223 container Assign to all roles
+					224 button 
+						225 text 
+				226 container Remove from all roles
+					227 button 
+						228 text 
+				229 text  1 roles
+				230 checkbox (settable, integer) 1
+				231 text Assigned
+				232 checkbox (settable, integer) 0
+				233 text Not Assigned
+				234 checkbox (settable, integer) 0
+				235 text Not Assigned
+				236 checkbox (settable, integer) 0
+				237 text Not Assigned
+				406 text 
+				131 text 
+				132 heading CAFM Operations, Value: 6
+					133 text CAFM Operations
+				134 text Facility operations (locations, categories, workflows, work orders, assets)
+				135 text 7
+				239 heading Execute Work Orders, Value: 6
+					240 text Execute Work Orders
+				241 text  WORK_ORDER_EXECUTE Execute assigned work orders. Start, stop, complete tasks, and add notes or materials used.  workingitem  execute
+				242 container Assign to all roles
+					243 button 
+						244 text 
+				245 container Remove from all roles
+					246 button 
+						247 text 
+				248 text  3 roles
+				249 checkbox (settable, integer) 1
+				250 text Assigned
+				251 checkbox (settable, integer) 1
+				252 text Assigned
+				253 checkbox (settable, integer) 1
+				254 text Assigned
+				255 checkbox (settable, integer) 0
+				256 text Not Assigned
+				257 heading Asset Management, Value: 6
+					258 text Asset Management
+				259 text  ASSET_MANAGE Create, track, and manage facility assets. Can associate assets with locations, link to maintenance activities, and track asset lifecycle.  asset  manage
+				260 container Assign to all roles
+					261 button 
+						262 text 
+				263 container Remove from all roles
+					264 button 
+						265 text 
+				266 text  2 roles
+				267 checkbox (settable, integer) 1
+				268 text Assigned
+				269 checkbox (settable, integer) 1
+				270 text Assigned
+				271 checkbox (settable, integer) 0
+				272 text Not Assigned
+				273 checkbox (settable, integer) 0
+				274 text Not Assigned
+				275 heading Category Management, Value: 6
+					276 text Category Management
+				277 text  CATEGORY_MANAGE Create and manage business process categories. Categories organize workflows and maintenance activities by business function.  category  manage
+				278 container Assign to all roles
+					279 button 
+						280 text 
+				281 container Remove from all roles
+					282 button 
+						283 text 
+				284 text  2 roles
+				285 checkbox (settable, integer) 1
+				286 text Assigned
+				287 checkbox (settable, integer) 1
+				288 text Assigned
+				289 checkbox (settable, integer) 0
+				290 text Not Assigned
+				291 checkbox (settable, integer) 0
+				292 text Not Assigned
+				293 heading Location Management, Value: 6
+					294 text Location Management
+				295 text  LOCATION_MANAGE Create, edit, and manage locations in the facility hierarchy. Can assign users to locations and configure location-specific settings.  location  manage
+				296 container Assign to all roles
+					297 button 
+						298 text 
+				299 container Remove from all roles
+					300 button 
+						301 text 
+				302 text  2 roles
+				303 checkbox (settable, integer) 1
+				304 text Assigned
+				305 checkbox (settable, integer) 1
+				306 text Assigned
+				307 checkbox (settable, integer) 0
+				308 text Not Assigned
+				309 checkbox (settable, integer) 0
+				310 text Not Assigned
+				311 heading Working Item Management, Value: 6
+					312 text Working Item Management
+				313 text  WORK_ORDER_MANAGE Create, assign, and manage working items (work orders, PPM scheduled items, inspections). Can track progress and update status.  workingitem  manage
+				314 container Assign to all roles
+					315 button 
+						316 text 
+				317 container Remove from all roles
+					318 button 
+						319 text 
+				320 text  2 roles
+				321 checkbox (settable, integer) 1
+				322 text Assigned
+				323 checkbox (settable, integer) 1
+				324 text Assigned
+				325 checkbox (settable, integer) 0
+				326 text Not Assigned
+				327 checkbox (settable, integer) 0
+				328 text Not Assigned
+				329 heading Workflow Management, Value: 6
+					330 text Workflow Management
+				331 text  WORKFLOW_MANAGE Create, edit, and manage workflows and maintenance packages. Can design BPMN workflows and configure maintenance schedules.  workflow  manage
+				332 container Assign to all roles
+					333 button 
+						334 text 
+				335 container Remove from all roles
+					336 button 
+						337 text 
+				338 text  2 roles
+				339 checkbox (settable, integer) 1
+				340 text Assigned
+				341 checkbox (settable, integer) 1
+				342 text Assigned
+				343 checkbox (settable, integer) 0
+				344 text Not Assigned
+				345 checkbox (settable, integer) 0
+				346 text Not Assigned
+				347 heading View Assets, Value: 6
+					348 text View Assets
+				349 text  ASSET_VIEW View asset details, history, and manuals. Read-only access to asset information.  asset  view
+				350 container Assign to all roles
+					351 button 
+						352 text 
+				353 container Remove from all roles
+					354 button 
+						355 text 
+				356 text  3 roles
+				357 checkbox (settable, integer) 1
+				358 text Assigned
+				359 checkbox (settable, integer) 1
+				360 text Assigned
+				361 checkbox (settable, integer) 1
+				362 text Assigned
+				363 checkbox (settable, integer) 0
+				364 text Not Assigned
+				407 text 
+				137 text 
+				138 heading Analytics & Reporting, Value: 6
+					139 text Analytics & Reporting
+				140 text Dashboards, reports, exports, and business insights
+				141 text 1
+				366 heading Analytics & Reports, Value: 6
+					367 text Analytics & Reports
+				368 text  ANALYTICS_VIEW View dashboards, reports, and analytics. Can export data and access business intelligence features. Read-only access to analytics.  analytics  view
+				369 container Assign to all roles
+					370 button 
+						371 text 
+				372 container Remove from all roles
+					373 button 
+						374 text 
+				375 text  4 roles
+				376 checkbox (settable, integer) 1
+				377 text Assigned
+				378 checkbox (settable, integer) 1
+				379 text Assigned
+				380 checkbox (settable, integer) 1
+				381 text Assigned
+				382 checkbox (settable, integer) 1
+				383 text Assigned
+				408 text 
+				143 text 
+				144 heading System & Integrations, Value: 6
+					145 text System & Integrations
+				146 text Platform settings, integrations, and API access
+				147 text 1
+				385 heading Manage Integrations, Value: 6
+					386 text Manage Integrations
+				387 text  SYSTEM_INTEGRATION_MANAGE Manage external integrations, API keys, and webhooks. Configure connections to third-party systems.  integration  manage
+				388 container Assign to all roles
+					389 button 
+						390 text 
+				391 container Remove from all roles
+					392 button 
+						393 text 
+				394 text  1 roles
+				395 checkbox (settable, integer) 1
+				396 text Assigned
+				397 checkbox (settable, integer) 0
+				398 text Not Assigned
+				399 checkbox (settable, integer) 0
+				400 text Not Assigned
+				401 checkbox (settable, integer) 0
+				402 text Not Assigned
+			148 container
+				149 text © 2026 SentrixFm. All rights reserved.  v1.2
+		150 container
+			151 container scrollable content
+				152 link javascript:void(0);
+				153 heading Settings, Value: 5
+					154 text Settings
+				155 heading Layout, Value: 6
+					156 text Layout
+				157 checkbox (settable, integer) Description: Vertical, Value: 1, ID: is-layout
+				158 heading Width, Value: 6
+					159 text Width
+				160 radio button (settable, integer) Description: Fluid, Value: 1, ID: layout-width-fuild
+				161 radio button (settable, integer) Description: Boxed, Value: 0, ID: layout-width-boxed
+				162 radio button (settable, integer) Description: Scrolable, Value: 0, ID: layout-width-scrollable
+				163 heading Sidebar Color, Value: 6
+					164 text Sidebar Color
+				165 radio button (settable, integer) Description: Light, Value: 0, ID: sidebar-color-light
+				166 radio button (settable, integer) Description: Dark, Value: 1, ID: sidebar-color-dark
+				167 radio button (settable, integer) Description: Compact, Value: 0, ID: sidebar-color-brand
+				168 radio button (settable, integer) Description: Icon, Value: 0, ID: sidebar-color-icon
+				169 radio button (settable, integer) Description: Colored, Value: 0, ID: sidebar-color
+				170 heading Theme Mode, Value: 6
+					171 text Theme Mode
+				172 radio button (settable, integer) Description: Light, Value: 1, ID: theme-color-light
+				173 radio button (settable, integer) Description: Dark, Value: 0, ID: theme-color-dark
+				174 heading Choose Layouts, Value: 6
+					175 text Choose Layouts
+				176 link
+				177 link
+				178 link
+		179 button Open AI Assistant
+			180 text 
+
+The focused UI element is 79 button  Expand All Categories

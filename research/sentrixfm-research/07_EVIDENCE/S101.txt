@@ -1,0 +1,140 @@
+Browser tab: 1405043950, Title: "SentrixFm - Business Process Management", URL: "https://sentrixfm.com/manager/business/operations/work-orders/working-item-61b197a8-262c-4beb-87c2-16e0944f857c".
+1 AXWebArea SentrixFm - Business Process Management, URL: sentrixfm.com/manager/business/operations/work-orders/working-item-61b197a8-262c-4beb-87c2-16e0944f857c
+	2 container
+		3 container layout-wrapper
+			4 container page-topbar
+				5 link Description: SentrixFM, Value: sentrixfm.com/manager/
+				6 button , ID: vertical-menu-btn
+					7 text 
+				8 button Select location
+					9 text 
+					10 text Main Office
+					11 text 
+					12 text  Main
+					13 text T
+				14 button Select location
+					15 text 
+					16 text Main Office
+					17 text 
+					18 text  Main
+					19 text T
+				20 pop up button (collapsed) ID: page-header-search-dropdown, Secondary Actions: Expand
+				21 pop up button (collapsed) Header Language, ID: page-header-user-dropdown, Secondary Actions: Expand
+					22 image Header Language
+				23 pop up button (collapsed) , ID: page-header-notifications-dropdown, Secondary Actions: Expand
+					24 text 
+				25 pop up button (collapsed) SentrixFM Avatar, ID: page-header-user-dropdown, Secondary Actions: Expand
+					26 image SentrixFM Avatar
+			27 container
+				28 text *
+				29 heading Final Re-energization & Certification Task, Value: 1
+					30 text Final Re-energization & Certification Task
+				31 text 
+				32 text No Location
+				33 text (
+				34 text Unknown Status
+				35 text ^
+				36 text Critical
+				37 text E
+				38 text Soft
+				39 container
+					40 button , Help: Edit
+						41 text 
+					42 button , Help: Delete
+						43 text 
+					44 button , Help: Print
+						45 text 
+				46 button l
+					47 text l
+				48 tab group
+					49 tab (selected, settable, boolean) , Value: 1
+
+					50 tab (selectable, settable, boolean) Y, Value: 0
+Y
+					51 tab (selectable, settable, boolean) , Value: 0
+
+					52 tab (selectable, settable, boolean) R, Value: 0
+R
+					53 tab (selectable, settable, boolean) , Value: 0
+
+				54 container
+					55 text 
+					56 heading Status Management, Value: 6
+						57 text Status Management
+					58 text Current ( WORK_ORDERS.DETAILS.CURRENT_STATUS Unknown Status
+					59 button Z Change Status
+						60 text Z
+						61 text Change Status
+				62 container
+					63 text Y 0 DAYS OPEN
+				64 container
+					65 text  0 PRIORITY RANK
+				66 container
+					67 text  3 ASSETS
+				68 container
+					69 text R 0% SOP PROGRESS
+				70 text 
+				71 text Basic Information
+				72 text 
+				73 text ID working-item-61b197a8-262c-4beb-87c2-16e0944f857c
+				74 text M
+				75 text CREATED 10/17/2026
+				76 text 
+				77 text WORK_ORDERS.DETAILS.DESCRIPTION
+				78 text Alii ulterius vinco.
+				79 text 
+				80 text CAFM Classification
+				81 text ~
+				82 text MAINTENANCE TYPE
+				83 text 
+				84 text Emergency
+				85 text E
+				86 text SERVICE TYPE
+				87 text L
+				88 text Soft
+				89 text 
+				90 text Assignment
+				91 text Unassigned
+				92 text 
+				93 text Context
+				94 text `
+				95 text CATEGORY / WORKFLOW Annual Facility Power System Overhaul
+				96 text D
+				97 text MAINTENANCE PACKAGE Final Re-energization & Certification
+				98 container
+					99 text  WORK_ORDERS.DETAILS.LABELS_TAGS  Label 5  Urgent
+			100 container
+				101 text © 2026 SentrixFm. All rights reserved.  v1.2
+		102 container
+			103 container scrollable content
+				104 link javascript:void(0);
+				105 heading Settings, Value: 5
+					106 text Settings
+				107 heading Layout, Value: 6
+					108 text Layout
+				109 checkbox (settable, integer) Description: Vertical, Value: 1, ID: is-layout
+				110 heading Width, Value: 6
+					111 text Width
+				112 radio button (settable, integer) Description: Fluid, Value: 1, ID: layout-width-fuild
+				113 radio button (settable, integer) Description: Boxed, Value: 0, ID: layout-width-boxed
+				114 radio button (settable, integer) Description: Scrolable, Value: 0, ID: layout-width-scrollable
+				115 heading Sidebar Color, Value: 6
+					116 text Sidebar Color
+				117 radio button (settable, integer) Description: Light, Value: 0, ID: sidebar-color-light
+				118 radio button (settable, integer) Description: Dark, Value: 1, ID: sidebar-color-dark
+				119 radio button (settable, integer) Description: Compact, Value: 0, ID: sidebar-color-brand
+				120 radio button (settable, integer) Description: Icon, Value: 0, ID: sidebar-color-icon
+				121 radio button (settable, integer) Description: Colored, Value: 0, ID: sidebar-color
+				122 heading Theme Mode, Value: 6
+					123 text Theme Mode
+				124 radio button (settable, integer) Description: Light, Value: 1, ID: theme-color-light
+				125 radio button (settable, integer) Description: Dark, Value: 0, ID: theme-color-dark
+				126 heading Choose Layouts, Value: 6
+					127 text Choose Layouts
+				128 link
+				129 link
+				130 link
+		131 button Open AI Assistant
+			132 text 
+
+The focused UI element is 1 AXWebArea SentrixFm - Business Process Management, URL: sentrixfm.com/manager/business/operations/work-orders/working-item-61b197a8-262c-4beb-87c2-16e0944f857c

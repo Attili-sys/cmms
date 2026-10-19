@@ -1,0 +1,485 @@
+Browser tab: 1405043950, Title: "SentrixFm - Business Process Management", URL: "https://sentrixfm.com/manager/business/assets/list".
+1 AXWebArea SentrixFm - Business Process Management, URL: sentrixfm.com/manager/business/assets/list
+	3 container layout-wrapper
+		4 container page-topbar
+			5 link Description: SentrixFM demo, Value: sentrixfm.com/manager/
+			6 button , ID: vertical-menu-btn
+				7 text 
+			8 container
+				9 text field (settable)
+				10 text 
+			11 button Select location
+				12 text 
+				13 text Main Office
+				14 text 
+				15 text  Main
+				16 text T
+			17 button (collapsed) Description: Business Hub - Access all business functions, Secondary Actions: Expand
+			18 pop up button (collapsed) Header Language, ID: page-header-user-dropdown, Secondary Actions: Expand
+				19 image Header Language
+			20 pop up button (collapsed) , Secondary Actions: Expand
+				21 text 
+			22 button 
+				23 text 
+			24 pop up button (collapsed) , ID: page-header-notifications-dropdown, Secondary Actions: Expand
+				480 text 
+			26 pop up button (collapsed) SentrixFM Avatar, ID: page-header-user-dropdown, Secondary Actions: Expand
+				27 image SentrixFM Avatar
+		28 container
+			29 container scrollable content
+				30 content list side-menu
+					31 text DASHBOARD
+					32 link Description:  Analytics Dashboard, Value: sentrixfm.com/manager/dashboard
+					33 link Description:  Location Dashboard, Value: sentrixfm.com/manager/dashboards/location-dashboard
+					34 link (collapsed) Description:  Reporting , Value: sentrixfm.com/manager/business/reports, Secondary Actions: Expand
+					35 text FACILITY STRUCTURE
+					36 link Description:  Locations / Sublocations, Value: sentrixfm.com/manager/business/locations
+					37 link Description:  Store & Inventory, Value: sentrixfm.com/manager/business/store
+					38 link Description:  Assets, Value: sentrixfm.com/manager/business/assets
+					39 link Description: D Consumables, Value: sentrixfm.com/manager/business/store/consumables
+					40 text WORK MANAGEMENT
+					41 link Description:  My Tasks, Value: sentrixfm.com/manager/business/operations/my-tasks
+					42 link (collapsed) Description:  Hard Service , Value: javascript:void(0);, Secondary Actions: Expand
+					43 link (collapsed) Description:  Soft Service , Value: javascript:void(0);, Secondary Actions: Expand
+					44 link Description:  Maintenance Requests, Value: sentrixfm.com/manager/business/maintenance-requests
+					45 link Description:  Categories, Value: sentrixfm.com/manager/business/categories
+					46 link Description: ( SOP Management, Value: sentrixfm.com/manager/business/operations/sop-management
+					47 text WORKFLOWS & PROCEDURES
+					48 link (collapsed) Description:  Workflows , Value: javascript:void(0);, Secondary Actions: Expand
+					49 text ORGANIZATION
+					50 link (collapsed) Description:  User Management , Value: javascript:void(0);, Secondary Actions: Expand
+					51 link (collapsed) Description:  Roles and Permissions , Value: javascript:void(0);, Secondary Actions: Expand
+					52 text COMMUNICATION
+					53 link Description:  Location Chat, Value: sentrixfm.com/manager/chat
+					54 link Description:  Demo AI, Value: sentrixfm.com/manager/business/utilities/company-ai-chat
+					55 link Description: ` File Manager, Value: sentrixfm.com/manager/business/utilities/file-manager
+					56 link (collapsed) Description:  Email Center , Value: javascript:void(0);, Secondary Actions: Expand
+					57 text BUSINESS OPERATIONS
+					58 link (collapsed) Description:  Projects , Value: javascript:void(0);, Secondary Actions: Expand
+					59 link (collapsed) Description:  Invoices , Value: javascript:void(0);, Secondary Actions: Expand
+					60 link Description:  Settings, Value: sentrixfm.com/manager/business/settings
+		61 container
+			62 container
+				63 text g
+				64 heading ASSET MANAGEMENT, Value: 4
+					65 text ASSET MANAGEMENT
+				66 text Manage your business assets and equipment
+				67 content list
+					68 link Description:  Home, Value: javascript:void(0);
+					69 container
+						70 text /
+						71 link Description: E Business Hub, Value: javascript:void(0);
+					72 container
+						73 text /
+						74 link Description:  Assets & Locations, Value: javascript:void(0);
+					75 container
+						76 text / g Assets
+				77 container Filter options
+					78 button Advanced Filter
+				79 container View mode
+					80 checkbox Table View, Value: 1
+					81 checkbox Tree View, Value: 0
+				82 button New Asset
+					451 text 
+					84 text New Asset
+			85 container
+				86 table
+					87 row
+						88 cell Click to sort
+							89 text R
+							90 text NAME
+							91 text 
+						92 cell Click to sort
+							93 text D
+							94 text TYPE
+							95 text 
+						96 cell Click to sort
+							97 text ^
+							98 text STATUS
+							99 text 
+						100 cell null
+							101 text 
+							102 text QR CODE
+						103 cell null
+							104 text 
+							105 text LOCATION
+						106 cell null
+							107 text 
+							108 text METRICS
+						109 cell Click to sort
+							110 text Y
+							111 text LAST UPDATED
+							112 text 
+						113 cell null
+							114 text 
+							115 text ACTIONS
+					116 row
+						117 cell
+							118 image Boiler System Primary
+							119 text Boiler System Primary
+							120 text High-efficiency steam boiler for heating distribution
+						121 cell
+							122 text Tool
+						123 cell
+							124 container
+								125 text S Commissioned
+						126 cell
+							127 container
+								128 image Description: QR Code for Boiler System Primary, Help: Click to view QR code - Boiler System Primary
+								129 button View QR Code for Boiler System Primary
+						130 cell
+							131 text 
+							132 text Final Sub-space 601
+						133 cell
+							134 text E
+							135 text WO:
+							136 text 0
+							137 text | PPM:
+							138 text 0
+						139 cell
+							140 text Y
+							141 text Oct 17, 2026
+						142 cell
+							143 button Description: View details for Boiler System Primary, Help: View
+							144 button Description: Edit Boiler System Primary, Help: Edit
+							145 button Description: Delete Boiler System Primary, Help: Delete
+					146 row
+						147 cell
+							148 image CNC Machining Center Unit A
+							149 text CNC Machining Center Unit A
+							150 text High-precision CNC machine for component manufacturing
+						151 cell
+							152 text Component
+						153 cell
+							154 container
+								155 text S Commissioned
+						156 cell
+							157 container
+								158 image Description: QR Code for CNC Machining Center Unit A, Help: Click to view QR code - CNC Machining Center Unit A
+								159 button View QR Code for CNC Machining Center Unit A
+						160 cell
+							161 text 
+							162 text Final Sub-space 601
+						163 cell
+							164 text E
+							165 text WO:
+							166 text 0
+							167 text | PPM:
+							168 text 0
+						169 cell
+							170 text Y
+							171 text Oct 17, 2026
+						172 cell
+							173 button Description: View details for CNC Machining Center Unit A, Help: View
+							174 button Description: Edit CNC Machining Center Unit A, Help: Edit
+							175 button Description: Delete CNC Machining Center Unit A, Help: Delete
+					176 row
+						177 cell
+							178 image Chiller System Main
+							179 text Chiller System Main
+							180 text Centrifugal chiller for building cooling distribution
+						181 cell
+							182 text Tool
+						183 cell
+							184 container
+								185 text S Commissioned
+						186 cell
+							187 container
+								188 image Description: QR Code for Chiller System Main, Help: Click to view QR code - Chiller System Main
+								189 button View QR Code for Chiller System Main
+						190 cell
+							191 text 
+							192 text Final Sub-space 601
+						193 cell
+							194 text E
+							195 text WO:
+							196 text 0
+							197 text | PPM:
+							198 text 0
+						199 cell
+							200 text Y
+							201 text Oct 17, 2026
+						202 cell
+							203 button Description: View details for Chiller System Main, Help: View
+							204 button Description: Edit Chiller System Main, Help: Edit
+							205 button Description: Delete Chiller System Main, Help: Delete
+					206 row
+						207 cell
+							208 image Diagnostic Testing Equipment
+							209 text Diagnostic Testing Equipment
+							210 text Advanced diagnostic analyzer for equipment condition assessment
+						211 cell
+							212 text Component
+						213 cell
+							214 container
+								215 text S Commissioned
+						216 cell
+							217 container
+								218 image Description: QR Code for Diagnostic Testing Equipment, Help: Click to view QR code - Diagnostic Testing Equipment
+								219 button View QR Code for Diagnostic Testing Equipment
+						220 cell
+							221 text 
+							222 text Final Sub-space 601
+						223 cell
+							224 text E
+							225 text WO:
+							226 text 0
+							227 text | PPM:
+							228 text 0
+						229 cell
+							230 text Y
+							231 text Oct 17, 2026
+						232 cell
+							233 button Description: View details for Diagnostic Testing Equipment, Help: View
+							234 button Description: Edit Diagnostic Testing Equipment, Help: Edit
+							235 button Description: Delete Diagnostic Testing Equipment, Help: Delete
+					236 row
+						237 cell
+							238 image Industrial Power Tools Set
+							239 text Industrial Power Tools Set
+							240 text Comprehensive set of pneumatic and electric power tools
+						241 cell
+							242 text Component
+						243 cell
+							244 container
+								245 text S Commissioned
+						246 cell
+							247 container
+								248 image Description: QR Code for Industrial Power Tools Set, Help: Click to view QR code - Industrial Power Tools Set
+								249 button View QR Code for Industrial Power Tools Set
+						250 cell
+							251 text 
+							252 text Final Sub-space 601
+						253 cell
+							254 text E
+							255 text WO:
+							256 text 0
+							257 text | PPM:
+							258 text 0
+						259 cell
+							260 text Y
+							261 text Oct 17, 2026
+						262 cell
+							263 button Description: View details for Industrial Power Tools Set, Help: View
+							264 button Description: Edit Industrial Power Tools Set, Help: Edit
+							265 button Description: Delete Industrial Power Tools Set, Help: Delete
+					266 row
+						267 cell
+							268 image Main Electrical Panel Room 101
+							269 text Main Electrical Panel Room 101
+							270 text Primary electrical distribution panel for building main feeder
+						271 cell
+							272 text Tool
+						273 cell
+							274 container
+								275 text S Commissioned
+						276 cell
+							277 container
+								278 image Description: QR Code for Main Electrical Panel Room 101, Help: Click to view QR code - Main Electrical Panel Room 101
+								279 button View QR Code for Main Electrical Panel Room 101
+						280 cell
+							281 text 
+							282 text Final Sub-space 601
+						283 cell
+							284 text E
+							285 text WO:
+							286 text 0
+							287 text | PPM:
+							288 text 0
+						289 cell
+							290 text Y
+							291 text Oct 17, 2026
+						292 cell
+							293 button Description: View details for Main Electrical Panel Room 101, Help: View
+							294 button Description: Edit Main Electrical Panel Room 101, Help: Edit
+							295 button Description: Delete Main Electrical Panel Room 101, Help: Delete
+					296 row
+						297 cell
+							298 image Portable Generator Unit
+							299 text Portable Generator Unit
+							300 text Backup power generation for facility emergency operations
+						301 cell
+							302 text Tool
+						303 cell
+							304 container
+								305 text S Commissioned
+						306 cell
+							307 container
+								308 image Description: QR Code for Portable Generator Unit, Help: Click to view QR code - Portable Generator Unit
+								309 button View QR Code for Portable Generator Unit
+						310 cell
+							311 text 
+							312 text Final Sub-space 601
+						313 cell
+							314 text E
+							315 text WO:
+							316 text 0
+							317 text | PPM:
+							318 text 0
+						319 cell
+							320 text Y
+							321 text Oct 17, 2026
+						322 cell
+							323 button Description: View details for Portable Generator Unit, Help: View
+							324 button Description: Edit Portable Generator Unit, Help: Edit
+							325 button Description: Delete Portable Generator Unit, Help: Delete
+					326 row
+						327 cell
+							328 image Powered Forklift Unit #1
+							329 text Powered Forklift Unit #1
+							330 text Electric powered forklift for material handling and logistics
+						331 cell
+							332 text Tool
+						333 cell
+							334 container
+								335 text S Commissioned
+						336 cell
+							337 container
+								338 image Description: QR Code for Powered Forklift Unit #1, Help: Click to view QR code - Powered Forklift Unit #1
+								339 button View QR Code for Powered Forklift Unit #1
+						340 cell
+							341 text 
+							342 text Final Sub-space 601
+						343 cell
+							344 text E
+							345 text WO:
+							346 text 0
+							347 text | PPM:
+							348 text 0
+						349 cell
+							350 text Y
+							351 text Oct 17, 2026
+						352 cell
+							353 button Description: View details for Powered Forklift Unit #1, Help: View
+							354 button Description: Edit Powered Forklift Unit #1, Help: Edit
+							355 button Description: Delete Powered Forklift Unit #1, Help: Delete
+					356 row
+						357 cell
+							358 image Rooftop HVAC Unit #1
+							359 text Rooftop HVAC Unit #1
+							360 text Primary rooftop HVAC serving floors 1-3, 50-ton capacity
+						361 cell
+							362 text D
+							363 text Equipment
+						364 cell
+							365 container
+								366 text S Commissioned
+						367 cell
+							368 container
+								369 image Description: QR Code for Rooftop HVAC Unit #1, Help: Click to view QR code - Rooftop HVAC Unit #1
+								370 button View QR Code for Rooftop HVAC Unit #1
+						371 cell
+							372 text 
+							373 text Final Sub-space 601
+						374 cell
+							375 text E
+							376 text WO:
+							377 text 0
+							378 text | PPM:
+							379 text 0
+						380 cell
+							381 text Y
+							382 text Oct 17, 2026
+						383 cell
+							384 button Description: View details for Rooftop HVAC Unit #1, Help: View
+							385 button Description: Edit Rooftop HVAC Unit #1, Help: Edit
+							386 button Description: Delete Rooftop HVAC Unit #1, Help: Delete
+					387 row
+						388 cell
+							389 image Water Distribution System
+							390 text Water Distribution System
+							391 text Central water supply and distribution to all facility areas
+						392 cell
+							393 text Tool
+						394 cell
+							395 container
+								396 text S Commissioned
+						397 cell
+							398 container
+								399 image Description: QR Code for Water Distribution System, Help: Click to view QR code - Water Distribution System
+								400 button View QR Code for Water Distribution System
+						401 cell
+							402 text 
+							403 text Final Sub-space 601
+						404 cell
+							405 text E
+							406 text WO:
+							407 text 0
+							408 text | PPM:
+							409 text 0
+						410 cell
+							411 text Y
+							412 text Oct 17, 2026
+						413 cell
+							414 button Description: View details for Water Distribution System, Help: View
+							415 button Description: Edit Water Distribution System, Help: Edit
+							416 button Description: Delete Water Distribution System, Help: Delete
+				417 text Showing  1–10  of  10  assets
+		418 container
+			419 text © 2026 SentrixFm. All rights reserved.  v1.2
+	420 container
+		421 container scrollable content
+			422 link javascript:void(0);
+			423 heading Settings, Value: 5
+				424 text Settings
+			425 heading Layout, Value: 6
+				426 text Layout
+			427 checkbox (settable, integer) Description: Vertical, Value: 1, ID: is-layout
+			428 heading Width, Value: 6
+				429 text Width
+			430 radio button (settable, integer) Description: Fluid, Value: 1, ID: layout-width-fuild
+			431 radio button (settable, integer) Description: Boxed, Value: 0, ID: layout-width-boxed
+			432 radio button (settable, integer) Description: Scrolable, Value: 0, ID: layout-width-scrollable
+			433 heading Sidebar Color, Value: 6
+				434 text Sidebar Color
+			435 radio button (settable, integer) Description: Light, Value: 0, ID: sidebar-color-light
+			436 radio button (settable, integer) Description: Dark, Value: 1, ID: sidebar-color-dark
+			437 radio button (settable, integer) Description: Compact, Value: 0, ID: sidebar-color-brand
+			438 radio button (settable, integer) Description: Icon, Value: 0, ID: sidebar-color-icon
+			439 radio button (settable, integer) Description: Colored, Value: 0, ID: sidebar-color
+			440 heading Theme Mode, Value: 6
+				441 text Theme Mode
+			442 radio button (settable, integer) Description: Light, Value: 1, ID: theme-color-light
+			443 radio button (settable, integer) Description: Dark, Value: 0, ID: theme-color-dark
+			444 heading Choose Layouts, Value: 6
+				445 text Choose Layouts
+			446 link
+			447 link
+			448 link
+	2 button Open AI Assistant
+		449 text 
+	452 container
+		453 heading Create Asset, Value: 5
+			454 text Create Asset
+		455 button Close
+			456 text ×
+		457 container
+			458 tab group
+				459 tab (selectable, settable, boolean)  Asset Information 2, Value: 0
+
+Asset Information
+2
+				460 tab (selected, settable, boolean)  Location , Value: 1
+					461 text 
+					462 text  Location 
+					463 text 
+				464 tab (selectable, settable, boolean) Lifecycle , Value: 0
+Lifecycle
+
+			465 container
+				466 text 
+				467 text Location
+				468 text *
+				469 content list
+					470 container
+						471 button Toggle expand/collapse: Main Office
+							472 text 
+						473 text  Main Office Branch/Site - Select a sub-location  Selected  Your asset will be saved in this location
+		474 button 9 Cancel
+			475 text 9
+			476 text Cancel
+		477 button (disabled)  Create
+			478 text 
+			479 text Create
+
+The focused UI element is 460 tab (selected, settable, boolean)  Location , Value: 1

@@ -1,0 +1,303 @@
+Browser tab: 1405043949, Title: "SentrixFm - Business Process Management", URL: "https://sentrixfm.com/manager/business/operations/inspections?serviceType=hard".
+1 AXWebArea SentrixFm - Business Process Management, URL: sentrixfm.com/manager/business/operations/inspections?serviceType=hard
+	2 container
+		3 container layout-wrapper
+			4 container page-topbar
+				5 link Description: SentrixFM demo, Value: sentrixfm.com/manager/
+				6 button , ID: vertical-menu-btn
+					7 text 
+				8 container
+					9 text field (settable)
+					10 text 
+				11 button Select location
+					12 text 
+					13 text Main Office
+					14 text 
+					15 text  Main
+					16 text T
+				17 button (collapsed) Description: Business Hub - Access all business functions, Secondary Actions: Expand
+				18 pop up button (collapsed) Header Language, ID: page-header-user-dropdown, Secondary Actions: Expand
+					19 image Header Language
+				20 pop up button (collapsed) , Secondary Actions: Expand
+					21 text 
+				22 button 
+					23 text 
+				24 pop up button (collapsed) , ID: page-header-notifications-dropdown, Secondary Actions: Expand
+					311 text 
+				26 pop up button (collapsed) SentrixFM Avatar, ID: page-header-user-dropdown, Secondary Actions: Expand
+					27 image SentrixFM Avatar
+			28 container
+				29 container scrollable content
+					30 content list side-menu
+						31 text DASHBOARD
+						32 link Description:  Analytics Dashboard, Value: sentrixfm.com/manager/dashboard
+						33 link Description:  Location Dashboard, Value: sentrixfm.com/manager/dashboards/location-dashboard
+						34 link (collapsed) Description:  Reporting , Value: sentrixfm.com/manager/business/reports, Secondary Actions: Expand
+						35 text FACILITY STRUCTURE
+						36 link Description:  Locations / Sublocations, Value: sentrixfm.com/manager/business/locations
+						37 link Description:  Store & Inventory, Value: sentrixfm.com/manager/business/store
+						38 link Description:  Assets, Value: sentrixfm.com/manager/business/assets
+						39 link Description: D Consumables, Value: sentrixfm.com/manager/business/store/consumables
+						40 text WORK MANAGEMENT
+						41 link Description:  My Tasks, Value: sentrixfm.com/manager/business/operations/my-tasks
+						42 container
+							43 link (collapsed) Description:  Hard Service , Value: javascript:void(0);, Secondary Actions: Expand
+							44 content list
+								45 link Description:  Work Orders, Value: sentrixfm.com/manager/business/operations/work-orders?serviceType=hard
+								46 link Description:  PPM Scheduled, Value: sentrixfm.com/manager/business/operations/ppm-scheduled?serviceType=hard
+								47 link Description:  Inspections, Value: sentrixfm.com/manager/business/operations/inspections?serviceType=hard
+						48 link (collapsed) Description:  Soft Service , Value: javascript:void(0);, Secondary Actions: Expand
+						49 link Description:  Maintenance Requests, Value: sentrixfm.com/manager/business/maintenance-requests
+						50 link Description:  Categories, Value: sentrixfm.com/manager/business/categories
+						51 link Description: ( SOP Management, Value: sentrixfm.com/manager/business/operations/sop-management
+						52 text WORKFLOWS & PROCEDURES
+						53 link (collapsed) Description:  Workflows , Value: javascript:void(0);, Secondary Actions: Expand
+						54 text ORGANIZATION
+						55 link (collapsed) Description:  User Management , Value: javascript:void(0);, Secondary Actions: Expand
+						56 link (collapsed) Description:  Roles and Permissions , Value: javascript:void(0);, Secondary Actions: Expand
+						57 text COMMUNICATION
+						58 link Description:  Location Chat, Value: sentrixfm.com/manager/chat
+						59 link Description:  Demo AI, Value: sentrixfm.com/manager/business/utilities/company-ai-chat
+						60 link Description: ` File Manager, Value: sentrixfm.com/manager/business/utilities/file-manager
+						61 link (collapsed) Description:  Email Center , Value: javascript:void(0);, Secondary Actions: Expand
+						62 text BUSINESS OPERATIONS
+						63 link (collapsed) Description:  Projects , Value: javascript:void(0);, Secondary Actions: Expand
+						64 link (collapsed) Description:  Invoices , Value: javascript:void(0);, Secondary Actions: Expand
+						65 link Description:  Settings, Value: sentrixfm.com/manager/business/settings
+			66 container
+				67 heading INSPECTIONS, Value: 4
+					68 text INSPECTIONS
+				69 content list
+					70 link Description: Business Hub, Value: javascript:void(0);
+					71 container
+						72 text / INSPECTIONS.LIST.TITLE
+				73 text Total Inspections
+				74 heading 12, Value: 4
+					75 text 12
+				76 text R
+				77 text Active Inspections
+				78 heading 12, Value: 4
+					79 text 12
+				80 text Z
+				81 text Completed Inspections
+				82 heading 0, Value: 4
+					83 text 0
+				84 text S
+				85 text Overdue Inspections
+				86 heading 0, Value: 4
+					87 text 0
+				88 text Y
+				89 container
+					90 button  All
+						91 text 
+						92 text  All
+					93 button S Preventive
+						94 text S
+						95 text  Preventive
+					96 button Corrective
+					97 button  Predictive
+						98 text 
+						99 text  Predictive
+					100 button  Emergency
+						101 text 
+						102 text  Emergency
+				103 container
+					104 button  Table View
+						105 text 
+						106 text  Table View
+					107 button  Kanban View
+						108 text 
+						109 text  Kanban View
+				110 table
+					111 row
+						112 cell
+							113 checkbox (settable, integer) 0
+						114 cell
+							115 text R
+							116 text Inspection
+							117 text 
+						118 cell
+							119 text ^
+							120 text Status
+							121 text 
+						122 cell
+							123 text W
+							124 text Priority
+							125 text 
+						126 cell
+							127 text 
+							128 text Assignee
+							129 text 
+						130 cell
+							131 text Y
+							132 text INSPECTIONS.TABLE.COLUMNS.CREATED_AT
+							133 text 
+						134 cell
+							135 text 
+							136 text INSPECTIONS.TABLE.COLUMNS.LABELS
+						137 cell
+							138 text 
+							139 text Actions
+					140 row
+						141 cell
+							142 checkbox (settable, integer) 0
+						143 cell
+							279 text 
+							145 text Preventive Hard - Safety Equipment Inspection
+							146 text Preventive inspection for hard service safety equi...
+							280 text `  Mechanical Systems
+							148 container INSPECTIONS.EXECUTION_RULES.STANDALONE_TOOLTIP
+								281 text (  INSPECTIONS.EXECUTION_RULES.MODE_STANDALONE
+							282 text M  Preventive
+						151 cell
+							283 text ^  Scheduled
+						153 cell
+							284 text ^  Medium
+						155 cell
+							285 text   Unassigned
+						157 cell
+							286 text Y Oct 17, 2026
+							159 text 10/17/26, 9:56 PM
+						160 cell
+							287 text   Label 5   Urgent
+						162 cell
+							163 button Description: View details for Preventive Hard - Safety Equipment Inspection, Help: View
+							164 button Description: Edit Preventive Hard - Safety Equipment Inspection, Help: Edit
+							165 button Description: Delete Preventive Hard - Safety Equipment Inspection, Help: Delete
+					166 row
+						167 cell
+							168 checkbox (settable, integer) 0
+						169 cell
+							170 text 
+							171 text Predictive Hard - Equipment Condition Assessment
+							172 text Predictive inspection for hard service equipment h...
+							173 text `  Mechanical Systems
+							174 container INSPECTIONS.EXECUTION_RULES.STANDALONE_TOOLTIP
+								175 text (  INSPECTIONS.EXECUTION_RULES.MODE_STANDALONE
+							176 text   Predictive
+						177 cell
+							178 text ^  Scheduled
+						179 cell
+							180 text ^  Critical
+						181 cell
+							182 text   Unassigned
+						183 cell
+							184 text Y Oct 17, 2026
+							185 text 10/17/26, 9:56 PM
+						186 cell
+							187 text   Label 5   Label 2
+						188 cell
+							189 button Description: View details for Predictive Hard - Equipment Condition Assessment, Help: View
+							190 button Description: Edit Predictive Hard - Equipment Condition Assessment, Help: Edit
+							191 button Description: Delete Predictive Hard - Equipment Condition Assessment, Help: Delete
+					192 row
+						193 cell
+							194 checkbox (settable, integer) 0
+						195 cell
+							196 text 
+							197 text Preventive Hard - Structural Integrity Check
+							198 text Preventive inspection for building structural inte...
+							199 text `  Mechanical Systems
+							200 container INSPECTIONS.EXECUTION_RULES.STANDALONE_TOOLTIP
+								201 text (  INSPECTIONS.EXECUTION_RULES.MODE_STANDALONE
+							202 text M  Preventive
+						203 cell
+							204 text ^  Scheduled
+						205 cell
+							206 text ^  Low
+						207 cell
+							208 text   Unassigned
+						209 cell
+							210 text Y Oct 17, 2026
+							211 text 10/17/26, 9:56 PM
+						212 cell
+							213 text   Label 1   Label 2
+						214 cell
+							215 button Description: View details for Preventive Hard - Structural Integrity Check, Help: View
+							216 button Description: Edit Preventive Hard - Structural Integrity Check, Help: Edit
+							217 button Description: Delete Preventive Hard - Structural Integrity Check, Help: Delete
+					218 row
+						219 cell
+							220 checkbox (settable, integer) 0
+						221 cell
+							222 text 
+							223 text Predictive Hard - Electrical Panel Assessment
+							224 text Predictive inspection for electrical panel safety ...
+							225 text `  Mechanical Systems
+							226 container INSPECTIONS.EXECUTION_RULES.STANDALONE_TOOLTIP
+								227 text (  INSPECTIONS.EXECUTION_RULES.MODE_STANDALONE
+							228 text   Predictive
+						229 cell
+							230 text ^  Scheduled
+						231 cell
+							232 text ^  Low
+						233 cell
+							234 text   Unassigned
+						235 cell
+							236 text Y Oct 17, 2026
+							237 text 10/17/26, 9:56 PM
+						238 cell
+							239 text   Label 4   Label 3
+						240 cell
+							241 button Description: View details for Predictive Hard - Electrical Panel Assessment, Help: View
+							242 button Description: Edit Predictive Hard - Electrical Panel Assessment, Help: Edit
+							243 button Description: Delete Predictive Hard - Electrical Panel Assessment, Help: Delete
+				244 text Showing 1 to 4 of 4 entries
+			245 container
+				246 text © 2026 SentrixFm. All rights reserved.  v1.2
+		247 container
+			248 container scrollable content
+				249 link javascript:void(0);
+				250 heading Settings, Value: 5
+					251 text Settings
+				252 heading Layout, Value: 6
+					253 text Layout
+				254 checkbox (settable, integer) Description: Vertical, Value: 1, ID: is-layout
+				255 heading Width, Value: 6
+					256 text Width
+				257 radio button (settable, integer) Description: Fluid, Value: 1, ID: layout-width-fuild
+				258 radio button (settable, integer) Description: Boxed, Value: 0, ID: layout-width-boxed
+				259 radio button (settable, integer) Description: Scrolable, Value: 0, ID: layout-width-scrollable
+				260 heading Sidebar Color, Value: 6
+					261 text Sidebar Color
+				262 radio button (settable, integer) Description: Light, Value: 0, ID: sidebar-color-light
+				263 radio button (settable, integer) Description: Dark, Value: 1, ID: sidebar-color-dark
+				264 radio button (settable, integer) Description: Compact, Value: 0, ID: sidebar-color-brand
+				265 radio button (settable, integer) Description: Icon, Value: 0, ID: sidebar-color-icon
+				266 radio button (settable, integer) Description: Colored, Value: 0, ID: sidebar-color
+				267 heading Theme Mode, Value: 6
+					268 text Theme Mode
+				269 radio button (settable, integer) Description: Light, Value: 1, ID: theme-color-light
+				270 radio button (settable, integer) Description: Dark, Value: 0, ID: theme-color-dark
+				271 heading Choose Layouts, Value: 6
+					272 text Choose Layouts
+				273 link
+				274 link
+				275 link
+		276 button Open AI Assistant
+			277 text 
+		288 container
+			289 text 
+			290 heading INSPECTIONS.DETAILS.TITLE, Value: 4
+				291 text INSPECTIONS.DETAILS.TITLE
+			292 button , Help: Close
+				293 text 
+			294 heading Preventive Hard - Safety Equipment Inspection, Value: 5
+				295 text Preventive Hard - Safety Equipment Inspection
+			296 text Preventive inspection for hard service safety equipment compliance
+			297 text ^  Scheduled
+			298 text 
+			299 text  Medium   Preventive   Hard
+			300 heading  Basic Information, Value: 6
+				301 text 
+				302 text Basic Information
+			303 text ID working-item-82bdb3fa-7296-45c8-a394-e7c205f88299 CATEGORY Mechanical Systems CREATED Oct 17, 2026
+			304 button  Delete
+				305 text 
+				306 text  Delete
+			307 button Cancel
+			308 button  Edit
+				309 text 
+				310 text  Edit
+
+The focused UI element is 163 button Description: View details for Preventive Hard - Safety Equipment Inspection, Help: View

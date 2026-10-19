@@ -1,0 +1,21 @@
+Browser tab: 1405043949, Title: "SentrixFm - Business Process Management", URL: "https://sentrixfm.com/manager/business/operations/my-tasks".
+The following is a diff from the previous accessibility tree with ~ and + representing changed and added elements, respectively. Removed elements are summarized by ID range.
+Removed element IDs: 773-774, 777-778, 781-782
+~					695 tab (selectable, settable, boolean) Description: WORK_ORDERS.FORM.TABS.SPARE_PARTS
+Tab complete, Value: 0
+Spare Parts
+~					696 tab (selected, settable, boolean) Description: WORK_ORDERS.FORM.TABS.SOP_PROCEDURES, Value: 1
++						773 text  SOP & Procedures 
++						774 container Tab complete
+~				775 container wo-tab-3
+~					776 heading  SOP Templates, Value: 6
++						777 text 
++						778 text SOP Templates
+~					779 text Attach standard operating procedure templates to guide work execution and ensure quality standards.
+~					780 button Add Templates
++					781 text (
++					782 heading No SOP templates selected for this work order, Value: 6
++						783 text No SOP templates selected for this work order
++					784 text Attach standard operating procedure templates to guide work execution and ensure quality standards.
++					785 button Select SOP Templates
+The focused UI element is 696 tab (selected, settable, boolean) Description: WORK_ORDERS.FORM.TABS.SOP_PROCEDURES, Value: 1

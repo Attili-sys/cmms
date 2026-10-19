@@ -1,0 +1,15 @@
+{
+  "status": "planned",
+  "plannedActions": [
+    {
+      "id": "configure_client:codex",
+      "kind": "configure_client",
+      "label": "Codex",
+      "target": "/Users/attiliab/.codex/config.toml",
+      "detail": "Add the REA MCP registration for Codex; preserve unrelated configuration. The backup path reflects the configuration inspected for this plan; if that file changes before execution, setup will select a recovery path for its current contents. Command: \"/Users/attiliab/.npm/_npx/ad9a3fdbcad992c6/node_modules/.bin/rea\" \"mcp\". No additional provider environment variables. Existing server environment overrides are retained.",
+      "external": false,
+      "operation": "update",
+      "backupPath": "/Users/attiliab/.codex/config.toml.rea.backup"
+    }
+  ]
+}

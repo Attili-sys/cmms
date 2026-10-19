@@ -98,6 +98,9 @@ canvas deploy
 | **[atlas-cmms/MIGRATION_NOTES.md](./atlas-cmms/MIGRATION_NOTES.md)** | Java-to-Python migration architecture and Reviewer Agent verification notes |
 | **[frontend/README.md](./frontend/README.md)** | React/TypeScript frontend architecture, build/lint commands, and static bundle sync |
 | **[UNRESTRICTED_SELFHOSTED.md](./UNRESTRICTED_SELFHOSTED.md)** | Self-hosted capability policy (`CLOUD_VERSION=false`), branding changes, and retained security controls |
+| **[GAP_ANALYSIS.md](./GAP_ANALYSIS.md)** | Reverse-engineered SentrixFM gap analysis (`S001–S107`), 18-domain comparison matrix, and `P0–P3` enhancement roadmap |
+| **[FACILIO_GAP_ANALYSIS.md](./FACILIO_GAP_ANALYSIS.md)** | Reverse-engineered Facilio public research gap analysis (`22 REA targets`, 12 domains) and unified master CAFM roadmap |
+| **[research/](./research)** | Reference research archives (`research/sentrixfm-research/` and `research/Facilio_Public_Research/`) |
 | **[dev-docs/](./dev-docs)** | Operator guides (LDAP, TLS, backups, upgrades, factory reset) |
 
 ---

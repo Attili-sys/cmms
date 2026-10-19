@@ -1,0 +1,51 @@
+Browser tab: 1405043949, Title: "SentrixFm - Business Process Management", URL: "https://sentrixfm.com/manager/dashboards/analytics-dashboard".
+The following is a diff from the previous accessibility tree with ~ and + representing changed and added elements, respectively. Removed elements are summarized by ID range.
+Removed element IDs: 83-95, 120-133, 171-199
++				171 container
++					172 container
++						173 heading  Operational KPI Breakdown, Value: 4
++							174 text 
++							175 text Operational KPI Breakdown
++						176 heading MEAN TIME TO REPAIR, Value: 5
++							177 text MEAN TIME TO REPAIR
++						178 heading 0 hrs, Value: 3
++							179 text 0  hrs
++						180 heading FIRST TIME FIX RATE, Value: 5
++							181 text FIRST TIME FIX RATE
++						182 heading 100.0%, Value: 3
++							183 text 100.0%
++						184 heading SLA COMPLIANCE, Value: 5
++							185 text SLA COMPLIANCE
++						186 heading 0.0%, Value: 3
++							187 text 0.0%
++						188 heading BACKLOG, Value: 5
++							189 text BACKLOG
++						190 heading 12, Value: 3
++							191 text 12
++						192 heading Work Order Status Distribution, Value: 5
++							193 text Work Order Status Distribution
++						194 heading PENDING, Value: 5
++							195 text PENDING
++						196 heading 12, Value: 4
++							197 text 12
++						198 heading SCHEDULED, Value: 5
++							199 text SCHEDULED
++						200 heading 24, Value: 4
++							201 text 24
++					202 container
++						203 heading  Asset Ecosystem Health, Value: 4
++							204 text 
++							205 text Asset Ecosystem Health
++						206 table
++							207 row
++								208 cell
++									209 text Category
++								210 cell
++									211 text Health Score
++								212 cell
++									213 text Status
++								214 cell
++									215 text Active Issues
++								216 cell
++									217 text Next PPM
+The focused UI element is 1 AXWebArea SentrixFm - Business Process Management, URL: sentrixfm.com/manager/dashboards/analytics-dashboard

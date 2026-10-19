@@ -1,0 +1,21 @@
+url,status,retrieved,error
+https://facilio.com/help/docs/category/ai-guide/,robots-excluded,2026-10-17T19:17:20Z,
+https://facilio.com/help/docs/category/analytics--dashboards/,robots-excluded,2026-10-17T19:17:20Z,
+https://facilio.com/help/docs/category/developer-guide/,robots-excluded,2026-10-17T19:17:20Z,
+https://facilio.com/help/docs/category/field-service-management/,robots-excluded,2026-10-17T19:17:20Z,
+https://facilio.com/help/docs/category/integrations/,robots-excluded,2026-10-17T19:17:20Z,
+https://facilio.com/help/docs/category/mobile-guide/,robots-excluded,2026-10-17T19:17:20Z,
+https://facilio.com/help/docs/category/procurement-guide/,robots-excluded,2026-10-17T19:17:20Z,
+https://facilio.com/help/docs/category/remote-monitoring/,robots-excluded,2026-10-17T19:17:20Z,
+https://facilio.com/help/docs/category/service-request-management/,robots-excluded,2026-10-17T19:17:20Z,
+https://facilio.com/help/docs/category/user-guide/,robots-excluded,2026-10-17T19:17:20Z,
+https://facilio.com/help/docs/category/visitor-management--kiosk-setup/,robots-excluded,2026-10-17T19:17:20Z,
+https://facilio.com/help/docs/category/admin-guide/,robots-excluded,2026-10-17T19:17:20Z,
+https://facilio.com/help/docs/admin-guide/developer-space/API Setup/,error,2026-10-17T19:20:19Z,URL can't contain control characters. '/help/docs/admin-guide/developer-space/API Setup/' (found at least ' ')
+https://facilio.com/help/docs/admin-guide/developer-space/API Setup/Overview/,error,2026-10-17T19:20:19Z,URL can't contain control characters. '/help/docs/admin-guide/developer-space/API Setup/Overview/' (found at least ' ')
+https://facilio.com/help/docs/admin-guide/developer-space/API Setup/illustrating-api-setup-process/illustrating-api-setup-process/,error,2026-10-17T19:20:19Z,URL can't contain control characters. '/help/docs/admin-guide/developer-space/API Setup/illustrating-api-setup-process/illustrating-api-setup-process/' (found at least ' ')
+https://facilio.com/help/docs/admin-guide/developer-space/API Setup/illustrating-api-setup-process/Revoking Developer Role/,error,2026-10-17T19:20:20Z,URL can't contain control characters. '/help/docs/admin-guide/developer-space/API Setup/illustrating-api-setup-process/Revoking Developer Role/' (found at least ' ')
+https://facilio.com/help/docs/admin-guide/developer-space/API Setup/illustrating-api-setup-process/Assigning Developer Role/,error,2026-10-17T19:20:20Z,URL can't contain control characters. '/help/docs/admin-guide/developer-space/API Setup/illustrating-api-setup-process/Assigning Developer Role/' (found at least ' ')
+https://facilio.com/help/docs/admin-guide/space-assets/decommissioning/managing-decommission-process/resolving-dependent errors/,error,2026-10-17T19:20:22Z,URL can't contain control characters. '/help/docs/admin-guide/space-assets/decommissioning/managing-decommission-process/resolving-dependent errors/' (found at least ' ')
+https://facilio.com/help/docs/user-guide/facilio-modules/portfolio-management/illustrating-portfolio-management/Viewing and Associating Portfolio Details/,error,2026-10-17T19:20:24Z,URL can't contain control characters. '/help/docs/user-guide/facilio-modules/portfolio-management/illustrating-portfolio-management/Viewing and Associating Portfolio Details/' (found at least ' ')
+https://static.facilio.com/developers/api/v5/openapi.yaml,robots-excluded,2026-10-17T19:18:32Z,

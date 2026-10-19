@@ -1,0 +1,34 @@
+Browser tab: 1405043949, Title: "SentrixFm - Business Process Management", URL: "https://sentrixfm.com/manager/dashboards/analytics-dashboard".
+The following is a diff from the previous accessibility tree with ~ and + representing changed and added elements, respectively. Removed elements are summarized by ID range.
+Removed element IDs: 25, 96-119, 134-136
++					170 text 
++					171 container
++						172 text ACTIVE TASKS
++						173 heading 12, Value: 4
++							174 text 12
++						175 text X
++						176 text n  Stable Flux Performance: Peak
++					177 container
++						178 text CRITICAL ALERTS
++						179 heading 0, Value: 4
++							180 text 0
++						181 text 
++						182 text n  Zero Critical Status: Optimal
++					183 container
++						184 text TOTAL ASSETS
++						185 heading 0, Value: 4
++							186 text 0
++						187 text D
++						188 text n  Asset Health 94.2% Sync
++					189 container
++						190 text ACTIVE LOCATIONS
++						191 heading 14, Value: 4
++							192 text 14
++						193 text 
++						194 text n  Total Hubs Sync Active
++					195 container
++						196 heading  Global Completion Rate, Value: 4
++							197 text 
++							198 text Global Completion Rate
++						199 image
+The focused UI element is 1 AXWebArea SentrixFm - Business Process Management, URL: sentrixfm.com/manager/dashboards/analytics-dashboard

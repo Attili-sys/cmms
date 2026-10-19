@@ -1,0 +1,8 @@
+Browser tab: 1405043949, Title: "SentrixFm - Business Process Management", URL: "https://sentrixfm.com/manager/business/operations/my-tasks".
+The following is a diff from the previous accessibility tree with ~ and + representing changed and added elements, respectively. Removed elements are summarized by ID range.
+Removed element IDs: 439, 444-446
++					617 text 
++						618 text 
++						619 text 
++						620 text M
+The focused UI element is 112 button  Kanban View

@@ -1,0 +1,41 @@
+Browser tab: 1405043949, Title: "SentrixFm - Business Process Management", URL: "https://sentrixfm.com/manager/business/operations/my-tasks".
+The following is a diff from the previous accessibility tree with ~ and + representing changed and added elements, respectively. Removed elements are summarized by ID range.
+Removed element IDs: 773-774, 777-778, 781, 786-789
+~					697 tab (selectable, settable, boolean) Description: WORK_ORDERS.FORM.TABS.ATTACHMENTS
+Tab complete, Value: 0
+Attachments
+~					698 tab (selected, settable, boolean) Description: WORK_ORDERS.FORM.TABS.EXECUTION, Value: 1
++						773 text  Execution 
++						774 container Tab complete
+~				775 container
+~					776 text Y
++					777 heading Initial Status, Value: 6
++						778 text Initial Status
+~					779 text Work orders are automatically set to Pending status when created. You can change the status after creation.
+~					780 text ~
++					781 text  Auto-set
+~						783 text S
+~						784 heading Current Stage, Value: 6
+~							785 text Current Stage
++						786 heading Pending, Value: 2
++							787 text Pending
++						788 text 
++						789 text Tip
++						790 text In creation mode, the status is automatically set to Pending to ensure proper workflow tracking. Status can be changed after the work order is created through the execution workflow.
++					791 container
++						792 heading  Lifecycle Roadmap, Value: 6
++							793 text 
++							794 text Lifecycle Roadmap
++						795 container
++							796 heading Work Order Created, Value: 6
++								797 text Work Order Created
++							798 text System initializes the record with all provided metadata.
++						799 container
++							800 heading Planning & Assignment, Value: 6
++								801 text Planning & Assignment
++							802 text Supervisor reviews requirements and confirms technicians.
++						803 container
++							804 heading Execution Phase, Value: 6
++								805 text Execution Phase
++							806 text Field work begins and real-time tracking is enabled.
+The focused UI element is 698 tab (selected, settable, boolean) Description: WORK_ORDERS.FORM.TABS.EXECUTION, Value: 1

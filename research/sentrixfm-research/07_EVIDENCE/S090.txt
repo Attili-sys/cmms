@@ -1,0 +1,150 @@
+Browser tab: 1405043949, Title: "SentrixFm - Business Process Management", URL: "https://sentrixfm.com/manager/email/inbox".
+1 AXWebArea SentrixFm - Business Process Management, URL: sentrixfm.com/manager/email/inbox
+	2 container
+		3 container layout-wrapper
+			4 container page-topbar
+				5 link Description: SentrixFM demo, Value: sentrixfm.com/manager/
+				6 button , ID: vertical-menu-btn
+					7 text 
+				8 container
+					9 text field (settable)
+					10 text 
+				11 button Select location
+					12 text 
+					13 text Main Office
+					14 text 
+					15 text  Main
+					16 text T
+				17 button (collapsed) Description: Business Hub - Access all business functions, Secondary Actions: Expand
+				18 pop up button (collapsed) Header Language, ID: page-header-user-dropdown, Secondary Actions: Expand
+					19 image Header Language
+				20 pop up button (collapsed) , Secondary Actions: Expand
+					21 text 
+				22 button 
+					23 text 
+				24 pop up button (collapsed) , ID: page-header-notifications-dropdown, Secondary Actions: Expand
+					25 text 
+				26 pop up button (collapsed) SentrixFM Avatar, ID: page-header-user-dropdown, Secondary Actions: Expand
+					27 image SentrixFM Avatar
+			28 container
+				29 container scrollable content
+					30 content list side-menu
+						31 text DASHBOARD
+						32 link Description:  Analytics Dashboard, Value: sentrixfm.com/manager/dashboard
+						33 link Description:  Location Dashboard, Value: sentrixfm.com/manager/dashboards/location-dashboard
+						34 link (collapsed) Description:  Reporting , Value: sentrixfm.com/manager/business/reports, Secondary Actions: Expand
+						35 text FACILITY STRUCTURE
+						36 link Description:  Locations / Sublocations, Value: sentrixfm.com/manager/business/locations
+						37 link Description:  Store & Inventory, Value: sentrixfm.com/manager/business/store
+						38 link Description:  Assets, Value: sentrixfm.com/manager/business/assets
+						39 link Description: D Consumables, Value: sentrixfm.com/manager/business/store/consumables
+						40 text WORK MANAGEMENT
+						41 link Description:  My Tasks, Value: sentrixfm.com/manager/business/operations/my-tasks
+						42 link (collapsed) Description:  Hard Service , Value: javascript:void(0);, Secondary Actions: Expand
+						43 link (collapsed) Description:  Soft Service , Value: javascript:void(0);, Secondary Actions: Expand
+						44 link Description:  Maintenance Requests, Value: sentrixfm.com/manager/business/maintenance-requests
+						45 link Description:  Categories, Value: sentrixfm.com/manager/business/categories
+						46 link Description: ( SOP Management, Value: sentrixfm.com/manager/business/operations/sop-management
+						47 text WORKFLOWS & PROCEDURES
+						48 link (collapsed) Description:  Workflows , Value: javascript:void(0);, Secondary Actions: Expand
+						49 text ORGANIZATION
+						50 link (collapsed) Description:  User Management , Value: javascript:void(0);, Secondary Actions: Expand
+						51 link (collapsed) Description:  Roles and Permissions , Value: javascript:void(0);, Secondary Actions: Expand
+						52 text COMMUNICATION
+						53 link Description:  Location Chat, Value: sentrixfm.com/manager/chat
+						54 link Description:  Demo AI, Value: sentrixfm.com/manager/business/utilities/company-ai-chat
+						55 link Description: ` File Manager, Value: sentrixfm.com/manager/business/utilities/file-manager
+						56 container
+							57 link (collapsed) Description:  Email Center , Value: javascript:void(0);, Secondary Actions: Expand
+							58 content list
+								59 link Description: Inbox, Value: sentrixfm.com/manager/email/inbox
+								60 link Description: Read Email, Value: sentrixfm.com/manager/email/read/1
+						61 text BUSINESS OPERATIONS
+						62 link (collapsed) Description:  Projects , Value: javascript:void(0);, Secondary Actions: Expand
+						63 link (collapsed) Description:  Invoices , Value: javascript:void(0);, Secondary Actions: Expand
+						64 link Description:  Settings, Value: sentrixfm.com/manager/business/settings
+			65 container
+				66 container Inbox
+					67 container
+						68 heading INBOX, Value: 4
+							69 text INBOX
+						70 content list
+							71 link Description: Email, Value: javascript:%20void(0);
+							72 container
+								73 text / Inbox
+				74 container
+					75 button Compose
+					76 link Description: Inbox (18), Value: javascript:%20void(0);
+					77 link Description: Starred, Value: javascript:%20void(0);
+					78 link Description: Important, Value: javascript:%20void(0);
+					79 link Description: Draft, Value: javascript:%20void(0);
+					80 link Description: Sent Mail, Value: javascript:%20void(0);
+					81 link Description: Trash, Value: javascript:%20void(0);
+					82 heading Labels, Value: 6
+						83 text Labels
+					84 link Description: Theme Support, Value: javascript:%20void(0);
+					85 link Description: Freelance, Value: javascript:%20void(0);
+					86 link Description: Social, Value: javascript:%20void(0);
+					87 link Description: Friends, Value: javascript:%20void(0);
+					88 link Description: Family, Value: javascript:%20void(0);
+					89 heading Chat, Value: 6
+						90 text Chat
+					91 link Description: Generic placeholder image Scott Median Hello, Value: javascript:%20void(0);
+					92 link Description: Generic placeholder image Julian Rosa What about our next.., Value: javascript:%20void(0);
+					93 link Description: Generic placeholder image David Medina Yeah everything is fine, Value: javascript:%20void(0);
+					94 link Description: Generic placeholder image Jay Baker Wow that's great, Value: javascript:%20void(0);
+				95 container
+					96 toolbar
+						97 container
+							98 button 
+								99 text 
+							100 button 
+								101 text 
+							102 button 
+								103 text 
+						104 pop up button (collapsed) , Secondary Actions: Expand
+							105 text 
+						106 pop up button (collapsed) , Secondary Actions: Expand
+							107 text 
+						108 pop up button (collapsed) More, Secondary Actions: Expand
+				109 text Showing 1 - 15 of 0
+				110 container
+					111 button 
+						112 text 
+					113 button 
+						114 text 
+			115 container
+				116 text © 2026 SentrixFm. All rights reserved.  v1.2
+		117 container
+			118 container scrollable content
+				119 link javascript:void(0);
+				120 heading Settings, Value: 5
+					121 text Settings
+				122 heading Layout, Value: 6
+					123 text Layout
+				124 checkbox (settable, integer) Description: Vertical, Value: 1, ID: is-layout
+				125 heading Width, Value: 6
+					126 text Width
+				127 radio button (settable, integer) Description: Fluid, Value: 1, ID: layout-width-fuild
+				128 radio button (settable, integer) Description: Boxed, Value: 0, ID: layout-width-boxed
+				129 radio button (settable, integer) Description: Scrolable, Value: 0, ID: layout-width-scrollable
+				130 heading Sidebar Color, Value: 6
+					131 text Sidebar Color
+				132 radio button (settable, integer) Description: Light, Value: 0, ID: sidebar-color-light
+				133 radio button (settable, integer) Description: Dark, Value: 1, ID: sidebar-color-dark
+				134 radio button (settable, integer) Description: Compact, Value: 0, ID: sidebar-color-brand
+				135 radio button (settable, integer) Description: Icon, Value: 0, ID: sidebar-color-icon
+				136 radio button (settable, integer) Description: Colored, Value: 0, ID: sidebar-color
+				137 heading Theme Mode, Value: 6
+					138 text Theme Mode
+				139 radio button (settable, integer) Description: Light, Value: 1, ID: theme-color-light
+				140 radio button (settable, integer) Description: Dark, Value: 0, ID: theme-color-dark
+				141 heading Choose Layouts, Value: 6
+					142 text Choose Layouts
+				143 link
+				144 link
+				145 link
+		146 button Open AI Assistant
+			147 text 
+
+The focused UI element is 1 AXWebArea SentrixFm - Business Process Management, URL: sentrixfm.com/manager/email/inbox

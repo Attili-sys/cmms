@@ -81,6 +81,9 @@ Secrets stay in `.env` and the environment. Never commit them.
 | `frontend/README.md` | Building, linting, or modifying the React web application (`frontend/`) |
 | `frontend/src/i18n/translations/AGENTS.md` | Editing translation JSON |
 | `dev-docs/` | Super-admin, LDAP, TLS, backup, upgrades |
+| `GAP_ANALYSIS.md` | Reviewing the SentrixFM reverse-engineering gap analysis (`S001–S107`), capability matrix, and phased enhancement roadmap (`P0–P3`) |
+| `FACILIO_GAP_ANALYSIS.md` | Reviewing the Facilio enterprise CAFM gap analysis (`22 REA targets`, 12 domains) and unified master roadmap |
+| `research/` | Inspecting the raw reverse-engineering packages (`research/sentrixfm-research/` and `research/Facilio_Public_Research/`) |
 | `ATLAS_CAFM_DECISION_REPORT.md` | Choosing what to build next. It is an audit, not a description of code you have changed |
 | `UNRESTRICTED_SELFHOSTED.md` | Understanding which restrictions were removed on this branch and which controls are retained |
 | `api/src/test/java/com/grash/agents.md` | Writing or changing legacy Java API tests |

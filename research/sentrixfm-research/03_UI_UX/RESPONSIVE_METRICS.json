@@ -1,0 +1,55 @@
+{
+  "bodyWidth": 390,
+  "documentWidth": 390,
+  "tabs": [
+    {
+      "aria": null,
+      "rect": {
+        "width": 50,
+        "x": 43
+      },
+      "text": "",
+      "title": null
+    },
+    {
+      "aria": null,
+      "rect": {
+        "width": 50,
+        "x": 101
+      },
+      "text": "",
+      "title": null
+    },
+    {
+      "aria": null,
+      "rect": {
+        "width": 50,
+        "x": 159
+      },
+      "text": "",
+      "title": null
+    },
+    {
+      "aria": null,
+      "rect": {
+        "width": 50,
+        "x": 217
+      },
+      "text": "",
+      "title": null
+    },
+    {
+      "aria": null,
+      "rect": {
+        "width": 50,
+        "x": 275
+      },
+      "text": "",
+      "title": null
+    }
+  ],
+  "viewport": {
+    "height": 844,
+    "width": 390
+  }
+}

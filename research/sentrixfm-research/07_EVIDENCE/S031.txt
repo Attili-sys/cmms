@@ -1,0 +1,9 @@
+Browser tab: 1405043949, Title: "SentrixFm - Business Process Management", URL: "https://sentrixfm.com/manager/business/assets/details/asset-b158b47e-ee69-4598-972a-ca6531c7859a".
+1 AXWebArea SentrixFm - Business Process Management, URL: sentrixfm.com/manager/business/assets/details/asset-b158b47e-ee69-4598-972a-ca6531c7859a
+	2 container Validation Error
+		3 heading Validation Error, Value: 2, ID: swal2-title
+			4 text Validation Error
+		5 text Failed to retrieve asset status history. Please try again.
+		6 button OK
+
+The focused UI element is 6 button OK

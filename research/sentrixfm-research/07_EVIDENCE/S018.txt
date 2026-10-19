@@ -1,0 +1,6 @@
+Browser tab: 1405043949, Title: "SentrixFm - Business Process Management", URL: "https://sentrixfm.com/manager/business/reports/api-powered-reports".
+The following is a diff from the previous accessibility tree with ~ and + representing changed and added elements, respectively. Removed elements are summarized by ID range.
+Removed element IDs: 923, 947
++					947 text 
++					948 text 
+The focused UI element is 925 button (expanded)  Facility Overview , ID: tn-dropdown-csqhl0yds, Secondary Actions: Collapse

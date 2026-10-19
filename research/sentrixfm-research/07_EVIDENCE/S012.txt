@@ -1,0 +1,27 @@
+Browser tab: 1405043949, Title: "SentrixFm - Business Process Management", URL: "https://sentrixfm.com/manager/business/operations/my-tasks".
+The following is a diff from the previous accessibility tree with ~ and + representing changed and added elements, respectively. Removed elements are summarized by ID range.
+Removed element IDs: 773-806
+~					695 tab (selected, settable, boolean) Description: WORK_ORDERS.FORM.TABS.SPARE_PARTS
+Tab complete, Value: 1
+Spare Parts
+~					698 tab (selectable, settable, boolean) Description: WORK_ORDERS.FORM.TABS.EXECUTION
+Tab complete, Value: 0
+Execution
++				773 container
++					774 text ITEM TYPE
++					775 button (collapsed)  All Types , ID: tn-dropdown-vxem0z9az, Secondary Actions: Expand
++						776 text 
++						777 text All Types
++						778 text 
++					779 text SEARCH PARTS
++					780 button (collapsed)  Type to search parts... , Secondary Actions: Expand
++						781 text 
++						782 text Type to search parts...
++						783 text 
++					784 text PLANNED QTY
++					785 stepper (settable) tn-input-wg2kukogt
++					786 button (disabled)  Add
++						787 text 
++						788 text Add
++					789 button Cancel
+The focused UI element is 0 AXWebArea SentrixFm - Business Process Management, URL: sentrixfm.com/manager/business/operations/my-tasks

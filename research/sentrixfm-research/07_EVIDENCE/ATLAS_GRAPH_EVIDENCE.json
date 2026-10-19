@@ -1,0 +1,1362 @@
+{
+  "architecture": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"project\":\"cmms\",\"total_nodes\":26579,\"total_edges\":94508,\"node_labels\":[{\"label\":\"Variable\",\"count\":7618},{\"label\":\"Method\",\"count\":4221},{\"label\":\"Field\",\"count\":3763},{\"label\":\"Function\",\"count\":3192},{\"label\":\"File\",\"count\":2112},{\"label\":\"Class\",\"count\":1683},{\"label\":\"Module\",\"count\":1265},{\"label\":\"Interface\",\"count\":875},{\"label\":\"Section\",\"count\":521},{\"label\":\"Route\",\"count\":515},{\"label\":\"Folder\",\"count\":424},{\"label\":\"Type\",\"count\":226},{\"label\":\"Decorator\",\"count\":98},{\"label\":\"Enum\",\"count\":64},{\"label\":\"Branch\",\"count\":1},{\"label\":\"Project\",\"count\":1}],\"edge_types\":[{\"type\":\"DEFINES\",\"count\":26349},{\"type\":\"CALLS\",\"count\":19052},{\"type\":\"USAGE\",\"count\":18450},{\"type\":\"IMPORTS\",\"count\":9048},{\"type\":\"CONFIGURES\",\"count\":7545},{\"type\":\"DECORATES\",\"count\":5407},{\"type\":\"DEFINES_METHOD\",\"count\":4213},{\"type\":\"CONTAINS_FILE\",\"count\":2112},{\"type\":\"WRITES\",\"count\":565},{\"type\":\"THROWS\",\"count\":446},{\"type\":\"HANDLES\",\"count\":414},{\"type\":\"CONTAINS_FOLDER\",\"count\":390},{\"type\":\"INHERITS\",\"count\":292},{\"type\":\"HTTP_CALLS\",\"count\":175},{\"type\":\"TESTS\",\"count\":45},{\"type\":\"RAISES\",\"count\":4},{\"type\":\"HAS_BRANCH\",\"count\":1}],\"languages\":[{\"language\":\"TypeScript\",\"file_count\":872},{\"language\":\"Java\",\"file_count\":844},{\"language\":\"HTML\",\"file_count\":23},{\"language\":\"Python\",\"file_count\":22},{\"language\":\"JavaScript\",\"file_count\":11},{\"language\":\"YAML\",\"file_count\":10},{\"language\":\"TOML\",\"file_count\":3},{\"language\":\"Kotlin\",\"file_count\":2},{\"language\":\"C\",\"file_count\":1},{\"language\":\"Swift\",\"file_count\":1}],\"packages\":[{\"name\":\"src\",\"node_count\":7915,\"fan_in\":0,\"fan_out\":0},{\"name\":\"screens\",\"node_count\":353,\"fan_in\":0,\"fan_out\":0},{\"name\":\"slices\",\"node_count\":312,\"fan_in\":0,\"fan_out\":0},{\"name\":\"utils\",\"node_count\":95,\"fan_in\":0,\"fan_out\":0},{\"name\":\"components\",\"node_count\":89,\"fan_in\":0,\"fan_out\":0},{\"name\":\"contexts\",\"node_count\":73,\"fan_in\":0,\"fan_out\":0},{\"name\":\"app\",\"node_count\":45,\"fan_in\":0,\"fan_out\":0},{\"name\":\"pom\",\"node_count\":44,\"fan_in\":0,\"fan_out\":0},{\"name\":\"android\",\"node_count\":43,\"fan_in\":0,\"fan_out\":0},{\"name\":\"tests\",\"node_count\":24,\"fan_in\":0,\"fan_out\":0},{\"name\":\"sitemap-builder\",\"node_count\":16,\"fan_in\":0,\"fan_out\":0},{\"name\":\"hooks\",\"node_count\":13,\"fan_in\":0,\"fan_out\":0},{\"name\":\"navigation\",\"node_count\":12,\"fan_in\":0,\"fan_out\":0},{\"name\":\"models\",\"node_count\":10,\"fan_in\":0,\"fan_out\":0},{\"name\":\"pyproject\",\"node_count\":9,\"fan_in\":0,\"fan_out\":0}],\"entry_points\":[{\"name\":\"CompanyLogos\",\"qualified_name\":\"cmms.frontend.src.components.CompanyLogos.CompanyLogos\",\"file\":\"frontend/src/components/CompanyLogos.tsx\"},{\"name\":\"Faq\",\"qualified_name\":\"cmms.frontend.src.components.Faq.Faq\",\"file\":\"frontend/src/components/Faq/index.tsx\"},{\"name\":\"MobileAppDownloadDialog\",\"qualified_name\":\"cmms.frontend.src.components.MobileAppDownloadDialog.MobileAppDownloadDialog\",\"file\":\"frontend/src/components/MobileAppDownloadDialog/index.tsx\"},{\"name\":\"AnalyticsCard\",\"qualified_name\":\"cmms.frontend.src.content.own.Analytics.AnalyticsCard.AnalyticsCard\",\"file\":\"frontend/src/content/own/Analytics/AnalyticsCard.tsx\"},{\"name\":\"AnalyticsLayout\",\"qualified_name\":\"cmms.frontend.src.content.own.Analytics.AnalyticsLayout.AnalyticsLayout\",\"file\":\"frontend/src/content/own/Analytics/AnalyticsLayout.tsx\"},{\"name\":\"WOModal\",\"qualified_name\":\"cmms.frontend.src.content.own.Analytics.Asset.WOModal.WOModal\",\"file\":\"frontend/src/content/own/Analytics/Asset/WOModal.tsx\"},{\"name\":\"Index\",\"qualified_name\":\"cmms.frontend.src.content.own.Analytics.Asset.Index\",\"file\":\"frontend/src/content/own/Analytics/Asset/index.tsx\"},{\"name\":\"Loading\",\"qualified_name\":\"cmms.frontend.src.content.own.Analytics.Loading.Loading\",\"file\":\"frontend/src/content/own/Analytics/Loading.tsx\"},{\"name\":\"WOModal\",\"qualified_name\":\"cmms.frontend.src.content.own.Analytics.Part.WOModal.WOModal\",\"file\":\"frontend/src/content/own/Analytics/Part/WOModal.tsx\"},{\"name\":\"Index\",\"qualified_name\":\"cmms.frontend.src.content.own.Analytics.Part.Index\",\"file\":\"frontend/src/content/own/Analytics/Part/index.tsx\"},{\"name\":\"WOModal\",\"qualified_name\":\"cmms.frontend.src.content.own.Analytics.Request.WOModal.WOModal\",\"file\":\"frontend/src/content/own/Analytics/Request/WOModal.tsx\"},{\"name\":\"Index\",\"qualified_name\":\"cmms.frontend.src.content.own.Analytics.Request.Index\",\"file\":\"frontend/src/content/own/Analytics/Request/index.tsx\"},{\"name\":\"WOModal\",\"qualified_name\":\"cmms.frontend.src.content.own.Analytics.WorkOrder.WOModal.WOModal\",\"file\":\"frontend/src/content/own/Analytics/WorkOrder/WOModal.tsx\"},{\"name\":\"Index\",\"qualified_name\":\"cmms.frontend.src.content.own.Analytics.WorkOrder.Index\",\"file\":\"frontend/src/content/own/Analytics/WorkOrder/index.tsx\"},{\"name\":\"AssetStatusSelect\",\"qualified_name\":\"cmms.frontend.src.content.own.Assets.components.AssetStatusSelect.AssetStatusSelect\",\"file\":\"frontend/src/content/own/Assets/components/AssetStatusSelect.tsx\"},{\"name\":\"AssetStatusTag\",\"qualified_name\":\"cmms.frontend.src.content.own.Assets.components.AssetStatusTag.AssetStatusTag\",\"file\":\"frontend/src/content/own/Assets/components/AssetStatusTag.tsx\"},{\"name\":\"PartDetails\",\"qualified_name\":\"cmms.frontend.src.content.own.Inventory.PartDetails.PartDetails\",\"file\":\"frontend/src/content/own/Inventory/PartDetails.tsx\"},{\"name\":\"getFormattedQuantityWithUnit\",\"qualified_name\":\"cmms.frontend.src.content.own.Inventory.Parts.getFormattedQuantityWithUnit\",\"file\":\"frontend/src/content/own/Inventory/Parts.tsx\"},{\"name\":\"RestockPartModal\",\"qualified_name\":\"cmms.frontend.src.content.own.Inventory.RestockPartModal.RestockPartModal\",\"file\":\"frontend/src/content/own/Inventory/RestockPartModal.tsx\"},{\"name\":\"SetDetails\",\"qualified_name\":\"cmms.frontend.src.content.own.Inventory.SetDetails.SetDetails\",\"file\":\"frontend/src/content/own/Inventory/SetDetails.tsx\"}],\"routes\":[{\"method\":\"GET\",\"path\":\"/paddle/cancel\",\"handler\":\"\"},{\"method\":\"GET\",\"path\":\"/paddle/resume\",\"handler\":\"\"},{\"method\":\"GET\",\"path\":\"/paddle/customer-portal\",\"handler\":\"\"},{\"method\":\"POST\",\"path\":\"/paddle/create-checkout-session\",\"handler\":\"\"},{\"method\":\"PATCH\",\"path\":\"/paddle/subscription\",\"handler\":\"\"},{\"method\":\"GET\",\"path\":\"/meter-categories\",\"handler\":\"\"},{\"method\":\"GET\",\"path\":\"/meter-categories/{id}\",\"handler\":\"\"},{\"method\":\"POST\",\"path\":\"/meter-categories\",\"handler\":\"\"},{\"method\":\"PATCH\",\"path\":\"/meter-categories/{id}\",\"handler\":\"\"},{\"method\":\"DELETE\",\"path\":\"/meter-categories/{id}\",\"handler\":\"\"},{\"method\":\"POST\",\"path\":\"/request-portals/search\",\"handler\":\"\"},{\"method\":\"POST\",\"path\":\"/request-portals\",\"handler\":\"\"},{\"method\":\"GET\",\"path\":\"/request-portals/{id}\",\"handler\":\"\"},{\"method\":\"GET\",\"path\":\"/request-portals/public/{uuid}\",\"handler\":\"\"},{\"method\":\"PATCH\",\"path\":\"/request-portals/{id}\",\"handler\":\"\"},{\"method\":\"DELETE\",\"path\":\"/request-portals/{id}\",\"handler\":\"\"},{\"method\":\"GET\",\"path\":\"/companies/{company_id}\",\"handler\":\"\"},{\"method\":\"PATCH\",\"path\":\"/companies/{id}\",\"handler\":\"\"},{\"method\":\"GET\",\"path\":\"/health-check\",\"handler\":\"\"},{\"method\":\"GET\",\"path\":\"/labors/{id}\",\"handler\":\"\"}],\"hotspots\":[{\"name\":\"verify\",\"qualified_name\":\"cmms.mobile.utils.jwt.verify\",\"fan_in\":400},{\"name\":\"findById\",\"qualified_name\":\"cmms.api.src.main.java.com.grash.service.MeterService.findById\",\"fan_in\":353},{\"name\":\"whoami\",\"qualified_name\":\"cmms.api.src.main.java.com.grash.service.UserService.whoami\",\"fan_in\":349},{\"name\":\"build\",\"qualified_name\":\"cmms.api.src.main.java.com.grash.advancedsearch.SpecificationBuilder.build\",\"fan_in\":328},{\"name\":\"contains\",\"qualified_name\":\"cmms.api.src.main.java.com.grash.security.ClientIpResolver.TrustedNetwork.contains\",\"fan_in\":257},{\"name\":\"save\",\"qualified_name\":\"cmms.api.src.main.java.com.grash.service.ShiftConfigurationService.save\",\"fan_in\":237},{\"name\":\"equals\",\"qualified_name\":\"kotlin.Any.equals\",\"fan_in\":219},{\"name\":\"showSnackBar\",\"qualified_name\":\"cmms.frontend.src.contexts.CustomSnackBarContext.showSnackBar\",\"fan_in\":180},{\"name\":\"setCurrentUser\",\"qualified_name\":\"cmms.api.src.main.java.com.grash.utils.Helper.setCurrentUser\",\"fan_in\":169},{\"name\":\"hasEntitlement\",\"qualified_name\":\"cmms.api.src.main.java.com.grash.service.LicenseService.hasEntitlement\",\"fan_in\":134}],\"boundaries\":[{\"from\":\"src\",\"to\":\"utils\",\"call_count\":625},{\"from\":\"src\",\"to\":\"Any\",\"call_count\":218},{\"from\":\"screens\",\"to\":\"components\",\"call_count\":173},{\"from\":\"screens\",\"to\":\"contexts\",\"call_count\":147},{\"from\":\"screens\",\"to\":\"utils\",\"call_count\":133},{\"from\":\"screens\",\"to\":\"slices\",\"call_count\":120},{\"from\":\"src\",\"to\":\"slices\",\"call_count\":70},{\"from\":\"screens\",\"to\":\"store\",\"call_count\":61},{\"from\":\"src\",\"to\":\"navigation\",\"call_count\":54},{\"from\":\"src\",\"to\":\"components\",\"call_count\":48}],\"layers\":[{\"name\":\"\",\"layer\":\"api\",\"reason\":\"has HTTP route definitions\"},{\"name\":\"Any\",\"layer\":\"core\",\"reason\":\"high fan-in (218 in, 0 out)\"},{\"name\":\"components\",\"layer\":\"core\",\"reason\":\"high fan-in (221 in, 0 out)\"},{\"name\":\"contexts\",\"layer\":\"core\",\"reason\":\"high fan-in (147 in, 0 out)\"},{\"name\":\"navigation\",\"layer\":\"core\",\"reason\":\"high fan-in (54 in, 0 out)\"},{\"name\":\"screens\",\"layer\":\"entry\",\"reason\":\"only outbound calls\"},{\"name\":\"slices\",\"layer\":\"core\",\"reason\":\"high fan-in (190 in, 0 out)\"},{\"name\":\"src\",\"layer\":\"entry\",\"reason\":\"has entry points, only outbound calls\"},{\"name\":\"store\",\"layer\":\"core\",\"reason\":\"high fan-in (61 in, 0 out)\"},{\"name\":\"utils\",\"layer\":\"core\",\"reason\":\"high fan-in (758 in, 0 out)\"}],\"clusters\":[{\"id\":33,\"label\":\"frontend\",\"members\":1005,\"cohesion\":0.9741873804971319,\"top_nodes\":[\"showSnackBar\",\"useDispatch\",\"useAuth\",\"navigate\",\"WorkOrderDetails\"],\"packages\":[\"frontend\",\"mobile\",\"api\",\"home\"],\"edge_types\":[\"CALLS\"]},{\"id\":79,\"label\":\"mobile\",\"members\":485,\"cohesion\":0.972636815920398,\"top_nodes\":[\"showSnackBar\",\"useDispatch\",\"useAuth\",\"WODetailsScreen\",\"RequestsScreen\"],\"packages\":[\"mobile\",\"home\",\"api\",\"frontend\"],\"edge_types\":[\"CALLS\"]},{\"id\":10,\"label\":\"api\",\"members\":477,\"cohesion\":0.6187363834422658,\"top_nodes\":[\"build\",\"hasEntitlement\",\"signup\",\"getUser\",\"getLicensingState\"],\"packages\":[\"api\"],\"edge_types\":[\"CALLS\"]},{\"id\":37,\"label\":\"api\",\"members\":407,\"cohesion\":0.6269781461944235,\"top_nodes\":[\"whoami\",\"setCurrentUser\",\"get\",\"post\",\"canBeViewedBy\"],\"packages\":[\"frontend\",\"api\",\"mobile\"],\"edge_types\":[\"CALLS\"]},{\"id\":29,\"label\":\"api\",\"members\":352,\"cohesion\":0.5332278481012658,\"top_nodes\":[\"getName\",\"getMessage\",\"getEmail\",\"isEmpty\",\"getLocale\"],\"packages\":[\"api\",\"mobile\",\"home\"],\"edge_types\":[\"CALLS\"]},{\"id\":122,\"label\":\"api\",\"members\":324,\"cohesion\":0.5549036043587594,\"top_nodes\":[\"contains\",\"equals\",\"buildWorkOrder\",\"detectChangedFields\",\"buildUser\"],\"packages\":[\"api\",\"mobile\",\"Any\",\"cmms\"],\"edge_types\":[\"CALLS\"]},{\"id\":31,\"label\":\"api\",\"members\":288,\"cohesion\":0.496309963099631,\"top_nodes\":[\"verify\",\"getCompanySettings\",\"getValue\",\"findById\",\"generatePdfBytes\"],\"packages\":[\"api\",\"home\",\"mobile\",\"frontend\",\"cmms\"],\"edge_types\":[\"CALLS\"]},{\"id\":46,\"label\":\"api\",\"members\":227,\"cohesion\":0.46118192352259557,\"top_nodes\":[\"save\",\"changeStatus\",\"dispatchWebhook\",\"findByMainConditionAndCompany\",\"stopDownTime\"],\"packages\":[\"api\",\"frontend\",\"mobile\"],\"edge_types\":[\"CALLS\"]},{\"id\":121,\"label\":\"api\",\"members\":199,\"cohesion\":0.6192660550458715,\"top_nodes\":[\"get\",\"_user_or_401\",\"updateSubscription\",\"handleCloudSubscriptionUpdated\",\"_fail\"],\"packages\":[\"api\",\"cmms\",\"len\",\"str\",\"int\"],\"edge_types\":[\"CALLS\"]},{\"id\":14,\"label\":\"api\",\"members\":197,\"cohesion\":0.5041899441340782,\"top_nodes\":[\"refresh\",\"cleanText\",\"setCustomFields\",\"create\",\"getCustomFields\"],\"packages\":[\"api\",\"mobile\"],\"edge_types\":[\"CALLS\"]},{\"id\":968,\"label\":\"api\",\"members\":169,\"cohesion\":0.6652806652806653,\"top_nodes\":[\"buildAsset\",\"mockCurrentUser\",\"create\",\"setAssetFieldsFromImportDto\",\"stubAssetLimit\"],\"packages\":[\"api\"],\"edge_types\":[\"CALLS\"]},{\"id\":173,\"label\":\"api\",\"members\":159,\"cohesion\":0.6107226107226107,\"top_nodes\":[\"resolveCompanyId\",\"createWorkOrderFromPreventiveMaintenance\",\"getDateDiff\",\"executeInternal\",\"getCost\"],\"packages\":[\"api\"],\"edge_types\":[\"CALLS\"]}]}"
+      }
+    ],
+    "structuredContent": {
+      "project": "cmms",
+      "total_nodes": 26579,
+      "total_edges": 94508,
+      "node_labels": [
+        {
+          "label": "Variable",
+          "count": 7618
+        },
+        {
+          "label": "Method",
+          "count": 4221
+        },
+        {
+          "label": "Field",
+          "count": 3763
+        },
+        {
+          "label": "Function",
+          "count": 3192
+        },
+        {
+          "label": "File",
+          "count": 2112
+        },
+        {
+          "label": "Class",
+          "count": 1683
+        },
+        {
+          "label": "Module",
+          "count": 1265
+        },
+        {
+          "label": "Interface",
+          "count": 875
+        },
+        {
+          "label": "Section",
+          "count": 521
+        },
+        {
+          "label": "Route",
+          "count": 515
+        },
+        {
+          "label": "Folder",
+          "count": 424
+        },
+        {
+          "label": "Type",
+          "count": 226
+        },
+        {
+          "label": "Decorator",
+          "count": 98
+        },
+        {
+          "label": "Enum",
+          "count": 64
+        },
+        {
+          "label": "Branch",
+          "count": 1
+        },
+        {
+          "label": "Project",
+          "count": 1
+        }
+      ],
+      "edge_types": [
+        {
+          "type": "DEFINES",
+          "count": 26349
+        },
+        {
+          "type": "CALLS",
+          "count": 19052
+        },
+        {
+          "type": "USAGE",
+          "count": 18450
+        },
+        {
+          "type": "IMPORTS",
+          "count": 9048
+        },
+        {
+          "type": "CONFIGURES",
+          "count": 7545
+        },
+        {
+          "type": "DECORATES",
+          "count": 5407
+        },
+        {
+          "type": "DEFINES_METHOD",
+          "count": 4213
+        },
+        {
+          "type": "CONTAINS_FILE",
+          "count": 2112
+        },
+        {
+          "type": "WRITES",
+          "count": 565
+        },
+        {
+          "type": "THROWS",
+          "count": 446
+        },
+        {
+          "type": "HANDLES",
+          "count": 414
+        },
+        {
+          "type": "CONTAINS_FOLDER",
+          "count": 390
+        },
+        {
+          "type": "INHERITS",
+          "count": 292
+        },
+        {
+          "type": "HTTP_CALLS",
+          "count": 175
+        },
+        {
+          "type": "TESTS",
+          "count": 45
+        },
+        {
+          "type": "RAISES",
+          "count": 4
+        },
+        {
+          "type": "HAS_BRANCH",
+          "count": 1
+        }
+      ],
+      "languages": [
+        {
+          "language": "TypeScript",
+          "file_count": 872
+        },
+        {
+          "language": "Java",
+          "file_count": 844
+        },
+        {
+          "language": "HTML",
+          "file_count": 23
+        },
+        {
+          "language": "Python",
+          "file_count": 22
+        },
+        {
+          "language": "JavaScript",
+          "file_count": 11
+        },
+        {
+          "language": "YAML",
+          "file_count": 10
+        },
+        {
+          "language": "TOML",
+          "file_count": 3
+        },
+        {
+          "language": "Kotlin",
+          "file_count": 2
+        },
+        {
+          "language": "C",
+          "file_count": 1
+        },
+        {
+          "language": "Swift",
+          "file_count": 1
+        }
+      ],
+      "packages": [
+        {
+          "name": "src",
+          "node_count": 7915,
+          "fan_in": 0,
+          "fan_out": 0
+        },
+        {
+          "name": "screens",
+          "node_count": 353,
+          "fan_in": 0,
+          "fan_out": 0
+        },
+        {
+          "name": "slices",
+          "node_count": 312,
+          "fan_in": 0,
+          "fan_out": 0
+        },
+        {
+          "name": "utils",
+          "node_count": 95,
+          "fan_in": 0,
+          "fan_out": 0
+        },
+        {
+          "name": "components",
+          "node_count": 89,
+          "fan_in": 0,
+          "fan_out": 0
+        },
+        {
+          "name": "contexts",
+          "node_count": 73,
+          "fan_in": 0,
+          "fan_out": 0
+        },
+        {
+          "name": "app",
+          "node_count": 45,
+          "fan_in": 0,
+          "fan_out": 0
+        },
+        {
+          "name": "pom",
+          "node_count": 44,
+          "fan_in": 0,
+          "fan_out": 0
+        },
+        {
+          "name": "android",
+          "node_count": 43,
+          "fan_in": 0,
+          "fan_out": 0
+        },
+        {
+          "name": "tests",
+          "node_count": 24,
+          "fan_in": 0,
+          "fan_out": 0
+        },
+        {
+          "name": "sitemap-builder",
+          "node_count": 16,
+          "fan_in": 0,
+          "fan_out": 0
+        },
+        {
+          "name": "hooks",
+          "node_count": 13,
+          "fan_in": 0,
+          "fan_out": 0
+        },
+        {
+          "name": "navigation",
+          "node_count": 12,
+          "fan_in": 0,
+          "fan_out": 0
+        },
+        {
+          "name": "models",
+          "node_count": 10,
+          "fan_in": 0,
+          "fan_out": 0
+        },
+        {
+          "name": "pyproject",
+          "node_count": 9,
+          "fan_in": 0,
+          "fan_out": 0
+        }
+      ],
+      "entry_points": [
+        {
+          "name": "CompanyLogos",
+          "qualified_name": "cmms.frontend.src.components.CompanyLogos.CompanyLogos",
+          "file": "frontend/src/components/CompanyLogos.tsx"
+        },
+        {
+          "name": "Faq",
+          "qualified_name": "cmms.frontend.src.components.Faq.Faq",
+          "file": "frontend/src/components/Faq/index.tsx"
+        },
+        {
+          "name": "MobileAppDownloadDialog",
+          "qualified_name": "cmms.frontend.src.components.MobileAppDownloadDialog.MobileAppDownloadDialog",
+          "file": "frontend/src/components/MobileAppDownloadDialog/index.tsx"
+        },
+        {
+          "name": "AnalyticsCard",
+          "qualified_name": "cmms.frontend.src.content.own.Analytics.AnalyticsCard.AnalyticsCard",
+          "file": "frontend/src/content/own/Analytics/AnalyticsCard.tsx"
+        },
+        {
+          "name": "AnalyticsLayout",
+          "qualified_name": "cmms.frontend.src.content.own.Analytics.AnalyticsLayout.AnalyticsLayout",
+          "file": "frontend/src/content/own/Analytics/AnalyticsLayout.tsx"
+        },
+        {
+          "name": "WOModal",
+          "qualified_name": "cmms.frontend.src.content.own.Analytics.Asset.WOModal.WOModal",
+          "file": "frontend/src/content/own/Analytics/Asset/WOModal.tsx"
+        },
+        {
+          "name": "Index",
+          "qualified_name": "cmms.frontend.src.content.own.Analytics.Asset.Index",
+          "file": "frontend/src/content/own/Analytics/Asset/index.tsx"
+        },
+        {
+          "name": "Loading",
+          "qualified_name": "cmms.frontend.src.content.own.Analytics.Loading.Loading",
+          "file": "frontend/src/content/own/Analytics/Loading.tsx"
+        },
+        {
+          "name": "WOModal",
+          "qualified_name": "cmms.frontend.src.content.own.Analytics.Part.WOModal.WOModal",
+          "file": "frontend/src/content/own/Analytics/Part/WOModal.tsx"
+        },
+        {
+          "name": "Index",
+          "qualified_name": "cmms.frontend.src.content.own.Analytics.Part.Index",
+          "file": "frontend/src/content/own/Analytics/Part/index.tsx"
+        },
+        {
+          "name": "WOModal",
+          "qualified_name": "cmms.frontend.src.content.own.Analytics.Request.WOModal.WOModal",
+          "file": "frontend/src/content/own/Analytics/Request/WOModal.tsx"
+        },
+        {
+          "name": "Index",
+          "qualified_name": "cmms.frontend.src.content.own.Analytics.Request.Index",
+          "file": "frontend/src/content/own/Analytics/Request/index.tsx"
+        },
+        {
+          "name": "WOModal",
+          "qualified_name": "cmms.frontend.src.content.own.Analytics.WorkOrder.WOModal.WOModal",
+          "file": "frontend/src/content/own/Analytics/WorkOrder/WOModal.tsx"
+        },
+        {
+          "name": "Index",
+          "qualified_name": "cmms.frontend.src.content.own.Analytics.WorkOrder.Index",
+          "file": "frontend/src/content/own/Analytics/WorkOrder/index.tsx"
+        },
+        {
+          "name": "AssetStatusSelect",
+          "qualified_name": "cmms.frontend.src.content.own.Assets.components.AssetStatusSelect.AssetStatusSelect",
+          "file": "frontend/src/content/own/Assets/components/AssetStatusSelect.tsx"
+        },
+        {
+          "name": "AssetStatusTag",
+          "qualified_name": "cmms.frontend.src.content.own.Assets.components.AssetStatusTag.AssetStatusTag",
+          "file": "frontend/src/content/own/Assets/components/AssetStatusTag.tsx"
+        },
+        {
+          "name": "PartDetails",
+          "qualified_name": "cmms.frontend.src.content.own.Inventory.PartDetails.PartDetails",
+          "file": "frontend/src/content/own/Inventory/PartDetails.tsx"
+        },
+        {
+          "name": "getFormattedQuantityWithUnit",
+          "qualified_name": "cmms.frontend.src.content.own.Inventory.Parts.getFormattedQuantityWithUnit",
+          "file": "frontend/src/content/own/Inventory/Parts.tsx"
+        },
+        {
+          "name": "RestockPartModal",
+          "qualified_name": "cmms.frontend.src.content.own.Inventory.RestockPartModal.RestockPartModal",
+          "file": "frontend/src/content/own/Inventory/RestockPartModal.tsx"
+        },
+        {
+          "name": "SetDetails",
+          "qualified_name": "cmms.frontend.src.content.own.Inventory.SetDetails.SetDetails",
+          "file": "frontend/src/content/own/Inventory/SetDetails.tsx"
+        }
+      ],
+      "routes": [
+        {
+          "method": "GET",
+          "path": "/paddle/cancel",
+          "handler": ""
+        },
+        {
+          "method": "GET",
+          "path": "/paddle/resume",
+          "handler": ""
+        },
+        {
+          "method": "GET",
+          "path": "/paddle/customer-portal",
+          "handler": ""
+        },
+        {
+          "method": "POST",
+          "path": "/paddle/create-checkout-session",
+          "handler": ""
+        },
+        {
+          "method": "PATCH",
+          "path": "/paddle/subscription",
+          "handler": ""
+        },
+        {
+          "method": "GET",
+          "path": "/meter-categories",
+          "handler": ""
+        },
+        {
+          "method": "GET",
+          "path": "/meter-categories/{id}",
+          "handler": ""
+        },
+        {
+          "method": "POST",
+          "path": "/meter-categories",
+          "handler": ""
+        },
+        {
+          "method": "PATCH",
+          "path": "/meter-categories/{id}",
+          "handler": ""
+        },
+        {
+          "method": "DELETE",
+          "path": "/meter-categories/{id}",
+          "handler": ""
+        },
+        {
+          "method": "POST",
+          "path": "/request-portals/search",
+          "handler": ""
+        },
+        {
+          "method": "POST",
+          "path": "/request-portals",
+          "handler": ""
+        },
+        {
+          "method": "GET",
+          "path": "/request-portals/{id}",
+          "handler": ""
+        },
+        {
+          "method": "GET",
+          "path": "/request-portals/public/{uuid}",
+          "handler": ""
+        },
+        {
+          "method": "PATCH",
+          "path": "/request-portals/{id}",
+          "handler": ""
+        },
+        {
+          "method": "DELETE",
+          "path": "/request-portals/{id}",
+          "handler": ""
+        },
+        {
+          "method": "GET",
+          "path": "/companies/{company_id}",
+          "handler": ""
+        },
+        {
+          "method": "PATCH",
+          "path": "/companies/{id}",
+          "handler": ""
+        },
+        {
+          "method": "GET",
+          "path": "/health-check",
+          "handler": ""
+        },
+        {
+          "method": "GET",
+          "path": "/labors/{id}",
+          "handler": ""
+        }
+      ],
+      "hotspots": [
+        {
+          "name": "verify",
+          "qualified_name": "cmms.mobile.utils.jwt.verify",
+          "fan_in": 400
+        },
+        {
+          "name": "findById",
+          "qualified_name": "cmms.api.src.main.java.com.grash.service.MeterService.findById",
+          "fan_in": 353
+        },
+        {
+          "name": "whoami",
+          "qualified_name": "cmms.api.src.main.java.com.grash.service.UserService.whoami",
+          "fan_in": 349
+        },
+        {
+          "name": "build",
+          "qualified_name": "cmms.api.src.main.java.com.grash.advancedsearch.SpecificationBuilder.build",
+          "fan_in": 328
+        },
+        {
+          "name": "contains",
+          "qualified_name": "cmms.api.src.main.java.com.grash.security.ClientIpResolver.TrustedNetwork.contains",
+          "fan_in": 257
+        },
+        {
+          "name": "save",
+          "qualified_name": "cmms.api.src.main.java.com.grash.service.ShiftConfigurationService.save",
+          "fan_in": 237
+        },
+        {
+          "name": "equals",
+          "qualified_name": "kotlin.Any.equals",
+          "fan_in": 219
+        },
+        {
+          "name": "showSnackBar",
+          "qualified_name": "cmms.frontend.src.contexts.CustomSnackBarContext.showSnackBar",
+          "fan_in": 180
+        },
+        {
+          "name": "setCurrentUser",
+          "qualified_name": "cmms.api.src.main.java.com.grash.utils.Helper.setCurrentUser",
+          "fan_in": 169
+        },
+        {
+          "name": "hasEntitlement",
+          "qualified_name": "cmms.api.src.main.java.com.grash.service.LicenseService.hasEntitlement",
+          "fan_in": 134
+        }
+      ],
+      "boundaries": [
+        {
+          "from": "src",
+          "to": "utils",
+          "call_count": 625
+        },
+        {
+          "from": "src",
+          "to": "Any",
+          "call_count": 218
+        },
+        {
+          "from": "screens",
+          "to": "components",
+          "call_count": 173
+        },
+        {
+          "from": "screens",
+          "to": "contexts",
+          "call_count": 147
+        },
+        {
+          "from": "screens",
+          "to": "utils",
+          "call_count": 133
+        },
+        {
+          "from": "screens",
+          "to": "slices",
+          "call_count": 120
+        },
+        {
+          "from": "src",
+          "to": "slices",
+          "call_count": 70
+        },
+        {
+          "from": "screens",
+          "to": "store",
+          "call_count": 61
+        },
+        {
+          "from": "src",
+          "to": "navigation",
+          "call_count": 54
+        },
+        {
+          "from": "src",
+          "to": "components",
+          "call_count": 48
+        }
+      ],
+      "layers": [
+        {
+          "name": "",
+          "layer": "api",
+          "reason": "has HTTP route definitions"
+        },
+        {
+          "name": "Any",
+          "layer": "core",
+          "reason": "high fan-in (218 in, 0 out)"
+        },
+        {
+          "name": "components",
+          "layer": "core",
+          "reason": "high fan-in (221 in, 0 out)"
+        },
+        {
+          "name": "contexts",
+          "layer": "core",
+          "reason": "high fan-in (147 in, 0 out)"
+        },
+        {
+          "name": "navigation",
+          "layer": "core",
+          "reason": "high fan-in (54 in, 0 out)"
+        },
+        {
+          "name": "screens",
+          "layer": "entry",
+          "reason": "only outbound calls"
+        },
+        {
+          "name": "slices",
+          "layer": "core",
+          "reason": "high fan-in (190 in, 0 out)"
+        },
+        {
+          "name": "src",
+          "layer": "entry",
+          "reason": "has entry points, only outbound calls"
+        },
+        {
+          "name": "store",
+          "layer": "core",
+          "reason": "high fan-in (61 in, 0 out)"
+        },
+        {
+          "name": "utils",
+          "layer": "core",
+          "reason": "high fan-in (758 in, 0 out)"
+        }
+      ],
+      "clusters": [
+        {
+          "id": 33,
+          "label": "frontend",
+          "members": 1005,
+          "cohesion": 0.9741873804971319,
+          "top_nodes": [
+            "showSnackBar",
+            "useDispatch",
+            "useAuth",
+            "navigate",
+            "WorkOrderDetails"
+          ],
+          "packages": [
+            "frontend",
+            "mobile",
+            "api",
+            "home"
+          ],
+          "edge_types": [
+            "CALLS"
+          ]
+        },
+        {
+          "id": 79,
+          "label": "mobile",
+          "members": 485,
+          "cohesion": 0.972636815920398,
+          "top_nodes": [
+            "showSnackBar",
+            "useDispatch",
+            "useAuth",
+            "WODetailsScreen",
+            "RequestsScreen"
+          ],
+          "packages": [
+            "mobile",
+            "home",
+            "api",
+            "frontend"
+          ],
+          "edge_types": [
+            "CALLS"
+          ]
+        },
+        {
+          "id": 10,
+          "label": "api",
+          "members": 477,
+          "cohesion": 0.6187363834422658,
+          "top_nodes": [
+            "build",
+            "hasEntitlement",
+            "signup",
+            "getUser",
+            "getLicensingState"
+          ],
+          "packages": [
+            "api"
+          ],
+          "edge_types": [
+            "CALLS"
+          ]
+        },
+        {
+          "id": 37,
+          "label": "api",
+          "members": 407,
+          "cohesion": 0.6269781461944235,
+          "top_nodes": [
+            "whoami",
+            "setCurrentUser",
+            "get",
+            "post",
+            "canBeViewedBy"
+          ],
+          "packages": [
+            "frontend",
+            "api",
+            "mobile"
+          ],
+          "edge_types": [
+            "CALLS"
+          ]
+        },
+        {
+          "id": 29,
+          "label": "api",
+          "members": 352,
+          "cohesion": 0.5332278481012658,
+          "top_nodes": [
+            "getName",
+            "getMessage",
+            "getEmail",
+            "isEmpty",
+            "getLocale"
+          ],
+          "packages": [
+            "api",
+            "mobile",
+            "home"
+          ],
+          "edge_types": [
+            "CALLS"
+          ]
+        },
+        {
+          "id": 122,
+          "label": "api",
+          "members": 324,
+          "cohesion": 0.5549036043587594,
+          "top_nodes": [
+            "contains",
+            "equals",
+            "buildWorkOrder",
+            "detectChangedFields",
+            "buildUser"
+          ],
+          "packages": [
+            "api",
+            "mobile",
+            "Any",
+            "cmms"
+          ],
+          "edge_types": [
+            "CALLS"
+          ]
+        },
+        {
+          "id": 31,
+          "label": "api",
+          "members": 288,
+          "cohesion": 0.496309963099631,
+          "top_nodes": [
+            "verify",
+            "getCompanySettings",
+            "getValue",
+            "findById",
+            "generatePdfBytes"
+          ],
+          "packages": [
+            "api",
+            "home",
+            "mobile",
+            "frontend",
+            "cmms"
+          ],
+          "edge_types": [
+            "CALLS"
+          ]
+        },
+        {
+          "id": 46,
+          "label": "api",
+          "members": 227,
+          "cohesion": 0.46118192352259557,
+          "top_nodes": [
+            "save",
+            "changeStatus",
+            "dispatchWebhook",
+            "findByMainConditionAndCompany",
+            "stopDownTime"
+          ],
+          "packages": [
+            "api",
+            "frontend",
+            "mobile"
+          ],
+          "edge_types": [
+            "CALLS"
+          ]
+        },
+        {
+          "id": 121,
+          "label": "api",
+          "members": 199,
+          "cohesion": 0.6192660550458715,
+          "top_nodes": [
+            "get",
+            "_user_or_401",
+            "updateSubscription",
+            "handleCloudSubscriptionUpdated",
+            "_fail"
+          ],
+          "packages": [
+            "api",
+            "cmms",
+            "len",
+            "str",
+            "int"
+          ],
+          "edge_types": [
+            "CALLS"
+          ]
+        },
+        {
+          "id": 14,
+          "label": "api",
+          "members": 197,
+          "cohesion": 0.5041899441340782,
+          "top_nodes": [
+            "refresh",
+            "cleanText",
+            "setCustomFields",
+            "create",
+            "getCustomFields"
+          ],
+          "packages": [
+            "api",
+            "mobile"
+          ],
+          "edge_types": [
+            "CALLS"
+          ]
+        },
+        {
+          "id": 968,
+          "label": "api",
+          "members": 169,
+          "cohesion": 0.6652806652806653,
+          "top_nodes": [
+            "buildAsset",
+            "mockCurrentUser",
+            "create",
+            "setAssetFieldsFromImportDto",
+            "stubAssetLimit"
+          ],
+          "packages": [
+            "api"
+          ],
+          "edge_types": [
+            "CALLS"
+          ]
+        },
+        {
+          "id": 173,
+          "label": "api",
+          "members": 159,
+          "cohesion": 0.6107226107226107,
+          "top_nodes": [
+            "resolveCompanyId",
+            "createWorkOrderFromPreventiveMaintenance",
+            "getDateDiff",
+            "executeInternal",
+            "getCost"
+          ],
+          "packages": [
+            "api"
+          ],
+          "edge_types": [
+            "CALLS"
+          ]
+        }
+      ]
+    },
+    "isError": false
+  },
+  "models1": [
+    {
+      "status": "fulfilled",
+      "value": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"name\":\"Location\",\"qualified_name\":\"cmms.api.src.main.java.com.grash.model.Location\",\"label\":\"Class\",\"file_path\":\"/Users/attiliab/Documents/GitHub/cmms/api/src/main/java/com/grash/model/Location.java\",\"start_line\":26,\"end_line\":178,\"source\":\"@Entity\\n@Data\\n@NoArgsConstructor\\n@Schema(description = \\\"Location entity representing a physical place, facility, or area in the CMMS system\\\")\\npublic class Location extends CompanyAudit {\\n    @Schema(description = \\\"Custom identifier for the location\\\", accessMode = Schema.AccessMode.READ_ONLY)\\n    private String customId;\\n\\n    @Schema(description = \\\"The name of the location\\\", requiredMode = Schema.RequiredMode.REQUIRED)\\n    @NotNull\\n    private String name;\\n\\n    @Schema(description = \\\"The physical address of the location\\\")\\n    private String address;\\n\\n    @Schema(description = \\\"The longitude coordinate of the location\\\")\\n    private Double longitude;\\n\\n    @Schema(description = \\\"The latitude coordinate of the location\\\")\\n    private Double latitude;\\n\\n    @Schema(description = \\\"Indicates whether this is a demo location\\\")\\n    private boolean isDemo;\\n\\n    @ManyToMany\\n    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)\\n    @JoinTable(name = \\\"T_Location_User_Associations\\\",\\n            joinColumns = @JoinColumn(name = \\\"id_location\\\"),\\n            inverseJoinColumns = @JoinColumn(name = \\\"id_user\\\"),\\n            indexes = {\\n                    @Index(name = \\\"idx_location_worker_location_id\\\", columnList = \\\"id_location\\\"),\\n                    @Index(name = \\\"idx_location_worker_worker_id\\\", columnList = \\\"id_user\\\")\\n            })\\n    @ArraySchema(\\n            schema = @Schema(implementation = IdDTO.class),\\n            arraySchema = @Schema(description = \\\"List of workers assigned to the location\\\", writeOnly = true)\\n    )\\n    private List<User> workers = new ArrayList<>();\\n\\n    @ManyToMany\\n    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)\\n    @JoinTable(name = \\\"T_Location_Team_Associations\\\",\\n            joinColumns = @JoinColumn(name = \\\"id_location\\\"),\\n            inverseJoinColumns = @JoinColumn(name = \\\"id_team\\\"),\\n            indexes = {\\n                    @Index(name = \\\"idx_location_team_location_id\\\", columnList = \\\"id_location\\\"),\\n                    @Index(name = \\\"idx_location_team_team_id\\\", columnList = \\\"id_team\\\")\\n            })\\n    @ArraySchema(\\n            schema = @Schema(implementation = IdDTO.class),\\n            arraySchema = @Schema(description = \\\"List of teams assigned to the location\\\", writeOnly = true)\\n    )\\n    private List<Team> teams = new ArrayList<>();\\n\\n    @Schema(description = \\\"The parent location in a hierarchical structure\\\", implementation = IdDTO.class)\\n    @ManyToOne(fetch = FetchType.LAZY)\\n    @OnDelete(action = OnDeleteAction.CASCADE)\\n    private Location parentLocation;\\n\\n    @Schema(description = \\\"Image file associated with the location\\\", implementation = IdDTO.class)\\n    @ManyToOne(fetch = FetchType.LAZY)\\n    private File image;\\n\\n    @ManyToMany\\n    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)\\n    @JoinTable(name = \\\"T_Location_Vendor_Associations\\\",\\n            joinColumns = @JoinColumn(name = \\\"id_location\\\"),\\n            inverseJoinColumns = @JoinColumn(name = \\\"id_vendor\\\"),\\n            indexes = {\\n                    @Index(name = \\\"idx_location_vendor_location_id\\\", columnList = \\\"id_location\\\"),\\n                    @Index(name = \\\"idx_location_vendor_vendor_id\\\", columnList = \\\"id_vendor\\\")\\n            })\\n    @ArraySchema(\\n            schema = @Schema(implementation = IdDTO.class),\\n            arraySchema = @Schema(description = \\\"List of vendors associated with the location\\\", writeOnly = true)\\n    )\\n    private List<Vendor> vendors = new ArrayList<>();\\n\\n    @ManyToMany\\n    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)\\n    @JoinTable(name = \\\"T_Location_Customer_Associations\\\",\\n            joinColumns = @JoinColumn(name = \\\"id_location\\\"),\\n            inverseJoinColumns = @JoinColumn(name = \\\"id_customer\\\"),\\n            indexes = {\\n                    @Index(name = \\\"idx_location_customer_location_id\\\", columnList = \\\"id_location\\\"),\\n                    @Index(name = \\\"idx_location_customer_customer_id\\\", columnList = \\\"id_customer\\\")\\n            })\\n    @ArraySchema(\\n            schema = @Schema(implementation = IdDTO.class),\\n            arraySchema = @Schema(description = \\\"List of customers associated with the location\\\", writeOnly = true)\\n    )\\n    private List<Customer> customers = new ArrayList<>();\\n\\n    @ManyToMany\\n    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)\\n    @JoinTable(name = \\\"T_Location_File_Associations\\\",\\n            joinColumns = @JoinColumn(name = \\\"id_location\\\"),\\n            inverseJoinColumns = @JoinColumn(name = \\\"id_file\\\"),\\n            indexes = {\\n                    @Index(name = \\\"idx_location_file_location_id\\\", columnList = \\\"id_location\\\"),\\n                    @Index(name = \\\"idx_location_file_file_id\\\", columnList = \\\"id_file\\\")\\n            })\\n    @ArraySchema(\\n            schema = @Schema(implementation = IdDTO.class),\\n            arraySchema = @Schema(description = \\\"List of files attached to the location\\\", writeOnly = true)\\n    )\\n    private List<File> files = new ArrayList<>();\\n\\n    @OneToMany(mappedBy = \\\"location\\\", cascade = CascadeType.ALL, orphanRemoval = true)\\n    @ArraySchema(schema = @Schema(implementation = IdDTO.class))\\n    @Schema(description = \\\"Custom fields\\\", accessMode = Schema.AccessMode.READ_ONLY)\\n    private List<CustomFieldValue> customFieldValues = new ArrayList<>();\\n\\n    public Collection<User> getUsers() {\\n        Collection<User> users = new ArrayList<>();\\n        if (this.getTeams() != null) {\\n            Collection<User> teamsUsers = new ArrayList<>();\\n            this.getTeams().forEach(team -> teamsUsers.addAll(team.getUsers()));\\n            users.addAll(teamsUsers);\\n        }\\n        if (this.getWorkers() != null) {\\n            users.addAll(this.getWorkers());\\n        }\\n        return users.stream().collect(collectingAndThen(toCollection(() -> new TreeSet<>(comparingLong(User::getId))),\\n                ArrayList::new));\\n    }\\n\\n    public List<User> getNewUsersToNotify(Collection<User> newUsers) {\\n        Collection<User> oldUsers = getUsers();\\n        return newUsers.stream().filter(newUser -> oldUsers.stream().noneMatch(user -> user.getId().equals(newUser.getId()))).\\n                collect(collectingAndThen(toCollection(() -> new TreeSet<>(comparingLong(User::getId))),\\n                        ArrayList::new));\\n    }\\n\\n    public boolean isAssignedTo(User user) {\\n        return getUsers().stream().anyMatch(u -> u.getId().equals(user.getId()));\\n    }\\n\\n    public boolean canBeEditedBy(User user) {\\n        return user.getRole().getEditOtherPermissions().contains(PermissionEntity.LOCATIONS)\\n                || (this.getCreatedBy() != null && this.getCreatedBy().equals(user.getId())) || isAssignedTo(user);\\n    }\\n\\n    public boolean canBeDeletedBy(User user) {\\n        return user.getRole().getDeleteOtherPermissions().contains(PermissionEntity.LOCATIONS)\\n                || (this.getCreatedBy() != null && this.getCreatedBy().equals(user.getId()));\\n    }\\n\\n    public boolean canBeViewedBy(User user) {\\n        return (user.getRole().getViewPermissions().contains(PermissionEntity.LOCATIONS) &&\\n                (user.getRole().getViewOtherPermissions().contains(PermissionEntity.LOCATIONS) || (getCreatedBy() != null && getCreatedBy().equals(user.getId())) || isAssignedTo(user)));\\n    }\\n}\\n\",\"complexity\":0,\"lines\":153,\"is_exported\":true,\"is_test\":false,\"is_entry_point\":false,\"callers\":0,\"callees\":0}"
+          }
+        ],
+        "structuredContent": {
+          "name": "Location",
+          "qualified_name": "cmms.api.src.main.java.com.grash.model.Location",
+          "label": "Class",
+          "file_path": "/Users/attiliab/Documents/GitHub/cmms/api/src/main/java/com/grash/model/Location.java",
+          "start_line": 26,
+          "end_line": 178,
+          "source": "@Entity\n@Data\n@NoArgsConstructor\n@Schema(description = \"Location entity representing a physical place, facility, or area in the CMMS system\")\npublic class Location extends CompanyAudit {\n    @Schema(description = \"Custom identifier for the location\", accessMode = Schema.AccessMode.READ_ONLY)\n    private String customId;\n\n    @Schema(description = \"The name of the location\", requiredMode = Schema.RequiredMode.REQUIRED)\n    @NotNull\n    private String name;\n\n    @Schema(description = \"The physical address of the location\")\n    private String address;\n\n    @Schema(description = \"The longitude coordinate of the location\")\n    private Double longitude;\n\n    @Schema(description = \"The latitude coordinate of the location\")\n    private Double latitude;\n\n    @Schema(description = \"Indicates whether this is a demo location\")\n    private boolean isDemo;\n\n    @ManyToMany\n    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)\n    @JoinTable(name = \"T_Location_User_Associations\",\n            joinColumns = @JoinColumn(name = \"id_location\"),\n            inverseJoinColumns = @JoinColumn(name = \"id_user\"),\n            indexes = {\n                    @Index(name = \"idx_location_worker_location_id\", columnList = \"id_location\"),\n                    @Index(name = \"idx_location_worker_worker_id\", columnList = \"id_user\")\n            })\n    @ArraySchema(\n            schema = @Schema(implementation = IdDTO.class),\n            arraySchema = @Schema(description = \"List of workers assigned to the location\", writeOnly = true)\n    )\n    private List<User> workers = new ArrayList<>();\n\n    @ManyToMany\n    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)\n    @JoinTable(name = \"T_Location_Team_Associations\",\n            joinColumns = @JoinColumn(name = \"id_location\"),\n            inverseJoinColumns = @JoinColumn(name = \"id_team\"),\n            indexes = {\n                    @Index(name = \"idx_location_team_location_id\", columnList = \"id_location\"),\n                    @Index(name = \"idx_location_team_team_id\", columnList = \"id_team\")\n            })\n    @ArraySchema(\n            schema = @Schema(implementation = IdDTO.class),\n            arraySchema = @Schema(description = \"List of teams assigned to the location\", writeOnly = true)\n    )\n    private List<Team> teams = new ArrayList<>();\n\n    @Schema(description = \"The parent location in a hierarchical structure\", implementation = IdDTO.class)\n    @ManyToOne(fetch = FetchType.LAZY)\n    @OnDelete(action = OnDeleteAction.CASCADE)\n    private Location parentLocation;\n\n    @Schema(description = \"Image file associated with the location\", implementation = IdDTO.class)\n    @ManyToOne(fetch = FetchType.LAZY)\n    private File image;\n\n    @ManyToMany\n    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)\n    @JoinTable(name = \"T_Location_Vendor_Associations\",\n            joinColumns = @JoinColumn(name = \"id_location\"),\n            inverseJoinColumns = @JoinColumn(name = \"id_vendor\"),\n            indexes = {\n                    @Index(name = \"idx_location_vendor_location_id\", columnList = \"id_location\"),\n                    @Index(name = \"idx_location_vendor_vendor_id\", columnList = \"id_vendor\")\n            })\n    @ArraySchema(\n            schema = @Schema(implementation = IdDTO.class),\n            arraySchema = @Schema(description = \"List of vendors associated with the location\", writeOnly = true)\n    )\n    private List<Vendor> vendors = new ArrayList<>();\n\n    @ManyToMany\n    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)\n    @JoinTable(name = \"T_Location_Customer_Associations\",\n            joinColumns = @JoinColumn(name = \"id_location\"),\n            inverseJoinColumns = @JoinColumn(name = \"id_customer\"),\n            indexes = {\n                    @Index(name = \"idx_location_customer_location_id\", columnList = \"id_location\"),\n                    @Index(name = \"idx_location_customer_customer_id\", columnList = \"id_customer\")\n            })\n    @ArraySchema(\n            schema = @Schema(implementation = IdDTO.class),\n            arraySchema = @Schema(description = \"List of customers associated with the location\", writeOnly = true)\n    )\n    private List<Customer> customers = new ArrayList<>();\n\n    @ManyToMany\n    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)\n    @JoinTable(name = \"T_Location_File_Associations\",\n            joinColumns = @JoinColumn(name = \"id_location\"),\n            inverseJoinColumns = @JoinColumn(name = \"id_file\"),\n            indexes = {\n                    @Index(name = \"idx_location_file_location_id\", columnList = \"id_location\"),\n                    @Index(name = \"idx_location_file_file_id\", columnList = \"id_file\")\n            })\n    @ArraySchema(\n            schema = @Schema(implementation = IdDTO.class),\n            arraySchema = @Schema(description = \"List of files attached to the location\", writeOnly = true)\n    )\n    private List<File> files = new ArrayList<>();\n\n    @OneToMany(mappedBy = \"location\", cascade = CascadeType.ALL, orphanRemoval = true)\n    @ArraySchema(schema = @Schema(implementation = IdDTO.class))\n    @Schema(description = \"Custom fields\", accessMode = Schema.AccessMode.READ_ONLY)\n    private List<CustomFieldValue> customFieldValues = new ArrayList<>();\n\n    public Collection<User> getUsers() {\n        Collection<User> users = new ArrayList<>();\n        if (this.getTeams() != null) {\n            Collection<User> teamsUsers = new ArrayList<>();\n            this.getTeams().forEach(team -> teamsUsers.addAll(team.getUsers()));\n            users.addAll(teamsUsers);\n        }\n        if (this.getWorkers() != null) {\n            users.addAll(this.getWorkers());\n        }\n        return users.stream().collect(collectingAndThen(toCollection(() -> new TreeSet<>(comparingLong(User::getId))),\n                ArrayList::new));\n    }\n\n    public List<User> getNewUsersToNotify(Collection<User> newUsers) {\n        Collection<User> oldUsers = getUsers();\n        return newUsers.stream().filter(newUser -> oldUsers.stream().noneMatch(user -> user.getId().equals(newUser.getId()))).\n                collect(collectingAndThen(toCollection(() -> new TreeSet<>(comparingLong(User::getId))),\n                        ArrayList::new));\n    }\n\n    public boolean isAssignedTo(User user) {\n        return getUsers().stream().anyMatch(u -> u.getId().equals(user.getId()));\n    }\n\n    public boolean canBeEditedBy(User user) {\n        return user.getRole().getEditOtherPermissions().contains(PermissionEntity.LOCATIONS)\n                || (this.getCreatedBy() != null && this.getCreatedBy().equals(user.getId())) || isAssignedTo(user);\n    }\n\n    public boolean canBeDeletedBy(User user) {\n        return user.getRole().getDeleteOtherPermissions().contains(PermissionEntity.LOCATIONS)\n                || (this.getCreatedBy() != null && this.getCreatedBy().equals(user.getId()));\n    }\n\n    public boolean canBeViewedBy(User user) {\n        return (user.getRole().getViewPermissions().contains(PermissionEntity.LOCATIONS) &&\n                (user.getRole().getViewOtherPermissions().contains(PermissionEntity.LOCATIONS) || (getCreatedBy() != null && getCreatedBy().equals(user.getId())) || isAssignedTo(user)));\n    }\n}\n",
+          "complexity": 0,
+          "lines": 153,
+          "is_exported": true,
+          "is_test": false,
+          "is_entry_point": false,
+          "callers": 0,
+          "callees": 0
+        },
+        "isError": false
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"name\":\"Asset\",\"qualified_name\":\"cmms.api.src.main.java.com.grash.model.Asset\",\"label\":\"Class\",\"file_path\":\"/Users/attiliab/Documents/GitHub/cmms/api/src/main/java/com/grash/model/Asset.java\",\"start_line\":30,\"end_line\":262,\"source\":\"@Entity\\n@Data\\n@NoArgsConstructor\\n@Schema(description = \\\"Asset entity representing equipment, machinery, or property in the CMMS system\\\")\\npublic class Asset extends CompanyAudit {\\n\\n    @Schema(description = \\\"Custom identifier for the asset\\\", accessMode = Schema.AccessMode.READ_ONLY)\\n    private String customId;\\n\\n    @Schema(description = \\\"Indicates whether the asset is archived\\\")\\n    private boolean archived;\\n\\n    @Schema(description = \\\"Image file associated with the asset\\\", implementation = IdDTO.class)\\n    @OneToOne(fetch = FetchType.LAZY)\\n    private File image;\\n\\n    @Schema(description = \\\"The location where the asset is situated\\\", implementation = IdDTO.class)\\n    @ManyToOne(fetch = FetchType.LAZY)\\n    private Location location;\\n\\n    @Schema(description = \\\"The parent asset in a hierarchical structure\\\", implementation = IdDTO.class)\\n    @ManyToOne(fetch = FetchType.LAZY)\\n    @OnDelete(action = OnDeleteAction.CASCADE)\\n    private Asset parentAsset;\\n\\n    @Schema(description = \\\"The area or zone where the asset is located\\\")\\n    private String area;\\n\\n    @Schema(description = \\\"Detailed description of the asset\\\", maxLength = 10000)\\n    private String description;\\n\\n    @Schema(description = \\\"Barcode identifier for the asset\\\")\\n    private String barCode;\\n\\n    @Schema(description = \\\"The category of the asset\\\", implementation = IdDTO.class)\\n    @ManyToOne(fetch = FetchType.LAZY)\\n    private AssetCategory category;\\n\\n    @Schema(description = \\\"The name of the asset\\\", requiredMode = Schema.RequiredMode.REQUIRED)\\n    @NotNull\\n    private String name;\\n\\n    @Schema(description = \\\"The primary user responsible for the asset\\\", implementation = IdDTO.class)\\n    @ManyToOne(fetch = FetchType.LAZY)\\n    private User primaryUser;\\n\\n    @Schema(description = \\\"The acquisition cost of the asset\\\")\\n    private Double acquisitionCost;\\n\\n    @Schema(description = \\\"NFC (Near Field Communication) identifier for the asset\\\")\\n    private String nfcId;\\n\\n    @Schema(description = \\\"Indicates whether this is a demo asset\\\")\\n    private boolean isDemo;\\n\\n    @ManyToMany\\n    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)\\n    @JoinTable(name = \\\"T_Asset_User_Associations\\\",\\n            joinColumns = @JoinColumn(name = \\\"id_asset\\\"),\\n            inverseJoinColumns = @JoinColumn(name = \\\"id_user\\\"),\\n            indexes = {\\n                    @Index(name = \\\"idx_asset_user_asset_id\\\", columnList = \\\"id_asset\\\"),\\n                    @Index(name = \\\"idx_asset_user_user_id\\\", columnList = \\\"id_user\\\")\\n            })\\n    @ArraySchema(\\n            schema = @Schema(implementation = IdDTO.class),\\n            arraySchema = @Schema(description = \\\"List of users assigned to the asset\\\", writeOnly = true)\\n    )\\n    private List<User> assignedTo = new ArrayList<>();\\n\\n    @ManyToMany\\n    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)\\n    @JoinTable(name = \\\"T_Asset_Team_Associations\\\",\\n            joinColumns = @JoinColumn(name = \\\"id_asset\\\"),\\n            inverseJoinColumns = @JoinColumn(name = \\\"id_team\\\"),\\n            indexes = {\\n                    @Index(name = \\\"idx_asset_team_asset_id\\\", columnList = \\\"id_asset\\\"),\\n                    @Index(name = \\\"idx_asset_team_team_id\\\", columnList = \\\"id_team\\\")\\n            })\\n    @ArraySchema(\\n            schema = @Schema(implementation = IdDTO.class),\\n            arraySchema = @Schema(description = \\\"List of teams assigned to the asset\\\", writeOnly = true)\\n    )\\n    private List<Team> teams = new ArrayList<>();\\n\\n    @ManyToMany\\n    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)\\n    @JoinTable(name = \\\"T_Asset_Vendor_Associations\\\",\\n            joinColumns = @JoinColumn(name = \\\"id_asset\\\"),\\n            inverseJoinColumns = @JoinColumn(name = \\\"id_vendor\\\"),\\n            indexes = {\\n                    @Index(name = \\\"idx_asset_vendor_asset_id\\\", columnList = \\\"id_asset\\\"),\\n                    @Index(name = \\\"idx_asset_vendor_vendor_id\\\", columnList = \\\"id_vendor\\\")\\n            })\\n    @BatchSize(size = 64)\\n    @ArraySchema(\\n            schema = @Schema(implementation = IdDTO.class),\\n            arraySchema = @Schema(description = \\\"List of vendors associated with the asset\\\", writeOnly = true)\\n    )\\n    private List<Vendor> vendors = new ArrayList<>();\\n\\n    @ManyToMany\\n    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)\\n    @JoinTable(name = \\\"T_Asset_Customer_Associations\\\",\\n            joinColumns = @JoinColumn(name = \\\"id_asset\\\"),\\n            inverseJoinColumns = @JoinColumn(name = \\\"id_customer\\\"),\\n            indexes = {\\n                    @Index(name = \\\"idx_asset_customer_asset_id\\\", columnList = \\\"id_asset\\\"),\\n                    @Index(name = \\\"idx_asset_customer_customer_id\\\", columnList = \\\"id_customer\\\")\\n            })\\n    @ArraySchema(\\n            schema = @Schema(implementation = IdDTO.class),\\n            arraySchema = @Schema(description = \\\"List of customers associated with the asset\\\", writeOnly = true)\\n    )\\n    private List<Customer> customers = new ArrayList<>();\\n\\n    @ManyToMany\\n    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)\\n    @JoinTable(name = \\\"T_Asset_Part_Associations\\\",\\n            joinColumns = @JoinColumn(name = \\\"id_asset\\\"),\\n            inverseJoinColumns = @JoinColumn(name = \\\"id_part\\\"),\\n            indexes = {\\n                    @Index(name = \\\"idx_asset_part_asset_id\\\", columnList = \\\"id_asset\\\"),\\n                    @Index(name = \\\"idx_asset_part_part_id\\\", columnList = \\\"id_part\\\")\\n            })\\n    @ArraySchema(\\n            schema = @Schema(implementation = IdDTO.class),\\n            arraySchema = @Schema(description = \\\"List of parts associated with the asset\\\", writeOnly = true)\\n    )\\n    private List<Part> parts = new ArrayList<>();\\n\\n    @Schema(description = \\\"Depreciation configuration for the asset\\\", implementation = IdDTO.class)\\n    @OneToOne(fetch = FetchType.LAZY)\\n    private Deprecation deprecation;\\n\\n    @Schema(description = \\\"The warranty expiration date for the asset\\\")\\n    private Date warrantyExpirationDate;\\n\\n    @Schema(description = \\\"The date when the asset was placed into service\\\")\\n    private Date inServiceDate;\\n\\n    @Schema(description = \\\"Additional information about the asset\\\")\\n    private String additionalInfos;\\n\\n    @Schema(description = \\\"The serial number of the asset\\\")\\n    private String serialNumber;\\n\\n    @Schema(description = \\\"The model of the asset\\\")\\n    private String model;\\n\\n    @Schema(description = \\\"The current status of the asset\\\")\\n    private AssetStatus status = AssetStatus.OPERATIONAL;\\n\\n    @ManyToMany\\n    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)\\n    @JoinTable(name = \\\"T_Asset_File_Associations\\\",\\n            joinColumns = @JoinColumn(name = \\\"id_asset\\\"),\\n            inverseJoinColumns = @JoinColumn(name = \\\"id_file\\\"),\\n            indexes = {\\n                    @Index(name = \\\"idx_asset_file_asset_id\\\", columnList = \\\"id_asset\\\"),\\n                    @Index(name = \\\"idx_asset_file_file_id\\\", columnList = \\\"id_file\\\")\\n            })\\n    @BatchSize(size = 64)\\n    @ArraySchema(\\n            schema = @Schema(implementation = IdDTO.class),\\n            arraySchema = @Schema(description = \\\"List of files attached to the asset\\\", writeOnly = true)\\n    )\\n    private List<File> files = new ArrayList<>();\\n\\n    @Schema(description = \\\"The power rating or specification of the asset\\\")\\n    private String power;\\n\\n    @Schema(description = \\\"The manufacturer of the asset\\\")\\n    private String manufacturer;\\n\\n    @OneToMany(mappedBy = \\\"asset\\\", cascade = CascadeType.ALL, orphanRemoval = true)\\n    @ArraySchema(schema = @Schema(implementation = IdDTO.class))\\n    @Schema(description = \\\"Custom fields\\\", accessMode = Schema.AccessMode.READ_ONLY)\\n    private List<CustomFieldValue> customFieldValues = new ArrayList<>();\\n\\n    public Collection<User> getUsers() {\\n        Collection<User> users = new ArrayList<>();\\n        if (this.getPrimaryUser() != null) {\\n            users.add(this.getPrimaryUser());\\n        }\\n        if (this.getTeams() != null) {\\n            Collection<User> teamsUsers = new ArrayList<>();\\n            this.getTeams().forEach(team -> teamsUsers.addAll(team.getUsers()));\\n            users.addAll(teamsUsers);\\n        }\\n        if (this.getAssignedTo() != null) {\\n            users.addAll(this.getAssignedTo());\\n        }\\n        return users.stream().collect(collectingAndThen(toCollection(() -> new TreeSet<>(comparingLong(User::getId))),\\n                ArrayList::new));\\n    }\\n\\n    public List<User> getNewUsersToNotify(Collection<User> newUsers) {\\n        Collection<User> oldUsers = getUsers();\\n        return newUsers.stream().filter(newUser -> oldUsers.stream().noneMatch(user -> user.getId().equals(newUser.getId()))).\\n                collect(collectingAndThen(toCollection(() -> new TreeSet<>(comparingLong(User::getId))),\\n                        ArrayList::new));\\n    }\\n\\n    @JsonIgnore\\n    public long getAge() {\\n        return Helper.getDateDiff(getRealCreatedAt(), new Date(), TimeUnit.SECONDS);\\n    }\\n\\n    @JsonIgnore\\n    public Date getRealCreatedAt() {\\n        return this.inServiceDate == null ? this.getCreatedAt() : this.inServiceDate;\\n    }\\n\\n    public boolean isAssignedTo(User user) {\\n        return getUsers().stream().anyMatch(u -> u.getId().equals(user.getId()));\\n    }\\n\\n    public boolean canBeEditedBy(User user) {\\n        return user.getRole().getEditOtherPermissions().contains(PermissionEntity.ASSETS)\\n                || (this.getCreatedBy() != null && this.getCreatedBy().equals(user.getId())) || isAssignedTo(user);\\n    }\\n\\n    public boolean canBeDeletedBy(User user) {\\n        return user.getRole().getDeleteOtherPermissions().contains(PermissionEntity.ASSETS)\\n                || (this.getCreatedBy() != null && this.getCreatedBy().equals(user.getId()));\\n    }\\n\\n    public boolean canBeViewedBy(User user) {\\n        return (user.getRole().getViewPermissions().contains(PermissionEntity.ASSETS) &&\\n                (user.getRole().getViewOtherPermissions().contains(PermissionEntity.ASSETS) || (getCreatedBy() != null && getCreatedBy().equals(user.getId())) || isAssignedTo(user)));\\n    }\\n}\\n\",\"complexity\":0,\"lines\":233,\"is_exported\":true,\"is_test\":false,\"is_entry_point\":false,\"callers\":0,\"callees\":0}"
+          }
+        ],
+        "structuredContent": {
+          "name": "Asset",
+          "qualified_name": "cmms.api.src.main.java.com.grash.model.Asset",
+          "label": "Class",
+          "file_path": "/Users/attiliab/Documents/GitHub/cmms/api/src/main/java/com/grash/model/Asset.java",
+          "start_line": 30,
+          "end_line": 262,
+          "source": "@Entity\n@Data\n@NoArgsConstructor\n@Schema(description = \"Asset entity representing equipment, machinery, or property in the CMMS system\")\npublic class Asset extends CompanyAudit {\n\n    @Schema(description = \"Custom identifier for the asset\", accessMode = Schema.AccessMode.READ_ONLY)\n    private String customId;\n\n    @Schema(description = \"Indicates whether the asset is archived\")\n    private boolean archived;\n\n    @Schema(description = \"Image file associated with the asset\", implementation = IdDTO.class)\n    @OneToOne(fetch = FetchType.LAZY)\n    private File image;\n\n    @Schema(description = \"The location where the asset is situated\", implementation = IdDTO.class)\n    @ManyToOne(fetch = FetchType.LAZY)\n    private Location location;\n\n    @Schema(description = \"The parent asset in a hierarchical structure\", implementation = IdDTO.class)\n    @ManyToOne(fetch = FetchType.LAZY)\n    @OnDelete(action = OnDeleteAction.CASCADE)\n    private Asset parentAsset;\n\n    @Schema(description = \"The area or zone where the asset is located\")\n    private String area;\n\n    @Schema(description = \"Detailed description of the asset\", maxLength = 10000)\n    private String description;\n\n    @Schema(description = \"Barcode identifier for the asset\")\n    private String barCode;\n\n    @Schema(description = \"The category of the asset\", implementation = IdDTO.class)\n    @ManyToOne(fetch = FetchType.LAZY)\n    private AssetCategory category;\n\n    @Schema(description = \"The name of the asset\", requiredMode = Schema.RequiredMode.REQUIRED)\n    @NotNull\n    private String name;\n\n    @Schema(description = \"The primary user responsible for the asset\", implementation = IdDTO.class)\n    @ManyToOne(fetch = FetchType.LAZY)\n    private User primaryUser;\n\n    @Schema(description = \"The acquisition cost of the asset\")\n    private Double acquisitionCost;\n\n    @Schema(description = \"NFC (Near Field Communication) identifier for the asset\")\n    private String nfcId;\n\n    @Schema(description = \"Indicates whether this is a demo asset\")\n    private boolean isDemo;\n\n    @ManyToMany\n    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)\n    @JoinTable(name = \"T_Asset_User_Associations\",\n            joinColumns = @JoinColumn(name = \"id_asset\"),\n            inverseJoinColumns = @JoinColumn(name = \"id_user\"),\n            indexes = {\n                    @Index(name = \"idx_asset_user_asset_id\", columnList = \"id_asset\"),\n                    @Index(name = \"idx_asset_user_user_id\", columnList = \"id_user\")\n            })\n    @ArraySchema(\n            schema = @Schema(implementation = IdDTO.class),\n            arraySchema = @Schema(description = \"List of users assigned to the asset\", writeOnly = true)\n    )\n    private List<User> assignedTo = new ArrayList<>();\n\n    @ManyToMany\n    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)\n    @JoinTable(name = \"T_Asset_Team_Associations\",\n            joinColumns = @JoinColumn(name = \"id_asset\"),\n            inverseJoinColumns = @JoinColumn(name = \"id_team\"),\n            indexes = {\n                    @Index(name = \"idx_asset_team_asset_id\", columnList = \"id_asset\"),\n                    @Index(name = \"idx_asset_team_team_id\", columnList = \"id_team\")\n            })\n    @ArraySchema(\n            schema = @Schema(implementation = IdDTO.class),\n            arraySchema = @Schema(description = \"List of teams assigned to the asset\", writeOnly = true)\n    )\n    private List<Team> teams = new ArrayList<>();\n\n    @ManyToMany\n    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)\n    @JoinTable(name = \"T_Asset_Vendor_Associations\",\n            joinColumns = @JoinColumn(name = \"id_asset\"),\n            inverseJoinColumns = @JoinColumn(name = \"id_vendor\"),\n            indexes = {\n                    @Index(name = \"idx_asset_vendor_asset_id\", columnList = \"id_asset\"),\n                    @Index(name = \"idx_asset_vendor_vendor_id\", columnList = \"id_vendor\")\n            })\n    @BatchSize(size = 64)\n    @ArraySchema(\n            schema = @Schema(implementation = IdDTO.class),\n            arraySchema = @Schema(description = \"List of vendors associated with the asset\", writeOnly = true)\n    )\n    private List<Vendor> vendors = new ArrayList<>();\n\n    @ManyToMany\n    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)\n    @JoinTable(name = \"T_Asset_Customer_Associations\",\n            joinColumns = @JoinColumn(name = \"id_asset\"),\n            inverseJoinColumns = @JoinColumn(name = \"id_customer\"),\n            indexes = {\n                    @Index(name = \"idx_asset_customer_asset_id\", columnList = \"id_asset\"),\n                    @Index(name = \"idx_asset_customer_customer_id\", columnList = \"id_customer\")\n            })\n    @ArraySchema(\n            schema = @Schema(implementation = IdDTO.class),\n            arraySchema = @Schema(description = \"List of customers associated with the asset\", writeOnly = true)\n    )\n    private List<Customer> customers = new ArrayList<>();\n\n    @ManyToMany\n    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)\n    @JoinTable(name = \"T_Asset_Part_Associations\",\n            joinColumns = @JoinColumn(name = \"id_asset\"),\n            inverseJoinColumns = @JoinColumn(name = \"id_part\"),\n            indexes = {\n                    @Index(name = \"idx_asset_part_asset_id\", columnList = \"id_asset\"),\n                    @Index(name = \"idx_asset_part_part_id\", columnList = \"id_part\")\n            })\n    @ArraySchema(\n            schema = @Schema(implementation = IdDTO.class),\n            arraySchema = @Schema(description = \"List of parts associated with the asset\", writeOnly = true)\n    )\n    private List<Part> parts = new ArrayList<>();\n\n    @Schema(description = \"Depreciation configuration for the asset\", implementation = IdDTO.class)\n    @OneToOne(fetch = FetchType.LAZY)\n    private Deprecation deprecation;\n\n    @Schema(description = \"The warranty expiration date for the asset\")\n    private Date warrantyExpirationDate;\n\n    @Schema(description = \"The date when the asset was placed into service\")\n    private Date inServiceDate;\n\n    @Schema(description = \"Additional information about the asset\")\n    private String additionalInfos;\n\n    @Schema(description = \"The serial number of the asset\")\n    private String serialNumber;\n\n    @Schema(description = \"The model of the asset\")\n    private String model;\n\n    @Schema(description = \"The current status of the asset\")\n    private AssetStatus status = AssetStatus.OPERATIONAL;\n\n    @ManyToMany\n    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)\n    @JoinTable(name = \"T_Asset_File_Associations\",\n            joinColumns = @JoinColumn(name = \"id_asset\"),\n            inverseJoinColumns = @JoinColumn(name = \"id_file\"),\n            indexes = {\n                    @Index(name = \"idx_asset_file_asset_id\", columnList = \"id_asset\"),\n                    @Index(name = \"idx_asset_file_file_id\", columnList = \"id_file\")\n            })\n    @BatchSize(size = 64)\n    @ArraySchema(\n            schema = @Schema(implementation = IdDTO.class),\n            arraySchema = @Schema(description = \"List of files attached to the asset\", writeOnly = true)\n    )\n    private List<File> files = new ArrayList<>();\n\n    @Schema(description = \"The power rating or specification of the asset\")\n    private String power;\n\n    @Schema(description = \"The manufacturer of the asset\")\n    private String manufacturer;\n\n    @OneToMany(mappedBy = \"asset\", cascade = CascadeType.ALL, orphanRemoval = true)\n    @ArraySchema(schema = @Schema(implementation = IdDTO.class))\n    @Schema(description = \"Custom fields\", accessMode = Schema.AccessMode.READ_ONLY)\n    private List<CustomFieldValue> customFieldValues = new ArrayList<>();\n\n    public Collection<User> getUsers() {\n        Collection<User> users = new ArrayList<>();\n        if (this.getPrimaryUser() != null) {\n            users.add(this.getPrimaryUser());\n        }\n        if (this.getTeams() != null) {\n            Collection<User> teamsUsers = new ArrayList<>();\n            this.getTeams().forEach(team -> teamsUsers.addAll(team.getUsers()));\n            users.addAll(teamsUsers);\n        }\n        if (this.getAssignedTo() != null) {\n            users.addAll(this.getAssignedTo());\n        }\n        return users.stream().collect(collectingAndThen(toCollection(() -> new TreeSet<>(comparingLong(User::getId))),\n                ArrayList::new));\n    }\n\n    public List<User> getNewUsersToNotify(Collection<User> newUsers) {\n        Collection<User> oldUsers = getUsers();\n        return newUsers.stream().filter(newUser -> oldUsers.stream().noneMatch(user -> user.getId().equals(newUser.getId()))).\n                collect(collectingAndThen(toCollection(() -> new TreeSet<>(comparingLong(User::getId))),\n                        ArrayList::new));\n    }\n\n    @JsonIgnore\n    public long getAge() {\n        return Helper.getDateDiff(getRealCreatedAt(), new Date(), TimeUnit.SECONDS);\n    }\n\n    @JsonIgnore\n    public Date getRealCreatedAt() {\n        return this.inServiceDate == null ? this.getCreatedAt() : this.inServiceDate;\n    }\n\n    public boolean isAssignedTo(User user) {\n        return getUsers().stream().anyMatch(u -> u.getId().equals(user.getId()));\n    }\n\n    public boolean canBeEditedBy(User user) {\n        return user.getRole().getEditOtherPermissions().contains(PermissionEntity.ASSETS)\n                || (this.getCreatedBy() != null && this.getCreatedBy().equals(user.getId())) || isAssignedTo(user);\n    }\n\n    public boolean canBeDeletedBy(User user) {\n        return user.getRole().getDeleteOtherPermissions().contains(PermissionEntity.ASSETS)\n                || (this.getCreatedBy() != null && this.getCreatedBy().equals(user.getId()));\n    }\n\n    public boolean canBeViewedBy(User user) {\n        return (user.getRole().getViewPermissions().contains(PermissionEntity.ASSETS) &&\n                (user.getRole().getViewOtherPermissions().contains(PermissionEntity.ASSETS) || (getCreatedBy() != null && getCreatedBy().equals(user.getId())) || isAssignedTo(user)));\n    }\n}\n",
+          "complexity": 0,
+          "lines": 233,
+          "is_exported": true,
+          "is_test": false,
+          "is_entry_point": false,
+          "callers": 0,
+          "callees": 0
+        },
+        "isError": false
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"name\":\"User\",\"qualified_name\":\"cmms.api.src.main.java.com.grash.model.User\",\"label\":\"Class\",\"file_path\":\"/Users/attiliab/Documents/GitHub/cmms/api/src/main/java/com/grash/model/User.java\",\"start_line\":22,\"end_line\":183,\"source\":\"@Entity\\n@Data\\n@NoArgsConstructor\\n@Table(name = \\\"own_user\\\")\\n@Schema(description = \\\"User entity representing a user account in the CMMS system\\\")\\npublic class User extends CompanyAudit {\\n\\n    @NotNull\\n    @Schema(description = \\\"First name\\\", requiredMode = Schema.RequiredMode.REQUIRED)\\n    private String firstName;\\n\\n    @NotNull\\n    @Schema(description = \\\"Last name\\\", requiredMode = Schema.RequiredMode.REQUIRED)\\n    private String lastName;\\n\\n    @Schema(description = \\\"User hourly rate\\\")\\n    private long rate;\\n\\n    @OneToOne(fetch = FetchType.LAZY)\\n    private File image;\\n\\n    @Column(unique = true)\\n    @NotNull\\n    @Schema(description = \\\"Email address\\\", requiredMode = Schema.RequiredMode.REQUIRED)\\n    private String email;\\n\\n    @Schema(description = \\\"Phone number\\\")\\n    private String phone;\\n\\n    @ManyToOne(fetch = FetchType.LAZY)\\n    @NotNull\\n    private Role role;\\n\\n    @Schema(description = \\\"Job title\\\")\\n    private String jobTitle;\\n\\n    @NotNull\\n    @Schema(description = \\\"Username\\\", requiredMode = Schema.RequiredMode.REQUIRED)\\n    private String username;\\n\\n    @JsonIgnore\\n    @NotNull\\n    @Schema(description = \\\"Password\\\", accessMode = Schema.AccessMode.WRITE_ONLY)\\n    private String password;\\n\\n    @Schema(description = \\\"Last login date\\\", accessMode = Schema.AccessMode.READ_ONLY)\\n    private Date lastLogin;\\n\\n    @JsonProperty(access = JsonProperty.Access.READ_ONLY)\\n    @Schema(description = \\\"Whether the user account is enabled\\\", accessMode = Schema.AccessMode.READ_ONLY)\\n    private boolean enabled;\\n\\n    @JsonProperty(access = JsonProperty.Access.READ_ONLY)\\n    @Schema(description = \\\"Whether the user is enabled in the subscription\\\", accessMode = Schema.AccessMode.READ_ONLY)\\n    private boolean enabledInSubscription = true;\\n\\n    @JsonProperty(access = JsonProperty.Access.READ_ONLY)\\n    @Schema(description = \\\"Whether the user owns the company\\\", accessMode = Schema.AccessMode.READ_ONLY)\\n    private boolean ownsCompany;\\n\\n    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)\\n    private UserSettings userSettings = new UserSettings();\\n\\n    @ManyToOne(fetch = FetchType.LAZY)\\n    private Location location;\\n\\n    @OneToMany(mappedBy = \\\"superUser\\\", fetch = FetchType.LAZY)\\n    @JsonIgnore\\n    private List<SuperAccountRelation> superAccountRelations = new ArrayList<>();\\n\\n    @OneToOne(mappedBy = \\\"childUser\\\")\\n    @JsonIgnore\\n    private SuperAccountRelation parentSuperAccount;\\n\\n    @JsonIgnore\\n    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)\\n    private UserAppStats appStats = new UserAppStats();\\n\\n    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)\\n    private ShiftConfiguration shiftConfiguration;\\n\\n    // SSO fields\\n    @Schema(description = \\\"SSO provider name\\\")\\n    private String ssoProvider;\\n    @Schema(description = \\\"SSO provider user ID\\\")\\n    private String ssoProviderId;\\n    @Schema(description = \\\"Whether the account was created via SSO\\\")\\n    private boolean createdViaSso = false;\\n\\n    @Schema(description = \\\"UTM source for tracking\\\")\\n    private String utmSource;\\n    @Schema(description = \\\"UTM medium for tracking\\\")\\n    private String utmMedium;\\n    @Schema(description = \\\"UTM campaign for tracking\\\")\\n    private String utmCampaign;\\n    @Schema(description = \\\"UTM term for tracking\\\")\\n    private String utmTerm;\\n    @Schema(description = \\\"UTM content for tracking\\\")\\n    private String utmContent;\\n    @Schema(description = \\\"Google Click ID\\\")\\n    private String gclid;\\n    @Schema(description = \\\"Facebook Click ID\\\")\\n    private String fbclid;\\n    @Schema(description = \\\"Referrer URL\\\")\\n    private String referrer;\\n\\n    @Schema(description = \\\"Paddle user ID\\\")\\n    private String paddleUserId;\\n\\n    @JsonIgnore\\n    @Schema(description = \\\"Timestamp of the last session revocation (logout, password change, disable). \\\" +\\n            \\\"JWTs issued before this timestamp are rejected.\\\", accessMode = Schema.AccessMode.READ_ONLY)\\n    private Date sessionInvalidatedAt;\\n\\n    @Nullable\\n    private Language language;\\n\\n\\n    public int hashCode() {\\n        return Math.toIntExact(this.getId());\\n    }\\n\\n    @Override\\n    protected boolean skipPostLoadCheck(User authUser) {\\n        if (this.getId() == null || authUser.getId() == null) return false;\\n        if (this.getId().equals(authUser.getId())) return true;\\n        return (this.getParentSuperAccount() != null) || (\\n                !this.getSuperAccountRelations().isEmpty());\\n    }\\n\\n    public boolean canSeeAnalytics() {\\n        return this.getRole().getViewPermissions().contains(PermissionEntity.ANALYTICS) && this.getCompany().getSubscription().getSubscriptionPlan().getFeatures().contains(PlanFeatures.ANALYTICS);\\n    }\\n\\n    public String getFullName() {\\n        return this.firstName + \\\" \\\" + this.lastName;\\n    }\\n\\n    @JsonIgnore\\n    public boolean isEnabledInSubscriptionAndPaid() {\\n        return enabledInSubscription && this.getRole().isPaid();\\n    }\\n\\n    public void setEmail(String email) {\\n        this.email = email == null ? null : email.trim().toLowerCase();\\n    }\\n\\n    public boolean canBeEditedBy(User user) {\\n        return user.getCompany().getId().equals(this.getCompany().getId()) && (user.getRole().getEditOtherPermissions().contains(PermissionEntity.PEOPLE_AND_TEAMS)\\n                || (this.getCreatedBy() != null && this.getCreatedBy().equals(user.getId())) || user.getId().equals(this.getId()));\\n    }\\n\\n    public boolean canBeDeletedBy(User user) {\\n        return user.getCompany().getId().equals(this.getCompany().getId()) && (user.getRole().getDeleteOtherPermissions().contains(PermissionEntity.PEOPLE_AND_TEAMS)\\n                || (this.getCreatedBy() != null && this.getCreatedBy().equals(user.getId())));\\n    }\\n\\n    public boolean canBeViewedBy(User user) {\\n        return (user.getCompany().getId().equals(this.getCompany().getId())) && (user.getRole().getViewPermissions().contains(PermissionEntity.PEOPLE_AND_TEAMS) &&\\n                (user.getRole().getViewOtherPermissions().contains(PermissionEntity.PEOPLE_AND_TEAMS) || (getCreatedBy() != null && getCreatedBy().equals(user.getId())) || user.getId().equals(this.getId())));\\n    }\\n}\\n\",\"complexity\":0,\"lines\":162,\"is_exported\":true,\"is_test\":false,\"is_entry_point\":false,\"callers\":0,\"callees\":0}"
+          }
+        ],
+        "structuredContent": {
+          "name": "User",
+          "qualified_name": "cmms.api.src.main.java.com.grash.model.User",
+          "label": "Class",
+          "file_path": "/Users/attiliab/Documents/GitHub/cmms/api/src/main/java/com/grash/model/User.java",
+          "start_line": 22,
+          "end_line": 183,
+          "source": "@Entity\n@Data\n@NoArgsConstructor\n@Table(name = \"own_user\")\n@Schema(description = \"User entity representing a user account in the CMMS system\")\npublic class User extends CompanyAudit {\n\n    @NotNull\n    @Schema(description = \"First name\", requiredMode = Schema.RequiredMode.REQUIRED)\n    private String firstName;\n\n    @NotNull\n    @Schema(description = \"Last name\", requiredMode = Schema.RequiredMode.REQUIRED)\n    private String lastName;\n\n    @Schema(description = \"User hourly rate\")\n    private long rate;\n\n    @OneToOne(fetch = FetchType.LAZY)\n    private File image;\n\n    @Column(unique = true)\n    @NotNull\n    @Schema(description = \"Email address\", requiredMode = Schema.RequiredMode.REQUIRED)\n    private String email;\n\n    @Schema(description = \"Phone number\")\n    private String phone;\n\n    @ManyToOne(fetch = FetchType.LAZY)\n    @NotNull\n    private Role role;\n\n    @Schema(description = \"Job title\")\n    private String jobTitle;\n\n    @NotNull\n    @Schema(description = \"Username\", requiredMode = Schema.RequiredMode.REQUIRED)\n    private String username;\n\n    @JsonIgnore\n    @NotNull\n    @Schema(description = \"Password\", accessMode = Schema.AccessMode.WRITE_ONLY)\n    private String password;\n\n    @Schema(description = \"Last login date\", accessMode = Schema.AccessMode.READ_ONLY)\n    private Date lastLogin;\n\n    @JsonProperty(access = JsonProperty.Access.READ_ONLY)\n    @Schema(description = \"Whether the user account is enabled\", accessMode = Schema.AccessMode.READ_ONLY)\n    private boolean enabled;\n\n    @JsonProperty(access = JsonProperty.Access.READ_ONLY)\n    @Schema(description = \"Whether the user is enabled in the subscription\", accessMode = Schema.AccessMode.READ_ONLY)\n    private boolean enabledInSubscription = true;\n\n    @JsonProperty(access = JsonProperty.Access.READ_ONLY)\n    @Schema(description = \"Whether the user owns the company\", accessMode = Schema.AccessMode.READ_ONLY)\n    private boolean ownsCompany;\n\n    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)\n    private UserSettings userSettings = new UserSettings();\n\n    @ManyToOne(fetch = FetchType.LAZY)\n    private Location location;\n\n    @OneToMany(mappedBy = \"superUser\", fetch = FetchType.LAZY)\n    @JsonIgnore\n    private List<SuperAccountRelation> superAccountRelations = new ArrayList<>();\n\n    @OneToOne(mappedBy = \"childUser\")\n    @JsonIgnore\n    private SuperAccountRelation parentSuperAccount;\n\n    @JsonIgnore\n    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)\n    private UserAppStats appStats = new UserAppStats();\n\n    @OneToOne(cascade = CascadeType.ALL, fetch = FetchType.LAZY)\n    private ShiftConfiguration shiftConfiguration;\n\n    // SSO fields\n    @Schema(description = \"SSO provider name\")\n    private String ssoProvider;\n    @Schema(description = \"SSO provider user ID\")\n    private String ssoProviderId;\n    @Schema(description = \"Whether the account was created via SSO\")\n    private boolean createdViaSso = false;\n\n    @Schema(description = \"UTM source for tracking\")\n    private String utmSource;\n    @Schema(description = \"UTM medium for tracking\")\n    private String utmMedium;\n    @Schema(description = \"UTM campaign for tracking\")\n    private String utmCampaign;\n    @Schema(description = \"UTM term for tracking\")\n    private String utmTerm;\n    @Schema(description = \"UTM content for tracking\")\n    private String utmContent;\n    @Schema(description = \"Google Click ID\")\n    private String gclid;\n    @Schema(description = \"Facebook Click ID\")\n    private String fbclid;\n    @Schema(description = \"Referrer URL\")\n    private String referrer;\n\n    @Schema(description = \"Paddle user ID\")\n    private String paddleUserId;\n\n    @JsonIgnore\n    @Schema(description = \"Timestamp of the last session revocation (logout, password change, disable). \" +\n            \"JWTs issued before this timestamp are rejected.\", accessMode = Schema.AccessMode.READ_ONLY)\n    private Date sessionInvalidatedAt;\n\n    @Nullable\n    private Language language;\n\n\n    public int hashCode() {\n        return Math.toIntExact(this.getId());\n    }\n\n    @Override\n    protected boolean skipPostLoadCheck(User authUser) {\n        if (this.getId() == null || authUser.getId() == null) return false;\n        if (this.getId().equals(authUser.getId())) return true;\n        return (this.getParentSuperAccount() != null) || (\n                !this.getSuperAccountRelations().isEmpty());\n    }\n\n    public boolean canSeeAnalytics() {\n        return this.getRole().getViewPermissions().contains(PermissionEntity.ANALYTICS) && this.getCompany().getSubscription().getSubscriptionPlan().getFeatures().contains(PlanFeatures.ANALYTICS);\n    }\n\n    public String getFullName() {\n        return this.firstName + \" \" + this.lastName;\n    }\n\n    @JsonIgnore\n    public boolean isEnabledInSubscriptionAndPaid() {\n        return enabledInSubscription && this.getRole().isPaid();\n    }\n\n    public void setEmail(String email) {\n        this.email = email == null ? null : email.trim().toLowerCase();\n    }\n\n    public boolean canBeEditedBy(User user) {\n        return user.getCompany().getId().equals(this.getCompany().getId()) && (user.getRole().getEditOtherPermissions().contains(PermissionEntity.PEOPLE_AND_TEAMS)\n                || (this.getCreatedBy() != null && this.getCreatedBy().equals(user.getId())) || user.getId().equals(this.getId()));\n    }\n\n    public boolean canBeDeletedBy(User user) {\n        return user.getCompany().getId().equals(this.getCompany().getId()) && (user.getRole().getDeleteOtherPermissions().contains(PermissionEntity.PEOPLE_AND_TEAMS)\n                || (this.getCreatedBy() != null && this.getCreatedBy().equals(user.getId())));\n    }\n\n    public boolean canBeViewedBy(User user) {\n        return (user.getCompany().getId().equals(this.getCompany().getId())) && (user.getRole().getViewPermissions().contains(PermissionEntity.PEOPLE_AND_TEAMS) &&\n                (user.getRole().getViewOtherPermissions().contains(PermissionEntity.PEOPLE_AND_TEAMS) || (getCreatedBy() != null && getCreatedBy().equals(user.getId())) || user.getId().equals(this.getId())));\n    }\n}\n",
+          "complexity": 0,
+          "lines": 162,
+          "is_exported": true,
+          "is_test": false,
+          "is_entry_point": false,
+          "callers": 0,
+          "callees": 0
+        },
+        "isError": false
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"name\":\"PurchaseOrderService\",\"qualified_name\":\"cmms.api.src.main.java.com.grash.service.PurchaseOrderService\",\"label\":\"Class\",\"file_path\":\"/Users/attiliab/Documents/GitHub/cmms/api/src/main/java/com/grash/service/PurchaseOrderService.java\",\"start_line\":25,\"end_line\":81,\"source\":\"@Service\\n@RequiredArgsConstructor\\npublic class PurchaseOrderService {\\n    private final PurchaseOrderRepository purchaseOrderRepository;\\n    private final PurchaseOrderMapper purchaseOrderMapper;\\n    private final CompanyService companyService;\\n    private final EntityManager em;\\n\\n    @Transactional\\n    public PurchaseOrder create(PurchaseOrder purchaseOrder) {\\n        Sanitizer.sanitizePurchaseOrder(purchaseOrder);\\n        PurchaseOrder savedPurchaseOrder = purchaseOrderRepository.saveAndFlush(purchaseOrder);\\n        em.refresh(savedPurchaseOrder);\\n        return savedPurchaseOrder;\\n    }\\n\\n    @Transactional\\n    public PurchaseOrder update(Long id, PurchaseOrderPatchDTO purchaseOrder) {\\n        if (purchaseOrderRepository.existsById(id)) {\\n            PurchaseOrder savedPurchaseOrder = purchaseOrderRepository.findById(id).get();\\n            PurchaseOrder updatedPurchaseOrder = purchaseOrderMapper.updatePurchaseOrder(savedPurchaseOrder,\\n                    purchaseOrder);\\n            Sanitizer.sanitizePurchaseOrder(updatedPurchaseOrder);\\n            updatedPurchaseOrder = purchaseOrderRepository.saveAndFlush(updatedPurchaseOrder);\\n            em.refresh(updatedPurchaseOrder);\\n            return updatedPurchaseOrder;\\n        } else throw new CustomException(\\\"Not found\\\", HttpStatus.NOT_FOUND);\\n    }\\n\\n    public Collection<PurchaseOrder> getAll() {\\n        return purchaseOrderRepository.findAll();\\n    }\\n\\n    public void delete(Long id) {\\n        purchaseOrderRepository.deleteById(id);\\n    }\\n\\n    public Optional<PurchaseOrder> findById(Long id) {\\n        return purchaseOrderRepository.findById(id);\\n    }\\n\\n    public Collection<PurchaseOrder> findByCompany(Long id) {\\n        return purchaseOrderRepository.findByCompany_Id(id);\\n    }\\n\\n    public PurchaseOrder save(PurchaseOrder purchaseOrder) {\\n        return purchaseOrderRepository.save(purchaseOrder);\\n    }\\n\\n    public Page<PurchaseOrderShowDTO> findBySearchCriteria(SearchCriteria searchCriteria) {\\n        SpecificationBuilder<PurchaseOrder> builder = new SpecificationBuilder<>();\\n        searchCriteria.getFilterFields().forEach(builder::with);\\n        Pageable page = PageRequest.of(searchCriteria.getPageNum(), searchCriteria.getPageSize(),\\n                searchCriteria.getDirection(), searchCriteria.getSortField());\\n        return purchaseOrderRepository.findAll(builder.build(), page).map(purchaseOrderMapper::toShowDto);\\n    }\\n}\\n\",\"complexity\":0,\"lines\":57,\"is_exported\":true,\"is_test\":false,\"is_entry_point\":false,\"callers\":0,\"callees\":0}"
+          }
+        ],
+        "structuredContent": {
+          "name": "PurchaseOrderService",
+          "qualified_name": "cmms.api.src.main.java.com.grash.service.PurchaseOrderService",
+          "label": "Class",
+          "file_path": "/Users/attiliab/Documents/GitHub/cmms/api/src/main/java/com/grash/service/PurchaseOrderService.java",
+          "start_line": 25,
+          "end_line": 81,
+          "source": "@Service\n@RequiredArgsConstructor\npublic class PurchaseOrderService {\n    private final PurchaseOrderRepository purchaseOrderRepository;\n    private final PurchaseOrderMapper purchaseOrderMapper;\n    private final CompanyService companyService;\n    private final EntityManager em;\n\n    @Transactional\n    public PurchaseOrder create(PurchaseOrder purchaseOrder) {\n        Sanitizer.sanitizePurchaseOrder(purchaseOrder);\n        PurchaseOrder savedPurchaseOrder = purchaseOrderRepository.saveAndFlush(purchaseOrder);\n        em.refresh(savedPurchaseOrder);\n        return savedPurchaseOrder;\n    }\n\n    @Transactional\n    public PurchaseOrder update(Long id, PurchaseOrderPatchDTO purchaseOrder) {\n        if (purchaseOrderRepository.existsById(id)) {\n            PurchaseOrder savedPurchaseOrder = purchaseOrderRepository.findById(id).get();\n            PurchaseOrder updatedPurchaseOrder = purchaseOrderMapper.updatePurchaseOrder(savedPurchaseOrder,\n                    purchaseOrder);\n            Sanitizer.sanitizePurchaseOrder(updatedPurchaseOrder);\n            updatedPurchaseOrder = purchaseOrderRepository.saveAndFlush(updatedPurchaseOrder);\n            em.refresh(updatedPurchaseOrder);\n            return updatedPurchaseOrder;\n        } else throw new CustomException(\"Not found\", HttpStatus.NOT_FOUND);\n    }\n\n    public Collection<PurchaseOrder> getAll() {\n        return purchaseOrderRepository.findAll();\n    }\n\n    public void delete(Long id) {\n        purchaseOrderRepository.deleteById(id);\n    }\n\n    public Optional<PurchaseOrder> findById(Long id) {\n        return purchaseOrderRepository.findById(id);\n    }\n\n    public Collection<PurchaseOrder> findByCompany(Long id) {\n        return purchaseOrderRepository.findByCompany_Id(id);\n    }\n\n    public PurchaseOrder save(PurchaseOrder purchaseOrder) {\n        return purchaseOrderRepository.save(purchaseOrder);\n    }\n\n    public Page<PurchaseOrderShowDTO> findBySearchCriteria(SearchCriteria searchCriteria) {\n        SpecificationBuilder<PurchaseOrder> builder = new SpecificationBuilder<>();\n        searchCriteria.getFilterFields().forEach(builder::with);\n        Pageable page = PageRequest.of(searchCriteria.getPageNum(), searchCriteria.getPageSize(),\n                searchCriteria.getDirection(), searchCriteria.getSortField());\n        return purchaseOrderRepository.findAll(builder.build(), page).map(purchaseOrderMapper::toShowDto);\n    }\n}\n",
+          "complexity": 0,
+          "lines": 57,
+          "is_exported": true,
+          "is_test": false,
+          "is_entry_point": false,
+          "callers": 0,
+          "callees": 0
+        },
+        "isError": false
+      }
+    }
+  ],
+  "models2": [
+    {
+      "status": "fulfilled",
+      "value": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"name\":\"CustomField\",\"qualified_name\":\"cmms.api.src.main.java.com.grash.model.CustomField\",\"label\":\"Class\",\"file_path\":\"/Users/attiliab/Documents/GitHub/cmms/api/src/main/java/com/grash/model/CustomField.java\",\"start_line\":21,\"end_line\":69,\"source\":\"@Entity\\n@Data\\n@NoArgsConstructor\\n@AllArgsConstructor\\n@Schema(description = \\\"Custom field configuration for company settings\\\")\\npublic class CustomField extends Audit {\\n    @Id\\n    @GeneratedValue(strategy = GenerationType.AUTO)\\n    @Schema(description = \\\"Unique identifier\\\", accessMode = Schema.AccessMode.READ_ONLY)\\n    private Long id;\\n\\n    @NotNull\\n    @Schema(description = \\\"Field label\\\", requiredMode = Schema.RequiredMode.REQUIRED)\\n    private String label;\\n\\n    @NotNull\\n    @Schema(description = \\\"Field type\\\", requiredMode = Schema.RequiredMode.REQUIRED)\\n    @Enumerated(EnumType.STRING)\\n    private CustomFieldType fieldType;\\n\\n    @Schema(description = \\\"Entity type this field applies to\\\")\\n    @Enumerated(EnumType.STRING)\\n    @NotNull\\n    private CustomFieldEntityType entityType;\\n\\n    @Schema(description = \\\"Whether this field is required\\\")\\n    private boolean required = false;\\n\\n    @Schema(description = \\\"Whether to copy this field value when repeating work orders\\\")\\n    private boolean copyOnRepeat = false;\\n\\n    @NotNull\\n    @Column(name = \\\"field_order\\\")\\n    private int order;\\n\\n    @ElementCollection\\n    @CollectionTable(name = \\\"company_custom_field_options\\\", joinColumns = @JoinColumn(name = \\\"field_id\\\"))\\n    @Column(name = \\\"option_value\\\")\\n    @Schema(description = \\\"Options for single choice fields\\\")\\n    private List<String> options = new ArrayList<>();\\n\\n    @ManyToOne(fetch = FetchType.LAZY)\\n    @NotNull\\n    @OnDelete(action = OnDeleteAction.CASCADE)\\n    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)\\n    @ToString.Exclude\\n    private CompanySettings companySettings;\\n\\n}\\n\",\"complexity\":0,\"lines\":49,\"is_exported\":true,\"is_test\":false,\"is_entry_point\":false,\"callers\":0,\"callees\":0}"
+          }
+        ],
+        "structuredContent": {
+          "name": "CustomField",
+          "qualified_name": "cmms.api.src.main.java.com.grash.model.CustomField",
+          "label": "Class",
+          "file_path": "/Users/attiliab/Documents/GitHub/cmms/api/src/main/java/com/grash/model/CustomField.java",
+          "start_line": 21,
+          "end_line": 69,
+          "source": "@Entity\n@Data\n@NoArgsConstructor\n@AllArgsConstructor\n@Schema(description = \"Custom field configuration for company settings\")\npublic class CustomField extends Audit {\n    @Id\n    @GeneratedValue(strategy = GenerationType.AUTO)\n    @Schema(description = \"Unique identifier\", accessMode = Schema.AccessMode.READ_ONLY)\n    private Long id;\n\n    @NotNull\n    @Schema(description = \"Field label\", requiredMode = Schema.RequiredMode.REQUIRED)\n    private String label;\n\n    @NotNull\n    @Schema(description = \"Field type\", requiredMode = Schema.RequiredMode.REQUIRED)\n    @Enumerated(EnumType.STRING)\n    private CustomFieldType fieldType;\n\n    @Schema(description = \"Entity type this field applies to\")\n    @Enumerated(EnumType.STRING)\n    @NotNull\n    private CustomFieldEntityType entityType;\n\n    @Schema(description = \"Whether this field is required\")\n    private boolean required = false;\n\n    @Schema(description = \"Whether to copy this field value when repeating work orders\")\n    private boolean copyOnRepeat = false;\n\n    @NotNull\n    @Column(name = \"field_order\")\n    private int order;\n\n    @ElementCollection\n    @CollectionTable(name = \"company_custom_field_options\", joinColumns = @JoinColumn(name = \"field_id\"))\n    @Column(name = \"option_value\")\n    @Schema(description = \"Options for single choice fields\")\n    private List<String> options = new ArrayList<>();\n\n    @ManyToOne(fetch = FetchType.LAZY)\n    @NotNull\n    @OnDelete(action = OnDeleteAction.CASCADE)\n    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)\n    @ToString.Exclude\n    private CompanySettings companySettings;\n\n}\n",
+          "complexity": 0,
+          "lines": 49,
+          "is_exported": true,
+          "is_test": false,
+          "is_entry_point": false,
+          "callers": 0,
+          "callees": 0
+        },
+        "isError": false
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"name\":\"TaskBase\",\"qualified_name\":\"cmms.api.src.main.java.com.grash.model.TaskBase\",\"label\":\"Class\",\"file_path\":\"/Users/attiliab/Documents/GitHub/cmms/api/src/main/java/com/grash/model/TaskBase.java\",\"start_line\":24,\"end_line\":56,\"source\":\"@Entity\\n@NoArgsConstructor\\n@Data\\n@AllArgsConstructor\\n@Builder\\n@Schema(description = \\\"Task base entity defining task templates\\\")\\npublic class TaskBase extends CompanyAudit {\\n    @NotNull\\n    @Schema(description = \\\"Task label\\\", requiredMode = Schema.RequiredMode.REQUIRED)\\n    private String label;\\n\\n    @Schema(description = \\\"Type of task\\\")\\n    private TaskType taskType = TaskType.SUBTASK;\\n\\n    @OneToMany(\\n            mappedBy = \\\"taskBase\\\",\\n            cascade = CascadeType.ALL,\\n            orphanRemoval = true\\n    )\\n    @JsonManagedReference\\n    private List<TaskOption> options = new ArrayList<>();\\n\\n    @ManyToOne(fetch = FetchType.LAZY)\\n    private User user;\\n\\n    @ManyToOne(fetch = FetchType.LAZY)\\n    @OnDelete(action = OnDeleteAction.CASCADE)\\n    private Asset asset;\\n\\n    @ManyToOne\\n    @OnDelete(action = OnDeleteAction.CASCADE)\\n    private Meter meter;\\n}\\n\",\"complexity\":0,\"lines\":33,\"is_exported\":true,\"is_test\":false,\"is_entry_point\":false,\"callers\":0,\"callees\":0}"
+          }
+        ],
+        "structuredContent": {
+          "name": "TaskBase",
+          "qualified_name": "cmms.api.src.main.java.com.grash.model.TaskBase",
+          "label": "Class",
+          "file_path": "/Users/attiliab/Documents/GitHub/cmms/api/src/main/java/com/grash/model/TaskBase.java",
+          "start_line": 24,
+          "end_line": 56,
+          "source": "@Entity\n@NoArgsConstructor\n@Data\n@AllArgsConstructor\n@Builder\n@Schema(description = \"Task base entity defining task templates\")\npublic class TaskBase extends CompanyAudit {\n    @NotNull\n    @Schema(description = \"Task label\", requiredMode = Schema.RequiredMode.REQUIRED)\n    private String label;\n\n    @Schema(description = \"Type of task\")\n    private TaskType taskType = TaskType.SUBTASK;\n\n    @OneToMany(\n            mappedBy = \"taskBase\",\n            cascade = CascadeType.ALL,\n            orphanRemoval = true\n    )\n    @JsonManagedReference\n    private List<TaskOption> options = new ArrayList<>();\n\n    @ManyToOne(fetch = FetchType.LAZY)\n    private User user;\n\n    @ManyToOne(fetch = FetchType.LAZY)\n    @OnDelete(action = OnDeleteAction.CASCADE)\n    private Asset asset;\n\n    @ManyToOne\n    @OnDelete(action = OnDeleteAction.CASCADE)\n    private Meter meter;\n}\n",
+          "complexity": 0,
+          "lines": 33,
+          "is_exported": true,
+          "is_test": false,
+          "is_entry_point": false,
+          "callers": 0,
+          "callees": 0
+        },
+        "isError": false
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"name\":\"Task\",\"qualified_name\":\"cmms.api.src.main.java.com.grash.model.Task\",\"label\":\"Class\",\"file_path\":\"/Users/attiliab/Documents/GitHub/cmms/api/src/main/java/com/grash/model/Task.java\",\"start_line\":25,\"end_line\":69,\"source\":\"@Entity\\n@Data\\n@NoArgsConstructor\\n@Builder\\n@AllArgsConstructor\\n@Schema(description = \\\"Task entity representing individual steps within a work order or preventive maintenance\\\")\\npublic class Task extends CompanyAudit {\\n    @ManyToOne(fetch = FetchType.LAZY)\\n    @NotNull\\n    private TaskBase taskBase;\\n\\n    @Schema(description = \\\"Notes for the task\\\")\\n    private String notes;\\n\\n    @Schema(description = \\\"Value of the task (status, measurement, etc.)\\\")\\n    private String value;\\n\\n    @OneToMany(mappedBy = \\\"task\\\", fetch = FetchType.LAZY)\\n    private List<File> images = new ArrayList<>();\\n\\n    @ManyToOne(fetch = FetchType.LAZY)\\n    @OnDelete(action = OnDeleteAction.CASCADE)\\n    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)\\n    private WorkOrder workOrder;\\n\\n    @ManyToOne(fetch = FetchType.LAZY)\\n    @OnDelete(action = OnDeleteAction.CASCADE)\\n    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)\\n    private PreventiveMaintenance preventiveMaintenance;\\n\\n    public Task(TaskBase taskBase, WorkOrder workOrder, PreventiveMaintenance preventiveMaintenance, String value) {\\n        this.taskBase = taskBase;\\n        this.workOrder = workOrder;\\n        this.value = value;\\n        this.preventiveMaintenance = preventiveMaintenance;\\n    }\\n\\n    @JsonIgnore\\n    public String getTranslatedValue(Locale locale, MessageSource messageSource) {\\n        List<String> taskOptions = Arrays.asList(\\\"OPEN\\\", \\\"ON_HOLD\\\", \\\"IN_PROGRESS\\\", \\\"COMPLETE\\\", \\\"PASS\\\", \\\"FLAG\\\", \\\"FAIL\\\");\\n        if (taskOptions.contains(value)) {\\n            return messageSource.getMessage(value, null, locale);\\n        } else return value;\\n    }\\n}\\n\",\"complexity\":0,\"lines\":45,\"is_exported\":true,\"is_test\":false,\"is_entry_point\":false,\"callers\":0,\"callees\":0}"
+          }
+        ],
+        "structuredContent": {
+          "name": "Task",
+          "qualified_name": "cmms.api.src.main.java.com.grash.model.Task",
+          "label": "Class",
+          "file_path": "/Users/attiliab/Documents/GitHub/cmms/api/src/main/java/com/grash/model/Task.java",
+          "start_line": 25,
+          "end_line": 69,
+          "source": "@Entity\n@Data\n@NoArgsConstructor\n@Builder\n@AllArgsConstructor\n@Schema(description = \"Task entity representing individual steps within a work order or preventive maintenance\")\npublic class Task extends CompanyAudit {\n    @ManyToOne(fetch = FetchType.LAZY)\n    @NotNull\n    private TaskBase taskBase;\n\n    @Schema(description = \"Notes for the task\")\n    private String notes;\n\n    @Schema(description = \"Value of the task (status, measurement, etc.)\")\n    private String value;\n\n    @OneToMany(mappedBy = \"task\", fetch = FetchType.LAZY)\n    private List<File> images = new ArrayList<>();\n\n    @ManyToOne(fetch = FetchType.LAZY)\n    @OnDelete(action = OnDeleteAction.CASCADE)\n    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)\n    private WorkOrder workOrder;\n\n    @ManyToOne(fetch = FetchType.LAZY)\n    @OnDelete(action = OnDeleteAction.CASCADE)\n    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)\n    private PreventiveMaintenance preventiveMaintenance;\n\n    public Task(TaskBase taskBase, WorkOrder workOrder, PreventiveMaintenance preventiveMaintenance, String value) {\n        this.taskBase = taskBase;\n        this.workOrder = workOrder;\n        this.value = value;\n        this.preventiveMaintenance = preventiveMaintenance;\n    }\n\n    @JsonIgnore\n    public String getTranslatedValue(Locale locale, MessageSource messageSource) {\n        List<String> taskOptions = Arrays.asList(\"OPEN\", \"ON_HOLD\", \"IN_PROGRESS\", \"COMPLETE\", \"PASS\", \"FLAG\", \"FAIL\");\n        if (taskOptions.contains(value)) {\n            return messageSource.getMessage(value, null, locale);\n        } else return value;\n    }\n}\n",
+          "complexity": 0,
+          "lines": 45,
+          "is_exported": true,
+          "is_test": false,
+          "is_entry_point": false,
+          "callers": 0,
+          "callees": 0
+        },
+        "isError": false
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"name\":\"Schedule\",\"qualified_name\":\"cmms.api.src.main.java.com.grash.model.Schedule\",\"label\":\"Class\",\"file_path\":\"/Users/attiliab/Documents/GitHub/cmms/api/src/main/java/com/grash/model/Schedule.java\",\"start_line\":21,\"end_line\":85,\"source\":\"@Entity\\n@Data\\n@NoArgsConstructor\\n@Schema(description = \\\"Schedule entity defining recurrence patterns for preventive maintenance\\\")\\npublic class Schedule extends Audit {\\n    @Id\\n    @GeneratedValue(strategy = GenerationType.AUTO)\\n    @Schema(description = \\\"Unique identifier\\\", accessMode = Schema.AccessMode.READ_ONLY)\\n    private Long id;\\n\\n    @Schema(description = \\\"Whether the schedule is disabled\\\")\\n    private boolean disabled;\\n\\n    @NotNull\\n    @Schema(description = \\\"Start date of the schedule\\\", requiredMode = Schema.RequiredMode.REQUIRED)\\n    private Date startsOn = new Date();\\n\\n    @NotNull\\n    @Schema(description = \\\"Frequency value (e.g., every X days/weeks)\\\", requiredMode = Schema.RequiredMode.REQUIRED)\\n    private int frequency = 1; //day\\n\\n    @Schema(description = \\\"End date of the schedule\\\")\\n    private Date endsOn;\\n\\n    @Schema(description = \\\"Delay for due date in days\\\")\\n    private Integer dueDateDelay;\\n\\n    @Schema(description = \\\"Indicates whether this is a demo schedule\\\")\\n    private boolean isDemo;\\n\\n    @Enumerated(EnumType.STRING)\\n    @NotNull\\n    @Schema(description = \\\"Type of recurrence\\\", requiredMode = Schema.RequiredMode.REQUIRED)\\n    private RecurrenceType recurrenceType = RecurrenceType.DAILY;\\n\\n    @Enumerated(EnumType.STRING)\\n    @NotNull\\n    @Schema(description = \\\"What the recurrence is based on\\\", requiredMode = Schema.RequiredMode.REQUIRED)\\n    private RecurrenceBasedOn recurrenceBasedOn = RecurrenceBasedOn.SCHEDULED_DATE;\\n\\n    @ElementCollection\\n    @Schema(description = \\\"Days of week for weekly recurrence (0 = Monday)\\\")\\n    private List<Integer> daysOfWeek = new ArrayList<>();//0 monday\\n\\n    @OneToOne(fetch = FetchType.LAZY)\\n    @JsonIgnore\\n    @OnDelete(action = OnDeleteAction.CASCADE)\\n    @NotNull\\n    private PreventiveMaintenance preventiveMaintenance;\\n\\n    public Schedule(PreventiveMaintenance preventiveMaintenance) {\\n        this.preventiveMaintenance = preventiveMaintenance;\\n    }\\n\\n    public void setFrequency(int frequency) {\\n        if (frequency < 1) throw new CustomException(\\\"Frequency should not be less than 1\\\", HttpStatus.NOT_ACCEPTABLE);\\n        this.frequency = frequency;\\n    }\\n\\n    public void setDueDateDelay(Integer dueDateDelay) {\\n        if (dueDateDelay != null && dueDateDelay < 1)\\n            throw new CustomException(\\\"Due date delay should not be less than 1\\\", HttpStatus.NOT_ACCEPTABLE);\\n        this.dueDateDelay = dueDateDelay;\\n    }\\n}\\n\",\"complexity\":0,\"lines\":65,\"is_exported\":true,\"is_test\":false,\"is_entry_point\":false,\"callers\":1,\"callees\":0}"
+          }
+        ],
+        "structuredContent": {
+          "name": "Schedule",
+          "qualified_name": "cmms.api.src.main.java.com.grash.model.Schedule",
+          "label": "Class",
+          "file_path": "/Users/attiliab/Documents/GitHub/cmms/api/src/main/java/com/grash/model/Schedule.java",
+          "start_line": 21,
+          "end_line": 85,
+          "source": "@Entity\n@Data\n@NoArgsConstructor\n@Schema(description = \"Schedule entity defining recurrence patterns for preventive maintenance\")\npublic class Schedule extends Audit {\n    @Id\n    @GeneratedValue(strategy = GenerationType.AUTO)\n    @Schema(description = \"Unique identifier\", accessMode = Schema.AccessMode.READ_ONLY)\n    private Long id;\n\n    @Schema(description = \"Whether the schedule is disabled\")\n    private boolean disabled;\n\n    @NotNull\n    @Schema(description = \"Start date of the schedule\", requiredMode = Schema.RequiredMode.REQUIRED)\n    private Date startsOn = new Date();\n\n    @NotNull\n    @Schema(description = \"Frequency value (e.g., every X days/weeks)\", requiredMode = Schema.RequiredMode.REQUIRED)\n    private int frequency = 1; //day\n\n    @Schema(description = \"End date of the schedule\")\n    private Date endsOn;\n\n    @Schema(description = \"Delay for due date in days\")\n    private Integer dueDateDelay;\n\n    @Schema(description = \"Indicates whether this is a demo schedule\")\n    private boolean isDemo;\n\n    @Enumerated(EnumType.STRING)\n    @NotNull\n    @Schema(description = \"Type of recurrence\", requiredMode = Schema.RequiredMode.REQUIRED)\n    private RecurrenceType recurrenceType = RecurrenceType.DAILY;\n\n    @Enumerated(EnumType.STRING)\n    @NotNull\n    @Schema(description = \"What the recurrence is based on\", requiredMode = Schema.RequiredMode.REQUIRED)\n    private RecurrenceBasedOn recurrenceBasedOn = RecurrenceBasedOn.SCHEDULED_DATE;\n\n    @ElementCollection\n    @Schema(description = \"Days of week for weekly recurrence (0 = Monday)\")\n    private List<Integer> daysOfWeek = new ArrayList<>();//0 monday\n\n    @OneToOne(fetch = FetchType.LAZY)\n    @JsonIgnore\n    @OnDelete(action = OnDeleteAction.CASCADE)\n    @NotNull\n    private PreventiveMaintenance preventiveMaintenance;\n\n    public Schedule(PreventiveMaintenance preventiveMaintenance) {\n        this.preventiveMaintenance = preventiveMaintenance;\n    }\n\n    public void setFrequency(int frequency) {\n        if (frequency < 1) throw new CustomException(\"Frequency should not be less than 1\", HttpStatus.NOT_ACCEPTABLE);\n        this.frequency = frequency;\n    }\n\n    public void setDueDateDelay(Integer dueDateDelay) {\n        if (dueDateDelay != null && dueDateDelay < 1)\n            throw new CustomException(\"Due date delay should not be less than 1\", HttpStatus.NOT_ACCEPTABLE);\n        this.dueDateDelay = dueDateDelay;\n    }\n}\n",
+          "complexity": 0,
+          "lines": 65,
+          "is_exported": true,
+          "is_test": false,
+          "is_entry_point": false,
+          "callers": 1,
+          "callees": 0
+        },
+        "isError": false
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"name\":\"Workflow\",\"qualified_name\":\"cmms.api.src.main.java.com.grash.model.Workflow\",\"label\":\"Class\",\"file_path\":\"/Users/attiliab/Documents/GitHub/cmms/api/src/main/java/com/grash/model/Workflow.java\",\"start_line\":19,\"end_line\":40,\"source\":\"@Entity\\n@Data\\n@NoArgsConstructor\\n@AllArgsConstructor\\n@Builder\\n@Schema(description = \\\"Workflow entity for automating actions based on conditions\\\")\\npublic class Workflow extends CompanyAudit {\\n    @NotNull\\n    @Schema(description = \\\"Workflow title\\\", requiredMode = Schema.RequiredMode.REQUIRED)\\n    private String title;\\n    @NotNull\\n    @Schema(description = \\\"Main condition for the workflow\\\", requiredMode = Schema.RequiredMode.REQUIRED)\\n    private WFMainCondition mainCondition;\\n    @OneToMany(cascade = CascadeType.ALL)\\n    private Collection<WorkflowCondition> secondaryConditions = new ArrayList<>();\\n    @OneToOne(cascade = CascadeType.ALL)\\n    @NotNull\\n    private WorkflowAction action;\\n\\n    @Schema(description = \\\"Whether the workflow is enabled\\\")\\n    private boolean enabled = true;\\n}\\n\",\"complexity\":0,\"lines\":22,\"is_exported\":true,\"is_test\":false,\"is_entry_point\":false,\"callers\":0,\"callees\":0}"
+          }
+        ],
+        "structuredContent": {
+          "name": "Workflow",
+          "qualified_name": "cmms.api.src.main.java.com.grash.model.Workflow",
+          "label": "Class",
+          "file_path": "/Users/attiliab/Documents/GitHub/cmms/api/src/main/java/com/grash/model/Workflow.java",
+          "start_line": 19,
+          "end_line": 40,
+          "source": "@Entity\n@Data\n@NoArgsConstructor\n@AllArgsConstructor\n@Builder\n@Schema(description = \"Workflow entity for automating actions based on conditions\")\npublic class Workflow extends CompanyAudit {\n    @NotNull\n    @Schema(description = \"Workflow title\", requiredMode = Schema.RequiredMode.REQUIRED)\n    private String title;\n    @NotNull\n    @Schema(description = \"Main condition for the workflow\", requiredMode = Schema.RequiredMode.REQUIRED)\n    private WFMainCondition mainCondition;\n    @OneToMany(cascade = CascadeType.ALL)\n    private Collection<WorkflowCondition> secondaryConditions = new ArrayList<>();\n    @OneToOne(cascade = CascadeType.ALL)\n    @NotNull\n    private WorkflowAction action;\n\n    @Schema(description = \"Whether the workflow is enabled\")\n    private boolean enabled = true;\n}\n",
+          "complexity": 0,
+          "lines": 22,
+          "is_exported": true,
+          "is_test": false,
+          "is_entry_point": false,
+          "callers": 0,
+          "callees": 0
+        },
+        "isError": false
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"name\":\"WorkflowAction\",\"qualified_name\":\"cmms.api.src.main.java.com.grash.model.WorkflowAction\",\"label\":\"Class\",\"file_path\":\"/Users/attiliab/Documents/GitHub/cmms/api/src/main/java/com/grash/model/WorkflowAction.java\",\"start_line\":19,\"end_line\":70,\"source\":\"@Entity\\n@Data\\n@NoArgsConstructor\\n@AllArgsConstructor\\n@Builder\\n@Schema(description = \\\"Workflow action defining what happens when conditions are met\\\")\\npublic class WorkflowAction extends CompanyAudit {\\n    @Schema(description = \\\"Work order action to perform\\\")\\n    private WorkOrderAction workOrderAction;\\n    @Schema(description = \\\"Request action to perform\\\")\\n    private RequestAction requestAction;\\n    @Schema(description = \\\"Purchase order action to perform\\\")\\n    private PurchaseOrderAction purchaseOrderAction;\\n    @Schema(description = \\\"Part action to perform\\\")\\n    private PartAction partAction;\\n    @Schema(description = \\\"Task action to perform\\\")\\n    private TaskAction taskAction;\\n    private Priority priority;\\n    @ManyToOne(fetch = FetchType.LAZY)\\n    @OnDelete(action = OnDeleteAction.CASCADE)\\n    private Asset asset;\\n    @ManyToOne(fetch = FetchType.LAZY)\\n    @OnDelete(action = OnDeleteAction.CASCADE)\\n    private Location location;\\n    @ManyToOne(fetch = FetchType.LAZY)\\n    @OnDelete(action = OnDeleteAction.CASCADE)\\n    private User user;\\n    @ManyToOne(fetch = FetchType.LAZY)\\n    @OnDelete(action = OnDeleteAction.CASCADE)\\n    private Team team;\\n    @ManyToOne(fetch = FetchType.LAZY)\\n    @OnDelete(action = OnDeleteAction.CASCADE)\\n    private WorkOrderCategory workOrderCategory;\\n    @ManyToOne(fetch = FetchType.LAZY)\\n    @OnDelete(action = OnDeleteAction.CASCADE)\\n    private Checklist checklist;\\n    @ManyToOne(fetch = FetchType.LAZY)\\n    @OnDelete(action = OnDeleteAction.CASCADE)\\n    private Vendor vendor;\\n    @ManyToOne(fetch = FetchType.LAZY)\\n    @OnDelete(action = OnDeleteAction.CASCADE)\\n    private PurchaseOrderCategory purchaseOrderCategory;\\n\\n    @Schema(description = \\\"String value for the action\\\")\\n    private String value;\\n\\n    @Schema(description = \\\"Asset status to set\\\")\\n    private AssetStatus assetStatus;\\n\\n    @Schema(description = \\\"Numeric value for the action\\\")\\n    private Integer numberValue;\\n}\\n\",\"complexity\":0,\"lines\":52,\"is_exported\":true,\"is_test\":false,\"is_entry_point\":false,\"callers\":0,\"callees\":0}"
+          }
+        ],
+        "structuredContent": {
+          "name": "WorkflowAction",
+          "qualified_name": "cmms.api.src.main.java.com.grash.model.WorkflowAction",
+          "label": "Class",
+          "file_path": "/Users/attiliab/Documents/GitHub/cmms/api/src/main/java/com/grash/model/WorkflowAction.java",
+          "start_line": 19,
+          "end_line": 70,
+          "source": "@Entity\n@Data\n@NoArgsConstructor\n@AllArgsConstructor\n@Builder\n@Schema(description = \"Workflow action defining what happens when conditions are met\")\npublic class WorkflowAction extends CompanyAudit {\n    @Schema(description = \"Work order action to perform\")\n    private WorkOrderAction workOrderAction;\n    @Schema(description = \"Request action to perform\")\n    private RequestAction requestAction;\n    @Schema(description = \"Purchase order action to perform\")\n    private PurchaseOrderAction purchaseOrderAction;\n    @Schema(description = \"Part action to perform\")\n    private PartAction partAction;\n    @Schema(description = \"Task action to perform\")\n    private TaskAction taskAction;\n    private Priority priority;\n    @ManyToOne(fetch = FetchType.LAZY)\n    @OnDelete(action = OnDeleteAction.CASCADE)\n    private Asset asset;\n    @ManyToOne(fetch = FetchType.LAZY)\n    @OnDelete(action = OnDeleteAction.CASCADE)\n    private Location location;\n    @ManyToOne(fetch = FetchType.LAZY)\n    @OnDelete(action = OnDeleteAction.CASCADE)\n    private User user;\n    @ManyToOne(fetch = FetchType.LAZY)\n    @OnDelete(action = OnDeleteAction.CASCADE)\n    private Team team;\n    @ManyToOne(fetch = FetchType.LAZY)\n    @OnDelete(action = OnDeleteAction.CASCADE)\n    private WorkOrderCategory workOrderCategory;\n    @ManyToOne(fetch = FetchType.LAZY)\n    @OnDelete(action = OnDeleteAction.CASCADE)\n    private Checklist checklist;\n    @ManyToOne(fetch = FetchType.LAZY)\n    @OnDelete(action = OnDeleteAction.CASCADE)\n    private Vendor vendor;\n    @ManyToOne(fetch = FetchType.LAZY)\n    @OnDelete(action = OnDeleteAction.CASCADE)\n    private PurchaseOrderCategory purchaseOrderCategory;\n\n    @Schema(description = \"String value for the action\")\n    private String value;\n\n    @Schema(description = \"Asset status to set\")\n    private AssetStatus assetStatus;\n\n    @Schema(description = \"Numeric value for the action\")\n    private Integer numberValue;\n}\n",
+          "complexity": 0,
+          "lines": 52,
+          "is_exported": true,
+          "is_test": false,
+          "is_entry_point": false,
+          "callers": 0,
+          "callees": 0
+        },
+        "isError": false
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"name\":\"PurchaseOrder\",\"qualified_name\":\"cmms.api.src.main.java.com.grash.model.PurchaseOrder\",\"label\":\"Class\",\"file_path\":\"/Users/attiliab/Documents/GitHub/cmms/api/src/main/java/com/grash/model/PurchaseOrder.java\",\"start_line\":17,\"end_line\":100,\"source\":\"@Entity\\n@Data\\n@NoArgsConstructor\\n@Schema(description = \\\"Purchase order entity for managing procurement\\\")\\npublic class PurchaseOrder extends CompanyAudit {\\n    @Schema(description = \\\"Approval status of the purchase order\\\")\\n    private ApprovalStatus status = ApprovalStatus.PENDING;\\n\\n    @NotNull\\n    @Schema(description = \\\"Name of the purchase order\\\", requiredMode = Schema.RequiredMode.REQUIRED)\\n    private String name;\\n\\n    @ManyToOne(fetch = FetchType.LAZY)\\n    private PurchaseOrderCategory category;\\n\\n    @Schema(description = \\\"Shipping due date\\\")\\n    private Date shippingDueDate;\\n\\n    @Schema(description = \\\"Additional shipping details\\\")\\n    private String shippingAdditionalDetail;\\n\\n    @Schema(description = \\\"Name of the ship-to recipient\\\")\\n    private String shippingShipToName;\\n\\n    @Schema(description = \\\"Shipping company name\\\")\\n    private String shippingCompanyName;\\n\\n    @Schema(description = \\\"Shipping address\\\")\\n    private String shippingAddress;\\n\\n    @Schema(description = \\\"Shipping city\\\")\\n    private String shippingCity;\\n\\n    @Schema(description = \\\"Shipping state\\\")\\n    private String shippingState;\\n\\n    @Schema(description = \\\"Shipping zip code\\\")\\n    private String shippingZipCode;\\n\\n    @Schema(description = \\\"Shipping phone number\\\")\\n    private String shippingPhone;\\n\\n    @Schema(description = \\\"Shipping fax number\\\")\\n    private String shippingFax;\\n\\n    @Schema(description = \\\"Additional info date\\\")\\n    private Date additionalInfoDate;\\n\\n    @Schema(description = \\\"Name of the requisitioned person\\\")\\n    private String additionalInfoRequisitionedName;\\n\\n    @Schema(description = \\\"Additional info shipping order category\\\")\\n    private String additionalInfoShippingOrderCategory;\\n\\n    @Schema(description = \\\"Additional info terms\\\")\\n    private String additionalInfoTerm;\\n\\n    @Schema(description = \\\"Additional notes\\\")\\n    private String additionalInfoNotes;\\n\\n    @ManyToOne(fetch = FetchType.LAZY)\\n    private Vendor vendor;\\n\\n    @Schema(description = \\\"Indicates whether this is a demo purchase order\\\")\\n    private boolean isDemo;\\n\\n//    @ManyToOne\\n//    private Company requesterInformation;\\n\\n    public boolean canBeEditedBy(User user) {\\n        return user.getRole().getEditOtherPermissions().contains(PermissionEntity.PURCHASE_ORDERS)\\n                || (this.getCreatedBy() != null && this.getCreatedBy().equals(user.getId()));\\n    }\\n\\n    public boolean canBeDeletedBy(User user) {\\n        return user.getRole().getDeleteOtherPermissions().contains(PermissionEntity.PURCHASE_ORDERS)\\n                || (this.getCreatedBy() != null && this.getCreatedBy().equals(user.getId()));\\n    }\\n\\n    public boolean canBeViewedBy(User user) {\\n        return (user.getRole().getViewPermissions().contains(PermissionEntity.PURCHASE_ORDERS) &&\\n                (user.getRole().getViewOtherPermissions().contains(PermissionEntity.PURCHASE_ORDERS) || (getCreatedBy() != null && getCreatedBy().equals(user.getId()))));\\n    }\\n}\\n\",\"complexity\":0,\"lines\":84,\"is_exported\":true,\"is_test\":false,\"is_entry_point\":false,\"callers\":0,\"callees\":0}"
+          }
+        ],
+        "structuredContent": {
+          "name": "PurchaseOrder",
+          "qualified_name": "cmms.api.src.main.java.com.grash.model.PurchaseOrder",
+          "label": "Class",
+          "file_path": "/Users/attiliab/Documents/GitHub/cmms/api/src/main/java/com/grash/model/PurchaseOrder.java",
+          "start_line": 17,
+          "end_line": 100,
+          "source": "@Entity\n@Data\n@NoArgsConstructor\n@Schema(description = \"Purchase order entity for managing procurement\")\npublic class PurchaseOrder extends CompanyAudit {\n    @Schema(description = \"Approval status of the purchase order\")\n    private ApprovalStatus status = ApprovalStatus.PENDING;\n\n    @NotNull\n    @Schema(description = \"Name of the purchase order\", requiredMode = Schema.RequiredMode.REQUIRED)\n    private String name;\n\n    @ManyToOne(fetch = FetchType.LAZY)\n    private PurchaseOrderCategory category;\n\n    @Schema(description = \"Shipping due date\")\n    private Date shippingDueDate;\n\n    @Schema(description = \"Additional shipping details\")\n    private String shippingAdditionalDetail;\n\n    @Schema(description = \"Name of the ship-to recipient\")\n    private String shippingShipToName;\n\n    @Schema(description = \"Shipping company name\")\n    private String shippingCompanyName;\n\n    @Schema(description = \"Shipping address\")\n    private String shippingAddress;\n\n    @Schema(description = \"Shipping city\")\n    private String shippingCity;\n\n    @Schema(description = \"Shipping state\")\n    private String shippingState;\n\n    @Schema(description = \"Shipping zip code\")\n    private String shippingZipCode;\n\n    @Schema(description = \"Shipping phone number\")\n    private String shippingPhone;\n\n    @Schema(description = \"Shipping fax number\")\n    private String shippingFax;\n\n    @Schema(description = \"Additional info date\")\n    private Date additionalInfoDate;\n\n    @Schema(description = \"Name of the requisitioned person\")\n    private String additionalInfoRequisitionedName;\n\n    @Schema(description = \"Additional info shipping order category\")\n    private String additionalInfoShippingOrderCategory;\n\n    @Schema(description = \"Additional info terms\")\n    private String additionalInfoTerm;\n\n    @Schema(description = \"Additional notes\")\n    private String additionalInfoNotes;\n\n    @ManyToOne(fetch = FetchType.LAZY)\n    private Vendor vendor;\n\n    @Schema(description = \"Indicates whether this is a demo purchase order\")\n    private boolean isDemo;\n\n//    @ManyToOne\n//    private Company requesterInformation;\n\n    public boolean canBeEditedBy(User user) {\n        return user.getRole().getEditOtherPermissions().contains(PermissionEntity.PURCHASE_ORDERS)\n                || (this.getCreatedBy() != null && this.getCreatedBy().equals(user.getId()));\n    }\n\n    public boolean canBeDeletedBy(User user) {\n        return user.getRole().getDeleteOtherPermissions().contains(PermissionEntity.PURCHASE_ORDERS)\n                || (this.getCreatedBy() != null && this.getCreatedBy().equals(user.getId()));\n    }\n\n    public boolean canBeViewedBy(User user) {\n        return (user.getRole().getViewPermissions().contains(PermissionEntity.PURCHASE_ORDERS) &&\n                (user.getRole().getViewOtherPermissions().contains(PermissionEntity.PURCHASE_ORDERS) || (getCreatedBy() != null && getCreatedBy().equals(user.getId()))));\n    }\n}\n",
+          "complexity": 0,
+          "lines": 84,
+          "is_exported": true,
+          "is_test": false,
+          "is_entry_point": false,
+          "callers": 0,
+          "callees": 0
+        },
+        "isError": false
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"name\":\"Vendor\",\"qualified_name\":\"cmms.api.src.main.java.com.grash.model.Vendor\",\"label\":\"Class\",\"file_path\":\"/Users/attiliab/Documents/GitHub/cmms/api/src/main/java/com/grash/model/Vendor.java\",\"start_line\":20,\"end_line\":98,\"source\":\"@Entity\\n@Data\\n@NoArgsConstructor\\n@Schema(description = \\\"Vendor entity for managing supplier information\\\")\\npublic class Vendor extends BasicInfos {\\n    @Id\\n    @GeneratedValue(strategy = GenerationType.AUTO)\\n    @Schema(description = \\\"Unique identifier\\\", accessMode = Schema.AccessMode.READ_ONLY)\\n    private Long id;\\n\\n    @Schema(description = \\\"Type of vendor\\\")\\n    private String vendorType;\\n\\n    @NotNull\\n    @Schema(description = \\\"Company name\\\", requiredMode = Schema.RequiredMode.REQUIRED)\\n    private String companyName;\\n\\n    @Schema(description = \\\"Vendor description\\\")\\n    private String description;\\n\\n    @Schema(description = \\\"Vendor rate\\\")\\n    private long rate;\\n\\n    @Schema(description = \\\"Indicates whether this is a demo vendor\\\")\\n    private boolean isDemo;\\n\\n    @ManyToMany\\n    @JsonIgnore\\n    @JoinTable(name = \\\"T_Asset_Vendor_Associations\\\",\\n            joinColumns = @JoinColumn(name = \\\"id_vendor\\\"),\\n            inverseJoinColumns = @JoinColumn(name = \\\"id_asset\\\"),\\n            indexes = {\\n                    @Index(name = \\\"idx_vendor_asset_vendor_id\\\", columnList = \\\"id_vendor\\\"),\\n                    @Index(name = \\\"idx_vendor_asset_asset_id\\\", columnList = \\\"id_asset\\\")\\n            })\\n    private List<Asset> assets = new ArrayList<>();\\n\\n    @ManyToMany\\n    @JsonIgnore\\n    @JoinTable(name = \\\"T_Location_Vendor_Associations\\\",\\n            joinColumns = @JoinColumn(name = \\\"id_vendor\\\"),\\n            inverseJoinColumns = @JoinColumn(name = \\\"id_location\\\"),\\n            indexes = {\\n                    @Index(name = \\\"idx_vendor_location_vendor_id\\\", columnList = \\\"id_vendor\\\"),\\n                    @Index(name = \\\"idx_vendor_location_location_id\\\", columnList = \\\"id_location\\\")\\n            })\\n    private List<Location> locations = new ArrayList<>();\\n\\n    @ManyToMany\\n    @JsonIgnore\\n    @JoinTable(name = \\\"T_Part_vendor_Associations\\\",\\n            joinColumns = @JoinColumn(name = \\\"id_vendor\\\"),\\n            inverseJoinColumns = @JoinColumn(name = \\\"id_part\\\"),\\n            indexes = {\\n                    @Index(name = \\\"idx_vendor_part_vendor_id\\\", columnList = \\\"id_vendor\\\"),\\n                    @Index(name = \\\"idx_vendor_part_part_id\\\", columnList = \\\"id_part\\\")\\n            })\\n    private List<Part> parts = new ArrayList<>();\\n\\n    @OneToMany(mappedBy = \\\"vendor\\\", cascade = CascadeType.ALL, orphanRemoval = true)\\n    @ArraySchema(schema = @Schema(implementation = IdDTO.class))\\n    @Schema(description = \\\"Custom fields\\\", accessMode = Schema.AccessMode.READ_ONLY)\\n    private List<CustomFieldValue> customFieldValues = new ArrayList<>();\\n\\n    public boolean canBeEditedBy(User user) {\\n        return user.getRole().getEditOtherPermissions().contains(PermissionEntity.VENDORS_AND_CUSTOMERS)\\n                || (this.getCreatedBy() != null && this.getCreatedBy().equals(user.getId()));\\n    }\\n\\n    public boolean canBeDeletedBy(User user) {\\n        return user.getRole().getDeleteOtherPermissions().contains(PermissionEntity.VENDORS_AND_CUSTOMERS)\\n                || (this.getCreatedBy() != null && this.getCreatedBy().equals(user.getId()));\\n    }\\n\\n    public boolean canBeViewedBy(User user) {\\n        return (user.getRole().getViewPermissions().contains(PermissionEntity.VENDORS_AND_CUSTOMERS) &&\\n                (user.getRole().getViewOtherPermissions().contains(PermissionEntity.VENDORS_AND_CUSTOMERS) || (getCreatedBy() != null && getCreatedBy().equals(user.getId()))));\\n    }\\n}\\n\",\"complexity\":0,\"lines\":79,\"is_exported\":true,\"is_test\":false,\"is_entry_point\":false,\"callers\":0,\"callees\":0}"
+          }
+        ],
+        "structuredContent": {
+          "name": "Vendor",
+          "qualified_name": "cmms.api.src.main.java.com.grash.model.Vendor",
+          "label": "Class",
+          "file_path": "/Users/attiliab/Documents/GitHub/cmms/api/src/main/java/com/grash/model/Vendor.java",
+          "start_line": 20,
+          "end_line": 98,
+          "source": "@Entity\n@Data\n@NoArgsConstructor\n@Schema(description = \"Vendor entity for managing supplier information\")\npublic class Vendor extends BasicInfos {\n    @Id\n    @GeneratedValue(strategy = GenerationType.AUTO)\n    @Schema(description = \"Unique identifier\", accessMode = Schema.AccessMode.READ_ONLY)\n    private Long id;\n\n    @Schema(description = \"Type of vendor\")\n    private String vendorType;\n\n    @NotNull\n    @Schema(description = \"Company name\", requiredMode = Schema.RequiredMode.REQUIRED)\n    private String companyName;\n\n    @Schema(description = \"Vendor description\")\n    private String description;\n\n    @Schema(description = \"Vendor rate\")\n    private long rate;\n\n    @Schema(description = \"Indicates whether this is a demo vendor\")\n    private boolean isDemo;\n\n    @ManyToMany\n    @JsonIgnore\n    @JoinTable(name = \"T_Asset_Vendor_Associations\",\n            joinColumns = @JoinColumn(name = \"id_vendor\"),\n            inverseJoinColumns = @JoinColumn(name = \"id_asset\"),\n            indexes = {\n                    @Index(name = \"idx_vendor_asset_vendor_id\", columnList = \"id_vendor\"),\n                    @Index(name = \"idx_vendor_asset_asset_id\", columnList = \"id_asset\")\n            })\n    private List<Asset> assets = new ArrayList<>();\n\n    @ManyToMany\n    @JsonIgnore\n    @JoinTable(name = \"T_Location_Vendor_Associations\",\n            joinColumns = @JoinColumn(name = \"id_vendor\"),\n            inverseJoinColumns = @JoinColumn(name = \"id_location\"),\n            indexes = {\n                    @Index(name = \"idx_vendor_location_vendor_id\", columnList = \"id_vendor\"),\n                    @Index(name = \"idx_vendor_location_location_id\", columnList = \"id_location\")\n            })\n    private List<Location> locations = new ArrayList<>();\n\n    @ManyToMany\n    @JsonIgnore\n    @JoinTable(name = \"T_Part_vendor_Associations\",\n            joinColumns = @JoinColumn(name = \"id_vendor\"),\n            inverseJoinColumns = @JoinColumn(name = \"id_part\"),\n            indexes = {\n                    @Index(name = \"idx_vendor_part_vendor_id\", columnList = \"id_vendor\"),\n                    @Index(name = \"idx_vendor_part_part_id\", columnList = \"id_part\")\n            })\n    private List<Part> parts = new ArrayList<>();\n\n    @OneToMany(mappedBy = \"vendor\", cascade = CascadeType.ALL, orphanRemoval = true)\n    @ArraySchema(schema = @Schema(implementation = IdDTO.class))\n    @Schema(description = \"Custom fields\", accessMode = Schema.AccessMode.READ_ONLY)\n    private List<CustomFieldValue> customFieldValues = new ArrayList<>();\n\n    public boolean canBeEditedBy(User user) {\n        return user.getRole().getEditOtherPermissions().contains(PermissionEntity.VENDORS_AND_CUSTOMERS)\n                || (this.getCreatedBy() != null && this.getCreatedBy().equals(user.getId()));\n    }\n\n    public boolean canBeDeletedBy(User user) {\n        return user.getRole().getDeleteOtherPermissions().contains(PermissionEntity.VENDORS_AND_CUSTOMERS)\n                || (this.getCreatedBy() != null && this.getCreatedBy().equals(user.getId()));\n    }\n\n    public boolean canBeViewedBy(User user) {\n        return (user.getRole().getViewPermissions().contains(PermissionEntity.VENDORS_AND_CUSTOMERS) &&\n                (user.getRole().getViewOtherPermissions().contains(PermissionEntity.VENDORS_AND_CUSTOMERS) || (getCreatedBy() != null && getCreatedBy().equals(user.getId()))));\n    }\n}\n",
+          "complexity": 0,
+          "lines": 79,
+          "is_exported": true,
+          "is_test": false,
+          "is_entry_point": false,
+          "callers": 0,
+          "callees": 0
+        },
+        "isError": false
+      }
+    }
+  ],
+  "services": [
+    {
+      "status": "fulfilled",
+      "value": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"name\":\"changeStatus\",\"qualified_name\":\"cmms.api.src.main.java.com.grash.service.WorkOrderService.changeStatus\",\"label\":\"Method\",\"file_path\":\"/Users/attiliab/Documents/GitHub/cmms/api/src/main/java/com/grash/service/WorkOrderService.java\",\"start_line\":832,\"end_line\":937,\"source\":\"    @Transactional\\n    public WorkOrder changeStatus(WorkOrderChangeStatusDTO dto, Long id, User user, String platform) {\\n        Optional<WorkOrder> optionalWorkOrder = findById(id);\\n        WorkOrder savedWorkOrder = optionalWorkOrder.get();\\n        em.detach(savedWorkOrder); // detach FIRST\\n        WorkOrder originalWorkOrder = savedWorkOrder;\\n        WorkOrder mutableWO = findById(id).get(); // fresh managed copy\\n\\n        if (dto.getStatus() == null) throw new CustomException(\\\"Status can't be null\\\", HttpStatus.NOT_ACCEPTABLE);\\n        if (mutableWO.getFirstTimeToReact() == null && !dto.getStatus().equals(Status.ON_HOLD))\\n            mutableWO.setFirstTimeToReact(new Date());\\n        Status savedWorkOrderStatusBefore = mutableWO.getStatus();\\n        if (dto.getSignature() != null && !licenseService.hasEntitlement(LicenseEntitlement.SIGNATURE_CAPTURE))\\n            throw new CustomException(\\\"You need a license to add signature to work order\\\",\\n                    HttpStatus.FORBIDDEN);\\n        if (dto.getSignature() != null && !dto.getSignature().trim().isEmpty()\\n                && !dto.getSignature().trim().startsWith(\\\"data:image/\\\"))\\n            throw new CustomException(\\\"Invalid signature format\\\",\\n                    HttpStatus.BAD_REQUEST);\\n        if (dto.getStatus() == Status.COMPLETE && mutableWO.isRequiredSignature()\\n                && (dto.getSignature() == null || dto.getSignature().trim().isEmpty()))\\n            throw new CustomException(\\\"Signature is required to complete this work order\\\",\\n                    HttpStatus.BAD_REQUEST);\\n        mutableWO.setSignature(dto.getSignature());\\n        mutableWO.setStatus(dto.getStatus());\\n        mutableWO.setFeedback(Sanitizer.cleanText(dto.getFeedback()));\\n\\n        if (dto.getStatus() != Status.COMPLETE) {\\n            mutableWO.setCompletedOn(null);\\n            mutableWO.setCompletedBy(null);\\n        }\\n        if (mutableWO.canBeEditedBy(user) && (dto.getSignature() == null ||\\n                user.getCompany().getSubscription().getSubscriptionPlan().getFeatures().contains(PlanFeatures.SIGNATURE))) {\\n            if (!dto.getStatus().equals(Status.IN_PROGRESS)) {\\n                if (dto.getStatus().equals(Status.COMPLETE)) {\\n                    mutableWO.setCompletedBy(user);\\n                    mutableWO.setCompletedOn(new Date());\\n                    if (mutableWO.getAsset() != null) {\\n                        Asset asset = mutableWO.getAsset();\\n                        Collection<WorkOrder> workOrdersOfSameAsset = findByAsset(asset.getId());\\n                        if (workOrdersOfSameAsset.stream().noneMatch(workOrder1 -> !workOrder1.getId().equals(id) && !workOrder1.getStatus().equals(Status.COMPLETE))) {\\n                            assetService.stopDownTime(asset.getId(), Helper.getLocale(user));\\n                        }\\n                    }\\n                    if (mutableWO.getParentPreventiveMaintenance() != null)\\n                        scheduleService.scheduleNextWorkOrderJobAfterCompletion(mutableWO.getParentPreventiveMaintenance().getSchedule().getId(), mutableWO.getCompletedOn());\\n                }\\n                Collection<Labor> labors = laborService.findByWorkOrder(id);\\n                Collection<Labor> primaryTimes = labors.stream().filter(Labor::isLogged).toList();\\n                primaryTimes.forEach(laborService::stop);\\n            }\\n            WorkOrder patchedWorkOrder = saveAndFlushWithWebhook(mutableWO, user.getCompany(),\\n                    originalWorkOrder);\\n\\n            if (patchedWorkOrder.getStatus().equals(Status.COMPLETE) && !savedWorkOrderStatusBefore.equals(Status.COMPLETE)) {\\n                List<User> admins =\\n                        userService.findWorkersByCompany(user.getCompany().getId()).stream().filter(ownUser -> ownUser.getRole().getViewPermissions().contains(PermissionEntity.SETTINGS) && ownUser.isEnabled() && ownUser.getUserSettings().shouldEmailUpdatesForWorkOrders()).collect(Collectors.toList());\\n                notificationService.createMultiple(admins.stream().map(admin -> new Notification(messageSource.getMessage(\\\"complete_work_order_content\\\", new String[]{patchedWorkOrder.getTitle(), user.getFullName()}, Helper.getLocale(admin)), admin,\\n                                NotificationType.WORK_ORDER, id)).collect(Collectors.toList()), true,\\n                        messageSource.getMessage(\\\"complete_work_order\\\", null, Helper.getLocale(user)));\\n                Collection<Workflow> workflows =\\n                        workflowService.findByMainConditionAndCompany(WFMainCondition.WORK_ORDER_CLOSED,\\n                                user.getCompany().getId());\\n                workflows.forEach(workflow -> workflowService.runWorkOrder(workflow, patchedWorkOrder));\\n\\n                if (\\\"ios\\\".equalsIgnoreCase(platform) || \\\"android\\\".equalsIgnoreCase(platform)) {\\n                    reviewEligibilityService.incrementWorkOrder(reviewEligibilityService.getOrCreate(user));\\n                }\\n            }\\n            if (user.getCompany().getCompanySettings().getGeneralPreferences().isWoUpdateForRequesters()\\n                    && savedWorkOrderStatusBefore != patchedWorkOrder.getStatus()\\n                    && patchedWorkOrder.getParentRequest() != null) {\\n                Long requesterId = patchedWorkOrder.getParentRequest().getCreatedBy();\\n                String requesterEmail = null;\\n                User requester = null;\\n                if (requesterId == null) {\\n                    String contact = patchedWorkOrder.getParentRequest().getContact();\\n                    if (contact != null && Helper.isValidEmailAddress(contact)) {\\n                        requesterEmail = contact;\\n                    }\\n                } else {\\n                    requester = userService.findById(requesterId).get();\\n                    requesterEmail = requester.getEmail();\\n                }\\n                Locale locale = Helper.getLocale(user);\\n                String message = messageSource.getMessage(\\\"notification_wo_request\\\",\\n                        new Object[]{patchedWorkOrder.getTitle(),\\n                                messageSource.getMessage(patchedWorkOrder.getStatus().toString(), null, locale)},\\n                        locale);\\n                if (requester != null) {\\n                    notificationService.create(new Notification(message, requester,\\n                            NotificationType.WORK_ORDER, id));\\n                }\\n                if ((requester != null && requester.getUserSettings().shouldEmailUpdatesForRequests() && requester.isEnabled()) || requesterEmail != null) {\\n                    Map<String, Object> mailVariables = new HashMap<String, Object>() {{\\n                        put(\\\"workOrderLink\\\", frontendUrl + \\\"/app/work-orders/\\\" + id);\\n                        put(\\\"message\\\", message);\\n                    }};\\n                    mailServiceFactory.getMailService().sendMessageUsingThymeleafTemplate(new String[]{requesterEmail},\\n                            messageSource.getMessage(\\\"request_update\\\", null, locale), mailVariables, \\\"requester\\\" +\\n                                    \\\"-update.html\\\", Helper.getLocale(user), null);\\n                }\\n            }\\n            return patchedWorkOrder;\\n        } else throw new CustomException(\\\"Forbidden\\\", HttpStatus.FORBIDDEN);\\n    }\\n\",\"complexity\":19,\"cognitive\":45,\"loop_count\":0,\"loop_depth\":0,\"self_recursive\":false,\"param_count\":4,\"max_access_depth\":1,\"linear_scan_in_loop\":0,\"alloc_in_loop\":0,\"recursion_in_loop\":false,\"unguarded_recursion\":false,\"lines\":106,\"is_exported\":false,\"is_test\":false,\"is_entry_point\":false,\"signature\":\"(WorkOrderChangeStatusDTO dto, Long id, User user, String platform)\",\"return_type\":\"WorkOrder\",\"parent_class\":\"cmms.api.src.main.java.com.grash.service.WorkOrderService\",\"fp\":\"01025ef90024c6f40037ec9800f2557400774bb60070d07e012387b90093520a0009ff4900d926d9003ba478009ae3fc0016f05b003207f9001ef014001efda00231ab460206baf30071d2c200a0436f002d264a00df5c2800575d38000b699e0098975e00f2fb1f00ae24ad00bc112a0036ffee0170b5eb00c0308e0014a1900000905600d6e7bd004eeede027bd37c000c760a00b8fe1f0028319f00e5ef05009e65ca0061c488003f98d5007755ad000f4d5300303a3300f1108500393ecf00825e9200583caf0042fdd20078858a01c5c19f00ec671700279b61004b7c070037740d00b8481d002f924b024f8f38008241d8002063b500223d99000ad4b1\",\"sp\":\"19,0,0,0,0,1,19,84,40,8,0,3,17,0,1,0,0,0,3,5,3,71,387,106,387\",\"bt\":\"optionalWorkOrder findById id savedWorkOrder get em detach originalWorkOrder mutableWO dto getStatus HttpStatus NOT_ACCEPTABLE getFirstTimeToReact equals Status ON_HOLD setFirstTimeToReact savedWorkOrderStatusBefore getSignature licenseService hasEntitlement LicenseEntitlement SIGNATURE_CAPTURE FORBIDDEN trim isEmpty startsWith BAD_REQUEST COMPLETE isRequiredSignature setSignature setStatus setFeedback Sanitizer cleanText getFeedback setCompletedOn setCompletedBy canBeEditedBy\",\"transitive_loop_depth\":5,\"recursive\":true,\"callers\":26,\"callees\":36}"
+          }
+        ],
+        "structuredContent": {
+          "name": "changeStatus",
+          "qualified_name": "cmms.api.src.main.java.com.grash.service.WorkOrderService.changeStatus",
+          "label": "Method",
+          "file_path": "/Users/attiliab/Documents/GitHub/cmms/api/src/main/java/com/grash/service/WorkOrderService.java",
+          "start_line": 832,
+          "end_line": 937,
+          "source": "    @Transactional\n    public WorkOrder changeStatus(WorkOrderChangeStatusDTO dto, Long id, User user, String platform) {\n        Optional<WorkOrder> optionalWorkOrder = findById(id);\n        WorkOrder savedWorkOrder = optionalWorkOrder.get();\n        em.detach(savedWorkOrder); // detach FIRST\n        WorkOrder originalWorkOrder = savedWorkOrder;\n        WorkOrder mutableWO = findById(id).get(); // fresh managed copy\n\n        if (dto.getStatus() == null) throw new CustomException(\"Status can't be null\", HttpStatus.NOT_ACCEPTABLE);\n        if (mutableWO.getFirstTimeToReact() == null && !dto.getStatus().equals(Status.ON_HOLD))\n            mutableWO.setFirstTimeToReact(new Date());\n        Status savedWorkOrderStatusBefore = mutableWO.getStatus();\n        if (dto.getSignature() != null && !licenseService.hasEntitlement(LicenseEntitlement.SIGNATURE_CAPTURE))\n            throw new CustomException(\"You need a license to add signature to work order\",\n                    HttpStatus.FORBIDDEN);\n        if (dto.getSignature() != null && !dto.getSignature().trim().isEmpty()\n                && !dto.getSignature().trim().startsWith(\"data:image/\"))\n            throw new CustomException(\"Invalid signature format\",\n                    HttpStatus.BAD_REQUEST);\n        if (dto.getStatus() == Status.COMPLETE && mutableWO.isRequiredSignature()\n                && (dto.getSignature() == null || dto.getSignature().trim().isEmpty()))\n            throw new CustomException(\"Signature is required to complete this work order\",\n                    HttpStatus.BAD_REQUEST);\n        mutableWO.setSignature(dto.getSignature());\n        mutableWO.setStatus(dto.getStatus());\n        mutableWO.setFeedback(Sanitizer.cleanText(dto.getFeedback()));\n\n        if (dto.getStatus() != Status.COMPLETE) {\n            mutableWO.setCompletedOn(null);\n            mutableWO.setCompletedBy(null);\n        }\n        if (mutableWO.canBeEditedBy(user) && (dto.getSignature() == null ||\n                user.getCompany().getSubscription().getSubscriptionPlan().getFeatures().contains(PlanFeatures.SIGNATURE))) {\n            if (!dto.getStatus().equals(Status.IN_PROGRESS)) {\n                if (dto.getStatus().equals(Status.COMPLETE)) {\n                    mutableWO.setCompletedBy(user);\n                    mutableWO.setCompletedOn(new Date());\n                    if (mutableWO.getAsset() != null) {\n                        Asset asset = mutableWO.getAsset();\n                        Collection<WorkOrder> workOrdersOfSameAsset = findByAsset(asset.getId());\n                        if (workOrdersOfSameAsset.stream().noneMatch(workOrder1 -> !workOrder1.getId().equals(id) && !workOrder1.getStatus().equals(Status.COMPLETE))) {\n                            assetService.stopDownTime(asset.getId(), Helper.getLocale(user));\n                        }\n                    }\n                    if (mutableWO.getParentPreventiveMaintenance() != null)\n                        scheduleService.scheduleNextWorkOrderJobAfterCompletion(mutableWO.getParentPreventiveMaintenance().getSchedule().getId(), mutableWO.getCompletedOn());\n                }\n                Collection<Labor> labors = laborService.findByWorkOrder(id);\n                Collection<Labor> primaryTimes = labors.stream().filter(Labor::isLogged).toList();\n                primaryTimes.forEach(laborService::stop);\n            }\n            WorkOrder patchedWorkOrder = saveAndFlushWithWebhook(mutableWO, user.getCompany(),\n                    originalWorkOrder);\n\n            if (patchedWorkOrder.getStatus().equals(Status.COMPLETE) && !savedWorkOrderStatusBefore.equals(Status.COMPLETE)) {\n                List<User> admins =\n                        userService.findWorkersByCompany(user.getCompany().getId()).stream().filter(ownUser -> ownUser.getRole().getViewPermissions().contains(PermissionEntity.SETTINGS) && ownUser.isEnabled() && ownUser.getUserSettings().shouldEmailUpdatesForWorkOrders()).collect(Collectors.toList());\n                notificationService.createMultiple(admins.stream().map(admin -> new Notification(messageSource.getMessage(\"complete_work_order_content\", new String[]{patchedWorkOrder.getTitle(), user.getFullName()}, Helper.getLocale(admin)), admin,\n                                NotificationType.WORK_ORDER, id)).collect(Collectors.toList()), true,\n                        messageSource.getMessage(\"complete_work_order\", null, Helper.getLocale(user)));\n                Collection<Workflow> workflows =\n                        workflowService.findByMainConditionAndCompany(WFMainCondition.WORK_ORDER_CLOSED,\n                                user.getCompany().getId());\n                workflows.forEach(workflow -> workflowService.runWorkOrder(workflow, patchedWorkOrder));\n\n                if (\"ios\".equalsIgnoreCase(platform) || \"android\".equalsIgnoreCase(platform)) {\n                    reviewEligibilityService.incrementWorkOrder(reviewEligibilityService.getOrCreate(user));\n                }\n            }\n            if (user.getCompany().getCompanySettings().getGeneralPreferences().isWoUpdateForRequesters()\n                    && savedWorkOrderStatusBefore != patchedWorkOrder.getStatus()\n                    && patchedWorkOrder.getParentRequest() != null) {\n                Long requesterId = patchedWorkOrder.getParentRequest().getCreatedBy();\n                String requesterEmail = null;\n                User requester = null;\n                if (requesterId == null) {\n                    String contact = patchedWorkOrder.getParentRequest().getContact();\n                    if (contact != null && Helper.isValidEmailAddress(contact)) {\n                        requesterEmail = contact;\n                    }\n                } else {\n                    requester = userService.findById(requesterId).get();\n                    requesterEmail = requester.getEmail();\n                }\n                Locale locale = Helper.getLocale(user);\n                String message = messageSource.getMessage(\"notification_wo_request\",\n                        new Object[]{patchedWorkOrder.getTitle(),\n                                messageSource.getMessage(patchedWorkOrder.getStatus().toString(), null, locale)},\n                        locale);\n                if (requester != null) {\n                    notificationService.create(new Notification(message, requester,\n                            NotificationType.WORK_ORDER, id));\n                }\n                if ((requester != null && requester.getUserSettings().shouldEmailUpdatesForRequests() && requester.isEnabled()) || requesterEmail != null) {\n                    Map<String, Object> mailVariables = new HashMap<String, Object>() {{\n                        put(\"workOrderLink\", frontendUrl + \"/app/work-orders/\" + id);\n                        put(\"message\", message);\n                    }};\n                    mailServiceFactory.getMailService().sendMessageUsingThymeleafTemplate(new String[]{requesterEmail},\n                            messageSource.getMessage(\"request_update\", null, locale), mailVariables, \"requester\" +\n                                    \"-update.html\", Helper.getLocale(user), null);\n                }\n            }\n            return patchedWorkOrder;\n        } else throw new CustomException(\"Forbidden\", HttpStatus.FORBIDDEN);\n    }\n",
+          "complexity": 19,
+          "cognitive": 45,
+          "loop_count": 0,
+          "loop_depth": 0,
+          "self_recursive": false,
+          "param_count": 4,
+          "max_access_depth": 1,
+          "linear_scan_in_loop": 0,
+          "alloc_in_loop": 0,
+          "recursion_in_loop": false,
+          "unguarded_recursion": false,
+          "lines": 106,
+          "is_exported": false,
+          "is_test": false,
+          "is_entry_point": false,
+          "signature": "(WorkOrderChangeStatusDTO dto, Long id, User user, String platform)",
+          "return_type": "WorkOrder",
+          "parent_class": "cmms.api.src.main.java.com.grash.service.WorkOrderService",
+          "fp": "01025ef90024c6f40037ec9800f2557400774bb60070d07e012387b90093520a0009ff4900d926d9003ba478009ae3fc0016f05b003207f9001ef014001efda00231ab460206baf30071d2c200a0436f002d264a00df5c2800575d38000b699e0098975e00f2fb1f00ae24ad00bc112a0036ffee0170b5eb00c0308e0014a1900000905600d6e7bd004eeede027bd37c000c760a00b8fe1f0028319f00e5ef05009e65ca0061c488003f98d5007755ad000f4d5300303a3300f1108500393ecf00825e9200583caf0042fdd20078858a01c5c19f00ec671700279b61004b7c070037740d00b8481d002f924b024f8f38008241d8002063b500223d99000ad4b1",
+          "sp": "19,0,0,0,0,1,19,84,40,8,0,3,17,0,1,0,0,0,3,5,3,71,387,106,387",
+          "bt": "optionalWorkOrder findById id savedWorkOrder get em detach originalWorkOrder mutableWO dto getStatus HttpStatus NOT_ACCEPTABLE getFirstTimeToReact equals Status ON_HOLD setFirstTimeToReact savedWorkOrderStatusBefore getSignature licenseService hasEntitlement LicenseEntitlement SIGNATURE_CAPTURE FORBIDDEN trim isEmpty startsWith BAD_REQUEST COMPLETE isRequiredSignature setSignature setStatus setFeedback Sanitizer cleanText getFeedback setCompletedOn setCompletedBy canBeEditedBy",
+          "transitive_loop_depth": 5,
+          "recursive": true,
+          "callers": 26,
+          "callees": 36
+        },
+        "isError": false
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"name\":\"createWorkOrderFromPreventiveMaintenance\",\"qualified_name\":\"cmms.api.src.main.java.com.grash.service.PreventiveMaintenanceService.createWorkOrderFromPreventiveMaintenance\",\"label\":\"Method\",\"file_path\":\"/Users/attiliab/Documents/GitHub/cmms/api/src/main/java/com/grash/service/PreventiveMaintenanceService.java\",\"start_line\":136,\"end_line\":160,\"source\":\"    @Transactional\\n    public WorkOrder createWorkOrderFromPreventiveMaintenance(PreventiveMaintenance preventiveMaintenance) {\\n        WorkOrderPostDTO workOrder = workOrderService.getWorkOrderFromWorkOrderBase(preventiveMaintenance);\\n        workOrder.getCustomFields().removeIf(customFieldValue -> !workOrder.getCustomFieldValues()\\n                .stream().filter(customFieldValue1 -> customFieldValue1.getCustomField().getId().equals(customFieldValue.getId()))\\n                .findFirst().get().getCustomField().isCopyOnRepeat());\\n\\n        Collection<Task> tasks = taskService.findByPreventiveMaintenance(preventiveMaintenance.getId());\\n        workOrder.setParentPreventiveMaintenance(preventiveMaintenance);\\n\\n        Schedule schedule = preventiveMaintenance.getSchedule();\\n        if (schedule.getDueDateDelay() != null) {\\n            workOrder.setDueDate(Helper.incrementDays(new Date(), schedule.getDueDateDelay()));\\n        }\\n\\n        WorkOrder savedWorkOrder = workOrderService.create(workOrder, preventiveMaintenance.getCompany());\\n\\n        tasks.forEach(task -> {\\n            Task copiedTask = new Task(task.getTaskBase(), savedWorkOrder, null, task.getValue());\\n            copiedTask.setCompany(preventiveMaintenance.getCompany());\\n            taskService.create(copiedTask);\\n        });\\n\\n        return savedWorkOrder;\\n    }\\n\",\"complexity\":1,\"cognitive\":1,\"loop_count\":0,\"loop_depth\":0,\"self_recursive\":false,\"param_count\":1,\"max_access_depth\":0,\"linear_scan_in_loop\":0,\"alloc_in_loop\":0,\"recursion_in_loop\":false,\"unguarded_recursion\":false,\"lines\":25,\"is_exported\":false,\"is_test\":false,\"is_entry_point\":false,\"signature\":\"(PreventiveMaintenance preventiveMaintenance)\",\"return_type\":\"WorkOrder\",\"parent_class\":\"cmms.api.src.main.java.com.grash.service.PreventiveMaintenanceService\",\"fp\":\"016694f30099a0bb01e4e26502016a1000b530bc021cb69f051f8aa501c40baa0304153801a027f200999ec0032d5d130016f05b0077af8d02f67a2b03a5ede304345608024499a6016ec16f063e4948003cb1ac037dc31400bd6c460013df65017cfe8804c91e4b00ae24ad02afdeef0252d6900320a57400a929d30014a19000c71d0d0144f706004eeede05931e1901fc2eaa0158c76d00ca4cad017088cc0192303302eff44900613da8024a601400aaa44800303a33012b19da00393ecf00cb1af602877bf900a00f830078858a00c3b50c00ec671701fe66440070535e0085e1db010e50a400325e0f05b02dec008241d80289f26500223d99018cca5d\",\"sp\":\"1,0,0,0,0,1,16,66,1,1,0,0,0,0,0,0,0,0,0,4,2,4,73,25,73\",\"bt\":\"workOrder workOrderService getWorkOrderFromWorkOrderBase preventiveMaintenance getCustomFields removeIf customFieldValue getCustomFieldValues stream filter customFieldValue1 getCustomField getId equals findFirst get isCopyOnRepeat tasks taskService findByPreventiveMaintenance setParentPreventiveMaintenance schedule getSchedule getDueDateDelay setDueDate Helper incrementDays savedWorkOrder create getCompany forEach task copiedTask getTaskBase getValue setCompany\",\"transitive_loop_depth\":4,\"recursive\":false,\"callers\":10,\"callees\":11}"
+          }
+        ],
+        "structuredContent": {
+          "name": "createWorkOrderFromPreventiveMaintenance",
+          "qualified_name": "cmms.api.src.main.java.com.grash.service.PreventiveMaintenanceService.createWorkOrderFromPreventiveMaintenance",
+          "label": "Method",
+          "file_path": "/Users/attiliab/Documents/GitHub/cmms/api/src/main/java/com/grash/service/PreventiveMaintenanceService.java",
+          "start_line": 136,
+          "end_line": 160,
+          "source": "    @Transactional\n    public WorkOrder createWorkOrderFromPreventiveMaintenance(PreventiveMaintenance preventiveMaintenance) {\n        WorkOrderPostDTO workOrder = workOrderService.getWorkOrderFromWorkOrderBase(preventiveMaintenance);\n        workOrder.getCustomFields().removeIf(customFieldValue -> !workOrder.getCustomFieldValues()\n                .stream().filter(customFieldValue1 -> customFieldValue1.getCustomField().getId().equals(customFieldValue.getId()))\n                .findFirst().get().getCustomField().isCopyOnRepeat());\n\n        Collection<Task> tasks = taskService.findByPreventiveMaintenance(preventiveMaintenance.getId());\n        workOrder.setParentPreventiveMaintenance(preventiveMaintenance);\n\n        Schedule schedule = preventiveMaintenance.getSchedule();\n        if (schedule.getDueDateDelay() != null) {\n            workOrder.setDueDate(Helper.incrementDays(new Date(), schedule.getDueDateDelay()));\n        }\n\n        WorkOrder savedWorkOrder = workOrderService.create(workOrder, preventiveMaintenance.getCompany());\n\n        tasks.forEach(task -> {\n            Task copiedTask = new Task(task.getTaskBase(), savedWorkOrder, null, task.getValue());\n            copiedTask.setCompany(preventiveMaintenance.getCompany());\n            taskService.create(copiedTask);\n        });\n\n        return savedWorkOrder;\n    }\n",
+          "complexity": 1,
+          "cognitive": 1,
+          "loop_count": 0,
+          "loop_depth": 0,
+          "self_recursive": false,
+          "param_count": 1,
+          "max_access_depth": 0,
+          "linear_scan_in_loop": 0,
+          "alloc_in_loop": 0,
+          "recursion_in_loop": false,
+          "unguarded_recursion": false,
+          "lines": 25,
+          "is_exported": false,
+          "is_test": false,
+          "is_entry_point": false,
+          "signature": "(PreventiveMaintenance preventiveMaintenance)",
+          "return_type": "WorkOrder",
+          "parent_class": "cmms.api.src.main.java.com.grash.service.PreventiveMaintenanceService",
+          "fp": "016694f30099a0bb01e4e26502016a1000b530bc021cb69f051f8aa501c40baa0304153801a027f200999ec0032d5d130016f05b0077af8d02f67a2b03a5ede304345608024499a6016ec16f063e4948003cb1ac037dc31400bd6c460013df65017cfe8804c91e4b00ae24ad02afdeef0252d6900320a57400a929d30014a19000c71d0d0144f706004eeede05931e1901fc2eaa0158c76d00ca4cad017088cc0192303302eff44900613da8024a601400aaa44800303a33012b19da00393ecf00cb1af602877bf900a00f830078858a00c3b50c00ec671701fe66440070535e0085e1db010e50a400325e0f05b02dec008241d80289f26500223d99018cca5d",
+          "sp": "1,0,0,0,0,1,16,66,1,1,0,0,0,0,0,0,0,0,0,4,2,4,73,25,73",
+          "bt": "workOrder workOrderService getWorkOrderFromWorkOrderBase preventiveMaintenance getCustomFields removeIf customFieldValue getCustomFieldValues stream filter customFieldValue1 getCustomField getId equals findFirst get isCopyOnRepeat tasks taskService findByPreventiveMaintenance setParentPreventiveMaintenance schedule getSchedule getDueDateDelay setDueDate Helper incrementDays savedWorkOrder create getCompany forEach task copiedTask getTaskBase getValue setCompany",
+          "transitive_loop_depth": 4,
+          "recursive": false,
+          "callers": 10,
+          "callees": 11
+        },
+        "isError": false
+      }
+    },
+    {
+      "status": "fulfilled",
+      "value": {
+        "content": [
+          {
+            "type": "text",
+            "text": "{\"name\":\"WorkflowService\",\"qualified_name\":\"cmms.api.src.main.java.com.grash.service.WorkflowService\",\"label\":\"Class\",\"file_path\":\"/Users/attiliab/Documents/GitHub/cmms/api/src/main/java/com/grash/service/WorkflowService.java\",\"start_line\":21,\"end_line\":208,\"source\":\"@Service\\n@RequiredArgsConstructor\\npublic class WorkflowService {\\n    private final WorkflowRepository workflowRepository;\\n    private final WorkflowMapper workflowMapper;\\n    private final WorkOrderRepository workOrderRepository;\\n    private final RequestRepository requestRepository;\\n    private final AssetRepository assetRepository;\\n    private final PurchaseOrderRepository purchaseOrderRepository;\\n\\n    public Workflow create(Workflow Workflow) {\\n        Sanitizer.sanitizeWorkflow(Workflow);\\n        return workflowRepository.save(Workflow);\\n    }\\n\\n    public Workflow update(Long id, WorkflowPatchDTO workflowsPatchDTO) {\\n        if (workflowRepository.existsById(id)) {\\n            Workflow savedWorkflow = workflowRepository.findById(id).get();\\n            Workflow updatedWorkflow = workflowMapper.updateWorkflow(savedWorkflow, workflowsPatchDTO);\\n            Sanitizer.sanitizeWorkflow(updatedWorkflow);\\n            return workflowRepository.save(updatedWorkflow);\\n        } else throw new CustomException(\\\"Not found\\\", HttpStatus.NOT_FOUND);\\n    }\\n\\n    public Collection<Workflow> getAll() {\\n        return workflowRepository.findAll();\\n    }\\n\\n    public void delete(Long id) {\\n        workflowRepository.deleteById(id);\\n    }\\n\\n    public Optional<Workflow> findById(Long id) {\\n        return workflowRepository.findById(id);\\n    }\\n\\n    public Collection<Workflow> findByMainConditionAndCompany(WFMainCondition mainCondition, Long id) {\\n        return workflowRepository.findByMainConditionAndCompany_Id(mainCondition, id);\\n    }\\n\\n    public Collection<Workflow> findByCompany(Long id) {\\n        return workflowRepository.findByCompany_Id(id);\\n    }\\n\\n    public void runWorkOrder(Workflow workflow, WorkOrder workOrder) {\\n        if (workflow.getSecondaryConditions().stream().allMatch(workflowCondition -> workflowCondition.isMetForWorkOrder(workOrder))) {\\n            WorkflowAction action = workflow.getAction();\\n            switch (action.getWorkOrderAction()) {\\n                case ADD_CHECKLIST:\\n                    //TODO\\n                    return;\\n                case SEND_REMINDER_EMAIL:\\n                    //TODO\\n                    return;\\n                case ASSIGN_TEAM:\\n                    workOrder.setTeam(action.getTeam());\\n                    break;\\n                case ASSIGN_USER:\\n                    workOrder.setPrimaryUser(action.getUser());\\n                    break;\\n                case ASSIGN_ASSET:\\n                    workOrder.setAsset(action.getAsset());\\n                    break;\\n                case ASSIGN_CATEGORY:\\n                    workOrder.setCategory(action.getWorkOrderCategory());\\n                    break;\\n                case ASSIGN_LOCATION:\\n                    workOrder.setLocation(action.getLocation());\\n                    break;\\n                case ASSIGN_PRIORITY:\\n                    workOrder.setPriority(action.getPriority());\\n                    break;\\n                default:\\n                    break;\\n            }\\n            workOrderRepository.save(workOrder);\\n        }\\n    }\\n\\n    public void runRequest(Workflow workflow, Request request) {\\n        if (workflow.getSecondaryConditions().stream().allMatch(workflowCondition -> workflowCondition.isMetForRequest(request))) {\\n            WorkflowAction action = workflow.getAction();\\n            switch (action.getRequestAction()) {\\n                case ADD_CHECKLIST:\\n                    //TODO\\n                    return;\\n                case SEND_REMINDER_EMAIL:\\n                    //TODO\\n                    return;\\n                case ASSIGN_TEAM:\\n                    request.setTeam(action.getTeam());\\n                    break;\\n                case ASSIGN_USER:\\n                    request.setPrimaryUser(action.getUser());\\n                    break;\\n                case ASSIGN_ASSET:\\n                    request.setAsset(action.getAsset());\\n                    break;\\n                case ASSIGN_CATEGORY:\\n                    request.setCategory(action.getWorkOrderCategory());\\n                    break;\\n                case ASSIGN_LOCATION:\\n                    request.setLocation(action.getLocation());\\n                    break;\\n                case ASSIGN_PRIORITY:\\n                    request.setPriority(action.getPriority());\\n                    break;\\n                default:\\n                    break;\\n            }\\n            requestRepository.save(request);\\n        }\\n    }\\n\\n    public void runPurchaseOrder(Workflow workflow, PurchaseOrder purchaseOrder) {\\n        if (workflow.getSecondaryConditions().stream().allMatch(workflowCondition -> workflowCondition.isMetForPurchaseOrder(purchaseOrder))) {\\n            WorkflowAction action = workflow.getAction();\\n            switch (action.getPurchaseOrderAction()) {\\n                case APPROVE:\\n                    purchaseOrder.setStatus(ApprovalStatus.APPROVED);\\n                    break;\\n                case REJECT:\\n                    purchaseOrder.setStatus(ApprovalStatus.REJECTED);\\n                    break;\\n                case ASSIGN_VENDOR:\\n                    purchaseOrder.setVendor(action.getVendor());\\n                    break;\\n                case SEND_REMINDER_EMAIL:\\n//                    TODO\\n                    return;\\n                default:\\n                    break;\\n            }\\n            purchaseOrderRepository.save(purchaseOrder);\\n        }\\n    }\\n\\n    public void runPart(Workflow workflow, Part part) {\\n        if (workflow.getSecondaryConditions().stream().allMatch(workflowCondition -> workflowCondition.isMetForPart(part))) {\\n            WorkflowAction action = workflow.getAction();\\n            switch (action.getPartAction()) {\\n                case CREATE_PURCHASE_ORDER:\\n                    //TODO\\n                    break;\\n                default:\\n                    break;\\n            }\\n        }\\n    }\\n\\n    public void runTask(Workflow workflow, Task task) {\\n        if (workflow.getSecondaryConditions().stream().allMatch(workflowCondition -> workflowCondition.isMetForTask(task))) {\\n            WorkflowAction action = workflow.getAction();\\n            switch (action.getTaskAction()) {\\n                case CREATE_REQUEST:\\n                case CREATE_WORK_ORDER:\\n//                   TODO\\n                    break;\\n                case SET_ASSET_STATUS:\\n                    Asset asset = task.getWorkOrder().getAsset();\\n                    if (asset != null) {\\n                        asset.setStatus(action.getAssetStatus());\\n                        assetRepository.save(asset);\\n                    }\\n                    break;\\n                default:\\n                    break;\\n            }\\n        }\\n    }\\n\\n    public void disableWorkflows(Long companyId) {\\n        Collection<Workflow> workflows = findByCompany(companyId);\\n        if (!workflows.isEmpty()) {\\n            Workflow firstWorkflow = Collections.min(workflows, new AuditComparator());\\n            Collection<Workflow> workflowsToDisable =\\n                    workflows.stream().filter(workflow -> !workflow.getId().equals(firstWorkflow.getId())).collect(Collectors.toList());\\n            workflowsToDisable.forEach(workflow -> workflow.setEnabled(false));\\n            workflowRepository.saveAll(workflowsToDisable);\\n        }\\n    }\\n\\n    public void enableWorkflows(Long companyId) {\\n        Collection<Workflow> workflows = findByCompany(companyId);\\n        workflows.forEach(workflow -> workflow.setEnabled(true));\\n        workflowRepository.saveAll(workflows);\\n    }\\n}\\n\",\"complexity\":0,\"lines\":188,\"is_exported\":true,\"is_test\":false,\"is_entry_point\":false,\"callers\":0,\"callees\":0}"
+          }
+        ],
+        "structuredContent": {
+          "name": "WorkflowService",
+          "qualified_name": "cmms.api.src.main.java.com.grash.service.WorkflowService",
+          "label": "Class",
+          "file_path": "/Users/attiliab/Documents/GitHub/cmms/api/src/main/java/com/grash/service/WorkflowService.java",
+          "start_line": 21,
+          "end_line": 208,
+          "source": "@Service\n@RequiredArgsConstructor\npublic class WorkflowService {\n    private final WorkflowRepository workflowRepository;\n    private final WorkflowMapper workflowMapper;\n    private final WorkOrderRepository workOrderRepository;\n    private final RequestRepository requestRepository;\n    private final AssetRepository assetRepository;\n    private final PurchaseOrderRepository purchaseOrderRepository;\n\n    public Workflow create(Workflow Workflow) {\n        Sanitizer.sanitizeWorkflow(Workflow);\n        return workflowRepository.save(Workflow);\n    }\n\n    public Workflow update(Long id, WorkflowPatchDTO workflowsPatchDTO) {\n        if (workflowRepository.existsById(id)) {\n            Workflow savedWorkflow = workflowRepository.findById(id).get();\n            Workflow updatedWorkflow = workflowMapper.updateWorkflow(savedWorkflow, workflowsPatchDTO);\n            Sanitizer.sanitizeWorkflow(updatedWorkflow);\n            return workflowRepository.save(updatedWorkflow);\n        } else throw new CustomException(\"Not found\", HttpStatus.NOT_FOUND);\n    }\n\n    public Collection<Workflow> getAll() {\n        return workflowRepository.findAll();\n    }\n\n    public void delete(Long id) {\n        workflowRepository.deleteById(id);\n    }\n\n    public Optional<Workflow> findById(Long id) {\n        return workflowRepository.findById(id);\n    }\n\n    public Collection<Workflow> findByMainConditionAndCompany(WFMainCondition mainCondition, Long id) {\n        return workflowRepository.findByMainConditionAndCompany_Id(mainCondition, id);\n    }\n\n    public Collection<Workflow> findByCompany(Long id) {\n        return workflowRepository.findByCompany_Id(id);\n    }\n\n    public void runWorkOrder(Workflow workflow, WorkOrder workOrder) {\n        if (workflow.getSecondaryConditions().stream().allMatch(workflowCondition -> workflowCondition.isMetForWorkOrder(workOrder))) {\n            WorkflowAction action = workflow.getAction();\n            switch (action.getWorkOrderAction()) {\n                case ADD_CHECKLIST:\n                    //TODO\n                    return;\n                case SEND_REMINDER_EMAIL:\n                    //TODO\n                    return;\n                case ASSIGN_TEAM:\n                    workOrder.setTeam(action.getTeam());\n                    break;\n                case ASSIGN_USER:\n                    workOrder.setPrimaryUser(action.getUser());\n                    break;\n                case ASSIGN_ASSET:\n                    workOrder.setAsset(action.getAsset());\n                    break;\n                case ASSIGN_CATEGORY:\n                    workOrder.setCategory(action.getWorkOrderCategory());\n                    break;\n                case ASSIGN_LOCATION:\n                    workOrder.setLocation(action.getLocation());\n                    break;\n                case ASSIGN_PRIORITY:\n                    workOrder.setPriority(action.getPriority());\n                    break;\n                default:\n                    break;\n            }\n            workOrderRepository.save(workOrder);\n        }\n    }\n\n    public void runRequest(Workflow workflow, Request request) {\n        if (workflow.getSecondaryConditions().stream().allMatch(workflowCondition -> workflowCondition.isMetForRequest(request))) {\n            WorkflowAction action = workflow.getAction();\n            switch (action.getRequestAction()) {\n                case ADD_CHECKLIST:\n                    //TODO\n                    return;\n                case SEND_REMINDER_EMAIL:\n                    //TODO\n                    return;\n                case ASSIGN_TEAM:\n                    request.setTeam(action.getTeam());\n                    break;\n                case ASSIGN_USER:\n                    request.setPrimaryUser(action.getUser());\n                    break;\n                case ASSIGN_ASSET:\n                    request.setAsset(action.getAsset());\n                    break;\n                case ASSIGN_CATEGORY:\n                    request.setCategory(action.getWorkOrderCategory());\n                    break;\n                case ASSIGN_LOCATION:\n                    request.setLocation(action.getLocation());\n                    break;\n                case ASSIGN_PRIORITY:\n                    request.setPriority(action.getPriority());\n                    break;\n                default:\n                    break;\n            }\n            requestRepository.save(request);\n        }\n    }\n\n    public void runPurchaseOrder(Workflow workflow, PurchaseOrder purchaseOrder) {\n        if (workflow.getSecondaryConditions().stream().allMatch(workflowCondition -> workflowCondition.isMetForPurchaseOrder(purchaseOrder))) {\n            WorkflowAction action = workflow.getAction();\n            switch (action.getPurchaseOrderAction()) {\n                case APPROVE:\n                    purchaseOrder.setStatus(ApprovalStatus.APPROVED);\n                    break;\n                case REJECT:\n                    purchaseOrder.setStatus(ApprovalStatus.REJECTED);\n                    break;\n                case ASSIGN_VENDOR:\n                    purchaseOrder.setVendor(action.getVendor());\n                    break;\n                case SEND_REMINDER_EMAIL:\n//                    TODO\n                    return;\n                default:\n                    break;\n            }\n            purchaseOrderRepository.save(purchaseOrder);\n        }\n    }\n\n    public void runPart(Workflow workflow, Part part) {\n        if (workflow.getSecondaryConditions().stream().allMatch(workflowCondition -> workflowCondition.isMetForPart(part))) {\n            WorkflowAction action = workflow.getAction();\n            switch (action.getPartAction()) {\n                case CREATE_PURCHASE_ORDER:\n                    //TODO\n                    break;\n                default:\n                    break;\n            }\n        }\n    }\n\n    public void runTask(Workflow workflow, Task task) {\n        if (workflow.getSecondaryConditions().stream().allMatch(workflowCondition -> workflowCondition.isMetForTask(task))) {\n            WorkflowAction action = workflow.getAction();\n            switch (action.getTaskAction()) {\n                case CREATE_REQUEST:\n                case CREATE_WORK_ORDER:\n//                   TODO\n                    break;\n                case SET_ASSET_STATUS:\n                    Asset asset = task.getWorkOrder().getAsset();\n                    if (asset != null) {\n                        asset.setStatus(action.getAssetStatus());\n                        assetRepository.save(asset);\n                    }\n                    break;\n                default:\n                    break;\n            }\n        }\n    }\n\n    public void disableWorkflows(Long companyId) {\n        Collection<Workflow> workflows = findByCompany(companyId);\n        if (!workflows.isEmpty()) {\n            Workflow firstWorkflow = Collections.min(workflows, new AuditComparator());\n            Collection<Workflow> workflowsToDisable =\n                    workflows.stream().filter(workflow -> !workflow.getId().equals(firstWorkflow.getId())).collect(Collectors.toList());\n            workflowsToDisable.forEach(workflow -> workflow.setEnabled(false));\n            workflowRepository.saveAll(workflowsToDisable);\n        }\n    }\n\n    public void enableWorkflows(Long companyId) {\n        Collection<Workflow> workflows = findByCompany(companyId);\n        workflows.forEach(workflow -> workflow.setEnabled(true));\n        workflowRepository.saveAll(workflows);\n    }\n}\n",
+          "complexity": 0,
+          "lines": 188,
+          "is_exported": true,
+          "is_test": false,
+          "is_entry_point": false,
+          "callers": 0,
+          "callees": 0
+        },
+        "isError": false
+      }
+    }
+  ]
+}

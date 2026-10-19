@@ -1,0 +1,56 @@
+Browser tab: 1405043949, Title: "SentrixFm - Business Process Management", URL: "https://sentrixfm.com/manager/business/locations/details/location-7eff1521-07fa-4093-97fa-175efdc2539e".
+The following is a diff from the previous accessibility tree with ~ and + representing changed and added elements, respectively. Removed elements are summarized by ID range.
+Removed element IDs: 398, 405, 407-410
++					407 text 
+~					400 heading MAIN OFFICE, Value: 4
+~						401 text MAIN OFFICE
++					408 text Headquarters
++							409 text /
++						410 container
++							411 text /  Main Office
++				412 button Back to List
++				413 button View on Map
++				414 button Edit
++				415 button Delete
++				416 container
++					417 text  Viewing location: Main Office View and manage details for this location
++				418 container
++					419 image Main Office
++					420 heading Main Office, Value: 6
++						421 text Main Office
++					422 text Main Location
++					423 text 
++					424 heading Overview, Value: 6
++						425 text Overview
++					426 text General location information
++					427 text 
++					428 heading Address, Value: 6
++						429 text Address
++					430 text Location address details
++					431 text 
++					432 heading Coordinates, Value: 6
++						433 text Coordinates
++					434 text GPS location data
++					435 text 
++					436 heading Technical, Value: 6
++						437 text Technical
++					438 text ID and metadata
++				439 container
++					440 text 
++					441 heading Location Overview, Value: 5
++						442 text Location Overview
++					443 text NAME
++					444 text Main Office
++					445 text STATUS
++					446 text Main Location
++					447 text ACTIVE
++					448 text Yes
++					449 text MAIN LOCATION
++					450 text Yes
++					451 text LEVEL
++					452 text 0
++					453 text CURRENT LOCATION
++					454 text Yes
++					455 text DESCRIPTION
++					456 text Headquarters
+The focused UI element is 1 AXWebArea SentrixFm - Business Process Management, URL: sentrixfm.com/manager/business/locations/details/location-7eff1521-07fa-4093-97fa-175efdc2539e

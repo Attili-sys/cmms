@@ -1,0 +1,5 @@
+Browser tab: 1405043949, Title: "SentrixFm - Business Process Management", URL: "https://sentrixfm.com/manager/business/locations/list".
+The following is a diff from the previous accessibility tree with ~ and + representing changed and added elements, respectively. Removed elements are summarized by ID range.
+Removed element IDs: 398
++					522 text 
+The focused UI element is 36 link Description:  Locations / Sublocations, URL: sentrixfm.com/manager/business/locations

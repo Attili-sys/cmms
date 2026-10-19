@@ -1,0 +1,45 @@
+{
+  "facilio.com": {
+    "url": "https://facilio.com/robots.txt",
+    "status": 200,
+    "text": "User-agent: Googlebot\nDisallow: /partner/partner-directory\nUser-agent: Googlebot\nDisallow: /help/docs/category/\nUser-agent: Googlebot\nDisallow: /coming-soon\nUser-agent: Googlebot\nDisallow: /404\nUser-agent: Googlebot\nDisallow: /dummy-2\nUser-agent: Googlebot\nDisallow: /test\nUser-agent: Googlebot\nDisallow: /request-demo/-test\nUser-agent: Googlebot\nDisallow: /thankyou\nUser-agent: Googlebot\nDisallow: /thank-you-for-downloading\nUser-agent: Googlebot\nDisallow: /resources/connected-buildings\nUser-agent: Googlebot\nDisallow: /webinar/listing-page\nUser-agent: Googlebot\nDisallow: /apple-app-site-association\nUser-agent: *\nDisallow: /ai-helpdesk/try/\nDisallow: /blog/wp-admin/\nDisallow: /guide/\nDisallow: /blog/wp-content/uploads/\nDisallow: /*ref=*\nDisallow: /*wtime=*\nDisallow: /*utm_*\nUser-agent: Claude-User\nUser-agent: ChatGPT-User\nUser-agent: MistralAI-User/1.0\nUser-agent: Perplexity-User\nAllow: /\nSitemap: https://facilio.com/sitemap.xml\nSitemap: https://facilio.com/blog/sitemap.xml\nSitemap: https://facilio.com/learn/sitemap.xml",
+    "disallow": [
+      "/partner/partner-directory",
+      "/help/docs/category/",
+      "/coming-soon",
+      "/404",
+      "/dummy-2",
+      "/test",
+      "/request-demo/-test",
+      "/thankyou",
+      "/thank-you-for-downloading",
+      "/resources/connected-buildings",
+      "/webinar/listing-page",
+      "/apple-app-site-association",
+      "/ai-helpdesk/try/",
+      "/blog/wp-admin/",
+      "/guide/",
+      "/blog/wp-content/uploads/",
+      "/*ref=*",
+      "/*wtime=*",
+      "/*utm_*"
+    ],
+    "allow": true
+  },
+  "videos.facilio.com": {
+    "url": "https://videos.facilio.com/robots.txt",
+    "status": 200,
+    "text": "User-agent: *\nDisallow: /share/*\nAllow: /\nSitemap: https://videos.facilio.com/sitemap.xml",
+    "disallow": [
+      "/share/*"
+    ],
+    "allow": true
+  },
+  "static.facilio.com": {
+    "url": "https://static.facilio.com/robots.txt",
+    "status": 403,
+    "text": "",
+    "disallow": [],
+    "allow": false
+  }
+}

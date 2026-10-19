@@ -1,0 +1,53 @@
+Browser tab: 1405043949, Title: "SentrixFm - Business Process Management", URL: "https://sentrixfm.com/manager/business/maintenance-packages".
+1 AXWebArea SentrixFm - Business Process Management, URL: sentrixfm.com/manager/business/maintenance-packages
+	2 container
+		3 container layout-wrapper
+			4 container page-topbar
+				5 link SentrixFM
+					6 image SentrixFM
+					7 heading 5
+				8 button , ID: vertical-menu-btn
+					9 text 
+				10 container
+					11 text field (settable)
+					12 text 
+				13 button
+				14 button Business Hub
+				15 button Header Language, ID: page-header-user-dropdown
+					16 image Header Language
+				17 button 
+					18 text 
+				19 button 
+					20 text 
+				21 button , ID: page-header-notifications-dropdown
+					51 text 
+				23 button SentrixFM Avatar, ID: page-header-user-dropdown
+					24 image SentrixFM Avatar
+			25 container
+				26 heading 4
+		27 container
+			28 container
+				29 link javascript:void(0);
+				30 heading Settings, Value: 5
+					31 text Settings
+				32 heading Layout, Value: 6
+					33 text Layout
+				34 checkbox (settable, integer) Value: 1, ID: is-layout
+				35 heading Width, Value: 6
+					36 text Width
+				37 radio button (settable, integer) Description: Fluid, Value: 0, ID: layout-width-fuild
+				38 radio button (settable, integer) Description: Boxed, Value: 0, ID: layout-width-boxed
+				39 radio button (settable, integer) Description: Scrolable, Value: 0, ID: layout-width-scrollable
+				40 heading Theme Mode, Value: 6
+					41 text Theme Mode
+				42 radio button (settable, integer) Description: Light, Value: 0, ID: theme-color-light
+				43 radio button (settable, integer) Description: Dark, Value: 0, ID: theme-color-dark
+				44 heading Choose Layouts, Value: 6
+					45 text Choose Layouts
+				46 link
+				47 link
+				48 link
+		49 button Open AI Assistant
+			50 text 
+
+The focused UI element is 1 AXWebArea SentrixFm - Business Process Management, URL: sentrixfm.com/manager/business/maintenance-packages

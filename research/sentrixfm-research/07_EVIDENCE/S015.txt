@@ -1,0 +1,54 @@
+Browser tab: 1405043949, Title: "SentrixFm - Business Process Management", URL: "https://sentrixfm.com/manager/business/reports/api-powered-reports".
+The following is a diff from the previous accessibility tree with ~ and + representing changed and added elements, respectively. Removed elements are summarized by ID range.
+Removed element IDs: 10, 12, 14, 62-67, 69-70, 72-73, 77, 79-83, 85-87, 89-91, 93-95, 97-98, 100-102, 104-105, 107-109, 111-112, 114-115, 117, 440-443, 446-448, 452-463, 467-500, 502-503, 505-506, 508, 510-511, 513, 515, 517-620, 622-625, 627-628, 630, 632-633, 635, 637, 639-754, 757-766, 780-786, 827-836
+~0 AXWebArea SentrixFm - Business Process Management, URL: sentrixfm.com/manager/business/reports/api-powered-reports
++				838 container
++					839 button Select location
++						840 text 
++						841 text Main Office
++						842 text 
++						843 text  Main
++						844 text T
++					845 container
++						846 text  Main Office   Main S Headquarters
++					847 container
++						848 text  Demo Branch Empty location for demo purposes
++					849 text 
++						850 link (expanded) Description:  Reporting , Value: sentrixfm.com/manager/business/reports, Secondary Actions: Collapse
++						851 link (collapsed) Description:  Invoices , Value: javascript:void(0);, Secondary Actions: Expand
++				852 container Standard Reports
++					853 container
++						854 heading STANDARD REPORTS, Value: 4
++							855 text STANDARD REPORTS
++						856 content list
++							857 link Description: E Business, Value: javascript:void(0);
++							858 container
++								859 text /
++								860 link Description:  Reporting, Value: javascript:void(0);
++							861 container
++								862 text / Standard Reports
++				863 container
++					864 heading Standard Reports, Value: 1
++						865 text Standard Reports
++					866 text Operational metrics and facility performance analysis
++					867 button (collapsed)  All Locations , ID: tn-dropdown-2sif2g66f, Secondary Actions: Expand
++						868 text 
++						869 text All Locations
++						870 text 
++					871 button (collapsed)  Facility Overview , ID: tn-dropdown-csqhl0yds, Secondary Actions: Expand
++						872 text 
++						873 text Facility Overview
++						874 text 
++					875 button (collapsed) M Last 30 Days , ID: tn-dropdown-e53veaz8y, Secondary Actions: Expand
++						876 text M
++						877 text Last 30 Days
++						878 text 
++					879 button  Generate
++						880 text 
++						881 text Generate
++				882 container
++					883 text 
++					884 heading Ready to generate your report?, Value: 4
++						885 text Ready to generate your report?
++					886 text Select a report type and time period from the toolbar above, then click  Generate  to visualize your facility insight and operational metrics.  Real-time Data  Multi-tenant Isolation
+The focused UI element is 839 button Select location

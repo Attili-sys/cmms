@@ -1,0 +1,155 @@
+Browser tab: 1405043949, Title: "SentrixFm - Business Process Management", URL: "https://sentrixfm.com/manager/business/store/consumables".
+1 AXWebArea SentrixFm - Business Process Management, URL: sentrixfm.com/manager/business/store/consumables
+	2 container
+		3 container layout-wrapper
+			4 container page-topbar
+				5 link Description: SentrixFM demo, Value: sentrixfm.com/manager/
+				6 button , ID: vertical-menu-btn
+					7 text 
+				8 container
+					9 text field (settable)
+					10 text 
+				11 button Select location
+					12 text 
+					13 text Main Office
+					14 text 
+					15 text  Main
+					16 text T
+				17 button (collapsed) Description: Business Hub - Access all business functions, Secondary Actions: Expand
+				18 pop up button (collapsed) Header Language, ID: page-header-user-dropdown, Secondary Actions: Expand
+					19 image Header Language
+				20 pop up button (collapsed) , Secondary Actions: Expand
+					21 text 
+				22 button 
+					23 text 
+				24 pop up button (collapsed) , ID: page-header-notifications-dropdown, Secondary Actions: Expand
+					153 text 
+				26 pop up button (collapsed) SentrixFM Avatar, ID: page-header-user-dropdown, Secondary Actions: Expand
+					27 image SentrixFM Avatar
+			28 container
+				29 container scrollable content
+					30 content list side-menu
+						31 text DASHBOARD
+						32 link Description:  Analytics Dashboard, Value: sentrixfm.com/manager/dashboard
+						33 link Description:  Location Dashboard, Value: sentrixfm.com/manager/dashboards/location-dashboard
+						34 link (collapsed) Description:  Reporting , Value: sentrixfm.com/manager/business/reports, Secondary Actions: Expand
+						35 text FACILITY STRUCTURE
+						36 link Description:  Locations / Sublocations, Value: sentrixfm.com/manager/business/locations
+						37 link Description:  Store & Inventory, Value: sentrixfm.com/manager/business/store
+						38 link Description:  Assets, Value: sentrixfm.com/manager/business/assets
+						39 link Description: D Consumables, Value: sentrixfm.com/manager/business/store/consumables
+						40 text WORK MANAGEMENT
+						41 link Description:  My Tasks, Value: sentrixfm.com/manager/business/operations/my-tasks
+						42 link (collapsed) Description:  Hard Service , Value: javascript:void(0);, Secondary Actions: Expand
+						43 link (collapsed) Description:  Soft Service , Value: javascript:void(0);, Secondary Actions: Expand
+						44 link Description:  Maintenance Requests, Value: sentrixfm.com/manager/business/maintenance-requests
+						45 link Description:  Categories, Value: sentrixfm.com/manager/business/categories
+						46 link Description: ( SOP Management, Value: sentrixfm.com/manager/business/operations/sop-management
+						47 text WORKFLOWS & PROCEDURES
+						48 link (collapsed) Description:  Workflows , Value: javascript:void(0);, Secondary Actions: Expand
+						49 text ORGANIZATION
+						50 link (collapsed) Description:  User Management , Value: javascript:void(0);, Secondary Actions: Expand
+						51 link (collapsed) Description:  Roles and Permissions , Value: javascript:void(0);, Secondary Actions: Expand
+						52 text COMMUNICATION
+						53 link Description:  Location Chat, Value: sentrixfm.com/manager/chat
+						54 link Description:  Demo AI, Value: sentrixfm.com/manager/business/utilities/company-ai-chat
+						55 link Description: ` File Manager, Value: sentrixfm.com/manager/business/utilities/file-manager
+						56 link (collapsed) Description:  Email Center , Value: javascript:void(0);, Secondary Actions: Expand
+						57 text BUSINESS OPERATIONS
+						58 link (collapsed) Description:  Projects , Value: javascript:void(0);, Secondary Actions: Expand
+						59 link (collapsed) Description:  Invoices , Value: javascript:void(0);, Secondary Actions: Expand
+						60 link Description:  Settings, Value: sentrixfm.com/manager/business/settings
+			61 container
+				62 text 
+				63 heading INVENTORY MANAGEMENT, Value: 4
+					64 text INVENTORY MANAGEMENT
+				65 content list
+					66 link Description:  Inventory, Value: javascript:void(0);
+					67 container
+						68 text /  Consumables
+				69 container Filter options
+					70 button Advanced Filter
+				71 button  Add New Item
+					72 text 
+					73 text Add New Item
+				74 content list
+					75 link  All Items 0
+						76 text 
+						77 text  All Items 
+						78 text 0
+					79 link  Reorder Needed
+						80 text 
+						81 text  Reorder Needed
+					82 link  Spare Part 0
+						83 text   Spare Part 
+						84 text 0
+					85 link  Material 0
+						86 text   Material 
+						87 text 0
+					88 link  Tool 0
+						89 text   Tool 
+						90 text 0
+				91 table
+					92 row
+						93 cell
+							94 text 
+							95 text Item Details
+							96 text 
+						97 cell
+							98 text 
+							99 text Status
+						100 cell
+							101 text 
+							102 text Stock Balance
+							103 text 
+						104 cell
+							105 text 
+							106 text Unit Price
+							107 text 
+						108 cell
+							109 text 
+							110 text Expiry
+						111 cell
+							112 text 
+							113 text Actions
+					114 row
+						115 cell
+							116 text 
+							117 heading No items found, Value: 4
+								118 text No items found
+							119 text No entries match the current category or filter criteria.
+			120 container
+				121 text © 2026 SentrixFm. All rights reserved.  v1.2
+		122 container
+			123 container scrollable content
+				124 link javascript:void(0);
+				125 heading Settings, Value: 5
+					126 text Settings
+				127 heading Layout, Value: 6
+					128 text Layout
+				129 checkbox (settable, integer) Description: Vertical, Value: 1, ID: is-layout
+				130 heading Width, Value: 6
+					131 text Width
+				132 radio button (settable, integer) Description: Fluid, Value: 1, ID: layout-width-fuild
+				133 radio button (settable, integer) Description: Boxed, Value: 0, ID: layout-width-boxed
+				134 radio button (settable, integer) Description: Scrolable, Value: 0, ID: layout-width-scrollable
+				135 heading Sidebar Color, Value: 6
+					136 text Sidebar Color
+				137 radio button (settable, integer) Description: Light, Value: 0, ID: sidebar-color-light
+				138 radio button (settable, integer) Description: Dark, Value: 1, ID: sidebar-color-dark
+				139 radio button (settable, integer) Description: Compact, Value: 0, ID: sidebar-color-brand
+				140 radio button (settable, integer) Description: Icon, Value: 0, ID: sidebar-color-icon
+				141 radio button (settable, integer) Description: Colored, Value: 0, ID: sidebar-color
+				142 heading Theme Mode, Value: 6
+					143 text Theme Mode
+				144 radio button (settable, integer) Description: Light, Value: 1, ID: theme-color-light
+				145 radio button (settable, integer) Description: Dark, Value: 0, ID: theme-color-dark
+				146 heading Choose Layouts, Value: 6
+					147 text Choose Layouts
+				148 link
+				149 link
+				150 link
+		151 button Open AI Assistant
+			152 text 
+
+The focused UI element is 1 AXWebArea SentrixFm - Business Process Management, URL: sentrixfm.com/manager/business/store/consumables

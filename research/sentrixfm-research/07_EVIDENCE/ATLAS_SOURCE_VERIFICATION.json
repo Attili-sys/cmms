@@ -1,0 +1,125 @@
+{
+  "head": "8b29331dd18396cb73f314cd4c6c268a4ee92c07",
+  "records": [
+    {
+      "symbol": "cmms.api.src.main.java.com.grash.model.Location",
+      "file": "api/src/main/java/com/grash/model/Location.java",
+      "start_line": 26,
+      "end_line": 178,
+      "file_sha256": "77859939d386d9c73a3d09b60c460c6e44de7ff53010e74d77b1e172f8c9d19f",
+      "indexed_span_matches_current": true
+    },
+    {
+      "symbol": "cmms.api.src.main.java.com.grash.model.Asset",
+      "file": "api/src/main/java/com/grash/model/Asset.java",
+      "start_line": 30,
+      "end_line": 262,
+      "file_sha256": "cde155a0cbe6973bdc9f8c4f6e34b64ccc10f32d72bc3b3686a29bbb5f23236a",
+      "indexed_span_matches_current": true
+    },
+    {
+      "symbol": "cmms.api.src.main.java.com.grash.model.User",
+      "file": "api/src/main/java/com/grash/model/User.java",
+      "start_line": 22,
+      "end_line": 183,
+      "file_sha256": "4aeeb4f20e7181d2266286efa846a3bac2ebccc9d680cfddd742e7964b8b138c",
+      "indexed_span_matches_current": true
+    },
+    {
+      "symbol": "cmms.api.src.main.java.com.grash.service.PurchaseOrderService",
+      "file": "api/src/main/java/com/grash/service/PurchaseOrderService.java",
+      "start_line": 25,
+      "end_line": 81,
+      "file_sha256": "c02f53a20939fb1fd48d2c122fb09357675f38769e30f085d0b386aaf86fdfd6",
+      "indexed_span_matches_current": true
+    },
+    {
+      "symbol": "cmms.api.src.main.java.com.grash.model.CustomField",
+      "file": "api/src/main/java/com/grash/model/CustomField.java",
+      "start_line": 21,
+      "end_line": 69,
+      "file_sha256": "36c9c0a181dcb815ed66465e8b6bd49b9f4e10c909df5f9420413eb1c26468e7",
+      "indexed_span_matches_current": true
+    },
+    {
+      "symbol": "cmms.api.src.main.java.com.grash.model.TaskBase",
+      "file": "api/src/main/java/com/grash/model/TaskBase.java",
+      "start_line": 24,
+      "end_line": 56,
+      "file_sha256": "b722423964361dd1a2d1cca8262610011f9b07599af8826279e8b0d9a077076e",
+      "indexed_span_matches_current": true
+    },
+    {
+      "symbol": "cmms.api.src.main.java.com.grash.model.Task",
+      "file": "api/src/main/java/com/grash/model/Task.java",
+      "start_line": 25,
+      "end_line": 69,
+      "file_sha256": "7b1090a98acf4786ef17a0a5168a417faa4bb314b5dc6a4a21316f75e37163c1",
+      "indexed_span_matches_current": true
+    },
+    {
+      "symbol": "cmms.api.src.main.java.com.grash.model.Schedule",
+      "file": "api/src/main/java/com/grash/model/Schedule.java",
+      "start_line": 21,
+      "end_line": 85,
+      "file_sha256": "58aa1b24d457c9f17fa68b3dd74e5b24f17adc87c828fc9aa96f0022f1f3d89e",
+      "indexed_span_matches_current": true
+    },
+    {
+      "symbol": "cmms.api.src.main.java.com.grash.model.Workflow",
+      "file": "api/src/main/java/com/grash/model/Workflow.java",
+      "start_line": 19,
+      "end_line": 40,
+      "file_sha256": "1530590b84c548f03b14387138fb7892738005ebd2bc1cd11dfbed417ceeedd9",
+      "indexed_span_matches_current": true
+    },
+    {
+      "symbol": "cmms.api.src.main.java.com.grash.model.WorkflowAction",
+      "file": "api/src/main/java/com/grash/model/WorkflowAction.java",
+      "start_line": 19,
+      "end_line": 70,
+      "file_sha256": "2b66fa6d91070de19fac316dc211acf6c8bebed8600be8e5822da3a69229192e",
+      "indexed_span_matches_current": true
+    },
+    {
+      "symbol": "cmms.api.src.main.java.com.grash.model.PurchaseOrder",
+      "file": "api/src/main/java/com/grash/model/PurchaseOrder.java",
+      "start_line": 17,
+      "end_line": 100,
+      "file_sha256": "5d4f8e7f140421b586b8e026aafa17ee2d6971fd9c7cf1e6c7c399809616dc6b",
+      "indexed_span_matches_current": true
+    },
+    {
+      "symbol": "cmms.api.src.main.java.com.grash.model.Vendor",
+      "file": "api/src/main/java/com/grash/model/Vendor.java",
+      "start_line": 20,
+      "end_line": 98,
+      "file_sha256": "5b056b167a6b6694994ac095e9f09b05108e65bbb57ccddb33e5316ae4d883b7",
+      "indexed_span_matches_current": true
+    },
+    {
+      "symbol": "cmms.api.src.main.java.com.grash.service.WorkOrderService.changeStatus",
+      "file": "api/src/main/java/com/grash/service/WorkOrderService.java",
+      "start_line": 832,
+      "end_line": 937,
+      "file_sha256": "fa741b51ccb6cd2f0fd700b881a1ca1383de3bb7ee6444ff39c6aaf12c0dafca",
+      "indexed_span_matches_current": true
+    },
+    {
+      "symbol": "cmms.api.src.main.java.com.grash.service.PreventiveMaintenanceService.createWorkOrderFromPreventiveMaintenance",
+      "file": "api/src/main/java/com/grash/service/PreventiveMaintenanceService.java",
+      "start_line": 136,
+      "end_line": 160,
+      "file_sha256": "9d496f7eb356310748a9162549b13585d5f3f1fbce509aa55be554d4a0effdef",
+      "indexed_span_matches_current": true
+    },
+    {
+      "symbol": "cmms.api.src.main.java.com.grash.service.WorkflowService",
+      "file": "api/src/main/java/com/grash/service/WorkflowService.java",
+      "start_line": 21,
+      "end_line": 208,
+      "file_sha256": "d99baf78681875c09f331407867e0ab5542761a599ea3ea24d540b0046374e9c",
+      "indexed_span_matches_current": true
+    }
+  ]
+}

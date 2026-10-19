@@ -1,0 +1,11 @@
+Browser tab: 1405043949, Title: "SentrixFm - Business Process Management", URL: "https://sentrixfm.com/manager/dashboards/location-dashboard".
+The following is a diff from the previous accessibility tree with ~ and + representing changed and added elements, respectively. Removed elements are summarized by ID range.
+Removed element IDs: 235-256, 398-399, 520-627
++					520 text 
++						521 text 
+~						233 tab (selectable, settable, boolean) Active Tasks, Value: 0
+~						234 tab (selected, settable, boolean) Audit Logs, Value: 1
++					522 text 
++					523 text Detailed logs available in the Reporting module
++					524 button Open Reports
+The focused UI element is 234 tab (selected, settable, boolean) Audit Logs, Value: 1

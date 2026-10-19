@@ -1,0 +1,34 @@
+# Managing Email Settings | Facilio Docs
+
+- Source ID: `F-24637e6dfe`
+- Source: [https://facilio.com/help/docs/admin-guide/workorder-settings/email-settings/managing-email-settings/](https://facilio.com/help/docs/admin-guide/workorder-settings/email-settings/managing-email-settings/)
+- Retrieved (UTC): 2026-10-17T19:17:10Z
+- Source date/version: No publication/update date exposed in the captured page.
+- HTTP Last-Modified: Fri, 14 Aug 2026 16:39:17 GMT (server metadata; not a publication date)
+- Evidence: public user/admin/mobile documentation; no tenant execution
+- Notes: automated scope capsule
+
+## Scope summary
+
+This source is catalogued under product modules for its coverage of “Managing Email Settings”. Body-text topic cues include communications. This automatically generated scope capsule supports discovery; use the linked source and topic research for behavioral conclusions.
+
+Selected section labels: Illustrating Support Email Configuration · Illustrating Notification Email Configuration
+
+## Images and media
+
+- [Image 1, local](../../13_SCREENSHOTS/assets/49143cecc8508874917d.webp) · [original](https://facilio.com/help/assets/images/image2-e811be7633cbefc2c070df85d6c7f247.webp)
+
+## Related public documentation
+
+- [Welcome to Facilio's Documentation](../../01_PRODUCT_MODULES/sources/welcome-to-facilio-s-documentation--c0f3895ba3.md)
+- [User Guide: Introduction](../../01_PRODUCT_MODULES/sources/user-guide-introduction--3dbe23baf9.md)
+- [Admin Guide: Introduction (Admin)](../../01_PRODUCT_MODULES/sources/admin-guide-introduction-admin--cbbfa6646e.md)
+- [Visitor Management](../../01_PRODUCT_MODULES/sources/visitor-management--e3ec448f10.md)
+- [Users and Control](../../01_PRODUCT_MODULES/sources/users-and-control--a5f3a138b1.md)
+- [Security Settings](../../01_PRODUCT_MODULES/sources/security-settings--0bfe9d97ef.md)
+- [Work Order Settings](../../01_PRODUCT_MODULES/sources/work-order-settings--b08a8089d9.md)
+- [Email Settings](../../01_PRODUCT_MODULES/sources/email-settings--dbe451a5b1.md)
+
+## Interpretation limits
+
+The source is evidence of public documentation or presentation, not a hands-on test. Edition availability, configuration, timing and current UI may differ. Atlas source has not been inspected. Images remain Facilio or their respective owners’ material, retained for reference.

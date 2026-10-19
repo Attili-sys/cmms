@@ -1,0 +1,174 @@
+Browser tab: 1405043950, Title: "SentrixFm - Business Process Management", URL: "https://sentrixfm.com/manager/business/workflows/create".
+1 AXWebArea SentrixFm - Business Process Management, URL: sentrixfm.com/manager/business/workflows/create
+	2 container
+		3 container layout-wrapper
+			4 container page-topbar
+				5 link Description: SentrixFM demo, Value: sentrixfm.com/manager/
+				6 button , ID: vertical-menu-btn
+					7 text 
+				8 container
+					9 text field (settable)
+					10 text 
+				11 button Select location
+					12 text 
+					13 text Main Office
+					14 text 
+					15 text  Main
+					16 text T
+				17 button (collapsed) Description: Business Hub - Access all business functions, Secondary Actions: Expand
+				18 pop up button (collapsed) Header Language, ID: page-header-user-dropdown, Secondary Actions: Expand
+					19 image Header Language
+				20 pop up button (collapsed) , Secondary Actions: Expand
+					21 text 
+				22 button 
+					23 text 
+				24 pop up button (collapsed) , ID: page-header-notifications-dropdown, Secondary Actions: Expand
+					215 text 
+				26 pop up button (collapsed) SentrixFM Avatar, ID: page-header-user-dropdown, Secondary Actions: Expand
+					27 image SentrixFM Avatar
+			28 container
+				29 container scrollable content
+					30 content list side-menu
+						31 text DASHBOARD
+						32 link Description:  Analytics Dashboard, Value: sentrixfm.com/manager/dashboard
+						33 link Description:  Location Dashboard, Value: sentrixfm.com/manager/dashboards/location-dashboard
+						34 link (collapsed) Description:  Reporting , Value: sentrixfm.com/manager/business/reports, Secondary Actions: Expand
+						35 text FACILITY STRUCTURE
+						36 link Description:  Locations / Sublocations, Value: sentrixfm.com/manager/business/locations
+						37 link Description:  Store & Inventory, Value: sentrixfm.com/manager/business/store
+						38 link Description:  Assets, Value: sentrixfm.com/manager/business/assets
+						39 link Description: D Consumables, Value: sentrixfm.com/manager/business/store/consumables
+						40 text WORK MANAGEMENT
+						41 link Description:  My Tasks, Value: sentrixfm.com/manager/business/operations/my-tasks
+						42 link (collapsed) Description:  Hard Service , Value: javascript:void(0);, Secondary Actions: Expand
+						43 link (collapsed) Description:  Soft Service , Value: javascript:void(0);, Secondary Actions: Expand
+						44 link Description:  Maintenance Requests, Value: sentrixfm.com/manager/business/maintenance-requests
+						45 link Description:  Categories, Value: sentrixfm.com/manager/business/categories
+						46 link Description: ( SOP Management, Value: sentrixfm.com/manager/business/operations/sop-management
+						47 text WORKFLOWS & PROCEDURES
+						48 container
+							49 link (collapsed) Description:  Workflows , Value: javascript:void(0);, Secondary Actions: Expand
+							50 content list
+								51 link Description:  Workflow List, Value: sentrixfm.com/manager/business/workflows
+								52 link Description:  Maintenance Packages, Value: sentrixfm.com/manager/business/maintenance-packages
+						53 text ORGANIZATION
+						54 link (collapsed) Description:  User Management , Value: javascript:void(0);, Secondary Actions: Expand
+						55 link (collapsed) Description:  Roles and Permissions , Value: javascript:void(0);, Secondary Actions: Expand
+						56 text COMMUNICATION
+						57 link Description:  Location Chat, Value: sentrixfm.com/manager/chat
+						58 link Description:  Demo AI, Value: sentrixfm.com/manager/business/utilities/company-ai-chat
+						59 link Description: ` File Manager, Value: sentrixfm.com/manager/business/utilities/file-manager
+						60 link (collapsed) Description:  Email Center , Value: javascript:void(0);, Secondary Actions: Expand
+						61 text BUSINESS OPERATIONS
+						62 link (collapsed) Description:  Projects , Value: javascript:void(0);, Secondary Actions: Expand
+						63 link (collapsed) Description:  Invoices , Value: javascript:void(0);, Secondary Actions: Expand
+						64 link Description:  Settings, Value: sentrixfm.com/manager/business/settings
+			65 container
+				66 heading CREATE WORKFLOW, Value: 4
+					67 text CREATE WORKFLOW
+				68 text Define and manage your maintenance procedures
+				69 content list
+					70 link Description:  Home, Value: javascript:void(0);
+					71 container
+						72 text /
+						73 link Description: E Business, Value: javascript:void(0);
+					74 container
+						75 text /
+						76 link Description: Workflows, Value: javascript:void(0);
+					77 container
+						78 text /  Create Workflow
+				79 button Back to List
+				80 button Cancel
+				81 button Create
+				82 container
+					83 container
+						178 text 
+						85 heading Basic Information, Value: 6
+							86 text Basic Information
+						87 text Configure the core identity and ownership of this workflow.
+					88 container
+						89 text 
+						90 heading Maintenance Packages, Value: 6
+							91 text Maintenance Packages
+						92 text Configure package details and execution rules
+					93 container
+						179 text &
+						95 heading Execution Logic, Value: 6
+							96 text Execution Logic
+						97 text Sequencing and trigger rules
+					98 container
+						99 text Y
+						100 heading Automation & Scheduling, Value: 6
+							101 text Automation & Scheduling
+						102 text 1 Recurring intervals and cron
+					103 text Form Completion 65%
+					180 container
+						181 text &
+						182 heading Execution Logic, Value: 5
+							183 text Execution Logic
+						184 text Define how the packages within this workflow are executed and triggered.
+						185 text EXECUTION STRATEGY
+						186 container
+							187 text 
+							188 heading Parallel Independent, Value: 6
+								189 text Parallel Independent
+							190 text Maintenance packages are executed independently and in parallel.
+						191 container
+							192 text 
+							193 heading Sequential Dependency, Value: 6
+								194 text Sequential Dependency
+							195 text Maintenance packages are executed in a sequential order with dependencies.
+						196 text TRIGGER TYPE
+						197 container
+							198 text 
+							199 heading Manual, Value: 6
+								200 text Manual
+							201 text Workflow instances are created manually by users.
+						202 container
+							203 text 
+							204 heading Scheduled by Date, Value: 6
+								205 text Scheduled by Date
+							206 text Workflow instances are created on a specific fixed date.
+						207 container
+							208 text Y
+							209 heading Scheduled by Cron, Value: 6
+								210 text Scheduled by Cron
+							211 text Workflow instances are created periodically based on a cron expression.
+						212 text Active Status
+						213 text Inactive workflows cannot generate new maintenance instances.
+						214 text 
+			144 container
+				145 text © 2026 SentrixFm. All rights reserved.  v1.2
+		146 container
+			147 container scrollable content
+				148 link javascript:void(0);
+				149 heading Settings, Value: 5
+					150 text Settings
+				151 heading Layout, Value: 6
+					152 text Layout
+				153 checkbox (settable, integer) Description: Vertical, Value: 1, ID: is-layout
+				154 heading Width, Value: 6
+					155 text Width
+				156 radio button (settable, integer) Description: Fluid, Value: 1, ID: layout-width-fuild
+				157 radio button (settable, integer) Description: Boxed, Value: 0, ID: layout-width-boxed
+				158 radio button (settable, integer) Description: Scrolable, Value: 0, ID: layout-width-scrollable
+				159 heading Sidebar Color, Value: 6
+					160 text Sidebar Color
+				161 radio button (settable, integer) Description: Light, Value: 0, ID: sidebar-color-light
+				162 radio button (settable, integer) Description: Dark, Value: 1, ID: sidebar-color-dark
+				163 radio button (settable, integer) Description: Compact, Value: 0, ID: sidebar-color-brand
+				164 radio button (settable, integer) Description: Icon, Value: 0, ID: sidebar-color-icon
+				165 radio button (settable, integer) Description: Colored, Value: 0, ID: sidebar-color
+				166 heading Theme Mode, Value: 6
+					167 text Theme Mode
+				168 radio button (settable, integer) Description: Light, Value: 1, ID: theme-color-light
+				169 radio button (settable, integer) Description: Dark, Value: 0, ID: theme-color-dark
+				170 heading Choose Layouts, Value: 6
+					171 text Choose Layouts
+				172 link
+				173 link
+				174 link
+		175 button Open AI Assistant
+			176 text 
+
+The focused UI element is 1 AXWebArea SentrixFm - Business Process Management, URL: sentrixfm.com/manager/business/workflows/create

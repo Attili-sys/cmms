@@ -1,0 +1,117 @@
+[
+  {
+    "url": "https://facilio.com/help/docs/admin-guide/automation-plus/",
+    "title": "Automation Plus | Facilio Docs",
+    "reason": "Very little extractable content / documentation shell"
+  },
+  {
+    "url": "https://facilio.com/help/docs/admin-guide/data-administration/",
+    "title": "Data Administration | Facilio Docs",
+    "reason": "Very little extractable content / documentation shell"
+  },
+  {
+    "url": "https://facilio.com/help/docs/admin-guide/developer-space/",
+    "title": "Developers Space | Facilio Docs",
+    "reason": "Very little extractable content / documentation shell"
+  },
+  {
+    "url": "https://facilio.com/help/docs/admin-guide/process-management/",
+    "title": "Process Management | Facilio Docs",
+    "reason": "Very little extractable content / documentation shell"
+  },
+  {
+    "url": "https://facilio.com/help/docs/admin-guide/security-setings/",
+    "title": "Security Settings | Facilio Docs",
+    "reason": "Very little extractable content / documentation shell"
+  },
+  {
+    "url": "https://facilio.com/help/docs/admin-guide/workorder-settings/",
+    "title": "Work Order Settings | Facilio Docs",
+    "reason": "Very little extractable content / documentation shell"
+  },
+  {
+    "url": "https://facilio.com/help/docs/admin-guide/workorder-settings/customization/",
+    "title": "Customization | Facilio Docs",
+    "reason": "Very little extractable content / documentation shell"
+  },
+  {
+    "url": "https://facilio.com/help/docs/analytics-dashboards/dashboards/cards/",
+    "title": "Cards | Facilio Docs",
+    "reason": "Very little extractable content / documentation shell"
+  },
+  {
+    "url": "https://facilio.com/help/docs/analytics-dashboards/dashboards/configuring-dashbord-filters/",
+    "title": "Configuring dashbord filters | Facilio Docs",
+    "reason": "Very little extractable content / documentation shell"
+  },
+  {
+    "url": "https://facilio.com/help/docs/analytics-dashboards/dashboards/creating-dashboards/",
+    "title": "Creating Dashboards | Facilio Docs",
+    "reason": "Very little extractable content / documentation shell"
+  },
+  {
+    "url": "https://facilio.com/help/docs/analytics-dashboards/reports/creating-a-report/",
+    "title": "Creating a report | Facilio Docs",
+    "reason": "Very little extractable content / documentation shell"
+  },
+  {
+    "url": "https://facilio.com/help/docs/analytics-dashboards/reports/exporting-a-report/",
+    "title": "Exporting a report | Facilio Docs",
+    "reason": "Very little extractable content / documentation shell"
+  },
+  {
+    "url": "https://facilio.com/help/docs/analytics-dashboards/reports/managing-reports/",
+    "title": "Managing reports | Facilio Docs",
+    "reason": "Very little extractable content / documentation shell"
+  },
+  {
+    "url": "https://facilio.com/help/docs/analytics-dashboards/reports/scheduling-a-report/",
+    "title": "Scheduling a report | Facilio Docs",
+    "reason": "Very little extractable content / documentation shell"
+  },
+  {
+    "url": "https://facilio.com/help/docs/developer-guide/connected-apps/",
+    "title": "Connected Apps | Facilio Docs",
+    "reason": "Very little extractable content / documentation shell"
+  },
+  {
+    "url": "https://facilio.com/help/docs/developer-guide/connections/",
+    "title": "Connections | Facilio Docs",
+    "reason": "Very little extractable content / documentation shell"
+  },
+  {
+    "url": "https://facilio.com/help/docs/developer-guide/facilio-agent/facilio-agent-installation/",
+    "title": "Facilio Agent installation | Facilio Docs",
+    "reason": "Very little extractable content / documentation shell"
+  },
+  {
+    "url": "https://facilio.com/help/docs/developer-guide/facilio-agent/introduction-to-facilio-agent/",
+    "title": "Introduction to Facilio Agent | Facilio Docs",
+    "reason": "Very little extractable content / documentation shell"
+  },
+  {
+    "url": "https://facilio.com/help/docs/developer-guide/facilio-agent/nomenclature-for-facilities/",
+    "title": "Nomenclature for Facilities | Facilio Docs",
+    "reason": "Very little extractable content / documentation shell"
+  },
+  {
+    "url": "https://facilio.com/help/docs/developer-guide/facilio-agent/niagara-plugin-installation/",
+    "title": "Niagara Plugin Installation | Facilio Docs",
+    "reason": "Very little extractable content / documentation shell"
+  },
+  {
+    "url": "https://facilio.com/developers/docs/api-reference/",
+    "title": "API Reference | Facilio Developers",
+    "reason": "Very little extractable content / documentation shell"
+  },
+  {
+    "url": "https://facilio.com/developers/docs/tags/",
+    "title": "Tags | Facilio Developers",
+    "reason": "Very little extractable content / documentation shell"
+  },
+  {
+    "url": "https://facilio.com/developers/swagger-ui.html",
+    "title": "Facilio REST API Reference",
+    "reason": "Very little extractable content / documentation shell"
+  }
+]
