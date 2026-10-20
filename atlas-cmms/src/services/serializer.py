@@ -34,6 +34,18 @@ _RAW_ENUM_MAP: dict[str, str] = {
     "import_entity": "ImportEntity",
     "main_condition": "WFMainCondition",
     "action": "WFAction",
+    "work_order_condition": "WorkOrderCondition",
+    "request_condition": "RequestCondition",
+    "purchase_order_condition": "PurchaseOrderCondition",
+    "part_condition": "PartCondition",
+    "task_condition": "TaskCondition",
+    "work_order_action": "WorkOrderAction",
+    "request_action": "RequestAction",
+    "purchase_order_action": "PurchaseOrderAction",
+    "part_action": "PartAction",
+    "task_action": "TaskAction",
+    "work_order_status": "Status",
+    "purchase_order_status": "ApprovalStatus",
 }
 COLUMN_ENUM_MAP: dict[str, type[Enum]] = {
     k: getattr(model_enums, v) for k, v in _RAW_ENUM_MAP.items() if hasattr(model_enums, v)
@@ -54,6 +66,9 @@ def resolve_enum_value(col_name: str, val: Any, model_cls_name: str = "") -> Any
         return members[val].value if 0 <= val < len(members) else val
     if model_cls_name == "Labor" and col_name == "status":
         members = list(model_enums.TimeStatus)
+        return members[val].value if 0 <= val < len(members) else val
+    if model_cls_name == "File" and col_name == "type":
+        members = list(model_enums.FileType)
         return members[val].value if 0 <= val < len(members) else val
     if model_cls_name == "Relation" and col_name == "relation_type":
         members = list(model_enums.RelationType)
@@ -210,10 +225,12 @@ def _hydrate_foreign_key(target_table: str | None, raw_val: Any, db: Session | N
 
             f = db.get(File, raw_val)
             if f:
+                url = getattr(f, "url", None) or f.path
                 return {
                     "id": f.id,
                     "name": f.name,
-                    "url": f.url,
+                    "url": url,
+                    "thumbnailUrl": getattr(f, "thumbnail_path", None) or url,
                     "type": resolve_enum_value("type", f.type, "File"),
                 }
         elif target_table == "part":
@@ -330,23 +347,39 @@ def model_to_dict(
             # Expose hydrated nested mini-DTO for *_id foreign keys
             if (
                 key.endswith("_id")
-                and key not in ("company_id", "custom_id")
+                and key not in ("company_id", "custom_id", "nfc_id")
                 and raw_val is not None
             ):
                 rel_name = key[:-3]
                 camel_rel = to_camel(rel_name)
                 if camel_rel not in result:
                     col = mapper.columns.get(key)
-                    target_table = (
-                        next(iter(col.foreign_keys)).column.table.name
-                        if (col is not None and col.foreign_keys)
-                        else None
-                    )
-                    result[camel_rel] = _hydrate_foreign_key(target_table, raw_val, db)
+                    if col is not None and col.foreign_keys:
+                        target_table = next(iter(col.foreign_keys)).column.table.name
+                        result[camel_rel] = _hydrate_foreign_key(target_table, raw_val, db)
     else:
         for k, v in vars(obj).items():
             if not k.startswith("_") and k not in exclude_cols:
                 result[to_camel(k)] = serialize_value(v)
+
+    if cls_name == "File" and hasattr(obj, "path"):
+        result.setdefault("url", obj.path)
+        result.setdefault("thumbnailUrl", getattr(obj, "thumbnail_path", None) or obj.path)
+
+    if cls_name == "CustomField":
+        result["order"] = getattr(obj, "field_order", 0) or 0
+        if db is not None and getattr(obj, "id", None) is not None:
+            from sqlalchemy import select as sa_select
+            from src.models.associations import company_custom_field_options
+
+            opts = db.scalars(
+                sa_select(company_custom_field_options.c.option_value).where(
+                    company_custom_field_options.c.field_id == obj.id
+                )
+            ).all()
+            result["options"] = [o for o in opts if o is not None]
+        else:
+            result.setdefault("options", [])
 
     for list_field in _MODEL_DEFAULT_LISTS.get(cls_name, ()):
         result.setdefault(list_field, [])
@@ -366,7 +399,16 @@ def apply_patch(
     """Apply a camelCase or snake_case dict payload onto a SQLAlchemy model instance."""
     from src.utils.search import camel_to_snake
 
-    ignore = {"id", "company_id", "created_at", "created_by"} | (exclude or set())
+    ignore = {
+        "id",
+        "company_id",
+        "company_settings_id",
+        "created_at",
+        "created_by",
+        "updated_at",
+        "updated_by",
+    } | (exclude or set())
+    non_fk_id_cols = {"custom_id", "nfc_id"}
     cls_name = obj.__class__.__name__
     mapper = inspect(obj.__class__, raiseerr=False)
     valid_cols = {attr.key for attr in mapper.column_attrs} if mapper else set()
@@ -379,8 +421,21 @@ def apply_patch(
         # Handle nested object references like {"asset": {"id": 5}} -> asset_id = 5
         if isinstance(val, dict) and "id" in val:
             fk_key = f"{snake_key}_id"
+            if fk_key in ignore or fk_key in non_fk_id_cols:
+                continue
             if fk_key in valid_cols or hasattr(obj, fk_key):
                 setattr(obj, fk_key, val["id"])
+                continue
+
+        # Handle clearing a nullable foreign key via {"location": None} -> location_id = None
+        if val is None:
+            fk_key = f"{snake_key}_id"
+            if (
+                fk_key not in ignore
+                and fk_key not in non_fk_id_cols
+                and (fk_key in valid_cols or hasattr(obj, fk_key))
+            ):
+                setattr(obj, fk_key, None)
                 continue
 
         target_col = None
@@ -389,7 +444,7 @@ def apply_patch(
         elif key in valid_cols or hasattr(obj, key):
             target_col = key
 
-        if target_col:
+        if target_col and target_col not in ignore:
             # Coerce string enum to ordinal if column is integer/smallint
             coerced = _coerce_for_column(obj, target_col, val, cls_name)
             setattr(obj, target_col, coerced)
@@ -401,17 +456,31 @@ def _coerce_for_column(obj: Any, col_name: str, val: Any, cls_name: str) -> Any:
     if val is None:
         return None
     if isinstance(val, str):
-        # Check if string is an ISO datetime when column expects datetime
+        if col_name in ("custom_id", "bar_code", "nfc_id", "barcode") and not val.strip():
+            return None
+        # Check if string is an ISO datetime or numeric when column expects non-string
         mapper = inspect(obj.__class__, raiseerr=False)
         if mapper and col_name in mapper.columns:
             col_type = mapper.columns[col_name].type.__class__.__name__.lower()
             if "date" in col_type or "time" in col_type:
+                if not val.strip():
+                    return None
                 from src.utils.dates import parse_iso_datetime
 
                 parsed = parse_iso_datetime(val)
                 if parsed is not None:
                     return parsed.replace(tzinfo=None)
+                return None
+            if "float" in col_type or "numeric" in col_type:
+                if not val.strip():
+                    return None
+                try:
+                    return float(val.strip())
+                except ValueError:
+                    return None
             if "smallinteger" in col_type or "integer" in col_type:
+                if not val.strip():
+                    return None
                 # Try enum lookup
                 enum_cls = COLUMN_ENUM_MAP.get(col_name)
                 if cls_name == "Asset" and col_name == "status":
@@ -420,16 +489,20 @@ def _coerce_for_column(obj: Any, col_name: str, val: Any, cls_name: str) -> Any:
                     enum_cls = model_enums.ApprovalStatus
                 elif cls_name == "Labor" and col_name == "status":
                     enum_cls = model_enums.TimeStatus
+                elif cls_name == "File" and col_name == "type":
+                    enum_cls = model_enums.FileType
                 elif cls_name == "Relation" and col_name == "relation_type":
                     enum_cls = model_enums.RelationType
 
                 if enum_cls is not None:
                     members = list(enum_cls)
+                    norm = val.strip().upper().replace(" ", "_").replace("-", "_")
                     for idx, m in enumerate(members):
-                        if m.name == val or m.value == val:
+                        if m.name == val or m.value == val or m.name == norm or m.value == norm:
                             return idx
                 try:
-                    return int(val)
+                    return int(float(val.strip()))
                 except ValueError:
-                    pass
+                    return None
     return val
+

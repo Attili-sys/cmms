@@ -46,6 +46,7 @@ import {
   getCustomFieldsValues
 } from '../../type';
 import { getAssetUrl } from '../../../../utils/urlPaths';
+import { getErrorMessage } from '../../../../utils/api';
 
 interface PropsType {}
 
@@ -99,8 +100,12 @@ const ShowAsset = ({}: PropsType) => {
       .then(onDeleteSuccess)
       .catch(onDeleteFailure);
   };
-  const getAssetFormValues = (entity: AssetDTO) => ({
+  const getAssetFormValues = (entity: AssetDTO, isCopy = false) => ({
     ...entity,
+    customId: isCopy ? '' : entity?.customId,
+    barCode: isCopy ? '' : entity?.barCode,
+    nfcId: isCopy ? '' : (entity as any)?.nfcId,
+    nfc: undefined,
     location: entity?.location
       ? {
           label: entity?.location.name,
@@ -175,7 +180,8 @@ const ShowAsset = ({}: PropsType) => {
     { value: 'downtimes', label: t('downtimes') },
     { value: 'analytics', label: t('Statistics') }
   ];
-  const tabIndex = tabs.findIndex((tab) => tab.value === arr[arr.length - 1]);
+  const rawTabIndex = tabs.findIndex((tab) => tab.value === arr[arr.length - 1]);
+  const tabIndex = rawTabIndex === -1 ? 0 : rawTabIndex;
   const onDeleteSuccess = () => {
     showSnackBar(t('asset_remove_success'), 'success');
     navigate('/app/assets');
@@ -201,7 +207,6 @@ const ShowAsset = ({}: PropsType) => {
       type2: 'location',
       label: t('location'),
       placeholder: t('select_asset_location'),
-      required: true,
       midWidth: true
     },
     {
@@ -245,6 +250,20 @@ const ShowAsset = ({}: PropsType) => {
       type: 'text',
       label: t('barcode'),
       placeholder: t('barcode'),
+      midWidth: true
+    },
+    {
+      name: 'customId',
+      type: 'text',
+      label: t('custom_id', 'Custom ID'),
+      placeholder: t('custom_id', 'Custom ID'),
+      midWidth: true
+    },
+    {
+      name: 'nfcId',
+      type: 'text',
+      label: t('nfc_id', 'NFC ID'),
+      placeholder: t('nfc_id', 'NFC ID'),
       midWidth: true
     },
     {
@@ -356,7 +375,13 @@ const ShowAsset = ({}: PropsType) => {
       type: 'titleGroupField',
       label: t('structure')
     },
-    { name: 'parts', type: 'select', type2: 'part', label: t('parts') },
+    {
+      name: 'parts',
+      type: 'select',
+      type2: 'part',
+      label: t('parts'),
+      multiple: true
+    },
     {
       name: 'parentAsset',
       type: 'select',
@@ -381,14 +406,14 @@ const ShowAsset = ({}: PropsType) => {
     showSnackBar(t('changes_saved_success'), 'success');
   };
   const onEditFailure = (err) =>
-    showSnackBar(t('asset_update_failure'), 'error');
+    showSnackBar(getErrorMessage(err, t('asset_update_failure')), 'error');
   const onCopySuccess = (id: number) => {
     setOpenUpdateModal(false);
     setCopyAssetData(null);
     navigate(getAssetUrl(id));
   };
   const onCopyFailure = (err) =>
-    showSnackBar(t('asset_create_failure'), 'error');
+    showSnackBar(getErrorMessage(err, t('asset_create_failure')), 'error');
 
   const renderAssetUpdateModal = () => (
     <Dialog
@@ -424,7 +449,7 @@ const ShowAsset = ({}: PropsType) => {
             submitText={copyAssetData ? t('add') : t('save')}
             values={
               copyAssetData
-                ? { ...getAssetFormValues(copyAssetData), id: null }
+                ? { ...getAssetFormValues(copyAssetData, true), id: null }
                 : getAssetFormValues(asset)
             }
             onChange={({ field, e }) => {}}

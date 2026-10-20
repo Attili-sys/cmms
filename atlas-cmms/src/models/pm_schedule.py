@@ -70,8 +70,14 @@ class Schedule(Base):
         return self.starts_on
 
     @next_due_date.setter
-    def next_due_date(self, value: datetime) -> None:
-        self.starts_on = value
+    def next_due_date(self, value: datetime | str | None) -> None:
+        if isinstance(value, str):
+            from src.utils.dates import parse_iso_utc
+
+            parsed = parse_iso_utc(value)
+            self.starts_on = parsed.replace(tzinfo=None) if parsed else self.starts_on
+        else:
+            self.starts_on = value  # type: ignore[assignment]
 
     @next_due_date.expression
     def next_due_date(cls):

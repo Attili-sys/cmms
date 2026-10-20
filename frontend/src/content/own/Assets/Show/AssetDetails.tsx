@@ -84,10 +84,12 @@ const AssetDetails = ({ asset, loading, onCopy }: PropsType) => {
   const dispatch = useDispatch();
   const informationFields = [
     { label: t('name'), value: asset?.name },
+    { label: t('custom_id', 'Custom ID'), value: asset?.customId },
     { label: t('description'), value: asset?.description },
     { label: t('category'), value: asset?.category?.name },
     { label: t('model'), value: asset?.model },
     { label: t('serial_number'), value: asset?.serialNumber },
+    { label: t('nfc_id', 'NFC ID'), value: asset?.nfcId },
     { label: t('power'), value: asset?.power },
     { label: t('manufacturer'), value: asset?.manufacturer },
     {

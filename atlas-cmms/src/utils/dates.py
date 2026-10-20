@@ -4,8 +4,10 @@ from datetime import datetime, timezone
 from typing import Any
 
 
-def format_iso_utc_ms(dt: datetime) -> str:
+def format_iso_utc_ms(dt: datetime | None) -> str | None:
     """Serialize datetime to ISO-8601 UTC millisecond string: `2026-10-18T12:34:56.789+00:00`."""
+    if dt is None:
+        return None
     if dt.tzinfo is None:
         dt_utc = dt.replace(tzinfo=timezone.utc)
     else:
@@ -48,6 +50,23 @@ def to_epoch_ms(dt: datetime) -> int:
 def from_epoch_ms(ms: int | float) -> datetime:
     """Convert milliseconds since Unix epoch to UTC datetime."""
     return datetime.fromtimestamp(ms / 1000.0, tz=timezone.utc)
+
+
+def ensure_utc(dt: datetime) -> datetime:
+    """Ensure a datetime is timezone-aware in UTC (handles naive datetimes returned by SQLite)."""
+    if dt.tzinfo is None:
+        return dt.replace(tzinfo=timezone.utc)
+    return dt.astimezone(timezone.utc)
+
+
+def parse_iso_utc(val: Any) -> datetime | None:
+    """Parse an optional ISO-8601 string, epoch timestamp, or datetime into a UTC datetime, returning None if empty/invalid."""
+    if val is None or val == "":
+        return None
+    try:
+        return parse_iso_datetime(val)
+    except Exception:
+        return None
 
 
 serialize_datetime = format_iso_utc_ms

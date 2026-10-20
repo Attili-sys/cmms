@@ -59,6 +59,7 @@ export interface AssetDTO extends Audit {
   power: string;
   manufacturer: string;
   customId: string;
+  nfcId?: string;
   customFieldValues: CustomFieldValue[];
 }
 export interface AssetRow extends AssetDTO {

@@ -159,11 +159,20 @@ export const getErrorMessage = (
   error: any,
   defaultMessage: string = 'An error occurred'
 ): string => {
+  if (!error) return defaultMessage;
   try {
     const parsed = JSON.parse(error.message);
-    return parsed?.message ?? error.message ?? defaultMessage;
+    if (parsed && typeof parsed === 'object' && parsed.message) {
+      return parsed.message;
+    }
+    if (error.message && error.message !== 'null') {
+      return error.message;
+    }
+    return defaultMessage;
   } catch {
-    return error.message ?? defaultMessage;
+    return error.message && error.message !== 'null'
+      ? error.message
+      : defaultMessage;
   }
 };
 

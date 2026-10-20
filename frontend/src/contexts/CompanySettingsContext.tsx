@@ -11,6 +11,7 @@ import { CustomSnackBarContext } from './CustomSnackBarContext';
 import { useBrand } from '../hooks/useBrand';
 import { format } from 'date-fns';
 import { utcToZonedTime } from 'date-fns-tz';
+import { getErrorMessage } from '../utils/api';
 
 const mailToLink = ({
   to,
@@ -87,7 +88,7 @@ export const CompanySettingsProvider: FC = ({ children }) => {
   };
 
   const onUploadError = (err: { message: string }) => {
-    showSnackBar(JSON.parse(err.message).message, 'error');
+    showSnackBar(getErrorMessage(err, t('unknown_error')), 'error');
   };
 
   const uploadFiles = async (

@@ -143,41 +143,9 @@ function HeaderNotifications() {
     direction: 'DESC'
   };
   const [criteria, setCriteria] = useState<SearchCriteria>(initialCriteria);
-  const [stompClient, setStompClient] = useState(null);
-  const { user } = useAuth();
   useEffect(() => {
     dispatch(getNotifications(criteria));
   }, []);
-  useEffect(() => {
-    const disconnect = () => {
-      if (stompClient) {
-        stompClient.disconnect();
-        setStompClient(null);
-      }
-    };
-    if (user) {
-      if (!stompClient) {
-        const socket = new SockJS(`${apiUrl}ws`);
-        const client = Stomp.over(socket);
-        client.connect(
-          { token: localStorage.getItem('accessToken') },
-          function (frame) {
-            const subscription = client.subscribe(
-              `/user/${user.email}/notifications`,
-              function (message) {
-                const notification: Notification = JSON.parse(message.body);
-                dispatch(newReceivedNotification(notification));
-              }
-            );
-            setStompClient(client);
-          }
-        );
-      }
-    } else {
-      disconnect();
-    }
-    return disconnect;
-  }, [user?.id, stompClient]);
   const handleOpen = (): void => {
     setOpen(true);
   };

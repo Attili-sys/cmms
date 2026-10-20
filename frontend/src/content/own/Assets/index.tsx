@@ -645,6 +645,20 @@ function Assets() {
       midWidth: true
     },
     {
+      name: 'customId',
+      type: 'text',
+      label: t('custom_id', 'Custom ID'),
+      placeholder: t('custom_id', 'Custom ID'),
+      midWidth: true
+    },
+    {
+      name: 'nfcId',
+      type: 'text',
+      label: t('nfc_id', 'NFC ID'),
+      placeholder: t('nfc_id', 'NFC ID'),
+      midWidth: true
+    },
+    {
       name: 'serialNumber',
       type: 'text',
       label: t('serial_number'),
@@ -691,7 +705,7 @@ function Assets() {
       type2: 'user',
       multiple: true,
       label: t('additional_workers'),
-      placeholder: 'additional_workers_description'
+      placeholder: t('additional_workers_description', 'Select additional workers')
     },
     {
       name: 'teams',
@@ -699,7 +713,7 @@ function Assets() {
       type2: 'team',
       multiple: true,
       label: t('teams'),
-      placeholder: 'Select teams'
+      placeholder: t('teams_description')
     },
     {
       name: 'moreInfos',
@@ -712,7 +726,7 @@ function Assets() {
       type2: 'customer',
       multiple: true,
       label: t('customers'),
-      placeholder: 'customers_description'
+      placeholder: t('customers_description')
     },
     {
       name: 'vendors',
@@ -753,7 +767,13 @@ function Assets() {
       type: 'titleGroupField',
       label: t('structure')
     },
-    { name: 'parts', type: 'select', type2: 'part', label: t('parts') },
+    {
+      name: 'parts',
+      type: 'select',
+      type2: 'part',
+      label: t('parts'),
+      multiple: true
+    },
     {
       name: 'parentAsset',
       type: 'select',
@@ -1000,7 +1020,21 @@ function Assets() {
             alignItems="center"
           >
             <SearchInput onChange={debouncedQueryChange} />
-            <Stack direction="row" spacing={1}>
+            <Stack direction="row" spacing={1} alignItems="center">
+              <Button
+                size="small"
+                variant={view === 'hierarchy' ? 'contained' : 'outlined'}
+                onClick={() => setView('hierarchy')}
+              >
+                {t('hierarchy', 'Hierarchy')}
+              </Button>
+              <Button
+                size="small"
+                variant={view === 'list' ? 'contained' : 'outlined'}
+                onClick={() => setView('list')}
+              >
+                {t('table_view', 'Table')}
+              </Button>
               <IconButton onClick={() => handleReset(true)} color="primary">
                 <ReplayTwoToneIcon />
               </IconButton>

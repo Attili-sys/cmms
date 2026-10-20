@@ -55,11 +55,11 @@ def assert_same_company(
     current_user: User,
     db: Session | None = None,
 ) -> None:
-    """Enforce entity.company_id == current_user.company_id unless bypassed by super admin or SuperAccountRelation.
+    """Enforce entity.company_id == current_user.company_id unless bypassed by platform super admin or SuperAccountRelation.
 
     Raises CustomException(403, "Access is denied") on mismatch.
     """
-    if is_super_admin(current_user, db):
+    if current_user.company_id is None and is_super_admin(current_user, db):
         return
 
     target_company_id: int | None = None
@@ -87,7 +87,7 @@ def scoped_select(
 ) -> Select:
     """Return a SQLAlchemy select(model) scoped to the companies accessible to current_user."""
     stmt = select(model)
-    if is_super_admin(current_user, db):
+    if current_user.company_id is None and is_super_admin(current_user, db):
         return stmt
 
     if hasattr(model, "company_id"):
@@ -106,6 +106,6 @@ def assert_company_access(
     db: Session | None = None,
 ) -> None:
     """Compatibility wrapper for assert_same_company."""
-    if is_super_admin:
+    if is_super_admin and current_user.company_id is None:
         return
     assert_same_company(entity, current_user, db=db)

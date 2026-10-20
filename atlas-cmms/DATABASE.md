@@ -101,8 +101,8 @@ Legacy Hibernate mapped `@Enumerated` fields in two different ways depending onw
 |---|---|---|---|
 | `Location` | `location` | `company_id` | Physical site/building/room (`name`, `address`, `longitude`, `latitude`, `parent_location_id`, `image_id`, `custom_id`). Supports recursive hierarchy via `parent_location_id`. |
 | `FloorPlan` | `floor_plan` | `location_id` | Floor plan image and area attached to a `Location`. |
-| `Asset` | `asset` | `company_id` | Equipment or machine (`name`, `description`, `model`, `serial_number`, `bar_code`, `status`, `area`, `acquisition_cost`, `in_service_date`, `warranty_expiration_date`, `location_id`, `parent_asset_id`, `category_id`, `primary_user_id`, `image_id`, `custom_id`). Supports recursive hierarchy via `parent_asset_id`. |
-| `AssetDowntime` | `asset_downtime` | `company_id` | Downtime intervals (`starts_on`, `duration`, `downtime_reason`, `asset_id`). `duration=0` indicates an ongoing downtime. |
+| `Asset` | `asset` | `company_id` | Equipment or machine (`name`, `description`, `model`, `serial_number`, `bar_code`, `nfc_id`, `status`, `area`, `acquisition_cost`, `in_service_date`, `warranty_expiration_date`, `location_id`, `parent_asset_id`, `category_id`, `primary_user_id`, `image_id`, `custom_id`). Supports recursive hierarchy via `parent_asset_id` and enforces tenant-scoped partial unique indexes (`WHERE col IS NOT NULL`) on `(company_id, custom_id)`, `(company_id, bar_code)`, and `(company_id, nfc_id)` (`db/migrations/003_asset_unique_identifiers.sql` + `src/tasks.py::ensure_asset_unique_indexes`). |
+| `AssetDowntime` | `asset_downtime` | `company_id` | Downtime intervals (`starts_on`, `duration`, `downtime_reason`, `asset_id`). `duration=0` indicates an ongoing downtime; automatically opened/closed on Asset and WorkOrder status transitions. |
 | `Deprecation` | `deprecation` | `company_id` | Asset financial depreciation schedule. |
 
 ### 4.4 Work Orders, Preventive Maintenance & Schedules (`work_orders.py`, `pm_schedule.py`)

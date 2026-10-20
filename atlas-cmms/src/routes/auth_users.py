@@ -34,7 +34,7 @@ from src.models.settings import (
     WorkOrderRequestConfiguration,
 )
 from src.models.users import Role, Team, User, UserInvitation, UserSettings
-from src.routes._crud import build_crud_router
+from src.routes._crud import _ensure_company_settings_id, build_crud_router
 from src.schemas.errors import CustomException, SuccessResponse
 from src.services.license_service import (
     LicenseService,
@@ -400,6 +400,7 @@ def get_company(
     company = db.get(Company, company_id)
     if not company:
         raise CustomException(status_code=404, message="Company not found")
+    assert_company_access(current_user, company_id, is_super_admin=is_super_admin(current_user, db))
     return serialize_company(company, db)
 
 
@@ -413,6 +414,7 @@ def patch_company(
     company = db.get(Company, company_id)
     if not company:
         raise CustomException(status_code=404, message="Company not found")
+    assert_company_access(current_user, company_id, is_super_admin=is_super_admin(current_user, db))
     apply_patch(company, payload)
     db.commit()
     db.refresh(company)
@@ -425,13 +427,39 @@ def get_company_settings(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> dict[str, Any]:
+    own_cs_id = _ensure_company_settings_id(current_user, db)
     cs = db.get(CompanySettings, cs_id)
     if not cs:
-        cs = CompanySettings(id=cs_id, company_id=current_user.company_id)
-        db.add(cs)
+        cs = db.get(CompanySettings, own_cs_id)
         db.commit()
-        db.refresh(cs)
+    elif cs.id != own_cs_id:
+        owner_company_id = cs.company_id or db.scalar(
+            select(Company.id).where(Company.company_settings_id == cs.id)
+        )
+        assert_company_access(
+            current_user,
+            owner_company_id,
+            is_super_admin=is_super_admin(current_user, db),
+            db=db,
+        )
     return serialize_company_settings(cs, db)
+
+
+@router.get("/general-preferences/{gp_id:int}")
+def get_general_preferences(
+    gp_id: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> dict[str, Any]:
+    cs_id = _ensure_company_settings_id(current_user, db)
+    gp = db.get(GeneralPreferences, gp_id)
+    if not gp:
+        gp = db.scalar(select(GeneralPreferences).where(GeneralPreferences.company_settings_id == cs_id))
+    elif gp.company_settings_id is not None and gp.company_settings_id != cs_id:
+        raise CustomException(status_code=403, message="Access is denied")
+    if not gp:
+        raise CustomException(status_code=404, message="GeneralPreferences not found")
+    return serialize_general_preferences(gp, db)
 
 
 @router.patch("/general-preferences/{gp_id:int}")
@@ -441,9 +469,26 @@ def patch_general_preferences(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> dict[str, Any]:
+    cs_id = _ensure_company_settings_id(current_user, db)
     gp = db.get(GeneralPreferences, gp_id)
     if not gp:
-        gp = GeneralPreferences(id=gp_id)
+        gp = db.scalar(select(GeneralPreferences).where(GeneralPreferences.company_settings_id == cs_id))
+    elif gp.company_settings_id is not None and gp.company_settings_id != cs_id:
+        raise CustomException(status_code=403, message="Access is denied")
+    if not gp:
+        gp = GeneralPreferences(
+            id=gp_id,
+            company_settings_id=cs_id,
+            ask_feed_back_onwoclosed=False,
+            auto_assign_requests=False,
+            auto_assign_work_orders=False,
+            disable_closed_work_orders_notif=False,
+            labor_cost_in_total_cost=True,
+            time_zone="UTC",
+            wo_update_for_requesters=True,
+            simplified_work_order=False,
+            days_before_prev_maint_notification=1,
+        )
         db.add(gp)
     apply_patch(gp, payload)
     db.commit()
@@ -461,6 +506,15 @@ def patch_field_configuration(
     fc = db.get(FieldConfiguration, fc_id)
     if not fc:
         raise CustomException(status_code=404, message="FieldConfiguration not found")
+    cs_id = _ensure_company_settings_id(current_user, db)
+    if fc.work_order_configuration_id is not None:
+        woc = db.get(WorkOrderConfiguration, fc.work_order_configuration_id)
+        if woc and woc.company_settings_id is not None and woc.company_settings_id != cs_id:
+            raise CustomException(status_code=403, message="Access is denied")
+    if fc.work_order_request_configuration_id is not None:
+        worc = db.get(WorkOrderRequestConfiguration, fc.work_order_request_configuration_id)
+        if worc and worc.company_settings_id is not None and worc.company_settings_id != cs_id:
+            raise CustomException(status_code=403, message="Access is denied")
     apply_patch(fc, payload)
     db.commit()
     db.refresh(fc)
@@ -473,9 +527,16 @@ def patch_ui_configuration(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> dict[str, Any]:
-    ui = db.scalar(select(UiConfiguration).limit(1))
+    cs_id = _ensure_company_settings_id(current_user, db)
+    ui = db.scalar(select(UiConfiguration).where(UiConfiguration.company_settings_id == cs_id))
     if not ui:
-        ui = UiConfiguration()
+        ui = UiConfiguration(
+            company_settings_id=cs_id,
+            requests=True,
+            locations=True,
+            meters=True,
+            vendors_and_customers=True,
+        )
         db.add(ui)
     apply_patch(ui, payload)
     db.commit()
@@ -484,12 +545,21 @@ def patch_ui_configuration(
 
 
 # 6.3 Users, Roles, Teams, UserSettings
+def _assert_user_settings_access(us_id: int, current_user: User, db: Session) -> None:
+    if us_id == current_user.user_settings_id:
+        return
+    owner = db.scalar(select(User).where(User.user_settings_id == us_id))
+    if owner is not None and owner.company_id != current_user.company_id:
+        assert_company_access(current_user, owner, is_super_admin=is_super_admin(current_user, db), db=db)
+
+
 @router.get("/user-settings/{us_id:int}")
 def get_user_settings(
     us_id: int,
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> dict[str, Any]:
+    _assert_user_settings_access(us_id, current_user, db)
     us = db.get(UserSettings, us_id)
     if not us:
         us = UserSettings(
@@ -513,6 +583,7 @@ def patch_user_settings(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> dict[str, Any]:
+    _assert_user_settings_access(us_id, current_user, db)
     us = db.get(UserSettings, us_id)
     if not us:
         us = UserSettings(
@@ -560,10 +631,30 @@ def create_user(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> dict[str, Any]:
+    cs_id = _ensure_company_settings_id(current_user, db)
     role_id = payload.get("role", {}).get("id") if isinstance(payload.get("role"), dict) else payload.get("roleId")
-    if not role_id:
-        role = db.scalar(select(Role).order_by(Role.id))
-        role_id = role.id if role else 1
+    if role_id:
+        target_role = db.get(Role, int(role_id))
+        if not target_role or (target_role.company_settings_id is not None and target_role.company_settings_id != cs_id):
+            raise CustomException(status_code=403, message="Role does not belong to this company")
+    else:
+        role = db.scalar(
+            select(Role).where(
+                (Role.company_settings_id == cs_id) | (Role.company_settings_id.is_(None))
+            ).order_by(Role.id)
+        )
+        role_id = role.id if role else current_user.role_id
+
+    us = UserSettings(
+        email_notified=True,
+        email_updates_for_work_orders=True,
+        email_updates_for_requests=True,
+        email_updates_for_purchase_orders=True,
+        stats_for_assigned_work_orders=False,
+    )
+    db.add(us)
+    db.flush()
+
     u = User(
         first_name=payload.get("firstName", "New"),
         last_name=payload.get("lastName", "User"),
@@ -572,13 +663,14 @@ def create_user(
         job_title=payload.get("jobTitle"),
         username=(payload.get("email") or "user@canvas.local").strip().lower(),
         password="sso-managed-account",  # noqa: S106
-        rate=float(payload.get("rate") or 0.0),
+        rate=int(float(payload.get("rate") or 0)),
         enabled=True,
         owns_company=False,
-        is_demo=False,
+        enabled_in_subscription=True,
+        created_via_sso=False,
         role_id=role_id,
         company_id=current_user.company_id,
-        user_settings_id=current_user.user_settings_id,
+        user_settings_id=us.id,
     )
     db.add(u)
     db.commit()
@@ -633,13 +725,30 @@ def invite_user(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> dict[str, Any]:
-    email = (payload.get("email") or "").strip().lower()
+    cs_id = _ensure_company_settings_id(current_user, db)
     role_id = payload.get("role", {}).get("id") if isinstance(payload.get("role"), dict) else payload.get("roleId")
-    if not role_id:
-        role = db.scalar(select(Role).order_by(Role.id))
-        role_id = role.id if role else 1
-    inv = UserInvitation(email=email, role_id=role_id)
-    db.add(inv)
+    if role_id:
+        target_role = db.get(Role, int(role_id))
+        if not target_role or (target_role.company_settings_id is not None and target_role.company_settings_id != cs_id):
+            raise CustomException(status_code=403, message="Role does not belong to this company")
+    else:
+        role = db.scalar(
+            select(Role).where(
+                (Role.company_settings_id == cs_id) | (Role.company_settings_id.is_(None))
+            ).order_by(Role.id)
+        )
+        role_id = role.id if role else current_user.role_id
+
+    raw_emails = payload.get("emails")
+    if isinstance(raw_emails, list):
+        emails = [str(e).strip().lower() for e in raw_emails if str(e).strip()]
+    else:
+        single = (payload.get("email") or "").strip().lower()
+        emails = [single] if single else []
+
+    for email in emails:
+        inv = UserInvitation(email=email, role_id=role_id)
+        db.add(inv)
     db.commit()
     return {"success": True, "message": "Invitation recorded"}
 
@@ -717,6 +826,10 @@ def update_user_role(
     if not u:
         raise CustomException(status_code=404, message="User not found")
     assert_company_access(current_user, u, is_super_admin=is_super_admin(current_user, db))
+    cs_id = _ensure_company_settings_id(current_user, db)
+    target_role = db.get(Role, role)
+    if not target_role or (target_role.company_settings_id is not None and target_role.company_settings_id != cs_id):
+        raise CustomException(status_code=403, message="Role does not belong to this company")
     u.role_id = role
     db.commit()
     db.refresh(u)
@@ -748,16 +861,38 @@ def patch_shift_configuration(
     u = db.get(User, user_id)
     if not u:
         raise CustomException(status_code=404, message="User not found")
+    assert_company_access(current_user, u, is_super_admin=is_super_admin(current_user, db))
     return serialize_user(u, db)
 
 
 # Roles
+def _assert_role_access(role: Role, current_user: User, db: Session, *, allow_system: bool = True) -> None:
+    cs_id = _ensure_company_settings_id(current_user, db)
+    if (
+        role.company_settings_id is not None
+        and role.company_settings_id != cs_id
+        and not (current_user.company_id is None and is_super_admin(current_user, db))
+    ):
+        raise CustomException(status_code=403, message="Access is denied")
+    if not allow_system:
+        is_system = role.role_type == 0 or (
+            role.code is not None and role.code not in (4, 6, "USER_CREATED")
+        )
+        if is_system:
+            raise CustomException(status_code=403, message="Default roles cannot be modified or deleted")
+
+
 @router.get("/roles")
 def list_roles(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> list[dict[str, Any]]:
-    rows = db.scalars(select(Role)).all()
+    cs_id = _ensure_company_settings_id(current_user, db)
+    rows = db.scalars(
+        select(Role).where(
+            (Role.company_settings_id == cs_id) | (Role.company_settings_id.is_(None))
+        )
+    ).all()
     return [serialize_role(r, db) for r in rows]
 
 
@@ -767,13 +902,14 @@ def create_role(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> dict[str, Any]:
+    cs_id = _ensure_company_settings_id(current_user, db)
     role = Role(
         name=payload.get("name", "Custom Role"),
         description=payload.get("description"),
         paid=bool(payload.get("paid", True)),
         role_type=1,
-        code=4,
-        company_settings_id=payload.get("companySettingsId"),
+        code=6,
+        company_settings_id=cs_id,
     )
     db.add(role)
     db.flush()
@@ -792,6 +928,7 @@ def get_role(
     role = db.get(Role, role_id)
     if not role:
         raise CustomException(status_code=404, message="Role not found")
+    _assert_role_access(role, current_user, db, allow_system=True)
     return serialize_role(role, db)
 
 
@@ -805,7 +942,8 @@ def patch_role(
     role = db.get(Role, role_id)
     if not role:
         raise CustomException(status_code=404, message="Role not found")
-    apply_patch(role, payload)
+    _assert_role_access(role, current_user, db, allow_system=False)
+    apply_patch(role, payload, exclude={"role_type", "code", "company_settings_id"})
     _sync_role_permissions(role.id, payload, db)
     db.commit()
     db.refresh(role)
@@ -821,6 +959,7 @@ def delete_role(
     role = db.get(Role, role_id)
     if not role:
         raise CustomException(status_code=404, message="Role not found")
+    _assert_role_access(role, current_user, db, allow_system=False)
     db.delete(role)
     db.commit()
     return SuccessResponse(success=True, message="Role deleted").model_dump()

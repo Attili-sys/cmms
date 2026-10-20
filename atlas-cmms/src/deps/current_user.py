@@ -413,3 +413,13 @@ def get_current_user(request: Request, db: Session = Depends(get_db)) -> User:
                     return user
 
     raise CustomException(status_code=401, message="Unauthorized")
+
+
+def get_optional_current_user(
+    request: Request, db: Session = Depends(get_db)
+) -> User | None:
+    """FastAPI dependency returning the current authenticated User or None if unauthenticated."""
+    try:
+        return get_current_user(request, db)
+    except CustomException:
+        return None

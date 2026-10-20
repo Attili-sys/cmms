@@ -7,11 +7,13 @@ from sqlalchemy import (
     DateTime,
     Float,
     ForeignKey,
+    Index,
     Integer,
     Sequence,
     SmallInteger,
     String,
     Text,
+    text,
 )
 from sqlalchemy.orm import Mapped, mapped_column
 
@@ -39,6 +41,32 @@ class Location(Base):
 
 class Asset(Base):
     __tablename__ = "asset"
+    __table_args__ = (
+        Index(
+            "uq_asset_company_custom_id",
+            "company_id",
+            "custom_id",
+            unique=True,
+            postgresql_where=text("custom_id IS NOT NULL"),
+            sqlite_where=text("custom_id IS NOT NULL"),
+        ),
+        Index(
+            "uq_asset_company_bar_code",
+            "company_id",
+            "bar_code",
+            unique=True,
+            postgresql_where=text("bar_code IS NOT NULL"),
+            sqlite_where=text("bar_code IS NOT NULL"),
+        ),
+        Index(
+            "uq_asset_company_nfc_id",
+            "company_id",
+            "nfc_id",
+            unique=True,
+            postgresql_where=text("nfc_id IS NOT NULL"),
+            sqlite_where=text("nfc_id IS NOT NULL"),
+        ),
+    )
 
     id: Mapped[int] = mapped_column("id", BigInteger, Sequence("asset_seq", start=1, increment=50, metadata=Base.metadata), primary_key=True, nullable=False)
     created_at: Mapped[datetime] = mapped_column("created_at", DateTime, nullable=False, default=utcnow)

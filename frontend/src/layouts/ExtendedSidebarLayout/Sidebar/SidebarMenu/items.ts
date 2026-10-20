@@ -69,7 +69,6 @@ const ownMenuItems: MenuItems[] = [
         icon: InsertChartTwoToneIcon,
         permission: PermissionEntity.ANALYTICS,
         planFeature: PlanFeature.ANALYTICS,
-        disabled: true,
         items: [
           {
             name: 'work_orders',
@@ -174,8 +173,7 @@ const ownMenuItems: MenuItems[] = [
         link: '/app/purchase-orders',
         icon: ReceiptTwoToneIcon,
         permission: PermissionEntity.PURCHASE_ORDERS,
-        planFeature: PlanFeature.PURCHASE_ORDER,
-        disabled: true
+        planFeature: PlanFeature.PURCHASE_ORDER
       },
       {
         name: 'meters',
@@ -207,7 +205,6 @@ const ownMenuItems: MenuItems[] = [
         icon: GroupsTwoTone,
         permission: PermissionEntity.VENDORS_AND_CUSTOMERS,
         uiConfigKey: 'vendorsAndCustomers',
-        disabled: true,
         items: [
           {
             name: 'vendors',
@@ -230,8 +227,7 @@ const ownMenuItems: MenuItems[] = [
         link: '/app/files',
         icon: AttachFileTwoToneIcon,
         permission: PermissionEntity.FILES,
-        planFeature: PlanFeature.FILE,
-        disabled: true
+        planFeature: PlanFeature.FILE
       },
       {
         name: 'settings',

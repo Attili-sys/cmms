@@ -121,13 +121,41 @@ All `POST /api/<entity>/search` endpoints accept a `SearchCriteria` payload:
   ]
 }
 ```
-- Supports nested/joined sort and filter paths (e.g. `schedule.startsOn`, `location.id`, `asset.id`, `category.id`).
+- Supports nested/joined sort and filter paths (e.g. `schedule.startsOn`, `location.id`, `asset.id`, `category.id`, `customFieldValues.value`, and M2M association filters like `assignedTo`, `teams`, `vendors`, `customers`, `parts`).
+- Deduplicates joined M2M / 1:N queries using a mandatory `model_cls.id.in_(filter_stmt)` subquery so `ORDER BY` on joined columns works on PostgreSQL without `SELECT DISTINCT` conflicts.
 - Automatically enforces `SearchFieldPolicy` (blocking sensitive attributes like `password`, `secret`, `token`, `code`).
 - Returns a Spring Data `Page<T>` JSON envelope (`content`, `totalElements`, `totalPages`, `size`, `number`, `first`, `last`, `numberOfElements`, `empty`, `pageable`, `sort`).
 
+### 3.5 Asset & Location M2M Relations, Custom Fields & Status-to-Downtime Lifecycle
+
+- **M2M & Custom Field Synchronization (`_sync_asset_relations`, `_sync_location_relations`):**
+  - Creating (`POST /api/assets`) or patching (`PATCH /api/assets/{id}`) an asset synchronizes `assignedTo` / `workers` (`t_asset_user_associations`), `teams` (`t_asset_team_associations`), `vendors` (`t_asset_vendor_associations`), `customers` (`t_asset_customer_associations`), `parts` (`t_asset_part_associations`), `files` (`t_asset_file_associations`), and `customFieldValues` (`custom_field_value`) within a single database transaction before returning the hydrated DTO.
+- **Status-to-Downtime Lifecycle (`trigger_asset_downtime`, `stop_asset_downtime`):**
+  - Transitioning an `Asset` to `DOWN` (`PATCH /api/assets/{id}`) or setting a `WorkOrder` to an non-complete status when `WorkOrderConfiguration.WorkOrderField.status` is `REQUIRED` opens an `AssetDowntime` (`duration=0`) on the asset and cascades `DOWN` + running `AssetDowntime` rows up its ancestor chain (guarding against duplicate running downtimes).
+  - Transitioning an `Asset` back to `OPERATIONAL` (or completing its `WorkOrder`) closes all running `AssetDowntime` rows (`duration=0`) with elapsed seconds and cascades `OPERATIONAL` down to all descendant assets.
+  - Creating or editing an `AssetDowntime` (`POST /api/asset-downtimes`, `PATCH /api/asset-downtimes/{id}`) validates against overlapping closed intervals (`406 Not Acceptable`).
+
+### 3.6 Asset & Fleet Analytics Contracts (`src/routes/analytics.py`)
+
+- `POST /api/analytics/assets/{asset_id}/overview` returns a JSON object `{"mtbf": float, "mttr": float, "downtime": int, "uptime": int, "totalCost": float}` matching `AssetOverviewStats` in `frontend/src/slices/analytics/asset.ts`.
+- `POST /api/analytics/assets/costs/overview` returns `{"totalWOCost", "avgWOCost", "totalAcquisitionCost", "rav"}` matching `AssetCostOverviewStats`.
+- Fleet reliability endpoints (`/downtimes`, `/mtbf`, `/mttr`, `/meantimes`, `/repair-times`, `/downtimes/costs`, `/downtimes/costs/date`, `/downtimes/meantime/date`, `/time-cost`, `/overview`) compute live values from `Asset`, `AssetDowntime`, `WorkOrder`, `Labor` (using merged interval duration), `AdditionalCost`, and `PartQuantity`.
+
+### 3.7 File Upload/Download & Import/Export Contracts (`src/routes/meters_requests_workflows_misc.py`)
+
+- `POST /api/files` persists uploaded bytes under `DATA_DIR/uploads/{company_id}/{file_id}_{safe_name}` and returns serialized `File` DTOs containing `id`, `name`, `url` (`/api/files/download/{id}`), and `thumbnailUrl`.
+- `POST /api/import/assets` executes a two-pass import (Pass 1: core columns, Pass 2: hierarchy `parentAssetName` and M2M associations by name/email) matching `AssetImportDTO` keys (`id`, `name`, `archived`, `description`, `locationName`, `parentAssetName`, `area`, `barCode`, `category`, `model`, `power`, `manufacturer`, `serialNumber`, `primaryUserEmail`, `warrantyExpirationDate`, `additionalInfos`, `inServiceDate`, `assignedToEmails`, `teamsNames`, `status`, `acquisitionCost`, `customersNames`, `vendorsNames`, `partsNames`).
+- `GET /api/import/download-template?language=EN&importEntity=ASSET` and `GET /api/export/{entity}` stream CSV files directly over HTTP.
+
+### 3.8 Tenant Security, FK Ownership & RBAC Enforcement (`src/routes/_crud.py`, `src/deps/permissions.py`)
+
+- `apply_patch()` blocks top-level and nested-dict overrides of `company_id`, `company_settings_id`, `created_at`, `created_by`, `updated_at`, and `updated_by`, and supports `{"location": null}` to clear nullable foreign keys (`location_id = None`).
+- `validate_foreign_key_ownership()` verifies that every referenced foreign key belongs to the caller's `company_id` or `company_settings_id` (skipping global tables `currency`, `company_settings`, `subscription`, `subscription_plan`).
+- `build_crud_router` enforces `can_create`, `can_view` / `can_view_other`, `can_edit_object` (creator or assigned user/team/primaryUser), and `can_delete_object` (creator or `delete_other_permissions`).
+
 ---
 
-## 4. End-to-End Contract Verification (`tests/test_crud_contracts.py`)
+## 4. End-to-End Contract Verification (`tests/`)
 
 Before deploying any backend or serializer change, run:
 
@@ -138,6 +166,7 @@ cd atlas-cmms
 
 Key test suites:
 - [`tests/test_crud_contracts.py`](tests/test_crud_contracts.py) — End-to-end verification of `/api/auth/me`, Location create + `/children/0/paginated`, Asset create + `/children/0/paginated` + `/mini?locationId=` + FK hydration, WorkOrder create + FK hydration, PreventiveMaintenance create + `Schedule` hydration + `schedule.startsOn` sort, Checklist create with `taskBases`/`options`, and Meter create + FK hydration.
+- [`tests/test_asset_management_fixes.py`](tests/test_asset_management_fixes.py) — Comprehensive verification of all 22 Asset Management defects (M2M/custom-field sync, status-to-downtime cascades, analytics formulas, search deduplication, two-pass import/export, file upload/download, tenant/FK isolation, RBAC ownership, hierarchy cycle detection, and duplicate identifier checks).
 - [`tests/routes/test_all_routes_and_jobs.py`](tests/routes/test_all_routes_and_jobs.py) — Route and background scheduler job coverage (`pm_generator`, `preventive_maintenance_notifier`, `downtime_notifier`, `cleanup`).
 - [`tests/contract/test_openapi_covers_catalog.py`](tests/contract/test_openapi_covers_catalog.py) — OpenAPI route catalog parity check.
 - [`tests/test_schema_matches_dump.py`](tests/test_schema_matches_dump.py) — SQLAlchemy 2.0 metadata vs PostgreSQL schema verification.

@@ -1,4 +1,5 @@
 import { lazy, Suspense } from 'react';
+import { Navigate } from 'react-router-dom';
 
 import SuspenseLoader from 'src/components/SuspenseLoader';
 
@@ -23,8 +24,13 @@ const RequestAnalytics = Loader(
 );
 const analyticsRoutes = [
   {
+    path: '',
+    element: <Navigate to="work-orders/status" replace />
+  },
+  {
     path: 'work-orders',
     children: [
+      { path: '', element: <Navigate to="status" replace /> },
       { path: 'status', element: <WOAnalytics /> },
       { path: 'analysis', element: <WOAnalytics /> },
       { path: 'aging', element: <WOAnalytics /> },
@@ -34,6 +40,7 @@ const analyticsRoutes = [
   {
     path: 'assets',
     children: [
+      { path: '', element: <Navigate to="reliability" replace /> },
       { path: 'reliability', element: <AssetAnalytics /> },
       { path: 'cost', element: <AssetAnalytics /> },
       { path: 'useful-life', element: <AssetAnalytics /> }

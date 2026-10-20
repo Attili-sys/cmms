@@ -317,6 +317,7 @@ def find_association_table(model_cls: type, target_name: str) -> Table | None:
 
     model_table = getattr(model_cls, "__tablename__", "")
     target_clean = camel_to_snake(target_name)
+    singular_target = target_clean[:-1] if target_clean.endswith("s") else target_clean
 
     # Candidate table patterns
     candidates = [
@@ -327,8 +328,10 @@ def find_association_table(model_cls: type, target_name: str) -> Table | None:
         f"own_user_{model_table}",
         f"t_{model_table}_{target_clean}_associations",
         f"t_{target_clean}_{model_table}_associations",
+        f"t_{model_table}_{singular_target}_associations",
+        f"t_{singular_target}_{model_table}_associations",
     ]
-    if target_clean in ("assigned_to", "assignedto", "user", "users"):
+    if target_clean in ("assigned_to", "assignedto", "user", "users", "workers"):
         candidates.extend([
             f"{model_table}_assigned_to",
             f"own_user_{model_table}s",
@@ -342,7 +345,9 @@ def find_association_table(model_cls: type, target_name: str) -> Table | None:
 
     # Search tables containing both substrings
     for name, tbl in metadata.tables.items():
-        if model_table in name and (target_clean in name or "assigned" in name):
+        if model_table in name and (
+            target_clean in name or singular_target in name or "assigned" in name
+        ):
             return tbl
 
     return None
@@ -397,6 +402,26 @@ def resolve_field_and_joins(
             if isinstance(current_entity, Table) and seg in current_entity.c:
                 return stmt, current_entity.c[seg]
 
+            # Single-segment many-to-many association filter (e.g. field="parts", operation="inm")
+            assoc_table = find_association_table(current_entity, seg)
+            if assoc_table is not None:
+                model_table_name = getattr(current_entity, "__tablename__", "")
+                col_for_model = None
+                col_for_target = None
+                for c in assoc_table.columns:
+                    for fk in c.foreign_keys:
+                        if fk.column.table.name == model_table_name:
+                            col_for_model = c
+                        else:
+                            col_for_target = c
+                if col_for_model is not None and col_for_target is not None:
+                    if prefix not in joined_aliases:
+                        stmt = stmt.outerjoin(
+                            assoc_table, current_entity.id == col_for_model
+                        )
+                        joined_aliases[prefix] = assoc_table
+                    return stmt, col_for_target
+
             raise InvalidSearchFieldException(field_path, f"Field '{raw_seg}' not found on entity")
 
         # Traversing relation
@@ -428,6 +453,21 @@ def resolve_field_and_joins(
                     target_alias = aliased(target_cls, name=f"j_{prefix.replace('.', '_')}")
                     stmt = stmt.outerjoin(target_alias, fk_col == getattr(target_alias, target_col))
                     joined_aliases[prefix] = target_alias
+                current_entity = joined_aliases[prefix]
+                continue
+
+        # Check one-to-many CustomFieldValue relation (e.g. customFieldValues.value)
+        if seg in ("custom_field_values", "customfieldvalues"):
+            from src.models.files_custom import CustomFieldValue
+
+            model_fk_name = f"{getattr(current_entity, '__tablename__', '')}_id"
+            if hasattr(CustomFieldValue, model_fk_name):
+                if prefix not in joined_aliases:
+                    cfv_alias = aliased(CustomFieldValue, name=f"j_{prefix.replace('.', '_')}")
+                    stmt = stmt.outerjoin(
+                        cfv_alias, current_entity.id == getattr(cfv_alias, model_fk_name)
+                    )
+                    joined_aliases[prefix] = cfv_alias
                 current_entity = joined_aliases[prefix]
                 continue
 
@@ -598,47 +638,111 @@ def process_single_filter(
     return stmt, None
 
 
+def apply_spring_sort(
+    stmt: Select,
+    model_cls: type,
+    sort: list[str] | None = None,
+    sort_field: str | None = None,
+    direction: str | None = None,
+) -> tuple[Select, str | None, str]:
+    """Applies Spring Data style sort query params (sort=field,dir or sortField+direction)."""
+    resolved_field: str | None = None
+    resolved_dir: str = (direction or "ASC").upper()
+
+    if sort:
+        # Handle sort=["name,asc"] or sort=["name", "asc"]
+        if len(sort) == 2 and sort[1].upper() in ("ASC", "DESC", "DSC") and "," not in sort[0]:
+            resolved_field = sort[0].strip()
+            resolved_dir = sort[1].strip().upper()
+        elif len(sort) >= 1 and sort[0]:
+            parts = [p.strip() for p in sort[0].split(",") if p.strip()]
+            if parts:
+                resolved_field = parts[0]
+            if len(parts) >= 2:
+                resolved_dir = parts[1].upper()
+    elif sort_field:
+        resolved_field = sort_field.strip()
+
+    sort_aliases: dict[str, Any] = {}
+    if resolved_field:
+        try:
+            stmt, sort_col = resolve_field_and_joins(stmt, model_cls, resolved_field, sort_aliases)
+            if resolved_dir in ("DESC", "DSC"):
+                stmt = stmt.order_by(sort_col.desc())
+            else:
+                stmt = stmt.order_by(sort_col.asc())
+            return stmt, resolved_field, ("DESC" if resolved_dir in ("DESC", "DSC") else "ASC")
+        except InvalidSearchFieldException:
+            pass
+
+    if hasattr(model_cls, "created_at"):
+        stmt = stmt.order_by(model_cls.created_at.desc())
+    elif hasattr(model_cls, "id"):
+        stmt = stmt.order_by(model_cls.id.desc())
+    return stmt, resolved_field, "DESC"
+
+
 def apply_search_criteria(
     stmt: Select,
     model_cls: type,
     criteria: SearchCriteria,
     company_id: int | None = None,
+    company_settings_id: int | None = None,
     paginate: bool = False,
 ) -> Select:
-    """Applies SearchCriteria filters, joins, company_id, and sorting to a SQLAlchemy Select statement."""
-    joined_aliases: dict[str, Any] = {}
-    predicates: list[ColumnElement] = []
-
-    # Apply company_id multi-tenant isolation
+    """Applies SearchCriteria filters, joins, tenant scoping, and sorting to a SQLAlchemy Select."""
+    tenant_predicates: list[ColumnElement] = []
     if company_id is not None and hasattr(model_cls, "company_id"):
-        predicates.append(model_cls.company_id == company_id)
+        tenant_predicates.append(model_cls.company_id == company_id)
+    elif company_settings_id is not None and hasattr(model_cls, "company_settings_id"):
+        tenant_predicates.append(model_cls.company_settings_id == company_settings_id)
+    elif company_id is not None:
+        from src.routes._crud import _build_auxiliary_tenant_predicate
 
-    # Process filter fields
+        aux_pred = _build_auxiliary_tenant_predicate(model_cls, company_id)
+        if aux_pred is not None:
+            tenant_predicates.append(aux_pred)
+
+    # Process filter fields in a dedicated filter statement to avoid 1:N / M:N row multiplication
+    filter_joined_aliases: dict[str, Any] = {}
+    filter_predicates: list[ColumnElement] = []
+    filter_stmt = select(model_cls.id) if hasattr(model_cls, "id") else stmt
+
     for ff in criteria.filter_fields:
-        stmt, pred = process_single_filter(stmt, model_cls, ff, joined_aliases)
+        filter_stmt, pred = process_single_filter(
+            filter_stmt, model_cls, ff, filter_joined_aliases
+        )
         if pred is not None:
-            predicates.append(pred)
+            filter_predicates.append(pred)
 
-    if predicates:
-        stmt = stmt.where(and_(*predicates))
+    outer_predicates: list[ColumnElement] = list(tenant_predicates)
+    if filter_joined_aliases and hasattr(model_cls, "id"):
+        subq_preds = tenant_predicates + filter_predicates
+        if subq_preds:
+            filter_stmt = filter_stmt.where(and_(*subq_preds))
+        outer_predicates.append(model_cls.id.in_(filter_stmt))
+    else:
+        outer_predicates.extend(filter_predicates)
 
-    # Apply sorting
+    if outer_predicates:
+        stmt = stmt.where(and_(*outer_predicates))
+
+    # Apply sorting on outer query (N:1 joins only, safe with ORDER BY on Postgres)
+    sort_joined_aliases: dict[str, Any] = {}
     sort_field = criteria.sort_field
     if sort_field:
-        stmt, sort_col = resolve_field_and_joins(stmt, model_cls, sort_field, joined_aliases)
+        stmt, sort_col = resolve_field_and_joins(stmt, model_cls, sort_field, sort_joined_aliases)
         direction = (criteria.direction or "ASC").upper()
         if direction in ("DESC", "DSC"):
             stmt = stmt.order_by(sort_col.desc())
         else:
             stmt = stmt.order_by(sort_col.asc())
     else:
-        # Default sorting
         if hasattr(model_cls, "created_at"):
             stmt = stmt.order_by(model_cls.created_at.desc())
         elif hasattr(model_cls, "id"):
             stmt = stmt.order_by(model_cls.id.desc())
 
-    # Apply pagination if requested
     if paginate:
         page_num = max(0, criteria.page_num)
         page_size = min(max(1, criteria.page_size), 1000)
@@ -652,6 +756,7 @@ def execute_search(
     model_cls: type,
     criteria: SearchCriteria,
     company_id: int | None = None,
+    company_settings_id: int | None = None,
     base_stmt: Select | None = None,
     serializer: Any = None,
 ) -> dict[str, Any]:
@@ -659,12 +764,13 @@ def execute_search(
     if base_stmt is None:
         base_stmt = select(model_cls)
 
-    # 1. Apply filters, joins, company_id, sorting without pagination
+    # 1. Apply filters, joins, tenant scoping, sorting without pagination
     filtered_stmt = apply_search_criteria(
         base_stmt,
         model_cls,
         criteria,
         company_id=company_id,
+        company_settings_id=company_settings_id,
         paginate=False,
     )
 

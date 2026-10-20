@@ -13,13 +13,12 @@ from contextlib import asynccontextmanager
 from pathlib import Path
 
 from fastapi import FastAPI
-from fastapi.staticfiles import StaticFiles
 
 from src.api import router as api_router
 from src.schemas.errors import register_exception_handlers
 from src.spa import router as spa_router
 from src.tasks import start_background_scheduler, stop_background_scheduler
-from src.views import router as views_router
+from src.views import ResilientStaticFiles, router as views_router
 
 
 @asynccontextmanager
@@ -45,7 +44,7 @@ app = FastAPI(
 register_exception_handlers(app)
 
 # Paths resolve from this file, never the working directory.
-app.mount("/static", StaticFiles(directory=Path(__file__).parent / "static"), name="static")
+app.mount("/static", ResilientStaticFiles(directory=Path(__file__).parent / "static"), name="static")
 
 app.include_router(views_router)
 app.include_router(api_router, prefix="/api")

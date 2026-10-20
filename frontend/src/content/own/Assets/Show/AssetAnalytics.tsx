@@ -42,23 +42,25 @@ const AssetDowntimes = ({ id }: PropsType) => {
   }[] = [
     {
       label: t('MTBF'),
-      value: assetDetailsOverview.mtbf.toString()
+      value: (assetDetailsOverview?.mtbf ?? 0).toString()
     },
     {
       label: t('MTTR'),
-      value: assetDetailsOverview.mttr.toString()
+      value: (assetDetailsOverview?.mttr ?? 0).toString()
     },
     {
       label: t('downtime_hours'),
-      value: (assetDetailsOverview.downtime / 3600).toFixed(2)
+      value: ((assetDetailsOverview?.downtime ?? 0) / 3600).toFixed(2)
     },
     {
       label: t('uptime_hours'),
-      value: (assetDetailsOverview.uptime / 3600).toFixed(2)
+      value: ((assetDetailsOverview?.uptime ?? 0) / 3600).toFixed(2)
     },
     {
       label: t('total_cost'),
-      value: getFormattedCurrency(assetDetailsOverview.totalCost.toString())
+      value: getFormattedCurrency(
+        (assetDetailsOverview?.totalCost ?? 0).toString()
+      )
     }
   ];
   return (

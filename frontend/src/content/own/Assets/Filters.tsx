@@ -22,6 +22,7 @@ interface OwnProps {
 function Filters({ filterFields, onFilterChange, onSave }: OwnProps) {
   const { t }: { t: any } = useTranslation();
   const { customersMini } = useSelector((state) => state.customers);
+  const { vendorsMini } = useSelector((state) => state.vendors);
   const { locationsMini } = useSelector((state) => state.locations);
   const { categories } = useSelector((state) => state.categories);
   const { usersMini } = useSelector((state) => state.users);
@@ -227,10 +228,15 @@ function Filters({ filterFields, onFilterChange, onSave }: OwnProps) {
         'customers',
         'name'
       ),
-      vendors: getLabelAndValue(filterFields, customersMini, 'vendors', 'name'),
+      vendors: getLabelAndValue(
+        filterFields,
+        vendorsMini,
+        'vendors',
+        'companyName'
+      ),
       archived: filterFields.find(
         (filterField) => filterField.field === 'archived'
-      ).value,
+      )?.value,
       createdAt: getDateValue(filterFields, 'createdAt'),
       updatedAt: getDateValue(filterFields, 'updatedAt')
     };

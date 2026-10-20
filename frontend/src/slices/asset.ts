@@ -89,18 +89,29 @@ const slice = createSlice({
     },
     deleteAsset(state: AssetState, action: PayloadAction<{ id: number }>) {
       const { id } = action.payload;
-      const assetIndex = state.assets.content.findIndex(
-        (asset) => asset.id === id
-      );
-      if (assetIndex !== -1) {
-        state.assets.content.splice(assetIndex, 1);
+      const toRemove = new Set<number>([id]);
+      let added = true;
+      while (added) {
+        added = false;
+        for (const a of state.assetsHierarchy) {
+          if (a.parentAsset?.id && toRemove.has(a.parentAsset.id) && !toRemove.has(a.id)) {
+            toRemove.add(a.id);
+            added = true;
+          }
+        }
+        for (const a of state.assets.content) {
+          if (a.parentAsset?.id && toRemove.has(a.parentAsset.id) && !toRemove.has(a.id)) {
+            toRemove.add(a.id);
+            added = true;
+          }
+        }
       }
-      const hierarchyIndex = state.assetsHierarchy.findIndex(
-        (asset) => asset.id === id
+      state.assets.content = state.assets.content.filter(
+        (asset) => !toRemove.has(asset.id)
       );
-      if (hierarchyIndex !== -1) {
-        state.assetsHierarchy.splice(hierarchyIndex, 1);
-      }
+      state.assetsHierarchy = state.assetsHierarchy.filter(
+        (asset) => !toRemove.has(asset.id)
+      );
     },
     setLoadingGet(
       state: AssetState,

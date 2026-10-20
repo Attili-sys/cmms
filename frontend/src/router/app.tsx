@@ -143,7 +143,13 @@ const PreventiveMaintenances = Loader(
 const PeopleAndTeams = Loader(
   lazy(() => import('../content/own/PeopleAndTeams'))
 );
-
+const Files = Loader(lazy(() => import('../content/own/Files')));
+const PurchaseOrders = Loader(
+  lazy(() => import('../content/own/PurchaseOrders'))
+);
+const VendorsAndCustomers = Loader(
+  lazy(() => import('../content/own/VendorsAndCustomers'))
+);
 const Imports = Loader(lazy(() => import('../content/own/Imports')));
 const Upgrade = Loader(
   lazy(() => import('../content/own/UpgradeAndDowngrade/Upgrade'))
@@ -154,6 +160,7 @@ const Downgrade = Loader(
 const SwitchAccount = Loader(
   lazy(() => import('../content/own/SwitchAccount'))
 );
+import analyticsRoutes from './analytics';
 const appRoutes = [
   {
     path: 'settings',
@@ -277,7 +284,7 @@ const appRoutes = [
   },
   {
     path: 'files',
-    element: <Navigate to="/app/work-orders" replace />
+    element: <Files />
   },
   {
     path: 'meters',
@@ -320,8 +327,10 @@ const appRoutes = [
   },
   {
     path: 'purchase-orders',
-    element: <Navigate to="/app/work-orders" replace />,
-    children: []
+    children: [
+      { path: '', element: <PurchaseOrders /> },
+      { path: ':purchaseOrderId', element: <PurchaseOrders /> }
+    ]
   },
   {
     path: 'locations',
@@ -363,6 +372,7 @@ const appRoutes = [
       {
         path: ':assetId',
         children: [
+          { path: '', element: <ShowAsset /> },
           { path: 'work-orders', element: <ShowAsset /> },
           { path: 'details', element: <ShowAsset /> },
           { path: 'parts', element: <ShowAsset /> },
@@ -376,8 +386,7 @@ const appRoutes = [
   },
   {
     path: 'analytics',
-    element: <Navigate to="/app/work-orders" replace />,
-    children: []
+    children: analyticsRoutes
   },
   {
     path: 'categories',
@@ -414,8 +423,23 @@ const appRoutes = [
   },
   {
     path: 'vendors-customers',
-    element: <Navigate to="/app/work-orders" replace />,
-    children: []
+    children: [
+      { path: '', element: <Navigate to="vendors" replace /> },
+      {
+        path: 'vendors',
+        children: [
+          { path: '', element: <VendorsAndCustomers /> },
+          { path: ':vendorId', element: <VendorsAndCustomers /> }
+        ]
+      },
+      {
+        path: 'customers',
+        children: [
+          { path: '', element: <VendorsAndCustomers /> },
+          { path: ':customerId', element: <VendorsAndCustomers /> }
+        ]
+      }
+    ]
   },
   {
     path: 'people-teams',
@@ -440,7 +464,7 @@ const appRoutes = [
   {
     path: 'imports',
     children: [
-      { index: true, element: <Navigate to="work-orders" replace /> },
+      { path: '', element: <Imports /> },
       { path: 'work-orders', element: <Imports /> },
       { path: 'assets', element: <Imports /> },
       { path: 'locations', element: <Imports /> },

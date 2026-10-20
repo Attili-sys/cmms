@@ -215,6 +215,8 @@ The entire Java Spring Boot backend (`api/`) has been ported to Python (`atlas-c
   - `tests/test_crud_contracts.py` (frontend-backend DTO hydration, `/children/0/paginated` hierarchy pagination, PM `Schedule`, and Checklist `TaskOption` contracts)
   - `tests/test_smoke.py` (40-endpoint Canvas post-deploy smoke test)
 - **Ruff Linter (`atlas-cmms/`)**: `.venv/bin/ruff check .` passes with zero warnings (`E9`, `F`, `B`, `S`, `ASYNC`).
-- **React Frontend (`frontend/`)**: `npm run lint` and `npm run build` pass cleanly.
+- **React Frontend (`frontend/`)**: the production build completed. Repository-wide `npm run lint` still stops on four pre-existing parser-project files (`commitlint.config.ts`, `config-overrides.js`, `index-now.js`, `sitemap-builder.js`); ESLint passed for the changed React sources.
+- **Java API (`api/`)**: `mvn -q test` completed with exit code 0 in Docker, including Testcontainers integration tests. Surefire reports contain no failures or errors. Tests that previously expected commercial quotas now prove those operations succeed, while permission denials still fail closed.
+- **Mobile (`mobile/`)**: TypeScript checking, Jest, and native Android and iOS Expo exports completed. No stack was deployed.
 
 

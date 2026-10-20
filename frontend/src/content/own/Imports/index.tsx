@@ -41,7 +41,7 @@ import {
 } from '../../../models/owns/imports';
 import { PlanFeature } from '../../../models/owns/subscriptionPlan';
 import FeatureErrorMessage from '../components/FeatureErrorMessage';
-import api from '../../../utils/api';
+import api, { getErrorMessage } from '../../../utils/api';
 import i18n from 'i18next';
 import downloadFile from 'downloadjs';
 import useImport, { EntityType } from 'src/hooks/useImport';
@@ -59,10 +59,22 @@ const Import = ({}: OwnProps) => {
   const { hasViewPermission, hasFeature } = useAuth();
   const { t }: { t: any } = useTranslation();
   const { importEntity: importEntityHook, loadingImport } = useImport();
-  const entityFromUrl = window.location.href.substring(
-    window.location.href.lastIndexOf('/') + 1
+  const validEntities: EntityType[] = [
+    'work-orders',
+    'assets',
+    'locations',
+    'parts',
+    'meters',
+    'preventive-maintenances'
+  ];
+  const entityFromUrl = window.location.href
+    .replace(/\/+$/, '')
+    .substring(window.location.href.replace(/\/+$/, '').lastIndexOf('/') + 1);
+  const [entity, setEntity] = useState<EntityType>(
+    validEntities.includes(entityFromUrl as EntityType)
+      ? (entityFromUrl as EntityType)
+      : 'work-orders'
   );
-  const [entity, setEntity] = useState<EntityType>(entityFromUrl as EntityType);
   const [openModal, setOpenModal] = useState<boolean>(false);
   const { setTitle } = useContext(TitleContext);
   const [userHeaders, setUserHeaders] = useState<string[]>([]);
@@ -104,23 +116,63 @@ const Import = ({}: OwnProps) => {
   useEffect(() => {
     if (userHeaders.length) {
       let result: { userHeader: string; keyName: string }[] = [];
+      const norm = (s: string) =>
+        (s || '').toLowerCase().replace(/[\s_-]+/g, '');
+      const usedUserHeaders = new Set<string>();
+      const matchedKeys = new Set<string>();
+
+      // Pass 1: exact normalized match against keyName, label, or keyName without trailing "Name"
       headerKeysConfig[entity].forEach((ownHeader) => {
+        const ownKeyNorm = norm(ownHeader.keyName);
+        const ownLabelNorm = norm(ownHeader.label);
+        const ownShortKeyNorm = norm(ownHeader.keyName.replace(/Name$/, ''));
+        const exactUserHeader = userHeaders.find(
+          (uh) =>
+            !usedUserHeaders.has(uh) &&
+            (norm(uh) === ownKeyNorm ||
+              norm(uh) === ownLabelNorm ||
+              (ownShortKeyNorm && norm(uh) === ownShortKeyNorm))
+        );
+        if (exactUserHeader) {
+          usedUserHeaders.add(exactUserHeader);
+          matchedKeys.add(ownHeader.keyName);
+          result.push({
+            userHeader: exactUserHeader,
+            keyName: ownHeader.keyName
+          });
+        }
+      });
+
+      // Pass 2: conservative fuzzy match on remaining unmatched headers (skip very short labels like "ID")
+      headerKeysConfig[entity].forEach((ownHeader) => {
+        if (matchedKeys.has(ownHeader.keyName)) return;
+        if ((ownHeader.label || '').length < 4) return;
+        const remainingHeaders = userHeaders.filter(
+          (uh) => !usedUserHeaders.has(uh)
+        );
+        if (!remainingHeaders.length) return;
         const closestMatchInUserHeaders = closestMatch(
           ownHeader.label,
-          userHeaders
+          remainingHeaders
         );
-        let closestUserHeader = closestMatchInUserHeaders;
-        if (Array.isArray(closestMatchInUserHeaders))
-          closestUserHeader = closestMatchInUserHeaders[0];
+        let closestUserHeader = Array.isArray(closestMatchInUserHeaders)
+          ? closestMatchInUserHeaders[0]
+          : closestMatchInUserHeaders;
+        const maxDist = Math.min(
+          3,
+          Math.floor(ownHeader.label.length / 2)
+        );
         if (
           closestUserHeader &&
-          distance(closestUserHeader as string, ownHeader.label) < 5 &&
-          result.every(({ userHeader }) => userHeader !== closestUserHeader)
+          distance(
+            (closestUserHeader as string).toLowerCase(),
+            ownHeader.label.toLowerCase()
+          ) <= maxDist
         ) {
+          usedUserHeaders.add(closestUserHeader as string);
+          matchedKeys.add(ownHeader.keyName);
           result.push({
-            userHeader: userHeaders.find(
-              (userHeader) => userHeader === closestUserHeader
-            ),
+            userHeader: closestUserHeader as string,
             keyName: ownHeader.keyName
           });
         }
@@ -258,10 +310,8 @@ const Import = ({}: OwnProps) => {
         reset();
       })
       .catch((error: Error) => {
-        showSnackBar(
-          `${t('import_error')}${error ? `: ${error.message}` : ''}`,
-          'error'
-        );
+        const msg = getErrorMessage(error, '');
+        showSnackBar(`${t('import_error')}${msg ? `: ${msg}` : ''}`, 'error');
       });
   };
   const match = (data: { userHeader: string; keyName: string }[]) => {

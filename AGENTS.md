@@ -83,6 +83,8 @@ Secrets stay in `.env` and the environment. Never commit them.
 | `dev-docs/` | Super-admin, LDAP, TLS, backup, upgrades |
 | `GAP_ANALYSIS.md` | Reviewing the SentrixFM reverse-engineering gap analysis (`S001–S107`), capability matrix, and phased enhancement roadmap (`P0–P3`) |
 | `FACILIO_GAP_ANALYSIS.md` | Reviewing the Facilio enterprise CAFM gap analysis (`22 REA targets`, 12 domains) and unified master roadmap |
+| `ASSET_MANAGEMENT_SPEC.md` | Executing or reviewing the 19-issue Asset Management audit, 8-stage execution plan (`Stages 0–7`), and reliability/cost metric contracts |
+| `assets-management-plans/` | Executing the phased Asset Management implementation plans (starting with `01_ASSET_MANAGEMENT_FIXES_PLAN.md` for P0/P1 defects and contract parity fixes) |
 | `research/` | Inspecting the raw reverse-engineering packages (`research/sentrixfm-research/` and `research/Facilio_Public_Research/`) |
 | `ATLAS_CAFM_DECISION_REPORT.md` | Choosing what to build next. It is an audit, not a description of code you have changed |
 | `UNRESTRICTED_SELFHOSTED.md` | Understanding which restrictions were removed on this branch and which controls are retained |

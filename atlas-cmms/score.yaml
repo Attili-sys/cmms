@@ -24,10 +24,10 @@ containers:
     variables:
       PORT: ${resources.www.PORT}
       CLOUD_VERSION: "false"
-      # DATA_DIR: /data               # with the `data` volume below — src/envs.py reads it
-    # volumes:                        # with the `data` volume below: its disk, always at /data
-    #   /data:
-    #     source: ${resources.data}
+      DATA_DIR: /data               # with the `data` volume below — src/envs.py reads it
+    volumes:                        # with the `data` volume below: its disk, always at /data
+      /data:
+        source: ${resources.data}
 
 resources:
   www:
@@ -41,9 +41,9 @@ resources:
   db:
     type: postgres
     params: {size: 1Gi}
-  # data:                         # a disk of its own, kept across restarts — request-volume
-  #   type: volume                # mounted at /data (above); deleted with the app, no backup
-  #   params: {size: 1Gi}         # 1Gi-10Gi; more, to 100Gi, a team owner approves on the app's page
+  data:                         # a disk of its own, kept across restarts — request-volume
+    type: volume                # mounted at /data (above); deleted with the app, no backup
+    params: {size: 1Gi}         # 1Gi-10Gi; more, to 100Gi, a team owner approves on the app's page
   # ai:                           # the app's own AI key: OPENAI_BASE_URL, OPENAI_API_KEY
   #   type: llm                   # and PLATFORM_LLM_MODELS — the request-llm skill
   #   params: {models: [gemini-flash-lite]}   # optional: which models; default every one

@@ -19,6 +19,7 @@ export const formatSelect = (
 
 export const formatAssetValues = (values) => {
   const newValues = { ...values };
+  delete newValues.nfc;
   newValues.primaryUser = formatSelect(newValues.primaryUser);
   newValues.location = formatSelect(newValues.location);
   newValues.category = formatSelect(newValues.category);

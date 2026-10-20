@@ -28,6 +28,7 @@ import { PermissionEntity } from '../../../../models/owns/role';
 import {
   createAssetDowntime,
   deleteAssetDowntime,
+  editAssetDowntime,
   getAssetDowntimes
 } from '../../../../slices/assetDowntime';
 import { useContext, useEffect, useState } from 'react';
@@ -84,7 +85,10 @@ const AssetDowntimes = ({ asset }: PropsType) => {
     showSnackBar(t('edit_downtime_success'), 'success');
   };
   const onEditFailure = (err) =>
-    showSnackBar(t("The Downtime couldn't be edited"), 'error');
+    showSnackBar(
+      getErrorMessage(err, t("The Downtime couldn't be edited")),
+      'error'
+    );
 
   const handleEdit = (id: number) => {
     setCurrentDowntime(downtimes.find((downtime) => downtime.id === id));
@@ -110,7 +114,7 @@ const AssetDowntimes = ({ asset }: PropsType) => {
       description: t('duration'),
       width: 150,
       valueGetter: (params: GridValueGetterParams<number>) =>
-        getHMSString(params.value)
+        params.value ? getHMSString(params.value) : t('ongoing', 'Ongoing')
     },
     {
       field: 'startsOn',
@@ -252,9 +256,10 @@ const AssetDowntimes = ({ asset }: PropsType) => {
             }}
             onChange={({ field, e }) => {}}
             onSubmit={async (values) => {
-              if (verifyValues(values))
+              if (verifyValues(values) && currentDowntime)
                 return dispatch(
-                  createAssetDowntime(asset.id, {
+                  editAssetDowntime(currentDowntime.id, asset.id, {
+                    ...currentDowntime,
                     ...values,
                     duration: values.hours * 60 * 60 + values.minutes * 60
                   })
@@ -282,7 +287,7 @@ const AssetDowntimes = ({ asset }: PropsType) => {
                         ...asset,
                         status
                       })
-                    );
+                    ).then(() => dispatch(getAssetDowntimes(asset.id)));
                   }}
                   disabled={!hasEditPermission(PermissionEntity.ASSETS, asset)}
                 />
@@ -298,7 +303,7 @@ const AssetDowntimes = ({ asset }: PropsType) => {
               </Stack>
               <CustomDataGrid
                 columns={columns}
-                rows={downtimes.filter((downtime) => downtime.duration)}
+                rows={downtimes}
                 components={{
                   Toolbar: GridToolbar
                 }}
