@@ -20,7 +20,7 @@ from src import envs
 from src.deps.company import assert_company_access, is_super_admin
 from src.deps.current_user import get_current_user, get_optional_current_user
 from src.deps.db import get_db
-from src.deps.permissions import can_create, can_view
+from src.deps.permissions import can_create, can_edit_object, can_view
 from src.models._base import utcnow
 from src.models.associations import (
     request_assigned_to,
@@ -31,14 +31,37 @@ from src.models.associations import (
     t_asset_team_associations,
     t_asset_user_associations,
     t_asset_vendor_associations,
+    t_location_customer_associations,
+    t_location_team_associations,
+    t_location_user_associations,
+    t_location_vendor_associations,
     t_meter_user_associations,
+    t_part_customer_associations,
+    t_part_team_associations,
+    t_part_user_associations,
+    t_part_vendor_associations,
     t_request_file_associations,
     work_order_assigned_to,
     work_order_customers,
     work_order_files,
+    work_order_meter_trigger_assigned_to,
+    work_order_meter_trigger_customers,
+    work_order_meter_trigger_files,
 )
-from src.models.categories import AssetCategory
-from src.models.enums import AssetStatus, FileType, PermissionEntity, WFMainCondition
+from src.models.categories import (
+    AssetCategory,
+    MeterCategory,
+    PartCategory,
+    WorkOrderCategory,
+)
+from src.models.enums import (
+    AssetStatus,
+    FileType,
+    PermissionEntity,
+    Priority,
+    Status,
+    WFMainCondition,
+)
 from src.models.files_custom import CustomField, CustomFieldValue, File as FileEntity, Notification
 from src.models.integrations import ApiKey, WebhookEndpoint as WebhookConfig
 from src.models.location_asset import Asset, Location
@@ -46,6 +69,7 @@ from src.models.meters import Meter, Reading, WorkOrderMeterTrigger
 from src.models.parts_po import Customer, Part, Vendor
 from src.models.pm_schedule import PreventiveMaintenance
 from src.models.requests import Request, RequestPortal
+from src.models.settings import GeneralPreferences
 from src.models.users import Team, User
 from src.models.work_orders import WorkOrder
 from src.models.workflows import Workflow, WorkflowAction, WorkflowCondition
@@ -53,6 +77,7 @@ from src.routes._crud import (
     _get_user_company_settings_id,
     apply_model_defaults,
     build_crud_router,
+    validate_foreign_key_ownership,
 )
 from src.routes.assets_locations import (
     _hydrate_custom_field_values,
@@ -66,7 +91,7 @@ from src.services.workflow_engine import (
     run_request_workflows,
     run_work_order_workflows,
 )
-from src.utils.dates import to_iso_utc
+from src.utils.dates import parse_iso_utc, to_iso_utc
 
 router = APIRouter()
 
@@ -201,9 +226,9 @@ def _after_create_reading(
         for trig in triggers:
             cond = trig.trigger_condition if trig.trigger_condition is not None else 0
             should_fire = (
-                cond in (0, "0", "MORE_THAN", "GREATER_THAN") and reading.value > trig.value
+                cond in (0, "0", "LESS_THAN") and reading.value < trig.value
             ) or (
-                cond in (1, "1", "LESS_THAN") and reading.value < trig.value
+                cond in (1, "1", "MORE_THAN", "GREATER_THAN") and reading.value > trig.value
             )
             if should_fire:
                 wo = WorkOrder(
@@ -215,9 +240,12 @@ def _after_create_reading(
                     asset_id=trig.asset_id,
                     location_id=trig.location_id,
                     primary_user_id=trig.primary_user_id,
+                    team_id=trig.team_id,
+                    category_id=trig.category_id,
+                    image_id=trig.image_id,
                     created_by=current_user.id,
-                    estimated_duration=0.0,
-                    required_signature=False,
+                    estimated_duration=trig.estimated_duration or 0.0,
+                    required_signature=bool(trig.required_signature),
                     archived=False,
                     is_demo=False,
                 )
@@ -225,8 +253,48 @@ def _after_create_reading(
                 db.flush()
                 wo.custom_id = f"W{wo.id:06d}"
 
+                trig_user_ids = db.scalars(
+                    select(work_order_meter_trigger_assigned_to.c.assigned_to_id).where(
+                        work_order_meter_trigger_assigned_to.c.work_order_meter_trigger_id
+                        == trig.id
+                    )
+                ).all()
+                for uid in trig_user_ids:
+                    db.execute(
+                        work_order_assigned_to.insert().values(
+                            work_order_id=wo.id, assigned_to_id=uid
+                        )
+                    )
+                trig_cust_ids = db.scalars(
+                    select(work_order_meter_trigger_customers.c.customers_id).where(
+                        work_order_meter_trigger_customers.c.work_order_meter_trigger_id
+                        == trig.id
+                    )
+                ).all()
+                for cid in trig_cust_ids:
+                    db.execute(
+                        work_order_customers.insert().values(
+                            work_order_id=wo.id, customers_id=cid
+                        )
+                    )
+                trig_file_ids = db.scalars(
+                    select(work_order_meter_trigger_files.c.files_id).where(
+                        work_order_meter_trigger_files.c.work_order_meter_trigger_id == trig.id
+                    )
+                ).all()
+                for fid in trig_file_ids:
+                    db.execute(
+                        work_order_files.insert().values(work_order_id=wo.id, files_id=fid)
+                    )
+                run_work_order_workflows(wo, WFMainCondition.WORK_ORDER_CREATED, db)
 
-readings_router = build_crud_router("/readings", Reading, after_create=_after_create_reading)
+
+readings_router = build_crud_router(
+    "/readings",
+    Reading,
+    after_create=_after_create_reading,
+    after_patch=_after_create_reading,
+)
 
 
 @readings_router.get("/meter/{meter_id:int}")
@@ -258,7 +326,15 @@ def get_readings_histogram(
     if not meter:
         raise CustomException(status_code=404, message="Meter not found")
     assert_company_access(current_user, meter, is_super_admin=is_super_admin(current_user, db))
-    rows = db.scalars(select(Reading).where(Reading.meter_id == meter_id)).all()
+    stmt = select(Reading).where(Reading.meter_id == meter_id)
+    if isinstance(payload, dict):
+        start_dt = parse_iso_utc(payload.get("start"))
+        end_dt = parse_iso_utc(payload.get("end"))
+        if start_dt is not None:
+            stmt = stmt.where(Reading.created_at >= start_dt)
+        if end_dt is not None:
+            stmt = stmt.where(Reading.created_at <= end_dt)
+    rows = db.scalars(stmt.order_by(Reading.created_at.asc())).all()
     return [
         {"date": r.created_at.strftime("%Y-%m-%d"), "value": r.value}
         for r in rows
@@ -439,8 +515,25 @@ def approve_request(
     if not req:
         raise CustomException(status_code=404, message="Request not found")
     assert_company_access(current_user, req, is_super_admin=is_super_admin(current_user, db))
+    if not (
+        can_edit_object(current_user, PermissionEntity.REQUESTS, req, db)
+        or can_view(current_user, PermissionEntity.SETTINGS, db)
+    ):
+        raise CustomException(status_code=403, message="Access is denied")
     if req.work_order_id is not None or req.cancelled:
         raise CustomException(status_code=406, message="Request is already processed")
+
+    primary_user_id = req.primary_user_id
+    if primary_user_id is None:
+        cs_id = _get_user_company_settings_id(current_user, db)
+        if cs_id is not None:
+            gp = db.scalar(
+                select(GeneralPreferences).where(
+                    GeneralPreferences.company_settings_id == cs_id
+                )
+            )
+            if gp is not None and gp.auto_assign_requests:
+                primary_user_id = current_user.id
 
     wo = WorkOrder(
         title=req.title,
@@ -450,7 +543,7 @@ def approve_request(
         company_id=req.company_id or current_user.company_id,
         asset_id=req.asset_id,
         location_id=req.location_id,
-        primary_user_id=req.primary_user_id,
+        primary_user_id=primary_user_id,
         team_id=req.team_id,
         category_id=req.category_id,
         image_id=req.image_id,
@@ -502,6 +595,18 @@ def approve_request(
     for fid in all_file_ids:
         db.execute(work_order_files.insert().values(work_order_id=wo.id, files_id=fid))
 
+    req_cfvs = db.scalars(
+        select(CustomFieldValue).where(CustomFieldValue.request_id == req.id)
+    ).all()
+    for cfv in req_cfvs:
+        db.add(
+            CustomFieldValue(
+                value=cfv.value,
+                custom_field_id=cfv.custom_field_id,
+                work_order_id=wo.id,
+            )
+        )
+
     run_request_workflows(req, WFMainCondition.REQUEST_APPROVED, db)
     run_work_order_workflows(wo, WFMainCondition.WORK_ORDER_CREATED, db)
 
@@ -522,6 +627,11 @@ def cancel_request(
     if not req:
         raise CustomException(status_code=404, message="Request not found")
     assert_company_access(current_user, req, is_super_admin=is_super_admin(current_user, db))
+    if not (
+        can_edit_object(current_user, PermissionEntity.REQUESTS, req, db)
+        or can_view(current_user, PermissionEntity.SETTINGS, db)
+    ):
+        raise CustomException(status_code=403, message="Access is denied")
     body_reason = (
         payload.get("reason") or payload.get("cancellationReason")
         if isinstance(payload, dict)
@@ -598,6 +708,7 @@ def _before_create_workflow(
     act = WorkflowAction(company_id=current_user.company_id)
     if isinstance(payload.get("action"), dict):
         apply_patch(act, payload["action"])
+    validate_foreign_key_ownership(act, current_user, db)
     db.add(act)
     db.flush()
     wf.action_id = act.id
@@ -633,6 +744,7 @@ def _after_create_workflow(
                     ]
                 cond = WorkflowCondition(company_id=current_user.company_id)
                 apply_patch(cond, normalized_cdata)
+                validate_foreign_key_ownership(cond, current_user, db)
                 db.add(cond)
                 db.flush()
                 db.execute(
@@ -643,6 +755,46 @@ def _after_create_workflow(
                 )
 
 
+def _before_patch_workflow(
+    wf: Workflow, payload: dict[str, Any], current_user: User, db: Session
+) -> None:
+    if isinstance(payload.get("action"), dict):
+        act = db.get(WorkflowAction, wf.action_id) if wf.action_id else None
+        if act is None:
+            act = WorkflowAction(company_id=current_user.company_id)
+            db.add(act)
+        apply_patch(act, payload["action"])
+        validate_foreign_key_ownership(act, current_user, db)
+        db.flush()
+        wf.action_id = act.id
+
+
+def _after_patch_workflow(
+    wf: Workflow, payload: dict[str, Any], current_user: User, db: Session
+) -> None:
+    from sqlalchemy import delete
+    from src.models.associations import workflow_secondary_conditions
+
+    if "secondaryConditions" in payload and isinstance(payload["secondaryConditions"], list):
+        old_cond_ids = list(
+            db.scalars(
+                select(workflow_secondary_conditions.c.secondary_conditions_id).where(
+                    workflow_secondary_conditions.c.workflow_id == wf.id
+                )
+            ).all()
+        )
+        db.execute(
+            delete(workflow_secondary_conditions).where(
+                workflow_secondary_conditions.c.workflow_id == wf.id
+            )
+        )
+        if old_cond_ids:
+            db.execute(
+                delete(WorkflowCondition).where(WorkflowCondition.id.in_(old_cond_ids))
+            )
+        _after_create_workflow(wf, payload, current_user, db)
+
+
 router.include_router(
     build_crud_router(
         "/workflows",
@@ -650,6 +802,8 @@ router.include_router(
         custom_serializer=_serialize_workflow,
         before_create=_before_create_workflow,
         after_create=_after_create_workflow,
+        before_patch=_before_patch_workflow,
+        after_patch=_after_patch_workflow,
     )
 )
 
@@ -1151,11 +1305,68 @@ def export_csv(
         )
 
     entity_map: dict[str, tuple[type, list[str]]] = {
-        "work-orders": (WorkOrder, ["id", "custom_id", "title", "description", "status", "priority"]),
-        "locations": (Location, ["id", "custom_id", "name", "address", "longitude", "latitude"]),
-        "parts": (Part, ["id", "name", "cost", "quantity", "barcode", "unit", "area", "description", "min_quantity"]),
-        "meters": (Meter, ["id", "name", "unit", "update_frequency"]),
-        "preventive-maintenances": (PreventiveMaintenance, ["id", "custom_id", "name", "title", "description"]),
+        "work-orders": (
+            WorkOrder,
+            [
+                "id",
+                "custom_id",
+                "title",
+                "description",
+                "status",
+                "priority",
+                "due_date",
+                "completed_on",
+                "estimated_duration",
+                "category_name",
+                "asset_name",
+                "location_name",
+                "primary_user_email",
+                "team_name",
+                "archived",
+                "required_signature",
+            ],
+        ),
+        "locations": (
+            Location,
+            ["id", "custom_id", "name", "address", "longitude", "latitude", "parent_location_name"],
+        ),
+        "parts": (
+            Part,
+            [
+                "id",
+                "name",
+                "cost",
+                "quantity",
+                "barcode",
+                "unit",
+                "area",
+                "category_name",
+                "description",
+                "min_quantity",
+                "non_stock",
+            ],
+        ),
+        "meters": (
+            Meter,
+            ["id", "name", "unit", "update_frequency", "category_name", "asset_name", "location_name"],
+        ),
+        "preventive-maintenances": (
+            PreventiveMaintenance,
+            [
+                "id",
+                "custom_id",
+                "name",
+                "title",
+                "description",
+                "priority",
+                "estimated_duration",
+                "category_name",
+                "asset_name",
+                "location_name",
+                "primary_user_email",
+                "team_name",
+            ],
+        ),
     }
     target = entity_map.get(entity_name.lower())
     if not target:
@@ -1163,11 +1374,65 @@ def export_csv(
     model_cls, cols = target
     rows = db.scalars(select(model_cls).where(model_cls.company_id == current_user.company_id)).all()
 
+    def _format_export_cell(row_obj: Any, col_key: str) -> Any:
+        if col_key == "status" and isinstance(row_obj, WorkOrder):
+            try:
+                return list(Status)[int(row_obj.status or 0)].name
+            except Exception:
+                return row_obj.status
+        if col_key == "priority" and hasattr(row_obj, "priority"):
+            try:
+                return list(Priority)[int(row_obj.priority or 0)].name
+            except Exception:
+                return row_obj.priority
+        if col_key in ("archived", "required_signature", "non_stock"):
+            return "Yes" if getattr(row_obj, col_key, False) else "No"
+        if col_key in ("due_date", "completed_on"):
+            val = getattr(row_obj, col_key, None)
+            return to_iso_utc(val) or "" if val else ""
+        if col_key == "asset_name":
+            aid = getattr(row_obj, "asset_id", None)
+            a = db.get(Asset, aid) if aid else None
+            return a.name if a else ""
+        if col_key == "location_name":
+            lid = getattr(row_obj, "location_id", None)
+            loc = db.get(Location, lid) if lid else None
+            return loc.name if loc else ""
+        if col_key == "parent_location_name":
+            plid = getattr(row_obj, "parent_location_id", None)
+            ploc = db.get(Location, plid) if plid else None
+            return ploc.name if ploc else ""
+        if col_key == "primary_user_email":
+            uid = getattr(row_obj, "primary_user_id", None)
+            u = db.get(User, uid) if uid else None
+            return u.email if u else ""
+        if col_key == "team_name":
+            tid = getattr(row_obj, "team_id", None)
+            tm = db.get(Team, tid) if tid else None
+            return tm.name if tm else ""
+        if col_key == "category_name":
+            cid = getattr(row_obj, "category_id", None)
+            if not cid:
+                return ""
+            cat_cls = (
+                WorkOrderCategory
+                if isinstance(row_obj, (WorkOrder, PreventiveMaintenance))
+                else PartCategory
+                if isinstance(row_obj, Part)
+                else MeterCategory
+                if isinstance(row_obj, Meter)
+                else None
+            )
+            cat = db.get(cat_cls, cid) if cat_cls else None
+            return cat.name if cat else ""
+        val = getattr(row_obj, col_key, "")
+        return "" if val is None else val
+
     buf = io.StringIO()
     writer = csv.writer(buf)
     writer.writerow(cols)
     for r in rows:
-        writer.writerow([getattr(r, c, "") for c in cols])
+        writer.writerow([_format_export_cell(r, c) for c in cols])
 
     return Response(
         content=buf.getvalue().encode("utf-8"),
@@ -1498,25 +1763,347 @@ def import_entities(
 
     created = 0
     updated = 0
-    for item in payload:
-        item_id = item.get("id")
+    company_id = current_user.company_id
+    cs_id = _get_user_company_settings_id(current_user, db)
+    ent_key = entity_name.lower()
+
+    def _resolve_enum_idx(enum_cls: type, raw_val: Any, default_idx: int = 0) -> int:
+        members = list(enum_cls)
+        if raw_val is None or str(raw_val).strip() == "":
+            return default_idx
+        if isinstance(raw_val, int) and not isinstance(raw_val, bool):
+            return raw_val if 0 <= raw_val < len(members) else default_idx
+        norm = str(raw_val).strip().upper().replace(" ", "_").replace("-", "_")
+        if norm.isdigit():
+            idx = int(norm)
+            return idx if 0 <= idx < len(members) else default_idx
+        for idx, m in enumerate(members):
+            if m.name == norm or str(m.value).upper() == norm:
+                return idx
+        return default_idx
+
+    def _resolve_or_create_cat(cat_cls: type, raw_name: Any) -> int | None:
+        cname = str(raw_name or "").strip()
+        if not cname or cs_id is None:
+            return None
+        cat = db.scalar(
+            select(cat_cls).where(
+                cat_cls.company_settings_id == cs_id,
+                func.lower(cat_cls.name) == cname.lower(),
+            )
+        )
+        if cat is None:
+            cat = cat_cls(
+                name=cname,
+                company_settings_id=cs_id,
+                created_by=current_user.id,
+                is_demo=False,
+            )
+            apply_model_defaults(cat)
+            db.add(cat)
+            db.flush()
+        return cat.id
+
+    for raw_item in payload:
+        if not isinstance(raw_item, dict):
+            continue
+        item = dict(raw_item)
+        for bool_k in ("archived", "requiredSignature", "nonStock"):
+            if bool_k in item:
+                item[bool_k] = _parse_bool_import(item[bool_k])
+        if "status" in item and ent_key == "work-orders":
+            item["status"] = _resolve_enum_idx(Status, item["status"], 0)
+        if "priority" in item and ent_key in ("work-orders", "preventive-maintenances"):
+            item["priority"] = _resolve_enum_idx(Priority, item["priority"], 0)
+
+        raw_id = item.get("id")
+        item_id: int | None = None
+        if raw_id is not None and str(raw_id).strip() != "":
+            try:
+                item_id = int(float(str(raw_id).strip()))
+            except (ValueError, TypeError):
+                item_id = None
+
         obj = db.get(model_cls, item_id) if item_id else None
-        if obj is not None and getattr(obj, "company_id", None) == current_user.company_id:
-            apply_patch(obj, item)
-            updated += 1
-        else:
+        is_update = obj is not None and getattr(obj, "company_id", None) == company_id
+        if not is_update:
             obj = model_cls()
-            apply_patch(obj, item)
             if hasattr(obj, "company_id"):
-                obj.company_id = current_user.company_id
+                obj.company_id = company_id
             if hasattr(obj, "created_by"):
                 obj.created_by = current_user.id
-            apply_model_defaults(obj)
+
+        scalar_item = {
+            k: v
+            for k, v in item.items()
+            if k
+            not in (
+                "id",
+                "category",
+                "assetName",
+                "locationName",
+                "parentLocationName",
+                "primaryUserEmail",
+                "completedByEmail",
+                "teamName",
+                "assignedToEmails",
+                "workersEmails",
+                "usersEmails",
+                "teamsNames",
+                "vendorsNames",
+                "customersNames",
+            )
+        }
+        apply_patch(obj, scalar_item)
+
+        # Resolve relational fields by name/email within tenant
+        loc_name = str(item.get("locationName") or "").strip()
+        if loc_name and hasattr(obj, "location_id"):
+            loc = db.scalar(
+                select(Location).where(
+                    Location.company_id == company_id,
+                    func.lower(Location.name) == loc_name.lower(),
+                )
+            )
+            if loc is not None:
+                obj.location_id = loc.id
+
+        parent_loc_name = str(item.get("parentLocationName") or "").strip()
+        if parent_loc_name and isinstance(obj, Location):
+            ploc = db.scalar(
+                select(Location).where(
+                    Location.company_id == company_id,
+                    func.lower(Location.name) == parent_loc_name.lower(),
+                )
+            )
+            if ploc is not None and ploc.id != getattr(obj, "id", None):
+                obj.parent_location_id = ploc.id
+
+        asset_name = str(item.get("assetName") or "").strip()
+        if asset_name and hasattr(obj, "asset_id"):
+            ast = db.scalar(
+                select(Asset).where(
+                    Asset.company_id == company_id,
+                    func.lower(Asset.name) == asset_name.lower(),
+                )
+            )
+            if ast is not None:
+                obj.asset_id = ast.id
+
+        pu_email = str(item.get("primaryUserEmail") or "").strip()
+        if pu_email and hasattr(obj, "primary_user_id"):
+            pu = db.scalar(
+                select(User).where(
+                    User.company_id == company_id,
+                    func.lower(User.email) == pu_email.lower(),
+                )
+            )
+            if pu is not None:
+                obj.primary_user_id = pu.id
+
+        cb_email = str(item.get("completedByEmail") or "").strip()
+        if cb_email and isinstance(obj, WorkOrder):
+            cbu = db.scalar(
+                select(User).where(
+                    User.company_id == company_id,
+                    func.lower(User.email) == cb_email.lower(),
+                )
+            )
+            if cbu is not None:
+                obj.completed_by_id = cbu.id
+
+        t_name = str(item.get("teamName") or "").strip()
+        if t_name and hasattr(obj, "team_id"):
+            tm = db.scalar(
+                select(Team).where(
+                    Team.company_id == company_id,
+                    func.lower(Team.name) == t_name.lower(),
+                )
+            )
+            if tm is not None:
+                obj.team_id = tm.id
+
+        cat_val = item.get("category")
+        if isinstance(cat_val, str) and cat_val.strip() and hasattr(obj, "category_id"):
+            cat_cls_map: dict[str, type] = {
+                "work-orders": WorkOrderCategory,
+                "parts": PartCategory,
+                "meters": MeterCategory,
+                "preventive-maintenances": WorkOrderCategory,
+            }
+            c_cls = cat_cls_map.get(ent_key)
+            if c_cls is not None:
+                obj.category_id = _resolve_or_create_cat(c_cls, cat_val)
+
+        apply_model_defaults(obj)
+        validate_foreign_key_ownership(obj, current_user, db)
+
+        if is_update:
+            updated += 1
+        else:
             db.add(obj)
             db.flush()
             if prefix and hasattr(obj, "custom_id") and not getattr(obj, "custom_id", None):
                 obj.custom_id = f"{prefix}{obj.id:06d}"
             created += 1
+
+        db.flush()
+
+        # Sync M2M email/name lists when provided
+        if isinstance(obj, WorkOrder):
+            for email in _parse_list_import(item.get("assignedToEmails")):
+                u = db.scalar(
+                    select(User).where(
+                        User.company_id == company_id,
+                        func.lower(User.email) == email.lower(),
+                    )
+                )
+                if u is not None:
+                    db.execute(
+                        work_order_assigned_to.insert().values(
+                            work_order_id=obj.id, assigned_to_id=u.id
+                        )
+                    )
+            for cname in _parse_list_import(item.get("customersNames")):
+                cu = db.scalar(
+                    select(Customer).where(
+                        Customer.company_id == company_id,
+                        func.lower(Customer.name) == cname.lower(),
+                    )
+                )
+                if cu is not None:
+                    db.execute(
+                        work_order_customers.insert().values(
+                            work_order_id=obj.id, customers_id=cu.id
+                        )
+                    )
+        elif isinstance(obj, Location):
+            for email in _parse_list_import(item.get("workersEmails")):
+                u = db.scalar(
+                    select(User).where(
+                        User.company_id == company_id,
+                        func.lower(User.email) == email.lower(),
+                    )
+                )
+                if u is not None:
+                    db.execute(
+                        t_location_user_associations.insert().values(
+                            id_location=obj.id, id_user=u.id
+                        )
+                    )
+            for tname in _parse_list_import(item.get("teamsNames")):
+                tm = db.scalar(
+                    select(Team).where(
+                        Team.company_id == company_id,
+                        func.lower(Team.name) == tname.lower(),
+                    )
+                )
+                if tm is not None:
+                    db.execute(
+                        t_location_team_associations.insert().values(
+                            id_location=obj.id, id_team=tm.id
+                        )
+                    )
+            for vname in _parse_list_import(item.get("vendorsNames")):
+                vd = db.scalar(
+                    select(Vendor).where(
+                        Vendor.company_id == company_id,
+                        or_(
+                            func.lower(Vendor.company_name) == vname.lower(),
+                            func.lower(Vendor.name) == vname.lower(),
+                        ),
+                    )
+                )
+                if vd is not None:
+                    db.execute(
+                        t_location_vendor_associations.insert().values(
+                            id_location=obj.id, id_vendor=vd.id
+                        )
+                    )
+            for cname in _parse_list_import(item.get("customersNames")):
+                cu = db.scalar(
+                    select(Customer).where(
+                        Customer.company_id == company_id,
+                        func.lower(Customer.name) == cname.lower(),
+                    )
+                )
+                if cu is not None:
+                    db.execute(
+                        t_location_customer_associations.insert().values(
+                            id_location=obj.id, id_customer=cu.id
+                        )
+                    )
+        elif isinstance(obj, Part):
+            for email in _parse_list_import(
+                item.get("workersEmails")
+                or item.get("assignedToEmails")
+                or item.get("usersEmails")
+            ):
+                u = db.scalar(
+                    select(User).where(
+                        User.company_id == company_id,
+                        func.lower(User.email) == email.lower(),
+                    )
+                )
+                if u is not None:
+                    db.execute(
+                        t_part_user_associations.insert().values(id_part=obj.id, id_user=u.id)
+                    )
+            for tname in _parse_list_import(item.get("teamsNames")):
+                tm = db.scalar(
+                    select(Team).where(
+                        Team.company_id == company_id,
+                        func.lower(Team.name) == tname.lower(),
+                    )
+                )
+                if tm is not None:
+                    db.execute(
+                        t_part_team_associations.insert().values(id_part=obj.id, id_team=tm.id)
+                    )
+            for vname in _parse_list_import(item.get("vendorsNames")):
+                vd = db.scalar(
+                    select(Vendor).where(
+                        Vendor.company_id == company_id,
+                        or_(
+                            func.lower(Vendor.company_name) == vname.lower(),
+                            func.lower(Vendor.name) == vname.lower(),
+                        ),
+                    )
+                )
+                if vd is not None:
+                    db.execute(
+                        t_part_vendor_associations.insert().values(
+                            id_part=obj.id, id_vendor=vd.id
+                        )
+                    )
+            for cname in _parse_list_import(item.get("customersNames")):
+                cu = db.scalar(
+                    select(Customer).where(
+                        Customer.company_id == company_id,
+                        func.lower(Customer.name) == cname.lower(),
+                    )
+                )
+                if cu is not None:
+                    db.execute(
+                        t_part_customer_associations.insert().values(
+                            id_part=obj.id, id_customer=cu.id
+                        )
+                    )
+        elif isinstance(obj, Meter):
+            for email in _parse_list_import(item.get("usersEmails")):
+                u = db.scalar(
+                    select(User).where(
+                        User.company_id == company_id,
+                        func.lower(User.email) == email.lower(),
+                    )
+                )
+                if u is not None:
+                    db.execute(
+                        t_meter_user_associations.insert().values(
+                            id_meter=obj.id, id_user=u.id
+                        )
+                    )
+
     db.commit()
     return {"created": created, "updated": updated}
 

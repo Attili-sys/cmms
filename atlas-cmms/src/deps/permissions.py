@@ -54,10 +54,15 @@ def _resolve_ordinal(entity: PermissionEntity | str) -> int:
 def _is_admin_role(user: User, db: Session) -> bool:
     if is_super_admin(user, db):
         return True
+    if getattr(user, "owns_company", False):
+        return True
     if not user.role_id:
         return False
     role = getattr(user, "role", None) or db.get(Role, user.role_id)
-    if role is not None and role.name in ("ROLE_SUPER_ADMIN", "Administrator"):
+    if role is not None and (
+        role.name in ("ROLE_SUPER_ADMIN", "Administrator")
+        or getattr(role, "code", None) in (0, "ADMIN")
+    ):
         return True
     return False
 
@@ -108,6 +113,8 @@ def can_edit(user: User, entity: PermissionEntity | str, db: Session, own: bool 
         return True
     if not user.role_id:
         return False
+    if entity in (PermissionEntity.SETTINGS, "SETTINGS"):
+        return can_view(user, PermissionEntity.SETTINGS, db)
 
     ordinal = _resolve_ordinal(entity)
     table = role_edit_other_permissions
@@ -127,6 +134,8 @@ def can_delete(user: User, entity: PermissionEntity | str, db: Session, own: boo
         return True
     if not user.role_id:
         return False
+    if entity in (PermissionEntity.SETTINGS, "SETTINGS"):
+        return can_view(user, PermissionEntity.SETTINGS, db)
 
     ordinal = _resolve_ordinal(entity)
     table = role_delete_other_permissions
@@ -146,6 +155,8 @@ def can_create(user: User, entity: PermissionEntity | str, db: Session) -> bool:
         return True
     if not user.role_id:
         return False
+    if entity in (PermissionEntity.SETTINGS, "SETTINGS"):
+        return can_view(user, PermissionEntity.SETTINGS, db)
 
     ordinal = _resolve_ordinal(entity)
     table = role_create_permissions

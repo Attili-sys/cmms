@@ -20,8 +20,10 @@ from src.models.associations import (
     work_order_customers,
     work_order_files,
 )
-from src.models.files_custom import CustomFieldValue
+from src.models.enums import WFMainCondition
+from src.models.files_custom import CustomField, CustomFieldValue
 from src.models.tasks import TaskBase, TaskOption
+from src.services.workflow_engine import run_work_order_workflows
 from src.utils.dates import ensure_utc
 
 logger = logging.getLogger(__name__)
@@ -191,9 +193,14 @@ def create_work_order_from_pm(
             )
         )
 
-    # Clone CustomFieldValues
+    # Clone CustomFieldValues (only when CustomField.copy_on_repeat is True)
     pm_cfvs = db.scalars(
-        select(CustomFieldValue).where(CustomFieldValue.preventive_maintenance_id == pm.id)
+        select(CustomFieldValue)
+        .join(CustomField, CustomField.id == CustomFieldValue.custom_field_id)
+        .where(
+            CustomFieldValue.preventive_maintenance_id == pm.id,
+            CustomField.copy_on_repeat.is_(True),
+        )
     ).all()
     for cfv in pm_cfvs:
         db.add(
@@ -256,6 +263,7 @@ def create_work_order_from_pm(
         )
 
     db.flush()
+    run_work_order_workflows(wo, WFMainCondition.WORK_ORDER_CREATED, db)
     return wo
 
 
@@ -303,14 +311,15 @@ def generate_due_work_orders(db: Session, now: datetime | None = None) -> list[W
 
         wo = create_work_order_from_pm(pm, schedule, db, now=now_utc)
 
-        base_due = ensure_utc(schedule.next_due_date) if schedule.next_due_date else now_utc
-        next_due = advance_schedule_next_due_date(schedule, base_due, db)
-        while ensure_utc(next_due) <= now_utc:
-            next_due = advance_schedule_next_due_date(schedule, next_due, db)
-        schedule.next_due_date = next_due
+        if based_on != "COMPLETED_DATE":
+            base_due = ensure_utc(schedule.next_due_date) if schedule.next_due_date else now_utc
+            next_due = advance_schedule_next_due_date(schedule, base_due, db)
+            while ensure_utc(next_due) <= now_utc:
+                next_due = advance_schedule_next_due_date(schedule, next_due, db)
+            schedule.next_due_date = next_due
 
-        if schedule.ends_on and ensure_utc(schedule.next_due_date) > ensure_utc(schedule.ends_on):
-            schedule.disabled = True
+            if schedule.ends_on and ensure_utc(schedule.next_due_date) > ensure_utc(schedule.ends_on):
+                schedule.disabled = True
 
         created_work_orders.append(wo)
         logger.info(

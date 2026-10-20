@@ -46,6 +46,7 @@ _RAW_ENUM_MAP: dict[str, str] = {
     "task_action": "TaskAction",
     "work_order_status": "Status",
     "purchase_order_status": "ApprovalStatus",
+    "trigger_condition": "WorkOrderMeterTriggerCondition",
 }
 COLUMN_ENUM_MAP: dict[str, type[Enum]] = {
     k: getattr(model_enums, v) for k, v in _RAW_ENUM_MAP.items() if hasattr(model_enums, v)
@@ -188,6 +189,21 @@ def _hydrate_foreign_key(target_table: str | None, raw_val: Any, db: Session | N
                     "email": u.email,
                     "jobTitle": u.job_title,
                     "hourlyRate": u.rate,
+                    "image": (
+                        _hydrate_foreign_key("file", u.image_id, db)
+                        if getattr(u, "image_id", None)
+                        else None
+                    ),
+                }
+        elif target_table == "checklist":
+            from src.models.tasks_checklists import Checklist
+
+            chk = db.get(Checklist, raw_val)
+            if chk:
+                return {
+                    "id": chk.id,
+                    "name": chk.name,
+                    "description": chk.description,
                 }
         elif target_table == "team":
             from src.models.users import Team

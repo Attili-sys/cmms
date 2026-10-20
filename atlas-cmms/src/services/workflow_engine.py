@@ -25,11 +25,17 @@ from src.models.enums import (
     WorkOrderCondition,
 )
 from src.models.location_asset import Asset
-from src.models.parts_po import Part, PartQuantity, PurchaseOrder
+from src.models.parts_po import (
+    Part,
+    PartQuantity,
+    PartTransaction as PartConsumption,
+    PurchaseOrder,
+)
 from src.models.requests import Request
 from src.models.tasks import Task, TaskBase, TaskOption
 from src.models.work_orders import WorkOrder
 from src.models.workflows import Workflow, WorkflowAction, WorkflowCondition
+from src.utils.dates import ensure_utc
 
 
 def _enum_idx(enum_cls: type, val: Any) -> int | None:
@@ -89,22 +95,40 @@ def _match_wo_condition(wo: WorkOrder, cond: WorkflowCondition) -> bool:
         return True
     cond_name = list(WorkOrderCondition)[c_idx].name if 0 <= c_idx < len(WorkOrderCondition) else ""
     if cond_name == "PRIORITY_IS":
-        return (wo.priority or 0) == (cond.priority or 0)
+        return cond.priority is not None and (wo.priority or 0) == cond.priority
     if cond_name == "ASSET_IS":
-        return wo.asset_id == cond.asset_id
+        return cond.asset_id is not None and wo.asset_id == cond.asset_id
     if cond_name == "LOCATION_IS":
-        return wo.location_id == cond.location_id
+        return cond.location_id is not None and wo.location_id == cond.location_id
     if cond_name == "USER_IS":
-        return wo.primary_user_id == cond.user_id
+        return cond.user_id is not None and wo.primary_user_id == cond.user_id
     if cond_name == "TEAM_IS":
-        return wo.team_id == cond.team_id
+        return cond.team_id is not None and wo.team_id == cond.team_id
     if cond_name == "CATEGORY_IS":
-        return wo.category_id == cond.work_order_category_id
+        return (
+            cond.work_order_category_id is not None
+            and wo.category_id == cond.work_order_category_id
+        )
     if cond_name == "STATUS_IS":
-        return (wo.status or 0) == (cond.work_order_status or 0)
+        return (
+            cond.work_order_status is not None
+            and (wo.status or 0) == cond.work_order_status
+        )
     if cond_name == "TITLE_CONTAINS":
         needle = (cond.label or cond.value or "").strip().lower()
         return needle in (wo.title or "").lower()
+    if cond_name == "CREATED_AT_BETWEEN":
+        if not wo.created_at or not cond.start_date or not cond.end_date:
+            return False
+        return ensure_utc(cond.start_date) <= ensure_utc(wo.created_at) <= ensure_utc(cond.end_date)
+    if cond_name == "DUE_DATE_BETWEEN":
+        if not wo.due_date or not cond.start_date or not cond.end_date:
+            return False
+        return ensure_utc(cond.start_date) <= ensure_utc(wo.due_date) <= ensure_utc(cond.end_date)
+    if cond_name == "DUE_DATE_AFTER":
+        if not wo.due_date or not cond.start_date:
+            return False
+        return ensure_utc(wo.due_date) >= ensure_utc(cond.start_date)
     return True
 
 
@@ -181,20 +205,35 @@ def _match_request_condition(req: Request, cond: WorkflowCondition) -> bool:
         return True
     cond_name = list(RequestCondition)[c_idx].name if 0 <= c_idx < len(RequestCondition) else ""
     if cond_name == "PRIORITY_IS":
-        return (req.priority or 0) == (cond.priority or 0)
+        return cond.priority is not None and (req.priority or 0) == cond.priority
     if cond_name == "ASSET_IS":
-        return req.asset_id == cond.asset_id
+        return cond.asset_id is not None and req.asset_id == cond.asset_id
     if cond_name == "LOCATION_IS":
-        return req.location_id == cond.location_id
+        return cond.location_id is not None and req.location_id == cond.location_id
     if cond_name == "USER_IS":
-        return req.primary_user_id == cond.user_id
+        return cond.user_id is not None and req.primary_user_id == cond.user_id
     if cond_name == "TEAM_IS":
-        return req.team_id == cond.team_id
+        return cond.team_id is not None and req.team_id == cond.team_id
     if cond_name == "CATEGORY_IS":
-        return req.category_id == cond.work_order_category_id
+        return (
+            cond.work_order_category_id is not None
+            and req.category_id == cond.work_order_category_id
+        )
     if cond_name == "TITLE_CONTAINS":
         needle = (cond.label or cond.value or "").strip().lower()
         return needle in (req.title or "").lower()
+    if cond_name == "CREATED_AT_BETWEEN":
+        if not req.created_at or not cond.start_date or not cond.end_date:
+            return False
+        return ensure_utc(cond.start_date) <= ensure_utc(req.created_at) <= ensure_utc(cond.end_date)
+    if cond_name == "DUE_DATE_BETWEEN":
+        if not req.due_date or not cond.start_date or not cond.end_date:
+            return False
+        return ensure_utc(cond.start_date) <= ensure_utc(req.due_date) <= ensure_utc(cond.end_date)
+    if cond_name == "DUE_DATE_AFTER":
+        if not req.due_date or not cond.start_date:
+            return False
+        return ensure_utc(req.due_date) >= ensure_utc(cond.start_date)
     return True
 
 
@@ -260,11 +299,29 @@ def _match_po_condition(po: PurchaseOrder, cond: WorkflowCondition) -> bool:
         else ""
     )
     if cond_name == "VENDOR_IS":
-        return po.vendor_id == cond.vendor_id
+        return cond.vendor_id is not None and po.vendor_id == cond.vendor_id
     if cond_name == "CATEGORY_IS":
-        return po.category_id == cond.purchase_order_category_id
+        return (
+            cond.purchase_order_category_id is not None
+            and po.category_id == cond.purchase_order_category_id
+        )
     if cond_name == "STATUS_IS":
-        return (po.status if po.status is not None else 2) == (cond.purchase_order_status or 0)
+        return (
+            cond.purchase_order_status is not None
+            and (po.status if po.status is not None else 2) == cond.purchase_order_status
+        )
+    if cond_name == "CREATED_AT_BETWEEN":
+        if not po.created_at or not cond.start_date or not cond.end_date:
+            return False
+        return ensure_utc(cond.start_date) <= ensure_utc(po.created_at) <= ensure_utc(cond.end_date)
+    if cond_name == "DUE_DATE_BETWEEN":
+        if not po.due_date or not cond.start_date or not cond.end_date:
+            return False
+        return ensure_utc(cond.start_date) <= ensure_utc(po.due_date) <= ensure_utc(cond.end_date)
+    if cond_name == "DUE_DATE_AFTER":
+        if not po.due_date or not cond.start_date:
+            return False
+        return ensure_utc(po.due_date) >= ensure_utc(cond.start_date)
     return True
 
 
@@ -282,6 +339,28 @@ def _apply_po_action(po: PurchaseOrder, act: WorkflowAction, db: Session) -> Non
     elif act_name == "ASSIGN_CATEGORY" and act.purchase_order_category_id is not None:
         po.category_id = act.purchase_order_category_id
     elif act_name == "APPROVE":
+        if po.status != 0 and po.id is not None:
+            pqs = db.scalars(
+                select(PartQuantity).where(
+                    PartQuantity.purchase_order_id == po.id,
+                    PartQuantity.company_id == po.company_id,
+                )
+            ).all()
+            for pq in pqs:
+                if pq.part_id and (pq.quantity or 0.0) > 0:
+                    part = db.get(Part, pq.part_id)
+                    if part and part.company_id == po.company_id:
+                        part.quantity = (part.quantity or 0.0) + float(pq.quantity)
+                        db.add(
+                            PartConsumption(
+                                part_id=part.id,
+                                quantity=float(pq.quantity),
+                                company_id=po.company_id,
+                                created_by=po.created_by,
+                                updated_by=po.updated_by,
+                                description="PART_RECEPTION",
+                            )
+                        )
         po.status = 0
     elif act_name == "REJECT":
         po.status = 1
@@ -302,7 +381,7 @@ def _match_part_condition(part: Part, cond: WorkflowCondition) -> bool:
         return True
     cond_name = list(PartCondition)[c_idx].name if 0 <= c_idx < len(PartCondition) else ""
     if cond_name == "PART_IS":
-        return part.id == cond.part_id
+        return cond.part_id is not None and part.id == cond.part_id
     if cond_name == "QUANTITY_INFERIOR":
         return float(part.quantity or 0.0) < float(cond.number_value or 0.0)
     return True

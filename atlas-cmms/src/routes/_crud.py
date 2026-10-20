@@ -118,16 +118,27 @@ _MODEL_PERMISSION_MAP: dict[str, PermissionEntity] = {
     "CostCategory": PermissionEntity.CATEGORIES,
     "TimeCategory": PermissionEntity.CATEGORIES,
     "WorkOrder": PermissionEntity.WORK_ORDERS,
+    "Task": PermissionEntity.WORK_ORDERS,
+    "Labor": PermissionEntity.WORK_ORDERS,
+    "AdditionalCost": PermissionEntity.WORK_ORDERS,
+    "Relation": PermissionEntity.WORK_ORDERS,
     "PreventiveMaintenance": PermissionEntity.PREVENTIVE_MAINTENANCES,
     "Part": PermissionEntity.PARTS_AND_MULTIPARTS,
     "MultiParts": PermissionEntity.PARTS_AND_MULTIPARTS,
     "PurchaseOrder": PermissionEntity.PURCHASE_ORDERS,
     "Meter": PermissionEntity.METERS,
     "Reading": PermissionEntity.METERS,
+    "WorkOrderMeterTrigger": PermissionEntity.METERS,
     "Vendor": PermissionEntity.VENDORS_AND_CUSTOMERS,
     "Customer": PermissionEntity.VENDORS_AND_CUSTOMERS,
     "File": PermissionEntity.FILES,
     "Request": PermissionEntity.REQUESTS,
+    "Team": PermissionEntity.PEOPLE_AND_TEAMS,
+    "Checklist": PermissionEntity.SETTINGS,
+    "Workflow": PermissionEntity.SETTINGS,
+    "CustomField": PermissionEntity.SETTINGS,
+    "WebhookEndpoint": PermissionEntity.SETTINGS,
+    "ApiKey": PermissionEntity.SETTINGS,
 }
 
 
@@ -337,6 +348,7 @@ def build_crud_router(
         validate_foreign_key_ownership(obj, current_user, db)
         if before_create is not None:
             before_create(obj, payload, current_user, db)
+            validate_foreign_key_ownership(obj, current_user, db)
         apply_model_defaults(obj)
         db.add(obj)
         db.flush()

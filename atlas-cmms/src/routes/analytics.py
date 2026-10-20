@@ -8,7 +8,7 @@ from fastapi import APIRouter, Body, Depends
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
-from src.deps.company import assert_company_access
+from src.deps.company import assert_company_access, is_super_admin
 from src.deps.current_user import get_current_user
 from src.deps.db import get_db
 from src.deps.permissions import can_view
@@ -27,8 +27,32 @@ from src.utils.dates import ensure_utc, parse_iso_utc, to_iso_utc
 router = APIRouter(prefix="/analytics", tags=["analytics"])
 
 
-def _load_company_wos(db: Session, company_id: int) -> list[WorkOrder]:
-    return list(db.scalars(select(WorkOrder).where(WorkOrder.company_id == company_id)).all())
+def _assert_analytics_view(current_user: User, db: Session) -> None:
+    if not can_view(current_user, PermissionEntity.ANALYTICS, db):
+        raise CustomException(status_code=403, message="Access Denied")
+
+
+def _parse_date_range(payload: dict[str, Any] | None) -> tuple[datetime, datetime]:
+    now = utcnow()
+    default_start = now - timedelta(days=30)
+    if not isinstance(payload, dict):
+        return default_start, now
+    start = parse_iso_utc(payload.get("start")) or default_start
+    end = parse_iso_utc(payload.get("end")) or now
+    return start, end
+
+
+def _load_company_wos(
+    db: Session, company_id: int, payload: dict[str, Any] | None = None
+) -> list[WorkOrder]:
+    stmt = select(WorkOrder).where(
+        WorkOrder.company_id == company_id,
+        WorkOrder.archived.is_(False),
+    )
+    if isinstance(payload, dict) and (payload.get("start") or payload.get("end")):
+        start, end = _parse_date_range(payload)
+        stmt = stmt.where(WorkOrder.created_at >= start, WorkOrder.created_at <= end)
+    return list(db.scalars(stmt).all())
 
 
 # 1. WorkOrderAnalyticsController (/analytics/work-orders/...)
@@ -39,7 +63,8 @@ def wo_complete_overview(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> dict[str, Any]:
-    wos = _load_company_wos(db, current_user.company_id)
+    _assert_analytics_view(current_user, db)
+    wos = _load_company_wos(db, current_user.company_id, payload)
     total = len(wos)
     complete = sum(1 for w in wos if w.status == 3)
     compliant = sum(
@@ -57,6 +82,7 @@ def wo_complete_overview(
         "complete": complete,
         "compliant": compliant,
         "avgCycleTime": avg_cycle,
+        "mtta": 0.0,
         "count": total,
         "ratio": (complete / total * 100.0) if total > 0 else 0.0,
     }
@@ -69,7 +95,8 @@ def wo_incomplete_overview(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> dict[str, Any]:
-    wos = _load_company_wos(db, current_user.company_id)
+    _assert_analytics_view(current_user, db)
+    wos = _load_company_wos(db, current_user.company_id, payload)
     incomplete = [w for w in wos if w.status != 3]
     return {
         "total": len(incomplete),
@@ -86,7 +113,8 @@ def wo_complete_counts(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> dict[str, Any]:
-    wos = _load_company_wos(db, current_user.company_id)
+    _assert_analytics_view(current_user, db)
+    wos = _load_company_wos(db, current_user.company_id, payload)
     complete = sum(1 for w in wos if w.status == 3)
     reactive = sum(1 for w in wos if w.status == 3 and not w.parent_preventive_maintenance_id)
     rp = complete - reactive
@@ -101,17 +129,49 @@ def wo_complete_counts(
 
 @router.post("/work-orders/priority")
 @router.get("/work-orders/priority")
+@router.post("/work-orders/incomplete/priority")
+@router.get("/work-orders/incomplete/priority")
 def wo_by_priority(
     payload: dict[str, Any] = Body(default_factory=dict),
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> dict[str, Any]:
-    wos = _load_company_wos(db, current_user.company_id)
+    _assert_analytics_view(current_user, db)
+    wos = [w for w in _load_company_wos(db, current_user.company_id, payload) if w.status != 3]
     return {
-        "none": {"count": sum(1 for w in wos if (w.priority or 0) == 0), "estimatedHours": 0.0},
-        "low": {"count": sum(1 for w in wos if w.priority == 1), "estimatedHours": 0.0},
-        "medium": {"count": sum(1 for w in wos if w.priority == 2), "estimatedHours": 0.0},
-        "high": {"count": sum(1 for w in wos if w.priority == 3), "estimatedHours": 0.0},
+        "none": {
+            "count": sum(1 for w in wos if (w.priority or 0) == 0),
+            "estimatedHours": round(sum(w.estimated_duration or 0.0 for w in wos if (w.priority or 0) == 0), 2),
+        },
+        "low": {
+            "count": sum(1 for w in wos if w.priority == 1),
+            "estimatedHours": round(sum(w.estimated_duration or 0.0 for w in wos if w.priority == 1), 2),
+        },
+        "medium": {
+            "count": sum(1 for w in wos if w.priority == 2),
+            "estimatedHours": round(sum(w.estimated_duration or 0.0 for w in wos if w.priority == 2), 2),
+        },
+        "high": {
+            "count": sum(1 for w in wos if w.priority == 3),
+            "estimatedHours": round(sum(w.estimated_duration or 0.0 for w in wos if w.priority == 3), 2),
+        },
+    }
+
+
+@router.post("/work-orders/incomplete/statuses")
+@router.get("/work-orders/incomplete/statuses")
+def wo_incomplete_statuses(
+    payload: dict[str, Any] = Body(default_factory=dict),
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> dict[str, Any]:
+    _assert_analytics_view(current_user, db)
+    wos = _load_company_wos(db, current_user.company_id, payload)
+    return {
+        "open": sum(1 for w in wos if (w.status or 0) == 0),
+        "inProgress": sum(1 for w in wos if w.status == 1),
+        "onHold": sum(1 for w in wos if w.status == 2),
+        "complete": sum(1 for w in wos if w.status == 3),
     }
 
 
@@ -121,14 +181,241 @@ def wo_statuses(
     payload: dict[str, Any] = Body(default_factory=dict),
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
-) -> dict[str, Any]:
+) -> list[dict[str, Any]]:
+    _assert_analytics_view(current_user, db)
+    start, end = _parse_date_range(payload)
     wos = _load_company_wos(db, current_user.company_id)
+    total_days = max(1, int((end.date() - start.date()).days) + 1)
+    points = min(7, total_days)
+    step_days = max(1, total_days // points)
+    result: list[dict[str, Any]] = []
+    curr = start
+    for _ in range(points):
+        nxt = min(end, curr + timedelta(days=step_days))
+        in_window = [
+            w
+            for w in wos
+            if w.created_at and curr <= ensure_utc(w.created_at) <= nxt
+        ]
+        result.append(
+            {
+                "open": sum(1 for w in in_window if (w.status or 0) == 0),
+                "inProgress": sum(1 for w in in_window if w.status == 1),
+                "onHold": sum(1 for w in in_window if w.status == 2),
+                "complete": sum(1 for w in in_window if w.status == 3),
+                "date": to_iso_utc(curr),
+            }
+        )
+        curr = nxt
+    return result
+
+
+@router.post("/work-orders/hours")
+@router.get("/work-orders/hours")
+def wo_hours(
+    payload: dict[str, Any] = Body(default_factory=dict),
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> dict[str, Any]:
+    _assert_analytics_view(current_user, db)
+    wos = _load_company_wos(db, current_user.company_id, payload)
+    wo_ids = [w.id for w in wos]
+    labors = (
+        db.scalars(select(Labor).where(Labor.work_order_id.in_(wo_ids))).all()
+        if wo_ids
+        else []
+    )
+    estimated = round(sum(w.estimated_duration or 0.0 for w in wos), 2)
+    actual = round(sum((lb.duration or 0) / 3600.0 for lb in labors), 2)
+    return {"estimated": estimated, "actual": actual}
+
+
+@router.post("/work-orders/incomplete/age/assets")
+@router.get("/work-orders/incomplete/age/assets")
+def wo_incomplete_age_assets(
+    payload: dict[str, Any] = Body(default_factory=dict),
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> list[dict[str, Any]]:
+    _assert_analytics_view(current_user, db)
+    now = utcnow()
+    wos = [w for w in _load_company_wos(db, current_user.company_id, payload) if w.status != 3 and w.asset_id]
+    by_asset: dict[int, list[WorkOrder]] = {}
+    for w in wos:
+        by_asset.setdefault(w.asset_id, []).append(w)
+    result: list[dict[str, Any]] = []
+    for aid, asset_wos in by_asset.items():
+        asset = db.get(Asset, aid)
+        if not asset:
+            continue
+        ages = [
+            max(0.0, (now - ensure_utc(w.created_at)).total_seconds() / 86400.0)
+            for w in asset_wos
+            if w.created_at
+        ]
+        avg_age = round(sum(ages) / len(ages), 2) if ages else 0.0
+        result.append({"id": asset.id, "name": asset.name, "count": len(asset_wos), "averageAge": avg_age})
+    return result
+
+
+@router.post("/work-orders/incomplete/age/users")
+@router.get("/work-orders/incomplete/age/users")
+def wo_incomplete_age_users(
+    payload: dict[str, Any] = Body(default_factory=dict),
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> list[dict[str, Any]]:
+    _assert_analytics_view(current_user, db)
+    now = utcnow()
+    wos = [w for w in _load_company_wos(db, current_user.company_id, payload) if w.status != 3 and w.primary_user_id]
+    by_user: dict[int, list[WorkOrder]] = {}
+    for w in wos:
+        by_user.setdefault(w.primary_user_id, []).append(w)
+    result: list[dict[str, Any]] = []
+    for uid, user_wos in by_user.items():
+        u = db.get(User, uid)
+        if not u:
+            continue
+        ages = [
+            max(0.0, (now - ensure_utc(w.created_at)).total_seconds() / 86400.0)
+            for w in user_wos
+            if w.created_at
+        ]
+        avg_age = round(sum(ages) / len(ages), 2) if ages else 0.0
+        result.append(
+            {
+                "id": u.id,
+                "firstName": u.first_name,
+                "lastName": u.last_name,
+                "count": len(user_wos),
+                "averageAge": avg_age,
+            }
+        )
+    return result
+
+
+@router.post("/work-orders/complete/counts/primaryUser")
+@router.get("/work-orders/complete/counts/primaryUser")
+def wo_complete_counts_primary_user(
+    payload: dict[str, Any] = Body(default_factory=dict),
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> list[dict[str, Any]]:
+    _assert_analytics_view(current_user, db)
+    wos = [w for w in _load_company_wos(db, current_user.company_id, payload) if w.status == 3 and w.primary_user_id]
+    counts: dict[int, int] = {}
+    for w in wos:
+        counts[w.primary_user_id] = counts.get(w.primary_user_id, 0) + 1
+    result: list[dict[str, Any]] = []
+    for uid, cnt in counts.items():
+        u = db.get(User, uid)
+        if u:
+            result.append({"id": u.id, "firstName": u.first_name, "lastName": u.last_name, "count": cnt})
+    return result
+
+
+@router.post("/work-orders/complete/counts/completedBy")
+@router.get("/work-orders/complete/counts/completedBy")
+def wo_complete_counts_completed_by(
+    payload: dict[str, Any] = Body(default_factory=dict),
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> list[dict[str, Any]]:
+    _assert_analytics_view(current_user, db)
+    wos = [w for w in _load_company_wos(db, current_user.company_id, payload) if w.status == 3 and w.completed_by_id]
+    counts: dict[int, int] = {}
+    for w in wos:
+        counts[w.completed_by_id] = counts.get(w.completed_by_id, 0) + 1
+    result: list[dict[str, Any]] = []
+    for uid, cnt in counts.items():
+        u = db.get(User, uid)
+        if u:
+            result.append({"id": u.id, "firstName": u.first_name, "lastName": u.last_name, "count": cnt})
+    return result
+
+
+@router.post("/work-orders/complete/counts/category")
+@router.get("/work-orders/complete/counts/category")
+def wo_complete_counts_category(
+    payload: dict[str, Any] = Body(default_factory=dict),
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> list[dict[str, Any]]:
+    _assert_analytics_view(current_user, db)
+    cs_id = _get_user_company_settings_id(current_user, db)
+    cats = list(db.scalars(select(WorkOrderCategory).where(WorkOrderCategory.company_settings_id == cs_id)).all())
+    wos = [w for w in _load_company_wos(db, current_user.company_id, payload) if w.status == 3]
+    return [
+        {"id": cat.id, "name": cat.name, "count": sum(1 for w in wos if w.category_id == cat.id)}
+        for cat in cats
+    ]
+
+
+@router.post("/work-orders/complete/counts/asset")
+@router.get("/work-orders/complete/counts/asset")
+def wo_complete_counts_asset(
+    payload: dict[str, Any] = Body(default_factory=dict),
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> list[dict[str, Any]]:
+    _assert_analytics_view(current_user, db)
+    assets = list(db.scalars(select(Asset).where(Asset.company_id == current_user.company_id)).all())
+    wos = [w for w in _load_company_wos(db, current_user.company_id, payload) if w.status == 3]
+    return [
+        {"id": a.id, "name": a.name, "count": sum(1 for w in wos if w.asset_id == a.id)}
+        for a in assets
+    ]
+
+
+@router.post("/work-orders/complete/counts/priority")
+@router.get("/work-orders/complete/counts/priority")
+def wo_complete_counts_priority(
+    payload: dict[str, Any] = Body(default_factory=dict),
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> dict[str, int]:
+    _assert_analytics_view(current_user, db)
+    wos = [w for w in _load_company_wos(db, current_user.company_id, payload) if w.status == 3]
     return {
-        "open": sum(1 for w in wos if (w.status or 0) == 0),
-        "inProgress": sum(1 for w in wos if w.status == 1),
-        "onHold": sum(1 for w in wos if w.status == 2),
-        "complete": sum(1 for w in wos if w.status == 3),
+        "NONE": sum(1 for w in wos if (w.priority or 0) == 0),
+        "LOW": sum(1 for w in wos if w.priority == 1),
+        "MEDIUM": sum(1 for w in wos if w.priority == 2),
+        "HIGH": sum(1 for w in wos if w.priority == 3),
     }
+
+
+@router.post("/work-orders/complete/counts/week")
+@router.get("/work-orders/complete/counts/week")
+def wo_complete_counts_week(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> list[dict[str, Any]]:
+    _assert_analytics_view(current_user, db)
+    return []
+
+
+@router.post("/work-orders/complete/time/week")
+@router.get("/work-orders/complete/time/week")
+@router.post("/work-orders/complete/time/date")
+@router.get("/work-orders/complete/time/date")
+def wo_complete_time_series(
+    payload: dict[str, Any] = Body(default_factory=dict),
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> list[dict[str, Any]]:
+    _assert_analytics_view(current_user, db)
+    return []
+
+
+@router.post("/work-orders/complete/costs/date")
+@router.get("/work-orders/complete/costs/date")
+def wo_complete_costs_by_date(
+    payload: dict[str, Any] = Body(default_factory=dict),
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> list[dict[str, Any]]:
+    _assert_analytics_view(current_user, db)
+    return []
 
 
 @router.post("/work-orders/costs/time")
@@ -140,10 +427,15 @@ def wo_costs_And_time(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> dict[str, Any]:
-    wos = _load_company_wos(db, current_user.company_id)
+    _assert_analytics_view(current_user, db)
+    wos = _load_company_wos(db, current_user.company_id, payload)
     wo_ids = [w.id for w in wos]
     completed_count = sum(1 for w in wos if w.status == 3)
-    labors = db.scalars(select(Labor).where(Labor.company_id == current_user.company_id)).all()
+    labors = (
+        db.scalars(select(Labor).where(Labor.work_order_id.in_(wo_ids))).all()
+        if wo_ids
+        else []
+    )
     add_costs = (
         db.scalars(
             select(AdditionalCost).where(AdditionalCost.work_order_id.in_(wo_ids))
@@ -151,7 +443,11 @@ def wo_costs_And_time(
         if wo_ids
         else []
     )
-    pqs = db.scalars(select(PartQuantity).where(PartQuantity.company_id == current_user.company_id)).all()
+    pqs = (
+        db.scalars(select(PartQuantity).where(PartQuantity.work_order_id.in_(wo_ids))).all()
+        if wo_ids
+        else []
+    )
 
     labor_cost = round(sum((l.hourly_rate or 0) * ((l.duration or 0) / 3600.0) for l in labors), 2)
     labor_time = sum(l.duration or 0 for l in labors)
@@ -183,20 +479,20 @@ def wo_analytics_fallback(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> Any:
-    if "date" in subpath or "category" in subpath or "hours" in subpath:
+    _assert_analytics_view(current_user, db)
+    if (
+        "date" in subpath
+        or "category" in subpath
+        or "hours" in subpath
+        or "counts" in subpath
+        or "age" in subpath
+        or "week" in subpath
+    ):
         return []
     return {"count": 0, "total": 0}
 
 
 # 2. AssetAnalyticsController (/analytics/assets/...)
-def _parse_date_range(payload: dict[str, Any] | None) -> tuple[datetime, datetime]:
-    now = utcnow()
-    default_start = now - timedelta(days=30)
-    if not isinstance(payload, dict):
-        return default_start, now
-    start = parse_iso_utc(payload.get("start")) or default_start
-    end = parse_iso_utc(payload.get("end")) or now
-    return start, end
 
 
 def _get_asset_real_created_at(asset: Asset) -> datetime:
@@ -334,7 +630,7 @@ def asset_details_overview(
     asset = db.get(Asset, asset_id)
     if asset is None:
         raise CustomException(status_code=404, message="Asset not found")
-    assert_company_access(asset, current_user)
+    assert_company_access(current_user, asset, is_super_admin=is_super_admin(current_user, db))
     start, end = _parse_date_range(payload)
     wos = list(
         db.scalars(
@@ -361,6 +657,7 @@ def assets_overview(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> dict[str, Any]:
+    _assert_analytics_view(current_user, db)
     start, end = _parse_date_range(payload)
     company_id = current_user.company_id
     downtimes = list(
@@ -776,6 +1073,7 @@ def parts_consumptions_overview(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> dict[str, Any]:
+    _assert_analytics_view(current_user, db)
     start, end = _parse_date_range(payload)
     consumptions = _load_part_consumptions(db, current_user.company_id, start, end)
     total_cost = round(sum(_get_consumption_cost(db, c) for c in consumptions), 2)
@@ -790,6 +1088,7 @@ def parts_consumptions_pareto(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> list[dict[str, Any]]:
+    _assert_analytics_view(current_user, db)
     start, end = _parse_date_range(payload)
     consumptions = [
         c
@@ -943,7 +1242,12 @@ def requests_by_priority(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> dict[str, Any]:
-    reqs = db.scalars(select(Request).where(Request.company_id == current_user.company_id)).all()
+    _assert_analytics_view(current_user, db)
+    stmt = select(Request).where(Request.company_id == current_user.company_id)
+    if isinstance(payload, dict) and (payload.get("start") or payload.get("end")):
+        start, end = _parse_date_range(payload)
+        stmt = stmt.where(Request.created_at >= start, Request.created_at <= end)
+    reqs = db.scalars(stmt).all()
     return {
         "none": {"count": sum(1 for r in reqs if (r.priority or 0) == 0)},
         "low": {"count": sum(1 for r in reqs if r.priority == 1)},
@@ -961,9 +1265,12 @@ def requests_rate(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> dict[str, Any]:
-    reqs = list(
-        db.scalars(select(Request).where(Request.company_id == current_user.company_id)).all()
-    )
+    _assert_analytics_view(current_user, db)
+    stmt = select(Request).where(Request.company_id == current_user.company_id)
+    if isinstance(payload, dict) and (payload.get("start") or payload.get("end")):
+        start, end = _parse_date_range(payload)
+        stmt = stmt.where(Request.created_at >= start, Request.created_at <= end)
+    reqs = list(db.scalars(stmt).all())
     approved = sum(1 for r in reqs if r.work_order_id is not None)
     cancelled = sum(1 for r in reqs if r.cancelled)
     pending = len(reqs) - approved - cancelled

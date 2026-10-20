@@ -603,6 +603,28 @@ def build_predicate(
     raise InvalidSearchFieldException(op, f"Unsupported operation: {op}")
 
 
+def _build_request_status_predicate(model_cls: type, filter_field: FilterField) -> ColumnElement | None:
+    """Map virtual Request.status filter ('PENDING', 'APPROVED', 'CANCELLED') to DB columns."""
+    items = extract_list(filter_field.value, filter_field.values)
+    if not items and filter_field.value is not None:
+        items = [filter_field.value]
+    preds: list[ColumnElement] = []
+    for raw in items:
+        s = str(raw).strip().upper()
+        if s in ("CANCELLED", "2"):
+            preds.append(model_cls.cancelled.is_(True))
+        elif s in ("APPROVED", "1"):
+            preds.append(model_cls.work_order_id.is_not(None))
+        elif s in ("PENDING", "0"):
+            preds.append((model_cls.work_order_id.is_(None)) & (model_cls.cancelled.is_(False)))
+    if not preds:
+        return None
+    combined = or_(*preds) if len(preds) > 1 else preds[0]
+    if filter_field.operation.strip().lower() in ("ne", "nin", "not_in"):
+        return ~combined
+    return combined
+
+
 def process_single_filter(
     stmt: Select,
     model_cls: type,
@@ -610,15 +632,18 @@ def process_single_filter(
     joined_aliases: dict[str, Any],
 ) -> tuple[Select, ColumnElement | None]:
     """Processes a single FilterField and its alternatives."""
-    stmt, col = resolve_field_and_joins(stmt, model_cls, filter_field.field, joined_aliases)
-    main_pred = build_predicate(
-        col,
-        filter_field.operation,
-        filter_field.value,
-        filter_field.values,
-        filter_field.enum_name,
-        filter_field.value2,
-    )
+    if getattr(model_cls, "__tablename__", "") == "request" and filter_field.field.strip() == "status":
+        main_pred = _build_request_status_predicate(model_cls, filter_field)
+    else:
+        stmt, col = resolve_field_and_joins(stmt, model_cls, filter_field.field, joined_aliases)
+        main_pred = build_predicate(
+            col,
+            filter_field.operation,
+            filter_field.value,
+            filter_field.values,
+            filter_field.enum_name,
+            filter_field.value2,
+        )
 
     if not filter_field.alternatives:
         return stmt, main_pred

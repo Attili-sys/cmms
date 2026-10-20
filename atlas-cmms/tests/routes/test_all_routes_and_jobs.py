@@ -232,7 +232,7 @@ def test_work_orders_pdf_labors_requests_meters_workflows(api_client: TestClient
     meter = api_client.post("/api/meters", json={"name": "Run Hours", "unit": "h", "updateFrequency": 1}).json()
     api_client.post(
         "/api/work-order-meter-triggers",
-        json={"title": "500h Overhaul", "meter": {"id": meter["id"]}, "value": 500, "triggerCondition": 0},
+        json={"title": "500h Overhaul", "meter": {"id": meter["id"]}, "value": 500, "triggerCondition": "MORE_THAN"},
     )
     api_client.post("/api/readings", json={"meter": {"id": meter["id"]}, "value": 550.0})
 

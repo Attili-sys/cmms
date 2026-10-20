@@ -15,6 +15,7 @@ from src.deps.current_user import (
     get_current_user,
 )
 from src.deps.db import get_db
+from src.deps.permissions import can_create, can_delete, can_edit, can_view
 from src.models.associations import (
     role_create_permissions,
     role_delete_other_permissions,
@@ -34,7 +35,11 @@ from src.models.settings import (
     WorkOrderRequestConfiguration,
 )
 from src.models.users import Role, Team, User, UserInvitation, UserSettings
-from src.routes._crud import _ensure_company_settings_id, build_crud_router
+from src.routes._crud import (
+    _ensure_company_settings_id,
+    build_crud_router,
+    validate_foreign_key_ownership,
+)
 from src.schemas.errors import CustomException, SuccessResponse
 from src.services.license_service import (
     LicenseService,
@@ -371,8 +376,17 @@ def list_subscription_plans(db: Session = Depends(get_db)) -> list[dict[str, Any
 
 
 @router.get("/subscriptions/{sub_id:int}")
-def get_subscription(sub_id: int, db: Session = Depends(get_db)) -> dict[str, Any]:
+def get_subscription(
+    sub_id: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> dict[str, Any]:
     sub = db.get(Subscription, sub_id)
+    owner_co = db.scalar(select(Company).where(Company.subscription_id == sub_id))
+    if owner_co is not None:
+        assert_company_access(
+            current_user, owner_co.id, is_super_admin=is_super_admin(current_user, db)
+        )
     return serialize_subscription(sub, db)
 
 
@@ -380,9 +394,17 @@ def get_subscription(sub_id: int, db: Session = Depends(get_db)) -> dict[str, An
 def patch_subscription(
     sub_id: int,
     payload: dict[str, Any] = Body(default_factory=dict),
+    current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> dict[str, Any]:
+    if not can_view(current_user, PermissionEntity.SETTINGS, db):
+        raise CustomException(status_code=403, message="Access is denied")
     sub = db.get(Subscription, sub_id)
+    owner_co = db.scalar(select(Company).where(Company.subscription_id == sub_id))
+    if owner_co is not None:
+        assert_company_access(
+            current_user, owner_co.id, is_super_admin=is_super_admin(current_user, db)
+        )
     if sub:
         apply_patch(sub, payload)
         db.commit()
@@ -415,6 +437,8 @@ def patch_company(
     if not company:
         raise CustomException(status_code=404, message="Company not found")
     assert_company_access(current_user, company_id, is_super_admin=is_super_admin(current_user, db))
+    if not can_view(current_user, PermissionEntity.SETTINGS, db):
+        raise CustomException(status_code=403, message="Access is denied")
     apply_patch(company, payload)
     db.commit()
     db.refresh(company)
@@ -469,6 +493,8 @@ def patch_general_preferences(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> dict[str, Any]:
+    if not can_view(current_user, PermissionEntity.SETTINGS, db):
+        raise CustomException(status_code=403, message="Access is denied")
     cs_id = _ensure_company_settings_id(current_user, db)
     gp = db.get(GeneralPreferences, gp_id)
     if not gp:
@@ -503,6 +529,8 @@ def patch_field_configuration(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> dict[str, Any]:
+    if not can_view(current_user, PermissionEntity.SETTINGS, db):
+        raise CustomException(status_code=403, message="Access is denied")
     fc = db.get(FieldConfiguration, fc_id)
     if not fc:
         raise CustomException(status_code=404, message="FieldConfiguration not found")
@@ -527,6 +555,8 @@ def patch_ui_configuration(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> dict[str, Any]:
+    if not can_view(current_user, PermissionEntity.SETTINGS, db):
+        raise CustomException(status_code=403, message="Access is denied")
     cs_id = _ensure_company_settings_id(current_user, db)
     ui = db.scalar(select(UiConfiguration).where(UiConfiguration.company_settings_id == cs_id))
     if not ui:
@@ -631,12 +661,16 @@ def create_user(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> dict[str, Any]:
+    if not can_create(current_user, PermissionEntity.PEOPLE_AND_TEAMS, db):
+        raise CustomException(status_code=403, message="Access is denied")
     cs_id = _ensure_company_settings_id(current_user, db)
     role_id = payload.get("role", {}).get("id") if isinstance(payload.get("role"), dict) else payload.get("roleId")
     if role_id:
         target_role = db.get(Role, int(role_id))
         if not target_role or (target_role.company_settings_id is not None and target_role.company_settings_id != cs_id):
             raise CustomException(status_code=403, message="Role does not belong to this company")
+        if target_role.role_type == 0 and not is_super_admin(current_user, db):
+            raise CustomException(status_code=403, message="Cannot assign super admin role")
     else:
         role = db.scalar(
             select(Role).where(
@@ -725,12 +759,16 @@ def invite_user(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> dict[str, Any]:
+    if not can_create(current_user, PermissionEntity.PEOPLE_AND_TEAMS, db):
+        raise CustomException(status_code=403, message="Access is denied")
     cs_id = _ensure_company_settings_id(current_user, db)
     role_id = payload.get("role", {}).get("id") if isinstance(payload.get("role"), dict) else payload.get("roleId")
     if role_id:
         target_role = db.get(Role, int(role_id))
         if not target_role or (target_role.company_settings_id is not None and target_role.company_settings_id != cs_id):
             raise CustomException(status_code=403, message="Role does not belong to this company")
+        if target_role.role_type == 0 and not is_super_admin(current_user, db):
+            raise CustomException(status_code=403, message="Cannot assign super admin role")
     else:
         role = db.scalar(
             select(Role).where(
@@ -777,7 +815,21 @@ def patch_user(
     if not u:
         raise CustomException(status_code=404, message="User not found")
     assert_company_access(current_user, u, is_super_admin=is_super_admin(current_user, db))
-    apply_patch(u, payload, exclude={"password"})
+    if current_user.id != user_id and not can_edit(current_user, PermissionEntity.PEOPLE_AND_TEAMS, db):
+        raise CustomException(status_code=403, message="Access is denied")
+    apply_patch(
+        u,
+        payload,
+        exclude={
+            "password",
+            "role_id",
+            "owns_company",
+            "company_id",
+            "super_account_id",
+            "enabled_in_subscription",
+        },
+    )
+    validate_foreign_key_ownership(u, current_user, db)
     db.commit()
     db.refresh(u)
     return serialize_user(u, db)
@@ -789,10 +841,14 @@ def disable_user(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> dict[str, Any]:
+    if not can_edit(current_user, PermissionEntity.PEOPLE_AND_TEAMS, db):
+        raise CustomException(status_code=403, message="Access is denied")
     u = db.get(User, user_id)
     if not u:
         raise CustomException(status_code=404, message="User not found")
     assert_company_access(current_user, u, is_super_admin=is_super_admin(current_user, db))
+    if user_id == current_user.id or u.owns_company:
+        raise CustomException(status_code=406, message="Cannot disable this user")
     u.enabled = False
     db.commit()
     db.refresh(u)
@@ -805,6 +861,8 @@ def enable_user(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> dict[str, Any]:
+    if not can_edit(current_user, PermissionEntity.PEOPLE_AND_TEAMS, db):
+        raise CustomException(status_code=403, message="Access is denied")
     u = db.get(User, user_id)
     if not u:
         raise CustomException(status_code=404, message="User not found")
@@ -822,14 +880,20 @@ def update_user_role(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> dict[str, Any]:
+    if not can_edit(current_user, PermissionEntity.PEOPLE_AND_TEAMS, db):
+        raise CustomException(status_code=403, message="Access is denied")
     u = db.get(User, user_id)
     if not u:
         raise CustomException(status_code=404, message="User not found")
     assert_company_access(current_user, u, is_super_admin=is_super_admin(current_user, db))
+    if user_id == current_user.id or u.owns_company:
+        raise CustomException(status_code=406, message="Cannot change role of this user")
     cs_id = _ensure_company_settings_id(current_user, db)
     target_role = db.get(Role, role)
     if not target_role or (target_role.company_settings_id is not None and target_role.company_settings_id != cs_id):
         raise CustomException(status_code=403, message="Role does not belong to this company")
+    if target_role.role_type == 0 and not is_super_admin(current_user, db):
+        raise CustomException(status_code=403, message="Cannot assign super admin role")
     u.role_id = role
     db.commit()
     db.refresh(u)
@@ -842,10 +906,14 @@ def delete_user(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> dict[str, Any]:
+    if not can_delete(current_user, PermissionEntity.PEOPLE_AND_TEAMS, db):
+        raise CustomException(status_code=403, message="Access is denied")
     u = db.get(User, user_id)
     if not u:
         raise CustomException(status_code=404, message="User not found")
     assert_company_access(current_user, u, is_super_admin=is_super_admin(current_user, db))
+    if user_id == current_user.id or u.owns_company:
+        raise CustomException(status_code=406, message="Cannot delete this user")
     db.delete(u)
     db.commit()
     return SuccessResponse(success=True, message="User deleted").model_dump()
@@ -882,6 +950,30 @@ def _assert_role_access(role: Role, current_user: User, db: Session, *, allow_sy
             raise CustomException(status_code=403, message="Default roles cannot be modified or deleted")
 
 
+def _assert_can_grant_permissions(current_user: User, payload: dict[str, Any], db: Session) -> None:
+    if is_super_admin(current_user, db) or current_user.owns_company:
+        return
+    caller_role_obj = db.get(Role, current_user.role_id) if current_user.role_id else None
+    caller_role = serialize_role(caller_role_obj, db)
+    for key in (
+        "createPermissions",
+        "viewPermissions",
+        "viewOtherPermissions",
+        "editOtherPermissions",
+        "deleteOtherPermissions",
+    ):
+        req_perms = payload.get(key)
+        if isinstance(req_perms, list):
+            allowed = {str(p) for p in caller_role.get(key, [])}
+            for item in req_perms:
+                name = _ENTITY_BY_ORD.get(item, str(item)) if isinstance(item, int) else str(item)
+                if name not in allowed:
+                    raise CustomException(
+                        status_code=403,
+                        message="You don't have permission to grant these permissions",
+                    )
+
+
 @router.get("/roles")
 def list_roles(
     current_user: User = Depends(get_current_user),
@@ -902,6 +994,9 @@ def create_role(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> dict[str, Any]:
+    if not can_view(current_user, PermissionEntity.SETTINGS, db):
+        raise CustomException(status_code=403, message="Access is denied")
+    _assert_can_grant_permissions(current_user, payload, db)
     cs_id = _ensure_company_settings_id(current_user, db)
     role = Role(
         name=payload.get("name", "Custom Role"),
@@ -939,10 +1034,13 @@ def patch_role(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> dict[str, Any]:
+    if not can_view(current_user, PermissionEntity.SETTINGS, db):
+        raise CustomException(status_code=403, message="Access is denied")
     role = db.get(Role, role_id)
     if not role:
         raise CustomException(status_code=404, message="Role not found")
     _assert_role_access(role, current_user, db, allow_system=False)
+    _assert_can_grant_permissions(current_user, payload, db)
     apply_patch(role, payload, exclude={"role_type", "code", "company_settings_id"})
     _sync_role_permissions(role.id, payload, db)
     db.commit()
@@ -956,6 +1054,8 @@ def delete_role(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> dict[str, Any]:
+    if not can_view(current_user, PermissionEntity.SETTINGS, db):
+        raise CustomException(status_code=403, message="Access is denied")
     role = db.get(Role, role_id)
     if not role:
         raise CustomException(status_code=404, message="Role not found")
@@ -973,7 +1073,13 @@ def _serialize_team(team: Team, db: Session) -> dict[str, Any]:
             t_team_user_associations.c.id_team == team.id
         )
     ).all()
-    users = db.scalars(select(User).where(User.id.in_(user_ids))).all() if user_ids else []
+    users = (
+        db.scalars(
+            select(User).where(User.id.in_(user_ids), User.company_id == team.company_id)
+        ).all()
+        if user_ids
+        else []
+    )
     base["users"] = [
         {"id": u.id, "firstName": u.first_name, "lastName": u.last_name, "email": u.email}
         for u in users
@@ -989,6 +1095,12 @@ def _sync_team_users(team: Team, payload: dict[str, Any], current_user: User, db
         for item in payload["users"]:
             uid = item.get("id") if isinstance(item, dict) else item
             if isinstance(uid, int):
+                target_u = db.get(User, uid)
+                if not target_u or target_u.company_id != team.company_id:
+                    raise CustomException(
+                        status_code=400,
+                        message="Foreign key user does not belong to your company",
+                    )
                 db.execute(
                     t_team_user_associations.insert().values(id_team=team.id, id_user=uid)
                 )

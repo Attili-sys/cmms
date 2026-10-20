@@ -11,7 +11,7 @@ from sqlalchemy.orm import Session
 from src.deps.company import assert_company_access, is_super_admin
 from src.deps.current_user import get_current_user
 from src.deps.db import get_db
-from src.deps.permissions import can_edit_object
+from src.deps.permissions import can_create, can_edit_object
 from src.jobs.pm_generator import (
     advance_schedule_next_due_date,
     create_work_order_from_pm,
@@ -20,6 +20,7 @@ from src.jobs.pm_generator import (
 )
 from src.models._base import utcnow
 from src.models.associations import (
+    comment_files,
     preventive_maintenance_assigned_to,
     preventive_maintenance_customers,
     preventive_maintenance_files,
@@ -28,15 +29,19 @@ from src.models.associations import (
     work_order_assigned_to,
     work_order_customers,
     work_order_files,
+    work_order_meter_trigger_assigned_to,
+    work_order_meter_trigger_customers,
+    work_order_meter_trigger_files,
 )
 from src.models.categories import WorkOrderCategory
+from src.models.company import Company
 from src.models.enums import PermissionEntity, WFMainCondition
 from src.models.files_custom import CustomFieldValue, File as FileEntity
 from src.models.location_asset import Asset, Location
 from src.models.meters import WorkOrderMeterTrigger
 from src.models.parts_po import Customer, Part, PartQuantity
 from src.models.pm_schedule import PreventiveMaintenance, Schedule
-from src.models.settings import WorkOrderConfiguration
+from src.models.settings import GeneralPreferences, WorkOrderConfiguration
 from src.models.users import Team, User
 from src.models.work_orders import (
     Comment,
@@ -46,7 +51,11 @@ from src.models.work_orders import (
     WorkOrderHistory,
 )
 from src.pdf.work_order_pdf import render_work_order_pdf
-from src.routes._crud import apply_model_defaults, build_crud_router
+from src.routes._crud import (
+    apply_model_defaults,
+    build_crud_router,
+    validate_foreign_key_ownership,
+)
 from src.routes.assets_locations import (
     _hydrate_custom_field_values,
     _sync_entity_custom_fields,
@@ -140,6 +149,16 @@ def _before_create_wo(wo: WorkOrder, payload: dict[str, Any], current_user: User
         wo.status = 0  # OPEN
     if wo.priority is None:
         wo.priority = 0  # NONE
+    if wo.primary_user_id is None and current_user.company_id is not None:
+        comp = db.get(Company, current_user.company_id)
+        if comp and comp.company_settings_id:
+            gp = db.scalar(
+                select(GeneralPreferences).where(
+                    GeneralPreferences.company_settings_id == comp.company_settings_id
+                )
+            )
+            if gp and gp.auto_assign_work_orders:
+                wo.primary_user_id = current_user.id
 
 
 def _resolve_asset_status_val(raw_status: Any) -> int | None:
@@ -190,10 +209,14 @@ def _handle_wo_completion_side_effects(
                 WorkOrder.asset_id == wo.asset_id,
                 WorkOrder.id != wo.id,
                 WorkOrder.status != 3,
+                WorkOrder.archived.is_(False),
             )
         )
         if other_incomplete is None:
             stop_asset_downtime(wo.asset_id, db)
+            asset = db.get(Asset, wo.asset_id)
+            if asset is not None:
+                asset.status = 0  # OPERATIONAL
 
     if wo.parent_preventive_maintenance_id is not None:
         pm = db.get(PreventiveMaintenance, wo.parent_preventive_maintenance_id)
@@ -298,6 +321,8 @@ def _after_create_wo(wo: WorkOrder, payload: dict[str, Any], current_user: User,
 
 
 def _after_patch_wo(wo: WorkOrder, payload: dict[str, Any], current_user: User, db: Session) -> None:
+    if wo.first_time_to_react is None:
+        wo.first_time_to_react = utcnow()
     _sync_wo_relations(wo, payload, current_user, db)
     if wo.status == 3:
         run_work_order_workflows(wo, WFMainCondition.WORK_ORDER_CLOSED, db)
@@ -320,11 +345,14 @@ def get_urgent_wo_count(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> dict[str, Any]:
+    cutoff = utcnow() + timedelta(days=2)
     rows = db.scalars(
         select(WorkOrder).where(
             WorkOrder.company_id == current_user.company_id,
-            WorkOrder.priority == 3,
+            WorkOrder.archived.is_(False),
             WorkOrder.status != 3,
+            (WorkOrder.priority == 3)
+            | ((WorkOrder.due_date.is_not(None)) & (WorkOrder.due_date <= cutoff)),
         )
     ).all()
     return SuccessResponse(success=True, message=str(len(rows))).model_dump()
@@ -439,16 +467,19 @@ def add_wo_files(
     files: list[dict[str, Any] | int] = Body(default_factory=list),
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
-) -> dict[str, Any]:
+) -> list[dict[str, Any]]:
     wo = db.get(WorkOrder, wo_id)
     if not wo:
         raise CustomException(status_code=404, message="WorkOrder not found")
     assert_company_access(current_user, wo, is_super_admin=is_super_admin(current_user, db))
+    if not can_edit_object(current_user, PermissionEntity.WORK_ORDERS, wo, db):
+        raise CustomException(status_code=403, message="Access is denied")
     existing_ids = set(
         db.scalars(
             select(work_order_files.c.files_id).where(work_order_files.c.work_order_id == wo.id)
         ).all()
     )
+    added_files: list[FileEntity] = []
     for item in files:
         fid = item.get("id") if isinstance(item, dict) else item
         if isinstance(fid, int):
@@ -460,8 +491,11 @@ def add_wo_files(
                     work_order_files.insert().values(work_order_id=wo.id, files_id=fid)
                 )
                 existing_ids.add(fid)
+            added_files.append(fe)
+    if wo.first_time_to_react is None:
+        wo.first_time_to_react = utcnow()
     db.commit()
-    return _serialize_wo(wo, db)
+    return [model_to_dict(f, db=db) for f in added_files]
 
 
 @wo_router.delete("/files/{wo_id:int}/{file_id:int}/remove")
@@ -470,11 +504,13 @@ def remove_wo_file(
     file_id: int,
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
-) -> dict[str, Any]:
+) -> list[dict[str, Any]]:
     wo = db.get(WorkOrder, wo_id)
     if not wo:
         raise CustomException(status_code=404, message="WorkOrder not found")
     assert_company_access(current_user, wo, is_super_admin=is_super_admin(current_user, db))
+    if not can_edit_object(current_user, PermissionEntity.WORK_ORDERS, wo, db):
+        raise CustomException(status_code=403, message="Access is denied")
     db.execute(
         delete(work_order_files).where(
             work_order_files.c.work_order_id == wo.id,
@@ -488,7 +524,7 @@ def remove_wo_file(
         )
     )
     db.commit()
-    return _serialize_wo(wo, db)
+    return _serialize_wo(wo, db)["files"]
 
 
 @wo_router.get("/pdf/{wo_id:int}")
@@ -543,13 +579,29 @@ def change_wo_status(
     if not can_edit_object(current_user, PermissionEntity.WORK_ORDERS, wo, db):
         raise CustomException(status_code=403, message="Access is denied")
     old_status = wo.status
-    apply_patch(wo, payload)
+    sig_raw = payload.get("signature")
+    if isinstance(sig_raw, str) and sig_raw.strip():
+        sig_file = FileEntity(
+            name="signature.png",
+            path=sig_raw.strip(),
+            company_id=wo.company_id,
+            created_by=current_user.id,
+            updated_by=current_user.id,
+            type=0,
+            is_demo=False,
+        )
+        db.add(sig_file)
+        db.flush()
+        wo.signature_id = sig_file.id
+    patch_data = {k: v for k, v in payload.items() if not (k == "signature" and isinstance(v, str))}
+    apply_patch(wo, patch_data)
+    validate_foreign_key_ownership(wo, current_user, db)
     if wo.status == 3 and wo.required_signature and wo.signature_id is None:
         raise CustomException(
             status_code=406,
             message="Signature is required to complete this work order",
         )
-    if wo.status == 1 and wo.first_time_to_react is None:
+    if wo.status != 2 and wo.first_time_to_react is None:
         wo.first_time_to_react = utcnow()
     if old_status == 1 and wo.status != 1:
         _stop_running_labors_for_wo(wo, db)
@@ -598,16 +650,39 @@ def list_histories_by_wo(
 router.include_router(woh_router)
 
 # Comments
+def _hydrate_user_mini_with_image(u: User | None, db: Session) -> dict[str, Any] | None:
+    if u is None:
+        return None
+    img = db.get(FileEntity, u.image_id) if getattr(u, "image_id", None) else None
+    return {
+        "id": u.id,
+        "firstName": u.first_name,
+        "lastName": u.last_name,
+        "email": u.email,
+        "jobTitle": u.job_title,
+        "hourlyRate": u.rate,
+        "image": model_to_dict(img, db=db) if img else None,
+    }
+
+
 def _serialize_comment(c: Comment, db: Session) -> dict[str, Any]:
     res = model_to_dict(c, db=db)
     u = db.get(User, c.user_id) if c.user_id else None
-    if u:
-        res["createdBy"] = {
-            "id": u.id,
-            "firstName": u.first_name,
-            "lastName": u.last_name,
-            "email": u.email,
-        }
+    user_dto = _hydrate_user_mini_with_image(u, db)
+    if user_dto:
+        res["user"] = user_dto
+        res["createdBy"] = user_dto
+    res["text"] = c.content or ""
+    res["system"] = False
+    file_ids = db.scalars(
+        select(comment_files.c.files_id).where(comment_files.c.comment_id == c.id)
+    ).all()
+    files = (
+        db.scalars(select(FileEntity).where(FileEntity.id.in_(file_ids))).all()
+        if file_ids
+        else []
+    )
+    res["files"] = [model_to_dict(f, db=db) for f in files]
     return res
 
 
@@ -615,6 +690,39 @@ def _before_create_comment(c: Comment, payload: dict[str, Any], current_user: Us
     c.user_id = current_user.id
     if not c.content:
         c.content = payload.get("content") or payload.get("text") or ""
+    if c.work_order_id:
+        wo = db.get(WorkOrder, c.work_order_id)
+        if wo is None:
+            raise CustomException(status_code=404, message="WorkOrder not found")
+        assert_company_access(current_user, wo, is_super_admin=is_super_admin(current_user, db))
+        if wo.first_time_to_react is None:
+            wo.first_time_to_react = utcnow()
+
+
+def _before_patch_comment(c: Comment, payload: dict[str, Any], current_user: User, db: Session) -> None:
+    if c.user_id != current_user.id and not is_super_admin(current_user, db):
+        raise CustomException(status_code=403, message="Access is denied")
+    if "text" in payload and "content" not in payload:
+        c.content = str(payload["text"] or "")
+
+
+def _before_delete_comment(c: Comment, current_user: User, db: Session) -> None:
+    if c.user_id != current_user.id and not is_super_admin(current_user, db):
+        raise CustomException(status_code=403, message="Access is denied")
+
+
+def _after_save_comment(c: Comment, payload: dict[str, Any], current_user: User, db: Session) -> None:
+    if "files" in payload:
+        _verify_and_sync_m2m(
+            db,
+            current_user,
+            comment_files,
+            "comment_id",
+            c.id,
+            "files_id",
+            FileEntity,
+            payload.get("files"),
+        )
 
 
 comments_router = build_crud_router(
@@ -622,6 +730,10 @@ comments_router = build_crud_router(
     Comment,
     custom_serializer=_serialize_comment,
     before_create=_before_create_comment,
+    after_create=_after_save_comment,
+    before_patch=_before_patch_comment,
+    after_patch=_after_save_comment,
+    before_delete=_before_delete_comment,
 )
 
 
@@ -631,19 +743,39 @@ def search_comments_by_wo(
     criteria: SearchCriteria = Body(default_factory=SearchCriteria),
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
-) -> dict[str, Any]:
-    from src.utils.pagination import as_spring_page
-
+) -> list[dict[str, Any]]:
+    wo = db.get(WorkOrder, wo_id)
+    if not wo:
+        raise CustomException(status_code=404, message="WorkOrder not found")
+    assert_company_access(current_user, wo, is_super_admin=is_super_admin(current_user, db))
     rows = db.scalars(
         select(Comment).where(
             Comment.work_order_id == wo_id,
-            Comment.company_id == current_user.company_id,
+            Comment.company_id == wo.company_id,
         )
     ).all()
-    items = [_serialize_comment(r, db) for r in rows]
-    return as_spring_page(
-        items, total=len(items), page_num=criteria.pageNum, page_size=criteria.pageSize
-    ).model_dump(by_alias=True)
+    items: list[dict[str, Any]] = [_serialize_comment(r, db) for r in rows]
+    histories = db.scalars(
+        select(WorkOrderHistory).where(WorkOrderHistory.work_order_id == wo_id)
+    ).all()
+    for h in histories:
+        hu = db.get(User, h.user_id) if h.user_id else None
+        user_dto = _hydrate_user_mini_with_image(hu, db)
+        items.append(
+            {
+                "id": h.id,
+                "text": h.name or "",
+                "content": h.name or "",
+                "user": user_dto,
+                "createdBy": user_dto,
+                "createdAt": to_iso_utc(h.created_at),
+                "updatedAt": to_iso_utc(h.updated_at),
+                "files": [],
+                "system": True,
+            }
+        )
+    items.sort(key=lambda x: str(x.get("createdAt") or ""), reverse=True)
+    return items
 
 
 @comments_router.get("/count/{wo_id:int}")
@@ -651,22 +783,53 @@ def count_comments_by_wo(
     wo_id: int,
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
-) -> int:
+) -> dict[str, int]:
+    wo = db.get(WorkOrder, wo_id)
+    if not wo:
+        raise CustomException(status_code=404, message="WorkOrder not found")
+    assert_company_access(current_user, wo, is_super_admin=is_super_admin(current_user, db))
     rows = db.scalars(
         select(Comment).where(
             Comment.work_order_id == wo_id,
-            Comment.company_id == current_user.company_id,
+            Comment.company_id == wo.company_id,
         )
     ).all()
-    return len(rows)
+    comment_ids = [r.id for r in rows if r.id is not None]
+    with_files_ids = (
+        set(
+            db.scalars(
+                select(comment_files.c.comment_id).where(
+                    comment_files.c.comment_id.in_(comment_ids)
+                )
+            ).all()
+        )
+        if comment_ids
+        else set()
+    )
+    return {"count": len(rows), "withFilesCount": len(with_files_ids)}
 
 
 router.include_router(comments_router)
 
 # Labors
+def _assert_wo_edit_for_labor(labor: Labor, current_user: User, db: Session) -> WorkOrder | None:
+    if labor.work_order_id is None:
+        return None
+    wo = db.get(WorkOrder, labor.work_order_id)
+    if wo is None:
+        raise CustomException(status_code=404, message="WorkOrder not found")
+    assert_company_access(current_user, wo, is_super_admin=is_super_admin(current_user, db))
+    if not can_edit_object(current_user, PermissionEntity.WORK_ORDERS, wo, db):
+        raise CustomException(status_code=403, message="Access is denied")
+    return wo
+
+
 def _before_create_labor(
     labor: Labor, payload: dict[str, Any], current_user: User, db: Session
 ) -> None:
+    wo = _assert_wo_edit_for_labor(labor, current_user, db)
+    if wo is not None and wo.first_time_to_react is None:
+        wo.first_time_to_react = utcnow()
     if labor.assigned_to_id is None:
         labor.assigned_to_id = current_user.id
     if labor.hourly_rate is None:
@@ -678,7 +841,23 @@ def _before_create_labor(
         labor.logged = False
 
 
-labors_router = build_crud_router("/labors", Labor, before_create=_before_create_labor)
+def _before_patch_labor(
+    labor: Labor, payload: dict[str, Any], current_user: User, db: Session
+) -> None:
+    _assert_wo_edit_for_labor(labor, current_user, db)
+
+
+def _before_delete_labor(labor: Labor, current_user: User, db: Session) -> None:
+    _assert_wo_edit_for_labor(labor, current_user, db)
+
+
+labors_router = build_crud_router(
+    "/labors",
+    Labor,
+    before_create=_before_create_labor,
+    before_patch=_before_patch_labor,
+    before_delete=_before_delete_labor,
+)
 
 
 def _toggle_labor_timer(
@@ -775,6 +954,8 @@ def create_or_control_labor_for_wo(
     if not wo:
         raise CustomException(status_code=404, message="WorkOrder not found")
     assert_company_access(current_user, wo, is_super_admin=is_super_admin(current_user, db))
+    if not can_edit_object(current_user, PermissionEntity.WORK_ORDERS, wo, db):
+        raise CustomException(status_code=403, message="Access is denied")
 
     if start is not None:
         labor = _toggle_labor_timer(wo, bool(start), current_user, db)
@@ -785,8 +966,10 @@ def create_or_control_labor_for_wo(
     apply_patch(labor, body)
     labor.work_order_id = wo_id
     labor.company_id = wo.company_id
+    labor.created_by = current_user.id
     if labor.assigned_to_id is None:
         labor.assigned_to_id = current_user.id
+    validate_foreign_key_ownership(labor, current_user, db)
     if labor.hourly_rate is None:
         assigned = db.get(User, labor.assigned_to_id) if labor.assigned_to_id else current_user
         labor.hourly_rate = int((assigned.rate if assigned else current_user.rate) or 0)
@@ -794,6 +977,8 @@ def create_or_control_labor_for_wo(
         labor.status = 0  # TimeStatus.STOPPED == 0
     if "logged" not in body or labor.logged is None:
         labor.logged = False
+    if wo.first_time_to_react is None:
+        wo.first_time_to_react = utcnow()
     apply_model_defaults(labor)
     db.add(labor)
     db.commit()
@@ -813,6 +998,8 @@ def control_labor_timer(
     if not wo:
         raise CustomException(status_code=404, message="WorkOrder not found")
     assert_company_access(current_user, wo, is_super_admin=is_super_admin(current_user, db))
+    if not can_edit_object(current_user, PermissionEntity.WORK_ORDERS, wo, db):
+        raise CustomException(status_code=403, message="Access is denied")
     should_start = bool(start) if start is not None else (action.strip().upper() != "STOP")
     labor = _toggle_labor_timer(wo, should_start, current_user, db)
     return model_to_dict(labor, db=db)
@@ -821,7 +1008,54 @@ def control_labor_timer(
 router.include_router(labors_router)
 
 # Relations
-relations_router = build_crud_router("/relations", Relation)
+def _before_create_relation(
+    rel: Relation, payload: dict[str, Any], current_user: User, db: Session
+) -> None:
+    if rel.parent_id is None or rel.child_id is None:
+        raise CustomException(status_code=400, message="Both parent and child work orders are required")
+    if rel.parent_id == rel.child_id:
+        raise CustomException(
+            status_code=406, message="Parent and child work orders cannot be the same"
+        )
+    parent_wo = db.get(WorkOrder, rel.parent_id)
+    child_wo = db.get(WorkOrder, rel.child_id)
+    if parent_wo is None or child_wo is None:
+        raise CustomException(status_code=404, message="WorkOrder not found")
+    assert_company_access(current_user, parent_wo, is_super_admin=is_super_admin(current_user, db))
+    assert_company_access(current_user, child_wo, is_super_admin=is_super_admin(current_user, db))
+    if not can_edit_object(current_user, PermissionEntity.WORK_ORDERS, parent_wo, db):
+        raise CustomException(status_code=403, message="Access is denied")
+
+    # Normalize inverse relation types (matching Java RelationService.createPost):
+    # 5 (BLOCKED_BY) -> 6 (BLOCKS), 1 (DUPLICATED_BY) -> 0 (DUPLICATE_OF), 3 (SPLIT_TO) -> 4 (SPLIT_FROM)
+    if rel.relation_type == 5:
+        rel.parent_id, rel.child_id = rel.child_id, rel.parent_id
+        rel.relation_type = 6
+    elif rel.relation_type == 1:
+        rel.parent_id, rel.child_id = rel.child_id, rel.parent_id
+        rel.relation_type = 0
+    elif rel.relation_type == 3:
+        rel.parent_id, rel.child_id = rel.child_id, rel.parent_id
+        rel.relation_type = 4
+
+    existing = db.scalar(
+        select(Relation.id).where(
+            ((Relation.parent_id == rel.parent_id) & (Relation.child_id == rel.child_id))
+            | ((Relation.parent_id == rel.child_id) & (Relation.child_id == rel.parent_id))
+        )
+    )
+    if existing is not None:
+        raise CustomException(
+            status_code=406,
+            message="A relation between these two work orders already exists",
+        )
+
+
+relations_router = build_crud_router(
+    "/relations",
+    Relation,
+    before_create=_before_create_relation,
+)
 
 
 @relations_router.get("/work-order/{wo_id:int}")
@@ -842,7 +1076,89 @@ def list_relations_by_wo(
 router.include_router(relations_router)
 router.include_router(build_crud_router("/work-order-configurations", WorkOrderConfiguration))
 
-womt_router = build_crud_router("/work-order-meter-triggers", WorkOrderMeterTrigger)
+
+def _serialize_womt(t: WorkOrderMeterTrigger, db: Session) -> dict[str, Any]:
+    res = model_to_dict(t, db=db)
+    assigned_ids = db.scalars(
+        select(work_order_meter_trigger_assigned_to.c.assigned_to_id).where(
+            work_order_meter_trigger_assigned_to.c.work_order_meter_trigger_id == t.id
+        )
+    ).all()
+    users = db.scalars(select(User).where(User.id.in_(assigned_ids))).all() if assigned_ids else []
+    res["assignedTo"] = [
+        {"id": u.id, "firstName": u.first_name, "lastName": u.last_name, "email": u.email}
+        for u in users
+    ]
+    customer_ids = db.scalars(
+        select(work_order_meter_trigger_customers.c.customers_id).where(
+            work_order_meter_trigger_customers.c.work_order_meter_trigger_id == t.id
+        )
+    ).all()
+    customers = (
+        db.scalars(select(Customer).where(Customer.id.in_(customer_ids))).all()
+        if customer_ids
+        else []
+    )
+    res["customers"] = [{"id": c.id, "name": c.name} for c in customers]
+    file_ids = db.scalars(
+        select(work_order_meter_trigger_files.c.files_id).where(
+            work_order_meter_trigger_files.c.work_order_meter_trigger_id == t.id
+        )
+    ).all()
+    files = (
+        db.scalars(select(FileEntity).where(FileEntity.id.in_(file_ids))).all()
+        if file_ids
+        else []
+    )
+    res["files"] = [model_to_dict(f, db=db) for f in files]
+    return res
+
+
+def _sync_womt_relations(
+    t: WorkOrderMeterTrigger, payload: dict[str, Any], current_user: User, db: Session
+) -> None:
+    if "assignedTo" in payload:
+        _verify_and_sync_m2m(
+            db,
+            current_user,
+            work_order_meter_trigger_assigned_to,
+            "work_order_meter_trigger_id",
+            t.id,
+            "assigned_to_id",
+            User,
+            payload.get("assignedTo"),
+        )
+    if "customers" in payload:
+        _verify_and_sync_m2m(
+            db,
+            current_user,
+            work_order_meter_trigger_customers,
+            "work_order_meter_trigger_id",
+            t.id,
+            "customers_id",
+            Customer,
+            payload.get("customers"),
+        )
+    if "files" in payload:
+        _verify_and_sync_m2m(
+            db,
+            current_user,
+            work_order_meter_trigger_files,
+            "work_order_meter_trigger_id",
+            t.id,
+            "files_id",
+            FileEntity,
+            payload.get("files"),
+        )
+
+
+womt_router = build_crud_router(
+    "/work-order-meter-triggers",
+    WorkOrderMeterTrigger,
+    custom_serializer=_serialize_womt,
+    after_create=_sync_womt_relations,
+    after_patch=_sync_womt_relations,
+)
 
 
 @womt_router.get("/meter/{meter_id:int}")
@@ -857,7 +1173,7 @@ def list_triggers_by_meter(
             WorkOrderMeterTrigger.company_id == current_user.company_id,
         )
     ).all()
-    return [model_to_dict(r, db=db) for r in rows]
+    return [_serialize_womt(r, db) for r in rows]
 
 
 router.include_router(womt_router)
@@ -866,6 +1182,7 @@ router.include_router(womt_router)
 # 6.12 PreventiveMaintenances & Schedules
 def _serialize_schedule(sched: Schedule, db: Session) -> dict[str, Any]:
     sched_dict = model_to_dict(sched, db=db)
+    sched_dict["nextDueDate"] = sched_dict.get("startsOn")
     sched_dict["daysOfWeek"] = get_schedule_days_of_week(sched.id, db) if sched.id else []
     return sched_dict
 
@@ -886,6 +1203,26 @@ def _sync_schedule_days_of_week(
             db.execute(
                 schedule_days_of_week.insert().values(schedule_id=sched.id, days_of_week=d)
             )
+
+
+def _extract_pm_schedule_data(payload: dict[str, Any]) -> dict[str, Any]:
+    sched_data: dict[str, Any] = {}
+    nested = payload.get("schedule")
+    if isinstance(nested, dict):
+        sched_data.update(nested)
+    for k in (
+        "startsOn",
+        "endsOn",
+        "frequency",
+        "dueDateDelay",
+        "recurrenceType",
+        "recurrenceBasedOn",
+        "daysOfWeek",
+        "disabled",
+    ):
+        if k in payload and payload[k] is not None and k not in sched_data:
+            sched_data[k] = payload[k]
+    return sched_data
 
 
 def _serialize_pm(pm: PreventiveMaintenance, db: Session) -> dict[str, Any]:
@@ -1007,7 +1344,7 @@ def _after_create_pm(
     if not pm.custom_id:
         pm.custom_id = f"PM{pm.id:06d}"
     sched = db.scalar(select(Schedule).where(Schedule.preventive_maintenance_id == pm.id))
-    sched_data = payload.get("schedule") if isinstance(payload.get("schedule"), dict) else {}
+    sched_data = _extract_pm_schedule_data(payload)
     if not sched:
         sched = Schedule(
             preventive_maintenance_id=pm.id,
@@ -1031,8 +1368,8 @@ def _after_create_pm(
 def _after_patch_pm(
     pm: PreventiveMaintenance, payload: dict[str, Any], current_user: User, db: Session
 ) -> None:
-    sched_data = payload.get("schedule")
-    if isinstance(sched_data, dict):
+    sched_data = _extract_pm_schedule_data(payload)
+    if sched_data:
         sched = (
             db.get(Schedule, pm.schedule_id)
             if pm.schedule_id
@@ -1092,6 +1429,10 @@ def trigger_pm_work_order(
     if not pm:
         raise CustomException(status_code=404, message="PreventiveMaintenance not found")
     assert_company_access(current_user, pm, is_super_admin=is_super_admin(current_user, db))
+    if not can_edit_object(
+        current_user, PermissionEntity.PREVENTIVE_MAINTENANCES, pm, db
+    ) or not can_create(current_user, PermissionEntity.WORK_ORDERS, db):
+        raise CustomException(status_code=403, message="Access is denied")
     sched = (
         db.get(Schedule, pm.schedule_id)
         if pm.schedule_id
@@ -1356,6 +1697,8 @@ def schedule_workload_wo(
     if not wo:
         raise CustomException(status_code=404, message="WorkOrder not found")
     assert_company_access(current_user, wo, is_super_admin=is_super_admin(current_user, db))
+    if not can_edit_object(current_user, PermissionEntity.WORK_ORDERS, wo, db):
+        raise CustomException(status_code=403, message="Access is denied")
 
     if "localDate" in payload:
         local_date = payload.get("localDate")
@@ -1381,6 +1724,7 @@ def schedule_workload_wo(
         dd = payload.get("dueDate")
         wo.due_date = parse_iso_utc(dd) if dd else None
 
+    validate_foreign_key_ownership(wo, current_user, db)
     db.commit()
     db.refresh(wo)
     pu = db.get(User, wo.primary_user_id) if wo.primary_user_id else None

@@ -10,7 +10,8 @@ from sqlalchemy.orm import Session
 from src.deps.company import assert_company_access, is_super_admin
 from src.deps.current_user import get_current_user
 from src.deps.db import get_db
-from src.deps.permissions import can_edit_object
+from src.deps.permissions import can_edit, can_edit_object
+from src.models._base import utcnow
 from src.models.enums import PermissionEntity, WFMainCondition
 from src.services.workflow_engine import (
     run_part_workflows,
@@ -40,7 +41,11 @@ from src.models.pm_schedule import PreventiveMaintenance
 from src.models.tasks import Checklist, Task, TaskBase, TaskOption
 from src.models.users import Team, User
 from src.models.work_orders import WorkOrder
-from src.routes._crud import _get_user_company_settings_id, build_crud_router
+from src.routes._crud import (
+    _get_user_company_settings_id,
+    build_crud_router,
+    validate_foreign_key_ownership,
+)
 from src.routes.assets_locations import (
     _hydrate_custom_field_values,
     _sync_entity_custom_fields,
@@ -200,10 +205,35 @@ def _sync_part_relations(
     run_part_workflows(part, db)
 
 
+def _before_write_part(
+    part: Part, payload: dict[str, Any], current_user: User, db: Session
+) -> None:
+    if part.barcode is not None:
+        bc = str(part.barcode).strip()
+        if bc:
+            part.barcode = bc
+            dup = db.scalar(
+                select(Part.id).where(
+                    Part.company_id == current_user.company_id,
+                    Part.barcode == bc,
+                    Part.id != (part.id or 0),
+                )
+            )
+            if dup is not None:
+                raise CustomException(
+                    status_code=406,
+                    message="A part with this barcode already exists",
+                )
+        else:
+            part.barcode = None
+
+
 parts_router = build_crud_router(
     "/parts",
     Part,
     custom_serializer=_serialize_part,
+    before_create=_before_write_part,
+    before_patch=_before_write_part,
     after_create=_sync_part_relations,
     after_patch=_sync_part_relations,
 )
@@ -239,6 +269,7 @@ def get_part_by_barcode(
 
 
 @parts_router.post("/{part_id:int}/restock")
+@parts_router.patch("/{part_id:int}/restock")
 def restock_part(
     part_id: int,
     payload: dict[str, Any] = Body(default_factory=dict),
@@ -249,8 +280,25 @@ def restock_part(
     if not part:
         raise CustomException(status_code=404, message="Part not found")
     assert_company_access(current_user, part, is_super_admin=is_super_admin(current_user, db))
+    if not can_edit_object(current_user, PermissionEntity.PARTS_AND_MULTIPARTS, part, db):
+        raise CustomException(status_code=403, message="Access is denied")
+    if part.non_stock:
+        raise CustomException(status_code=406, message="Cannot restock a non-stock part")
     qty = float(payload.get("quantity", 0) or 0)
+    if qty <= 0:
+        raise CustomException(status_code=406, message="Quantity must be positive")
     part.quantity = (part.quantity or 0.0) + qty
+    db.add(
+        PartConsumption(
+            part_id=part.id,
+            quantity=qty,
+            company_id=part.company_id,
+            created_by=current_user.id,
+            updated_by=current_user.id,
+            description="PART_RESTOCK",
+        )
+    )
+    run_part_workflows(part, db)
     db.commit()
     db.refresh(part)
     return _serialize_part(part, db)
@@ -612,6 +660,8 @@ def update_pq_for_purchase_order(
     if not po:
         raise CustomException(status_code=404, message="PurchaseOrder not found")
     assert_company_access(current_user, po, is_super_admin=is_super_admin(current_user, db))
+    if not can_edit_object(current_user, PermissionEntity.PURCHASE_ORDERS, po, db):
+        raise CustomException(status_code=403, message="Access is denied")
     rows = _reconcile_po_part_quantities(po, payload, current_user, db)
     db.commit()
     return [_serialize_part_quantity(r, db) for r in rows]
@@ -696,7 +746,7 @@ def _serialize_po(po: PurchaseOrder, db: Session) -> dict[str, Any]:
         )
     ).all()
     res["partQuantities"] = [_serialize_part_quantity(pq, db) for pq in pqs]
-    res.setdefault("customFieldValues", [])
+    res["customFieldValues"] = []
     return res
 
 
@@ -737,7 +787,7 @@ def respond_purchase_order(
     if not po:
         raise CustomException(status_code=404, message="PurchaseOrder not found")
     assert_company_access(current_user, po, is_super_admin=is_super_admin(current_user, db))
-    if not can_edit_object(current_user, PermissionEntity.PURCHASE_ORDERS, po, db):
+    if not can_edit(current_user, PermissionEntity.PURCHASE_ORDERS, db):
         raise CustomException(status_code=403, message="Access is denied")
 
     if approved is not None:
@@ -771,6 +821,7 @@ def respond_purchase_order(
                         description="PART_RECEPTION",
                     )
                     db.add(tx)
+                    run_part_workflows(part, db)
     elif not is_approved and po.status == 0:
         for pq in pqs:
             if pq.part_id and (pq.quantity or 0.0) > 0:
@@ -798,6 +849,8 @@ def _assert_ac_wo_access(ac: AdditionalCost, current_user: User, db: Session) ->
     assert_company_access(current_user, wo, is_super_admin=is_super_admin(current_user, db))
     if not can_edit_object(current_user, PermissionEntity.WORK_ORDERS, wo, db):
         raise CustomException(status_code=403, message="Access is denied")
+    if wo.first_time_to_react is None:
+        wo.first_time_to_react = utcnow()
 
 
 def _before_write_ac(
@@ -945,6 +998,7 @@ def _reconcile_tasks(
                     tb.user_id = user_id
                 if meter_id is not None or "meter" in tb_data or "meterId" in tb_data:
                     tb.meter_id = meter_id
+                validate_foreign_key_ownership(tb, current_user, db)
                 if "options" in tb_data and isinstance(tb_data["options"], list):
                     db.execute(delete(TaskOption).where(TaskOption.task_base_id == tb.id))
                     for opt in tb_data["options"]:
@@ -970,6 +1024,7 @@ def _reconcile_tasks(
                 created_by=current_user.id,
                 updated_by=current_user.id,
             )
+            validate_foreign_key_ownership(tb, current_user, db)
             db.add(tb)
             db.flush()
             for opt in tb_data.get("options") or []:
@@ -1006,6 +1061,35 @@ def _reconcile_tasks(
     return result_tasks
 
 
+def _assert_task_parent_access(task: Task, current_user: User, db: Session) -> None:
+    if task.work_order_id is not None:
+        wo = db.get(WorkOrder, task.work_order_id)
+        if wo is None:
+            raise CustomException(status_code=404, message="WorkOrder not found")
+        assert_company_access(current_user, wo, is_super_admin=is_super_admin(current_user, db))
+        if not can_edit_object(current_user, PermissionEntity.WORK_ORDERS, wo, db):
+            raise CustomException(status_code=403, message="Access is denied")
+        if wo.first_time_to_react is None:
+            wo.first_time_to_react = utcnow()
+    elif task.preventive_maintenance_id is not None:
+        pm = db.get(PreventiveMaintenance, task.preventive_maintenance_id)
+        if pm is None:
+            raise CustomException(status_code=404, message="PreventiveMaintenance not found")
+        assert_company_access(current_user, pm, is_super_admin=is_super_admin(current_user, db))
+        if not can_edit_object(current_user, PermissionEntity.PREVENTIVE_MAINTENANCES, pm, db):
+            raise CustomException(status_code=403, message="Access is denied")
+
+
+def _before_write_task(
+    task: Task, payload: dict[str, Any], current_user: User, db: Session
+) -> None:
+    _assert_task_parent_access(task, current_user, db)
+
+
+def _before_delete_task(task: Task, current_user: User, db: Session) -> None:
+    _assert_task_parent_access(task, current_user, db)
+
+
 def _after_patch_task(
     task: Task, payload: dict[str, Any], current_user: User, db: Session
 ) -> None:
@@ -1016,6 +1100,9 @@ tasks_router = build_crud_router(
     "/tasks",
     Task,
     custom_serializer=_serialize_task,
+    before_create=_before_write_task,
+    before_patch=_before_write_task,
+    before_delete=_before_delete_task,
     after_patch=_after_patch_task,
 )
 
@@ -1050,6 +1137,10 @@ def create_tasks_for_wo(
     if not wo:
         raise CustomException(status_code=404, message="WorkOrder not found")
     assert_company_access(current_user, wo, is_super_admin=is_super_admin(current_user, db))
+    if not can_edit_object(current_user, PermissionEntity.WORK_ORDERS, wo, db):
+        raise CustomException(status_code=403, message="Access is denied")
+    if wo.first_time_to_react is None:
+        wo.first_time_to_react = utcnow()
     existing = list(
         db.scalars(
             select(Task).where(
@@ -1102,6 +1193,8 @@ def patch_tasks_for_pm(
     if not pm:
         raise CustomException(status_code=404, message="PreventiveMaintenance not found")
     assert_company_access(current_user, pm, is_super_admin=is_super_admin(current_user, db))
+    if not can_edit_object(current_user, PermissionEntity.PREVENTIVE_MAINTENANCES, pm, db):
+        raise CustomException(status_code=403, message="Access is denied")
     existing = list(
         db.scalars(
             select(Task).where(
@@ -1147,7 +1240,20 @@ def _sync_checklist_task_bases(
 
     if "taskBases" not in payload or not isinstance(payload["taskBases"], list):
         return
+    old_tb_ids = list(
+        db.scalars(
+            select(checklist_task_bases.c.task_bases_id).where(
+                checklist_task_bases.c.checklist_id == cl.id
+            )
+        ).all()
+    )
     db.execute(delete(checklist_task_bases).where(checklist_task_bases.c.checklist_id == cl.id))
+    for old_tb_id in old_tb_ids:
+        referenced = db.scalar(select(Task.id).where(Task.task_base_id == old_tb_id).limit(1))
+        if referenced is None:
+            db.execute(delete(TaskOption).where(TaskOption.task_base_id == old_tb_id))
+            db.execute(delete(TaskBase).where(TaskBase.id == old_tb_id))
+
     for item in payload["taskBases"]:
         tb_data = item.get("taskBase") if isinstance(item, dict) and "taskBase" in item else item
         if not isinstance(tb_data, dict):
@@ -1160,6 +1266,7 @@ def _sync_checklist_task_bases(
             user_id=tb_data.get("user", {}).get("id") if isinstance(tb_data.get("user"), dict) else tb_data.get("userId"),
             meter_id=tb_data.get("meter", {}).get("id") if isinstance(tb_data.get("meter"), dict) else tb_data.get("meterId"),
         )
+        validate_foreign_key_ownership(tb, current_user, db)
         db.add(tb)
         db.flush()
         for opt in tb_data.get("options") or []:
