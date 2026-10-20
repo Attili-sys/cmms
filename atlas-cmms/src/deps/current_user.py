@@ -73,11 +73,17 @@ def _ensure_company_settings(db: Session, company: Company) -> CompanySettings:
         db.add(cs)
         db.flush()
 
-    currency = db.scalar(select(Currency).limit(1))
+    currency = db.scalar(select(Currency).where(Currency.code == "QR").limit(1))
     if not currency:
-        currency = Currency(code="$", name="USD")
-        db.add(currency)
-        db.flush()
+        currency = db.scalar(select(Currency).limit(1))
+        if currency and currency.code == "$" and currency.name == "USD":
+            currency.code = "QR"
+            currency.name = "Qatari Riyal"
+            db.flush()
+        elif not currency:
+            currency = Currency(code="QR", name="Qatari Riyal")
+            db.add(currency)
+            db.flush()
 
     gp = db.get(GeneralPreferences, cs.general_preferences_id) if cs.general_preferences_id else None
     if not gp:

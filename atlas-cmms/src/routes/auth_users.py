@@ -108,7 +108,7 @@ def _sync_role_permissions(role_id: int, payload: dict[str, Any], db: Session) -
 
 
 def serialize_general_preferences(gp: GeneralPreferences | None, db: Session) -> dict[str, Any]:
-    default_currency = {"id": 1, "code": "$", "name": "USD"}
+    default_currency = {"id": 1, "code": "QR", "name": "Qatari Riyal"}
     if gp is None:
         return {
             "id": 1,
@@ -875,3 +875,5 @@ def list_teams_mini(
 
 
 router.include_router(teams_router)
+router.include_router(build_crud_router("/currencies", Currency))
+

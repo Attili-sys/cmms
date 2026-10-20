@@ -116,7 +116,9 @@ const Customers = ({ openModal, handleCloseModal }: PropsType) => {
     setCriteria,
     fieldMapping
   });
-  const { hasEditPermission, hasDeletePermission } = useAuth();
+  const { hasEditPermission, hasDeletePermission, companySettings } = useAuth();
+  const currencyCode =
+    companySettings?.generalPreferences?.currency?.code || 'QR';
   const [currentCustomer, setCurrentCustomer] = useState<Customer>();
   const [viewOrUpdate, setViewOrUpdate] = useState<'view' | 'update'>('view');
   const [openDelete, setOpenDelete] = useState<boolean>(false);
@@ -288,9 +290,9 @@ const Customers = ({ openModal, handleCloseModal }: PropsType) => {
     {
       name: 'rate',
       type: 'number',
-      label: t('hourly_rate'),
+      label: `${t('hourly_rate')} (${currencyCode})`,
       placeholder: t('hourly_rate'),
-      icon: '$'
+      icon: currencyCode
       // helperText: 'Changes will only apply to Work Orders created in the future'
     },
     {

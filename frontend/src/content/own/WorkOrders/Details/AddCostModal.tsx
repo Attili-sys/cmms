@@ -31,7 +31,9 @@ export default function AddCostModal({
 }: AddCostProps) {
   const { t }: { t: any } = useTranslation();
   const dispatch = useDispatch();
-  const { hasFeature } = useAuth();
+  const { hasFeature, companySettings } = useAuth();
+  const currencyCode =
+    companySettings?.generalPreferences?.currency?.code || 'QR';
   const { showSnackBar } = useContext(CustomSnackBarContext);
   const isEdit = !!additionalCost;
 
@@ -66,7 +68,8 @@ export default function AddCostModal({
     {
       name: 'cost',
       type: 'number',
-      label: t('cost'),
+      label: `${t('cost')} (${currencyCode})`,
+      icon: currencyCode,
       midWidth: true
     },
     {

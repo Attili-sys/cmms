@@ -67,8 +67,11 @@ const ShowAsset = ({}: PropsType) => {
     hasViewPermission,
     hasEditPermission,
     hasDeletePermission,
-    getFilteredFields
+    getFilteredFields,
+    companySettings
   } = useAuth();
+  const currencyCode =
+    companySettings?.generalPreferences?.currency?.code || 'QR';
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -204,8 +207,9 @@ const ShowAsset = ({}: PropsType) => {
     {
       name: 'acquisitionCost',
       type: 'number',
-      label: t('acquisition_cost'),
+      label: `${t('acquisition_cost')} (${currencyCode})`,
       placeholder: t('acquisition_cost'),
+      icon: currencyCode,
       midWidth: true
     },
     {

@@ -81,7 +81,9 @@ const People = ({ openModal, handleCloseModal, initialEmail }: PropsType) => {
   const [shiftModalUser, setShiftModalUser] = useState<UserResponseDTO>();
   const [shiftModalOpen, setShiftModalOpen] = useState(false);
   const { peopleId } = useParams();
-  const { hasEditPermission, user } = useAuth();
+  const { hasEditPermission, user, companySettings } = useAuth();
+  const currencyCode =
+    companySettings?.generalPreferences?.currency?.code || 'QR';
   const [enabledOnly, setEnabledOnly] = useState<boolean>(true);
   const { users, loadingGet, singleUser, lastWeekInvitations } = useSelector(
     (state) => state.users
@@ -198,7 +200,8 @@ const People = ({ openModal, handleCloseModal, initialEmail }: PropsType) => {
     {
       name: 'rate',
       type: 'number',
-      label: t('hourly_rate')
+      label: `${t('hourly_rate')} (${currencyCode})`,
+      icon: currencyCode
     },
     {
       name: 'role',

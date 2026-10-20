@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunkatlas_cmms=self.webpackChunkatlas_cmms||[]).push([[2358],{52358(s,a,e){e.r(a);var t=e(44224),c=e(24123);const r=function(){return(0,c.jsx)(t.A,{tabIndex:6,basePath:"purchase-order-categories"})};e.d(a,["default",0,r])}}]);
+//# sourceMappingURL=2358.45e8d260.chunk.js.map

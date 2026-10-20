@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunkatlas_cmms=self.webpackChunkatlas_cmms||[]).push([[464],{464(e,a){a.default={code:"bs",week:{dow:1,doy:7},buttonText:{prev:"Pro\u0161li",next:"Sljede\u0107i",today:"Danas",month:"Mjesec",week:"Sedmica",day:"Dan",list:"Raspored"},weekText:"Sed",allDayText:"Cijeli dan",moreLinkText:function(e){return"+ jo\u0161 "+e},noEventsText:"Nema doga\u0111aja za prikazivanje"}}}]);
+//# sourceMappingURL=464.0cce9537.chunk.js.map

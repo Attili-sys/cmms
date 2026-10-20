@@ -121,7 +121,9 @@ const Vendors = ({ openModal, handleCloseModal }: PropsType) => {
   const [currentVendor, setCurrentVendor] = useState<Vendor>();
   const [viewOrUpdate, setViewOrUpdate] = useState<'view' | 'update'>('view');
   const { showSnackBar } = useContext(CustomSnackBarContext);
-  const { hasEditPermission, hasDeletePermission } = useAuth();
+  const { hasEditPermission, hasDeletePermission, companySettings } = useAuth();
+  const currencyCode =
+    companySettings?.generalPreferences?.currency?.code || 'QR';
 
   const onQueryChange = (event) => {
     onSearchQueryChange<Vendor>(event, criteria, setCriteria, [
@@ -279,9 +281,9 @@ const Vendors = ({ openModal, handleCloseModal }: PropsType) => {
     {
       name: 'rate',
       type: 'number',
-      label: t('hourly_rate'),
+      label: `${t('hourly_rate')} (${currencyCode})`,
       placeholder: t('hourly_rate'),
-      icon: '$'
+      icon: currencyCode
     },
     ...getCustomFieldsIFields(customFields, CustomFieldEntityType.VENDOR)
   ];

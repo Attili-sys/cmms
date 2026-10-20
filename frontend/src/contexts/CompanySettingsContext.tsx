@@ -53,7 +53,7 @@ export const CompanySettingsProvider: FC = ({ children }) => {
   const dispatch = useDispatch();
   const { generalPreferences } = companySettings ?? {
     dateFormat: 'DDMMYY',
-    currency: { code: '$' },
+    currency: { code: 'QR' },
     timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
   };
   const { allUsersMini } = useSelector((state) => state.users);
@@ -79,7 +79,7 @@ export const CompanySettingsProvider: FC = ({ children }) => {
     }
   };
   const getFormattedCurrency = (amount: number): string => {
-    const code = generalPreferences.currency.code;
+    const code = generalPreferences?.currency?.code || 'QR';
     const currenciesToReverse = ['$'];
     return currenciesToReverse.includes(code)
       ? `${code} ${amount} `

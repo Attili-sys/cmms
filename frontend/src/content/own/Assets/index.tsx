@@ -100,8 +100,11 @@ function Assets() {
     hasCreatePermission,
     hasViewOtherPermission,
     getFilteredFields,
-    hasFeature
+    hasFeature,
+    companySettings
   } = useAuth();
+  const currencyCode =
+    companySettings?.generalPreferences?.currency?.code || 'QR';
   const [openAddModal, setOpenAddModal] = useState<boolean>(false);
   const [openDiscardDialog, setOpenDiscardDialog] = useState<boolean>(false);
   const [isFormDirty, setIsFormDirty] = useState<boolean>(false);
@@ -601,8 +604,9 @@ function Assets() {
     {
       name: 'acquisitionCost',
       type: 'number',
-      label: t('acquisition_cost'),
+      label: `${t('acquisition_cost')} (${currencyCode})`,
       placeholder: t('acquisition_cost'),
+      icon: currencyCode,
       midWidth: true
     },
     {

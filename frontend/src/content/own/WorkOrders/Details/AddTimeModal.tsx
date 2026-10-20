@@ -32,7 +32,9 @@ export default function AddTimeModal({
 }: AddTimeProps) {
   const { t }: { t: any } = useTranslation();
   const dispatch = useDispatch();
-  const { hasFeature } = useAuth();
+  const { hasFeature, companySettings } = useAuth();
+  const currencyCode =
+    companySettings?.generalPreferences?.currency?.code || 'QR';
   const { showSnackBar } = useContext(CustomSnackBarContext);
   const isEdit = !!labor;
   const [editHours, editMinutes] = labor
@@ -49,7 +51,8 @@ export default function AddTimeModal({
     {
       name: 'hourlyRate',
       type: 'number',
-      label: t('hourly_rate'),
+      label: `${t('hourly_rate')} (${currencyCode})`,
+      icon: currencyCode,
       midWidth: true
     },
     {

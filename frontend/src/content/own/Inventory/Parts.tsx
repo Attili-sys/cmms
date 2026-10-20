@@ -149,8 +149,11 @@ const Parts = ({ setAction }: PropsType) => {
     getFilteredFields,
     hasViewPermission,
     hasViewOtherPermission,
-    hasFeature
+    hasFeature,
+    companySettings
   } = useAuth();
+  const currencyCode =
+    companySettings?.generalPreferences?.currency?.code || 'QR';
   const { partId } = useParams();
   const dispatch = useDispatch();
   const { showSnackBar } = useContext(CustomSnackBarContext);
@@ -420,8 +423,9 @@ const Parts = ({ setAction }: PropsType) => {
     {
       name: 'cost',
       type: 'number',
-      label: t('cost'),
-      placeholder: t('enter_part_cost')
+      label: `${t('cost')} (${currencyCode})`,
+      placeholder: t('enter_part_cost'),
+      icon: currencyCode
     },
     {
       name: 'quantity',
