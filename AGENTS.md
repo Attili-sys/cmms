@@ -106,4 +106,4 @@ Rules for agents working on this branch:
 
 ## Done
 
-A Canvas backend change (`atlas-cmms/`) is done when `.venv/bin/pytest` (57 tests including `tests/test_crud_contracts.py`) and `.venv/bin/ruff check .` pass in `atlas-cmms/`. A web change (`frontend/`) is done when `npm run lint` and `npm run build` succeed in `frontend/` and the built assets are synced to `atlas-cmms/src/static/` and `atlas-cmms/src/static/ui/`. A mobile change is done when `npm test` has been run in `mobile/`. A UI change is done when the affected screen has been verified in a browser or E2E test.
+A Canvas backend change (`atlas-cmms/`) is done when `.venv/bin/pytest` (80 tests including `tests/test_crud_contracts.py`, `tests/test_asset_fixes.py`, and `tests/test_non_asset_audit_fixes.py`) and `.venv/bin/ruff check .` pass in `atlas-cmms/`. A web change (`frontend/`) is done when `npm run lint` and `npm run build` succeed in `frontend/` and the built assets are synced to `atlas-cmms/src/static/` and `atlas-cmms/src/static/ui/`. A mobile change is done when `npm test` has been run in `mobile/`. A UI change is done when the affected screen has been verified in a browser or E2E test.

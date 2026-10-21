@@ -8,7 +8,7 @@ This folder contains the actionable engineering execution plans for the **AJ CAF
 
 | Plan | Scope | Status |
 |---|---|---|
-| [`01_ASSET_MANAGEMENT_FIXES_PLAN.md`](./01_ASSET_MANAGEMENT_FIXES_PLAN.md) | **Strictly defect & Java-parity contract fixes (Rev 2)** across `atlas-cmms/` and `frontend/`. Covers all **9 P0 security/crash defects**, all **10 P1 correctness/UX/parity defects**, and the **3 broken existing-feature contracts (`C-01`, `C-02`, `C-03`)** across all Asset tabs (`Details`, `Work Orders`, `Downtimes`, `Meters`, `Parts`, `Files`, `Analytics`) and Import/Export. **Zero net-new product features.** | **Implemented & Deployed (`@73ff68d10881`)** |
+| [`01_ASSET_MANAGEMENT_FIXES_PLAN.md`](./01_ASSET_MANAGEMENT_FIXES_PLAN.md) | **Strictly defect & Java-parity contract fixes (Rev 2)** across `atlas-cmms/` and `frontend/`. Covers all **9 P0 security/crash defects**, all **10 P1 correctness/UX/parity defects**, and the **3 broken existing-feature contracts (`C-01`, `C-02`, `C-03`)** across all Asset tabs (`Details`, `Work Orders`, `Downtimes`, `Meters`, `Parts`, `Files`, `Analytics`), Import/Export, plus Qatari Riyal (`QR`) default currency and all 30 non-asset backend/RBAC/workflow parity fixes (`tests/test_asset_fixes.py` + `tests/test_non_asset_audit_fixes.py` — 80 tests passing). **Zero net-new product features.** | **Implemented & Deployed (`@c9e197b0d631`)** |
 
 ---
 

@@ -12,7 +12,7 @@ All API routes are mounted under `/api` (with `/auth/*` also mirrored at root `/
 |---|---|---|
 | [`_crud.py`](src/routes/_crud.py) | Shared factory (`build_crud_router`) | Provides standard `POST /search`, `GET ""`, `POST ""`, `GET /{id}`, `PATCH /{id}`, `DELETE /{id}` with automatic tenant scoping (`company_id` or `company_settings_id`) and primitive defaults. |
 | [`auth_users.py`](src/routes/auth_users.py) | `/auth`, `/users`, `/roles`, `/teams`, `/company-settings`, `/companies`, `/general-preferences`, `/currencies`, `/notifications`, `/subscription`, `/subscription-plans`, `/license`, `/switch-account` | `user.ts`, `role.ts`, `team.ts`, `companySettings.ts`, `generalPreferences.ts`, `currency.ts`, `notification.ts`, `subscription.ts`, `subscriptionPlan.ts` |
-| [`assets_locations.py`](src/routes/assets_locations.py) | `/locations`, `/floor-plans`, `/assets`, `/asset-downtimes`, `/deprecations`, `/customers`, `/vendors`, `/custom-fields`, `/custom-field-values`, `/*-category` (7 category routers) | `location.ts`, `floorPlan.ts`, `asset.ts`, `assetDowntime.ts`, `customer.ts`, `vendor.ts`, `category.ts` |
+| [`assets_locations.py`](src/routes/assets_locations.py) | `/locations`, `/floor-plans`, `/assets`, `/asset-downtimes`, `/deprecations`, `/customers`, `/vendors`, `/custom-fields`, `/custom-field-values`, `/*-categories` (7 category routers) | `location.ts`, `floorPlan.ts`, `asset.ts`, `assetDowntime.ts`, `customer.ts`, `vendor.ts`, `category.ts` |
 | [`parts_po_tasks.py`](src/routes/parts_po_tasks.py) | `/parts`, `/multi-parts`, `/part-quantities`, `/purchase-orders`, `/additional-costs`, `/tasks`, `/checklists` | `part.ts`, `multipart.ts`, `partQuantity.ts`, `purchaseOrder.ts`, `additionalCost.ts`, `task.ts`, `checklist.ts` |
 | [`work_orders_pm.py`](src/routes/work_orders_pm.py) | `/work-orders`, `/work-order-histories`, `/labors`, `/relations`, `/comments`, `/work-order-meter-triggers`, `/preventive-maintenances`, `/schedules`, `/workload` | `workOrder.ts`, `workOrderHistory.ts`, `labor.ts`, `relation.ts`, `comment.ts`, `workOrderMeterTrigger.ts`, `preventiveMaintenance.ts`, `workload.ts` |
 | [`meters_requests_workflows_misc.py`](src/routes/meters_requests_workflows_misc.py) | `/meters`, `/readings`, `/requests`, `/workflows`, `/files`, `/import`, `/export`, `/webhooks`, `/work-order-configuration`, `/work-order-request-configuration`, `/ui-configuration` | `meter.ts`, `reading.ts`, `request.ts`, `workflow.ts`, `file.ts`, `imports.ts`, `exports.ts`, `workOrderConfiguration.ts`, `workOrderRequestConfiguration.ts`, `uiConfiguration.ts` |
@@ -57,19 +57,25 @@ If a backend serializer returns a bare `{"id": 5}` stub for a foreign key, the R
 
 React components call `.map()`, `.filter()`, and `.length` on collection fields without null checks. [`_MODEL_DEFAULT_LISTS`](src/services/serializer.py) guarantees that every serialized entity includes empty lists `[]` by default (populated by custom serializers where applicable):
 
-- `Location`: `workers`, `teams`, `vendors`, `customers`, `files`
-- `Asset`: `workers`, `teams`, `vendors`, `customers`, `files`, `parts`
-- `WorkOrder`: `assignedTo`, `customers`, `files`
-- `PreventiveMaintenance`: `assignedTo`, `customers`, `files`
+- `Location`: `workers`, `teams`, `vendors`, `customers`, `files`, `customFieldValues`
+- `Asset`: `workers`, `users`, `assignedTo`, `teams`, `vendors`, `customers`, `files`, `parts`, `customFieldValues`
+- `WorkOrder`: `assignedTo`, `customers`, `files`, `customFieldValues`
+- `PreventiveMaintenance`: `assignedTo`, `customers`, `files`, `customFieldValues`
 - `Schedule`: `daysOfWeek`
 - `Checklist`: `taskBases`
 - `TaskBase`: `options` (`[{"id": o.id, "label": o.label}]`)
 - `Task`: `images`
 - `Meter`: `users`, `customFieldValues`
-- `Part`: `assignedTo`, `customers`, `vendors`, `teams`, `files`, `assets`, `multiParts`
+- `WorkOrderMeterTrigger`: `assignedTo`, `customers`, `files`
+- `Request`: `files`, `customFieldValues`
+- `Part`: `assignedTo`, `users`, `customers`, `vendors`, `teams`, `files`, `assets`, `multiParts`, `customFieldValues`
+- `PurchaseOrder`: `customFieldValues`
+- `Vendor`: `customFieldValues`
+- `Customer`: `customFieldValues`
 - `MultiParts`: `parts`
 - `Team`: `users`
 - `Comment`: `files`
+- `Workflow`: `secondaryConditions`
 
 ---
 
@@ -94,11 +100,13 @@ The Locations (`/app/locations`) and Assets (`/app/assets`) screens use tree-tab
 
 - Creating a `PreventiveMaintenance` (`POST /api/preventive-maintenances`) automatically creates and links its `Schedule` row (`pm.schedule_id = sched.id`) in [`_after_create_pm`](src/routes/work_orders_pm.py).
 - `Schedule.recurrence_type` (`"DAILY"`, `"WEEKLY"`, `"MONTHLY"`, `"YEARLY"`) and `Schedule.recurrence_based_on` (`"SCHEDULED_DATE"`, `"COMPLETED_DATE"`) are stored as strings.
-- [`_serialize_pm`](src/routes/work_orders_pm.py) always returns a non-null `schedule` object with `daysOfWeek: list[int]` and `nextWorkOrderDate` so `PMDetails.tsx` never encounters `null.dueDateDelay` or `null.disabled`.
+- [`_serialize_pm`](src/routes/work_orders_pm.py) always returns a non-null `schedule` object with `startsOn`, `nextDueDate`, `daysOfWeek: list[int]`, and `nextWorkOrderDate` so `PMDetails.tsx` never encounters `null.dueDateDelay` or `null.disabled`.
+- Background PM generation (`src/jobs/pm_generator.py`) copies PM template tasks onto generated WorkOrders, honors `schedule_days_of_week`, and for `COMPLETED_DATE` recurrence holds `starts_on` until the open generated WorkOrder transitions to `COMPLETE`.
 
 ### 3.3 Checklists, TaskBases & TaskOptions Contract
 
-- Creating or patching a `Checklist` (`POST /api/checklists`, `PATCH /api/checklists/{id}`) persists its `taskBases` and `options` via [`_sync_checklist_task_bases`](src/routes/parts_po_tasks.py).
+- Creating or patching a `Checklist` (`POST /api/checklists`, `PATCH /api/checklists/{id}`) clones `TaskBase` and `TaskOption` templates via [`_sync_checklist_task_bases`](src/routes/parts_po_tasks.py) so live WorkOrder tasks are never hijacked.
+- Patching tasks on a WorkOrder (`PATCH /api/tasks/work-order/{id}`) or PreventiveMaintenance (`PATCH /api/tasks/preventive-maintenance/{id}`) reconciles existing `Task`, `TaskBase`, and `TaskOption` rows in place by ID without duplicating rows.
 - [`_serialize_task_base`](src/routes/parts_po_tasks.py) serializes `TaskOption` rows as `[{"id": o.id, "label": o.label}]` to match `TaskOption` in `frontend/src/models/owns/tasks.ts`.
 
 ### 3.4 Search & Specification Engine (`src/utils/search.py`)
@@ -121,9 +129,9 @@ All `POST /api/<entity>/search` endpoints accept a `SearchCriteria` payload:
   ]
 }
 ```
-- Supports nested/joined sort and filter paths (e.g. `schedule.startsOn`, `location.id`, `asset.id`, `category.id`, `customFieldValues.value`, and M2M association filters like `assignedTo`, `teams`, `vendors`, `customers`, `parts`).
+- Supports nested/joined sort and filter paths (e.g. `schedule.startsOn`, `location.id`, `asset.id`, `category.id`, `customFieldValues.value`, virtual `Request.status` (`PENDING`, `CANCELLED`, `APPROVED`), and M2M association filters like `assignedTo`, `teams`, `vendors`, `customers`, `parts`).
 - Deduplicates joined M2M / 1:N queries using a mandatory `model_cls.id.in_(filter_stmt)` subquery so `ORDER BY` on joined columns works on PostgreSQL without `SELECT DISTINCT` conflicts.
-- Automatically enforces `SearchFieldPolicy` (blocking sensitive attributes like `password`, `secret`, `token`, `code`).
+- Automatically enforces `SearchFieldPolicy` (blocking sensitive attributes like `password`, `secret`, `token`, `code`) and `apply_view_other_scope()` so limited users without `viewOtherPermissions` only see records they created or are assigned to.
 - Returns a Spring Data `Page<T>` JSON envelope (`content`, `totalElements`, `totalPages`, `size`, `number`, `first`, `last`, `numberOfElements`, `empty`, `pageable`, `sort`).
 
 ### 3.5 Asset & Location M2M Relations, Custom Fields & Status-to-Downtime Lifecycle
@@ -149,9 +157,20 @@ All `POST /api/<entity>/search` endpoints accept a `SearchCriteria` payload:
 
 ### 3.8 Tenant Security, FK Ownership & RBAC Enforcement (`src/routes/_crud.py`, `src/deps/permissions.py`)
 
-- `apply_patch()` blocks top-level and nested-dict overrides of `company_id`, `company_settings_id`, `created_at`, `created_by`, `updated_at`, and `updated_by`, and supports `{"location": null}` to clear nullable foreign keys (`location_id = None`).
+- `apply_patch()` blocks top-level and nested-dict overrides of `id`, `company_id`, `company_settings_id`, `created_at`, `created_by`, `updated_at`, `updated_by`, and `is_demo`, and supports `{"location": null}` to clear nullable foreign keys (`location_id = None`).
 - `validate_foreign_key_ownership()` verifies that every referenced foreign key belongs to the caller's `company_id` or `company_settings_id` (skipping global tables `currency`, `company_settings`, `subscription`, `subscription_plan`).
-- `build_crud_router` enforces `can_create`, `can_view` / `can_view_other`, `can_edit_object` (creator or assigned user/team/primaryUser), and `can_delete_object` (creator or `delete_other_permissions`).
+- `build_crud_router` maps all 28 operational, auxiliary, and catalog models in `_ENTITY_PERMISSION_MAP` to their exact `PermissionEntity` (`can_create`, `can_view` / `apply_view_other_scope`, `can_edit_object`, `can_delete_object`) and scopes auxiliary tables without a direct `company_id` column (`Schedule`, `Reading`, `PartQuantity`, `AdditionalCost`, `CustomFieldValue`) via parent entity joins.
+
+### 3.9 Workflows, WorkOrders, Parts, POs & Non-Asset Analytics Contracts
+
+- **Workflows Engine (`src/services/workflow_engine.py`, `src/routes/meters_requests_workflows_misc.py`):**
+  - Creating (`POST /api/workflows`) or patching (`PATCH /api/workflows/{id}`) a workflow persists both `action` and `secondaryConditions` and hydrates nested foreign-key mini-DTOs (`asset`, `location`, `team`, `user`, `part`, `vendor`, `checklist`, `workOrderCategory`, `purchaseOrderCategory`).
+  - Automatically evaluates and executes enabled workflows on WorkOrder, Request, PurchaseOrder, Part, and Task events.
+- **WorkOrder Configuration & Lifecycle (`src/routes/work_orders_pm.py`):**
+  - Enforces `WorkOrderConfiguration` completion guards (`completeFiles`, `completeTasks`, `completeTime`, `requiredSignature`) and `WOFieldConfiguration` `REQUIRED` field checks.
+  - Enforces author-only edit/delete on `Comment`, logs comment history, and normalizes `Relation` directional pairs (`BLOCKED_BY` $\to$ `BLOCKS`, `DUPLICATED_BY` $\to$ `DUPLICATE_OF`, `SPLIT_TO` $\to$ `SPLIT_FROM`) while rejecting self-relations and duplicates (`406`).
+- **Parts & Purchase Orders (`src/routes/parts_po_tasks.py`):**
+  - Enforces tenant-unique part barcodes (`406` on duplicate), positive restock quantities (`POST`/`PATCH /api/parts/{id}/restock`), and automatic warehouse inventory adjustments + `PartTransaction` consumption logs across `PartQuantity` and `PurchaseOrder` approval/rejection transitions.
 
 ---
 
@@ -164,9 +183,10 @@ cd atlas-cmms
 .venv/bin/pytest -q && .venv/bin/ruff check .
 ```
 
-Key test suites:
+Key test suites (**80 tests total**):
 - [`tests/test_crud_contracts.py`](tests/test_crud_contracts.py) — End-to-end verification of `/api/auth/me`, Location create + `/children/0/paginated`, Asset create + `/children/0/paginated` + `/mini?locationId=` + FK hydration, WorkOrder create + FK hydration, PreventiveMaintenance create + `Schedule` hydration + `schedule.startsOn` sort, Checklist create with `taskBases`/`options`, and Meter create + FK hydration.
-- [`tests/test_asset_management_fixes.py`](tests/test_asset_management_fixes.py) — Comprehensive verification of all 22 Asset Management defects (M2M/custom-field sync, status-to-downtime cascades, analytics formulas, search deduplication, two-pass import/export, file upload/download, tenant/FK isolation, RBAC ownership, hierarchy cycle detection, and duplicate identifier checks).
+- [`tests/test_asset_fixes.py`](tests/test_asset_fixes.py) — Comprehensive verification of all 22 Asset Management defects (M2M/custom-field sync, status-to-downtime cascades, analytics formulas, search deduplication, two-pass import/export, file upload/download, tenant/FK isolation, RBAC ownership, hierarchy cycle detection, and duplicate identifier checks).
+- [`tests/test_non_asset_audit_fixes.py`](tests/test_non_asset_audit_fixes.py) — Comprehensive regression suite covering all 30 non-asset backend, security, RBAC, `viewOther` scoping, cross-tenant FK injection, WorkOrder configuration/completion guards, PM `COMPLETED_DATE` recurrence, Part barcode/restock, Workflow patching/execution, Meter triggers, Request virtual status search, Import/Export, and Analytics contracts.
 - [`tests/routes/test_all_routes_and_jobs.py`](tests/routes/test_all_routes_and_jobs.py) — Route and background scheduler job coverage (`pm_generator`, `preventive_maintenance_notifier`, `downtime_notifier`, `cleanup`).
 - [`tests/contract/test_openapi_covers_catalog.py`](tests/contract/test_openapi_covers_catalog.py) — OpenAPI route catalog parity check.
 - [`tests/test_schema_matches_dump.py`](tests/test_schema_matches_dump.py) — SQLAlchemy 2.0 metadata vs PostgreSQL schema verification.

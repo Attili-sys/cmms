@@ -31,8 +31,11 @@
 - **Hierarchy & Route Fixes Verified in E2E Smoke Testing:**
   - Added `GET /api/locations/children/{parent_id}/paginated` and `GET /api/assets/children/{parent_id}/paginated` (`parent_id=0` for roots) and updated `frontend/src/slices/location.ts` and `frontend/src/slices/asset.ts` so creating/editing/deleting locations and assets immediately updates `locationsHierarchy` and `assetsHierarchy`.
   - Fixed `GET /api/assets/mini?locationId=` to accept empty string `""` cleanly.
-  - Fixed `PreventiveMaintenance` creation/update to create and link its `Schedule` (`pm.schedule_id = sched.id`) with string enum values (`"DAILY"`, `"SCHEDULED_DATE"`).
-  - Fixed `Checklist` creation/update to persist `TaskBase` and `TaskOption` (`[{"id": o.id, "label": o.label}]`).
+  - Fixed `PreventiveMaintenance` creation/update to create and link its `Schedule` (`pm.schedule_id = sched.id`) with string enum values (`"DAILY"`, `"SCHEDULED_DATE"`), copy template tasks onto generated work orders, and honor `COMPLETED_DATE` recurrence.
+  - Fixed `Checklist` creation/update to clone and persist `TaskBase` and `TaskOption` (`[{"id": o.id, "label": o.label}]`) without hijacking live WorkOrder tasks.
+  - Implemented the full event-driven `Workflow` engine ([`src/services/workflow_engine.py`](src/services/workflow_engine.py)) across WorkOrders, Requests, PurchaseOrders, Parts, and Tasks, plus full `PATCH /api/workflows/{id}` relation persistence.
+  - Enforced centralized RBAC (`_ENTITY_PERMISSION_MAP` across all 28 operational/auxiliary/catalog models), `apply_view_other_scope()` row-level visibility, cross-tenant foreign-key ownership checks (`validate_foreign_key_ownership`), and mass-assignment guards in `apply_patch()`.
+  - Set Qatari Riyal (`QR`, `"Qatari riyal"`) as the default provisioned currency in `src/routes/auth_users.py` and `frontend/src/contexts/CompanySettingsContext.tsx`, and displayed dynamic currency unit badges (`Cost (QR)`) across Asset and Part forms.
   - Added index redirect on `/app/imports` → `/app/imports/work-orders` in `frontend/src/router/app.tsx`.
 - **Branding:** All external logos removed; UI displays **"Powered by Canvas"**.
-- **Automated Verification:** 57 pytest tests (`tests/test_crud_contracts.py`, `tests/test_schema_matches_dump.py`, `tests/contract/test_openapi_covers_catalog.py`, `tests/routes/test_all_routes_and_jobs.py`, `tests/test_smoke.py`) and `ruff check .` pass with 0 errors.
+- **Automated Verification:** 80 pytest tests (`tests/test_crud_contracts.py`, `tests/test_asset_fixes.py`, `tests/test_non_asset_audit_fixes.py`, `tests/test_schema_matches_dump.py`, `tests/contract/test_openapi_covers_catalog.py`, `tests/routes/test_all_routes_and_jobs.py`, `tests/test_smoke.py`) and `ruff check .` pass with 0 errors. Deployed to Canvas at `@c9e197b0d631`.

@@ -67,7 +67,7 @@ Legacy Hibernate mapped `@Enumerated` fields in two different ways depending onw
 | ORM Class | SQL Table | Tenant Key | Purpose |
 |---|---|---|---|
 | `Company` | `company` | `id` (root) | Organization record (`name`, `address`, `phone`, `website`, `logo_id`, `company_settings_id`, `subscription_id`). |
-| `Currency` | `currency` | Global | Currency catalog (`id`, `code`, `name`). |
+| `Currency` | `currency` | Global | Currency catalog (`id`, `code`, `name`). Defaults to Qatari Riyal (`QR`, `"Qatari riyal"`) on tenant provisioning. |
 | `SubscriptionPlan` | `subscription_plan` | Global | Subscription tier definition. In unrestricted self-hosted mode, always exposes all `PlanFeatures`. |
 | `Subscription` | `subscription` | `company` (1:1) | Active subscription linked to `Company`. |
 | `SubscriptionChangeRequest` | `subscription_change_request` | — | Legacy subscription change tracking. |
@@ -132,10 +132,10 @@ Legacy Hibernate mapped `@Enumerated` fields in two different ways depending onw
 |---|---|---|---|
 | `Part` | `part` | `company_id` | Spare part / inventory item (`name`, `description`, `barcode`, `cost`, `quantity`, `min_quantity`, `non_stock`, `area`, `unit`, `category_id`, `image_id`, `custom_id`). |
 | `MultiParts` | `multi_parts` | `company_id` | Set/bundle of parts (`name`). Linked to `Part` via `t_multi_parts_part_associations`. |
-| `PartQuantity` | `part_quantity` | `company_id` | Quantity of a `Part` allocated to a `Part`, `PurchaseOrder`, or `WorkOrder` (`part_id`, `purchase_order_id`, `work_order_id`, `quantity`). |
+| `PartQuantity` | `part_quantity` | `part_id` / `work_order_id` / `purchase_order_id` | Quantity of a `Part` allocated to a `Part`, `PurchaseOrder`, or `WorkOrder` (`part_id`, `purchase_order_id`, `work_order_id`, `quantity`). Scoped via parent entity joins in `_crud.py`. |
 | `PartTransaction` | `part_transaction` | `company_id` | Inventory consumption/addition log. |
 | `PurchaseOrder` | `purchase_order` | `company_id` | Purchase order (`name`, `status`, `shipping_due_date`, `shipping_Additional_detail`, `vendor_id`, `category_id`, `company_id`). |
-| `AdditionalCost` | `additional_cost` | `company_id` | Non-part/non-labor cost on a `WorkOrder` (`description`, `cost`, `include_to_total_cost`, `work_order_id`, `assigned_to_id`, `category_id`). |
+| `AdditionalCost` | `additional_cost` | `work_order_id` | Non-part/non-labor cost on a `WorkOrder` (`description`, `cost`, `include_to_total_cost`, `work_order_id`, `assigned_to_id`, `category_id`). Scoped via `WorkOrder.company_id`. |
 | `Vendor` | `vendor` | `company_id` | External supplier/contractor (`company_name`, `name`, `address`, `phone`, `email`, `website`, `vendor_type`, `rate`, `description`, `custom_id`). |
 | `Customer` | `customer` | `company_id` | Client/customer (`name`, `address`, `phone`, `email`, `website`, `customer_type`, `rate`, `description`, `billing_name`, `billing_address`, `custom_id`). |
 
@@ -144,14 +144,14 @@ Legacy Hibernate mapped `@Enumerated` fields in two different ways depending onw
 | ORM Class | SQL Table | Tenant Key | Purpose |
 |---|---|---|---|
 | `Meter` | `meter` | `company_id` | Sensor/gauge (`name`, `unit`, `update_frequency`, `next_reading`, `asset_id`, `location_id`, `meter_category_id`, `image_id`). |
-| `Reading` | `reading` | `company_id` | Timestamped meter measurement (`value`, `meter_id`). |
+| `Reading` | `reading` | `meter_id` | Timestamped meter measurement (`value`, `meter_id`). Scoped via `Meter.company_id`. |
 | `WorkOrderMeterTrigger` | `work_order_meter_trigger` | `company_id` | Rule that triggers a `WorkOrder` when a `Meter` reading crosses `value` (`trigger_condition`, `meter_id`). |
 | `Request` | `request` | `company_id` | Maintenance service request (`title`, `description`, `priority`, `due_date`, `asset_id`, `location_id`, `primary_user_id`, `team_id`, `category_id`, `work_order_id`, `cancelled`, `cancellation_reason`, `custom_id`). |
 | `RequestPortal` / `RequestPortalField` | `request_portal`, `request_portal_field` | `company_id` | Public/internal portal configuration for submitting requests. |
 | `Workflow` / `WorkflowCondition` / `WorkflowAction` | `workflow`, `workflow_condition`, `workflow_action` | `company_id` | Event-driven automation rules on Work Orders, Requests, Purchase Orders, Parts, and Tasks. |
 | `*Category` (7 tables) | `work_order_category`, `asset_category`, `meter_category`, `part_category`, `purchase_order_category`, `cost_category`, `time_category` | `company_settings_id` | Taxonomies for Work Orders, Assets, Meters, Parts, Purchase Orders, Additional Costs, and Labor Time. |
 | `File` | `file` | `company_id` | Uploaded attachment metadata (`name`, `path`, `file_type`, `task_id`). |
-| `CustomField` / `CustomFieldValue` | `custom_field`, `custom_field_value` | `company_id` | User-defined custom fields and values on entities. |
+| `CustomField` / `CustomFieldValue` | `custom_field`, `custom_field_value` | `company_settings_id` / parent entity FK | User-defined custom fields (`company_settings_id`) and values linked to parent entities (`asset_id`, `location_id`, `work_order_id`, `preventive_maintenance_id`, `request_id`, `part_id`, `meter_id`, `vendor_id`, `customer_id`, `purchase_order_id`). |
 | `Notification` | `notification` | `user_id` | In-app notification feed item (`message`, `notification_type`, `resource_id`, `seen`). |
 | `ApiKey` / `WebhookEndpoint` / `KeygenRequestTracker` | `api_key`, `webhook_endpoint`, `keygen_request_tracker` | `company_id` | External API keys and outgoing webhook subscriptions. |
 | `RevInfo` / `WorkOrderAud` | `revinfo`, `work_order_aud` | — | Hibernate Envers historical revision tables. |
