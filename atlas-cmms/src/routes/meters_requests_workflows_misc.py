@@ -441,10 +441,43 @@ def _sync_request_relations(
     )
 
 
+def _notify_request_assignees(
+    req: Request, actor_id: int | None, db: Session, *, message: str
+) -> None:
+    from src.models.enums import NotificationType
+    from src.services.notifications import create_in_app_notifications
+
+    assigned_ids = list(
+        db.scalars(
+            select(request_assigned_to.c.assigned_to_id).where(
+                request_assigned_to.c.request_id == req.id
+            )
+        ).all()
+    )
+    if req.primary_user_id is not None:
+        assigned_ids.append(req.primary_user_id)
+    create_in_app_notifications(
+        db,
+        user_ids=assigned_ids,
+        team_ids=[req.team_id] if req.team_id else (),
+        message=message,
+        notification_type=NotificationType.REQUEST,
+        resource_id=req.id,
+        exclude_user_id=actor_id,
+        created_by=actor_id,
+    )
+
+
 def _after_create_request(
     req: Request, payload: dict[str, Any], current_user: User, db: Session
 ) -> None:
     _sync_request_relations(req, payload, current_user, db)
+    _notify_request_assignees(
+        req,
+        current_user.id,
+        db,
+        message=f"New request {req.title} assigned to you",
+    )
     run_request_workflows(req, WFMainCondition.REQUEST_CREATED, db)
 
 
@@ -498,6 +531,12 @@ def create_request_from_portal(
 
     proxy_user = current_user or User(id=portal.created_by, company_id=portal.company_id)
     _sync_request_relations(req, payload, proxy_user, db)
+    _notify_request_assignees(
+        req,
+        current_user.id if current_user is not None else None,
+        db,
+        message=f"New portal request {req.title} assigned to you",
+    )
     run_request_workflows(req, WFMainCondition.REQUEST_CREATED, db)
 
     db.commit()
@@ -606,6 +645,33 @@ def approve_request(
                 work_order_id=wo.id,
             )
         )
+
+    from src.models.enums import NotificationType
+    from src.services.notifications import create_in_app_notifications
+
+    if req.created_by is not None:
+        create_in_app_notifications(
+            db,
+            user_ids=[req.created_by],
+            message=f"Your request {req.title} has been approved",
+            notification_type=NotificationType.WORK_ORDER,
+            resource_id=wo.id,
+            exclude_user_id=current_user.id,
+            created_by=current_user.id,
+        )
+    wo_assignees = list(user_ids)
+    if wo.primary_user_id is not None:
+        wo_assignees.append(wo.primary_user_id)
+    create_in_app_notifications(
+        db,
+        user_ids=wo_assignees,
+        team_ids=[wo.team_id] if wo.team_id else (),
+        message=f"You have been assigned to work order {wo.title}",
+        notification_type=NotificationType.WORK_ORDER,
+        resource_id=wo.id,
+        exclude_user_id=current_user.id,
+        created_by=current_user.id,
+    )
 
     run_request_workflows(req, WFMainCondition.REQUEST_APPROVED, db)
     run_work_order_workflows(wo, WFMainCondition.WORK_ORDER_CREATED, db)

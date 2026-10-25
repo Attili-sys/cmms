@@ -604,3 +604,90 @@ def test_meters_requests_search_import_export_and_analytics(audit_env: dict) -> 
     ) as tech_client:
         # Tech without ANALYTICS view permission receives 403 on analytics overview
         assert tech_client.post("/api/analytics/work-orders/complete/overview", json={}).status_code == 403
+
+
+def test_deep_parity_remaining_fixes(audit_env: dict) -> None:
+    """Verify P0-05 (RequestPortal FK cascades), P1-06 (In-App Notifications & user scoping), P1-10 (Subscription upgrade/downgrade), and P1-11 (License state entitlements)."""
+    from src.models.requests import RequestPortal, RequestPortalField
+
+    admin_client: TestClient = audit_env["admin_client"]
+    tech_user_id: int = audit_env["tech_user_id"]
+
+    # 1. P0-05: RequestPortal & RequestPortalField foreign key ondelete metadata
+    rp_fks = {fk.parent.name: fk.ondelete for fk in RequestPortal.__table__.foreign_keys}
+    assert rp_fks["company_id"] == "CASCADE"
+
+    rpf_fks = {fk.parent.name: fk.ondelete for fk in RequestPortalField.__table__.foreign_keys}
+    assert rpf_fks["company_id"] == "CASCADE"
+    assert rpf_fks["location_id"] == "SET NULL"
+    assert rpf_fks["asset_id"] == "SET NULL"
+    assert rpf_fks["request_portal_id"] == "CASCADE"
+
+    # 2. P1-10: POST /subscriptions/upgrade and GET /subscriptions/downgrade
+    up_res = admin_client.post("/api/subscriptions/upgrade", json=10)
+    assert up_res.status_code == 200
+    assert up_res.json()["success"] is True
+    assert "url" in up_res.json() and "message" in up_res.json()
+
+    down_res = admin_client.get("/api/subscriptions/downgrade?usersIds=1,2")
+    assert down_res.status_code == 200
+    assert down_res.json()["success"] is True
+
+    # 3. P1-11: GET /license/state returns valid, entitlements, expirationDate, planName
+    lic_res = admin_client.get("/api/license/state")
+    assert lic_res.status_code == 200
+    lic_body = lic_res.json()
+    assert lic_body["valid"] is True
+    assert lic_body["planName"] == "ENTERPRISE"
+    assert "expirationDate" in lic_body
+    assert isinstance(lic_body["entitlements"], list)
+    assert "WORKFLOW" in lic_body["entitlements"]
+    assert "RESOURCE_PLANNING" in lic_body["entitlements"]
+    assert len(lic_body["entitlements"]) == 34
+
+    # 4. P1-06: In-App Notification creation and strict per-user scoping
+    # Admin creates a WorkOrder assigned to Tech One
+    wo = admin_client.post(
+        "/api/work-orders",
+        json={
+            "title": "Pump Bearing Replacement",
+            "primaryUser": {"id": tech_user_id},
+        },
+    ).json()
+
+    with TestClient(
+        app,
+        headers={
+            "X-authentik-email": "tech@tenant-a.local",
+            "X-authentik-name": "Tech One",
+        },
+    ) as tech_client:
+        # Tech sees the in-app notification in POST /notifications/search and GET /notifications
+        tech_search = tech_client.post(
+            "/api/notifications/search",
+            json={"pageNum": 0, "pageSize": 20},
+        )
+        assert tech_search.status_code == 200
+        tech_notifs = tech_search.json()["content"]
+        matching = [
+            n
+            for n in tech_notifs
+            if n["resourceId"] == wo["id"] and n["notificationType"] == "WORK_ORDER"
+        ]
+        assert len(matching) == 1
+        notif_id = matching[0]["id"]
+        assert matching[0]["seen"] is False
+
+        # Admin does NOT see Tech's notification in Admin's search or list, and cannot PATCH it (403)
+        admin_search = admin_client.post(
+            "/api/notifications/search",
+            json={"pageNum": 0, "pageSize": 50},
+        ).json()["content"]
+        assert all(n["id"] != notif_id for n in admin_search)
+        assert admin_client.patch(f"/api/notifications/{notif_id}", json={"seen": True}).status_code == 403
+
+        # Tech can mark their own notification as seen
+        mark_res = tech_client.patch(f"/api/notifications/{notif_id}", json={"seen": True})
+        assert mark_res.status_code == 200
+        assert mark_res.json()["seen"] is True
+

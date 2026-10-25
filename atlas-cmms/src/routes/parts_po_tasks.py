@@ -202,6 +202,34 @@ def _sync_part_relations(
             part.id,
             payload,
         )
+    if any(k in payload for k in ("assignedTo", "users", "teams")):
+        from src.models.enums import NotificationType
+        from src.services.notifications import create_in_app_notifications
+
+        part_user_ids = list(
+            db.scalars(
+                select(t_part_user_associations.c.id_user).where(
+                    t_part_user_associations.c.id_part == part.id
+                )
+            ).all()
+        )
+        part_team_ids = list(
+            db.scalars(
+                select(t_part_team_associations.c.id_team).where(
+                    t_part_team_associations.c.id_part == part.id
+                )
+            ).all()
+        )
+        create_in_app_notifications(
+            db,
+            user_ids=part_user_ids,
+            team_ids=part_team_ids,
+            message=f"You have been assigned to part {part.name}",
+            notification_type=NotificationType.PART,
+            resource_id=part.id,
+            exclude_user_id=current_user.id,
+            created_by=current_user.id,
+        )
     run_part_workflows(part, db)
 
 
@@ -831,6 +859,20 @@ def respond_purchase_order(
                     run_part_workflows(part, db)
 
     po.status = 0 if is_approved else 1  # APPROVED=0, REJECTED=1, PENDING=2 in ApprovalStatus
+    if po.created_by is not None:
+        from src.models.enums import NotificationType
+        from src.services.notifications import create_in_app_notifications
+
+        status_word = "approved" if is_approved else "rejected"
+        create_in_app_notifications(
+            db,
+            user_ids=[po.created_by],
+            message=f"Purchase order {po.name} has been {status_word}",
+            notification_type=NotificationType.PURCHASE_ORDER,
+            resource_id=po.id,
+            exclude_user_id=current_user.id,
+            created_by=current_user.id,
+        )
     run_purchase_order_workflows(po, WFMainCondition.PURCHASE_ORDER_UPDATED, db)
     db.commit()
     db.refresh(po)

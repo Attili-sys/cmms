@@ -242,6 +242,10 @@ def _build_auxiliary_tenant_predicate(model_cls: type, company_id: int) -> Any:
 def _assert_entity_tenant_access(obj: Any, current_user: User, db: Session) -> None:
     if current_user.company_id is None and is_super_admin(current_user, db):
         return
+    if obj.__class__.__name__ == "Notification":
+        if getattr(obj, "user_id", None) != current_user.id:
+            raise CustomException(status_code=403, message="Access is denied")
+        return
     if hasattr(obj, "company_id") and getattr(obj, "company_id", None) is not None:
         assert_company_access(current_user, obj, is_super_admin=False, db=db)
     elif hasattr(obj, "company_settings_id") and getattr(obj, "company_settings_id", None) is not None:
@@ -299,12 +303,18 @@ def build_crud_router(
             if hasattr(model_cls, "company_settings_id") and current_user.company_id is not None
             else None
         )
+        base_stmt = (
+            select(model_cls).where(model_cls.user_id == current_user.id)
+            if model_cls.__name__ == "Notification"
+            else None
+        )
         return execute_search(
             db=db,
             model_cls=model_cls,
             criteria=criteria,
             company_id=current_user.company_id,
             company_settings_id=cs_id,
+            base_stmt=base_stmt,
             serializer=lambda row: _serialize(row, db),
         )
 
@@ -316,7 +326,9 @@ def build_crud_router(
         if perm_entity is not None and not can_view(current_user, perm_entity, db):
             raise CustomException(status_code=403, message="Access is denied")
         stmt = select(model_cls)
-        if hasattr(model_cls, "company_id") and current_user.company_id is not None:
+        if model_cls.__name__ == "Notification":
+            stmt = stmt.where(model_cls.user_id == current_user.id)
+        elif hasattr(model_cls, "company_id") and current_user.company_id is not None:
             stmt = stmt.where(model_cls.company_id == current_user.company_id)
         elif hasattr(model_cls, "company_settings_id") and current_user.company_id is not None:
             cs_id = _ensure_company_settings_id(current_user, db)

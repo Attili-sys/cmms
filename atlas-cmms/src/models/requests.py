@@ -53,7 +53,7 @@ class RequestPortal(Base):
     __tablename__ = "request_portal"
 
     id: Mapped[int] = mapped_column("id", BigInteger, Sequence("request_portal_seq", start=1, increment=50, metadata=Base.metadata), primary_key=True, nullable=False)
-    company_id: Mapped[int] = mapped_column("company_id", BigInteger, ForeignKey("company.id"), nullable=False)
+    company_id: Mapped[int] = mapped_column("company_id", BigInteger, ForeignKey("company.id", ondelete="CASCADE"), nullable=False)
     title: Mapped[str] = mapped_column("title", String(255), nullable=False)
     welcome_message: Mapped[str | None] = mapped_column("welcome_message", Text, nullable=True)
     uuid: Mapped[str] = mapped_column("uuid", String(255), nullable=False)
@@ -67,12 +67,12 @@ class RequestPortalField(Base):
     __tablename__ = "request_portal_field"
 
     id: Mapped[int] = mapped_column("id", BigInteger, Sequence("request_portal_field_seq", start=1, increment=50, metadata=Base.metadata), primary_key=True, nullable=False)
-    company_id: Mapped[int] = mapped_column("company_id", BigInteger, ForeignKey("company.id"), nullable=False)
+    company_id: Mapped[int] = mapped_column("company_id", BigInteger, ForeignKey("company.id", ondelete="CASCADE"), nullable=False)
     type: Mapped[str] = mapped_column("type", String(255), nullable=False)
-    location_id: Mapped[int | None] = mapped_column("location_id", BigInteger, ForeignKey("location.id"), nullable=True)
-    asset_id: Mapped[int | None] = mapped_column("asset_id", BigInteger, ForeignKey("asset.id"), nullable=True)
+    location_id: Mapped[int | None] = mapped_column("location_id", BigInteger, ForeignKey("location.id", ondelete="SET NULL"), nullable=True)
+    asset_id: Mapped[int | None] = mapped_column("asset_id", BigInteger, ForeignKey("asset.id", ondelete="SET NULL"), nullable=True)
     required: Mapped[bool] = mapped_column("required", Boolean, nullable=False)
-    request_portal_id: Mapped[int] = mapped_column("request_portal_id", BigInteger, ForeignKey("request_portal.id"), nullable=False)
+    request_portal_id: Mapped[int] = mapped_column("request_portal_id", BigInteger, ForeignKey("request_portal.id", ondelete="CASCADE"), nullable=False)
     created_at: Mapped[datetime] = mapped_column("created_at", DateTime, nullable=False, default=utcnow)
     updated_at: Mapped[datetime] = mapped_column("updated_at", DateTime, nullable=False, default=utcnow)
     created_by: Mapped[int | None] = mapped_column("created_by", BigInteger, nullable=True)

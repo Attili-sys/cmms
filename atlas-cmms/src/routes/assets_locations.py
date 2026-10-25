@@ -939,6 +939,40 @@ def _before_create_asset(
     _validate_asset_integrity(asset, current_user, db)
 
 
+def _notify_asset_assignees(
+    asset: Asset, current_user: User, db: Session, *, message: str
+) -> None:
+    from src.models.enums import NotificationType
+    from src.services.notifications import create_in_app_notifications
+
+    user_ids = list(
+        db.scalars(
+            select(t_asset_user_associations.c.id_user).where(
+                t_asset_user_associations.c.id_asset == asset.id
+            )
+        ).all()
+    )
+    if asset.primary_user_id is not None:
+        user_ids.append(asset.primary_user_id)
+    team_ids = list(
+        db.scalars(
+            select(t_asset_team_associations.c.id_team).where(
+                t_asset_team_associations.c.id_asset == asset.id
+            )
+        ).all()
+    )
+    create_in_app_notifications(
+        db,
+        user_ids=user_ids,
+        team_ids=team_ids,
+        message=message,
+        notification_type=NotificationType.ASSET,
+        resource_id=asset.id,
+        exclude_user_id=current_user.id,
+        created_by=current_user.id,
+    )
+
+
 def _after_create_asset(
     asset: Asset, payload: dict[str, Any], current_user: User, db: Session
 ) -> None:
@@ -947,6 +981,12 @@ def _after_create_asset(
     _sync_asset_relations(asset, payload, current_user, db)
     if is_really_down(asset.status):
         trigger_asset_downtime(asset.id, db, user_id=current_user.id)
+    _notify_asset_assignees(
+        asset,
+        current_user,
+        db,
+        message=f"You have been assigned to asset {asset.name}",
+    )
 
 
 def _before_patch_asset(
@@ -964,8 +1004,21 @@ def _after_patch_asset(
     new_down = is_really_down(asset.status)
     if not old_down and new_down:
         trigger_asset_downtime(asset.id, db, user_id=current_user.id)
+        _notify_asset_assignees(
+            asset,
+            current_user,
+            db,
+            message=f"Asset {asset.name} is down",
+        )
     elif old_down and not new_down:
         stop_asset_downtime(asset.id, db, stop_children=True)
+    elif any(k in payload for k in ("primaryUser", "users", "assignedTo", "teams")):
+        _notify_asset_assignees(
+            asset,
+            current_user,
+            db,
+            message=f"Asset {asset.name} has been updated",
+        )
 
 
 assets_router = build_crud_router(

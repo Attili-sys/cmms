@@ -358,12 +358,53 @@ def get_license_validity() -> dict[str, Any]:
     return {"valid": LicenseService.is_license_valid(), "unrestricted": LicenseService.is_unrestricted_self_hosted()}
 
 
+_ALL_LICENSE_ENTITLEMENTS: list[str] = [
+    "SSO",
+    "WORK_ORDER_HISTORY",
+    "WORKFLOW",
+    "MULTI_INSTANCE",
+    "WEBHOOK",
+    "BRANDING",
+    "NFC_BARCODE",
+    "CUSTOM_ROLES",
+    "FILE_ATTACHMENTS",
+    "TIME_TRACKING",
+    "COST_TRACKING",
+    "WORK_ORDER_LINKING",
+    "SIGNATURE_CAPTURE",
+    "PM_CALENDAR",
+    "CONDITION_BASED_PM",
+    "ASSET_HIERARCHY",
+    "ASSET_DOWNTIME",
+    "LOW_STOCK_ALERTS",
+    "PARTS_COST_TRACKING",
+    "CUSTOMER_VENDOR",
+    "FIELD_CONFIGURATION",
+    "VOICE_NOTES",
+    "ADVANCED_ANALYTICS",
+    "API_ACCESS",
+    "UNLIMITED_ASSETS",
+    "UNLIMITED_LOCATIONS",
+    "UNLIMITED_PARTS",
+    "UNLIMITED_PM_SCHEDULES",
+    "UNLIMITED_ACTIVE_WORK_ORDERS",
+    "UNLIMITED_CHECKLISTS",
+    "UNLIMITED_METERS",
+    "UNLIMITED_USERS",
+    "REQUEST_PORTAL",
+    "RESOURCE_PLANNING",
+]
+
+
 @router.get("/license/state")
 def get_license_state() -> dict[str, Any]:
     return {
-        "valid": True,
-        "unrestricted": True,
+        "valid": LicenseService.is_license_valid(),
+        "unrestricted": LicenseService.is_unrestricted_self_hosted(),
         "state": "VALID",
+        "entitlements": _ALL_LICENSE_ENTITLEMENTS,
+        "expirationDate": "2099-12-31T23:59:59.000Z",
+        "planName": "ENTERPRISE",
     }
 
 
@@ -373,6 +414,29 @@ def list_subscription_plans(db: Session = Depends(get_db)) -> list[dict[str, Any
     if not plans:
         return [serialize_subscription_plan(None)]
     return [serialize_subscription_plan(p) for p in plans]
+
+
+@router.post("/subscriptions/upgrade")
+def upgrade_subscription(
+    payload: Any = Body(default=None),
+    current_user: User = Depends(get_current_user),
+) -> dict[str, Any]:
+    return {
+        "success": True,
+        "url": "",
+        "message": "Unrestricted self-hosted edition requires no subscription upgrade",
+    }
+
+
+@router.get("/subscriptions/downgrade")
+def downgrade_subscription(
+    usersIds: str | None = Query(default=None),
+    current_user: User = Depends(get_current_user),
+) -> dict[str, Any]:
+    return SuccessResponse(
+        success=True,
+        message="Unrestricted self-hosted edition",
+    ).model_dump()
 
 
 @router.get("/subscriptions/{sub_id:int}")

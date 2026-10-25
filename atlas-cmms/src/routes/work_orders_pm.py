@@ -315,8 +315,41 @@ def _sync_wo_relations(wo: WorkOrder, payload: dict[str, Any], current_user: Use
         wo.completed_by_id = None
 
 
+def _notify_wo_assignees(
+    wo: WorkOrder, current_user: User, db: Session, *, message: str
+) -> None:
+    from src.models.enums import NotificationType
+    from src.services.notifications import create_in_app_notifications
+
+    assigned_ids = list(
+        db.scalars(
+            select(work_order_assigned_to.c.assigned_to_id).where(
+                work_order_assigned_to.c.work_order_id == wo.id
+            )
+        ).all()
+    )
+    if wo.primary_user_id is not None:
+        assigned_ids.append(wo.primary_user_id)
+    create_in_app_notifications(
+        db,
+        user_ids=assigned_ids,
+        team_ids=[wo.team_id] if wo.team_id else (),
+        message=message,
+        notification_type=NotificationType.WORK_ORDER,
+        resource_id=wo.id,
+        exclude_user_id=current_user.id,
+        created_by=current_user.id,
+    )
+
+
 def _after_create_wo(wo: WorkOrder, payload: dict[str, Any], current_user: User, db: Session) -> None:
     _sync_wo_relations(wo, payload, current_user, db)
+    _notify_wo_assignees(
+        wo,
+        current_user,
+        db,
+        message=f"You have been assigned to work order {wo.title}",
+    )
     run_work_order_workflows(wo, WFMainCondition.WORK_ORDER_CREATED, db)
 
 
@@ -324,6 +357,13 @@ def _after_patch_wo(wo: WorkOrder, payload: dict[str, Any], current_user: User, 
     if wo.first_time_to_react is None:
         wo.first_time_to_react = utcnow()
     _sync_wo_relations(wo, payload, current_user, db)
+    if any(k in payload for k in ("primaryUser", "assignedTo", "team", "status")):
+        _notify_wo_assignees(
+            wo,
+            current_user,
+            db,
+            message=f"Work order {wo.title} has been updated",
+        )
     if wo.status == 3:
         run_work_order_workflows(wo, WFMainCondition.WORK_ORDER_CLOSED, db)
     if wo.archived:
