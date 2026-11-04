@@ -34,7 +34,7 @@ Run these from the directory named in the heading. They are the commands checked
 | Canvas Python services & serializers | `atlas-cmms/src/services/` |
 | Canvas Python search & specification engine | `atlas-cmms/src/utils/search.py` |
 | Canvas Python auth & permission dependencies | `atlas-cmms/src/deps/` |
-| Canvas Python Alembic migrations | `atlas-cmms/migrations/versions/` |
+| Canvas Python SQL migrations | `atlas-cmms/db/migrations/` |
 | Canvas Python tests | `atlas-cmms/tests/` |
 | Web pages & components | `frontend/src/content/own/` and `frontend/src/components/` |
 | Web Redux state slices | `frontend/src/slices/` |
@@ -85,6 +85,7 @@ Secrets stay in `.env` and the environment. Never commit them.
 | `FACILIO_GAP_ANALYSIS.md` | Reviewing the Facilio enterprise CAFM gap analysis (`22 REA targets`, 12 domains) and unified master roadmap |
 | `ASSET_MANAGEMENT_SPEC.md` | Executing or reviewing the 19-issue Asset Management audit, 8-stage execution plan (`Stages 0–7`), and reliability/cost metric contracts |
 | `assets-management-plans/` | Executing the phased Asset Management implementation plans (starting with `01_ASSET_MANAGEMENT_FIXES_PLAN.md` for P0/P1 defects and contract parity fixes) |
+| `DEEP_PARITY_AUDIT_REPORT.md` | Reviewing the post-remediation deep parity audit across notifications, request portal FKs, and license/subscription contracts |
 | `research/` | Inspecting the raw reverse-engineering packages (`research/sentrixfm-research/` and `research/Facilio_Public_Research/`) |
 | `ATLAS_CAFM_DECISION_REPORT.md` | Choosing what to build next. It is an audit, not a description of code you have changed |
 | `UNRESTRICTED_SELFHOSTED.md` | Understanding which restrictions were removed on this branch and which controls are retained |
@@ -106,4 +107,4 @@ Rules for agents working on this branch:
 
 ## Done
 
-A Canvas backend change (`atlas-cmms/`) is done when `.venv/bin/pytest` (81 tests including `tests/test_crud_contracts.py`, `tests/test_asset_fixes.py`, and `tests/test_non_asset_audit_fixes.py`) and `.venv/bin/ruff check .` pass in `atlas-cmms/`. A web change (`frontend/`) is done when `npm run lint` and `npm run build` succeed in `frontend/` and the built assets are synced to `atlas-cmms/src/static/` and `atlas-cmms/src/static/ui/`. A mobile change is done when `npm test` has been run in `mobile/`. A UI change is done when the affected screen has been verified in a browser or E2E test.
+A Canvas backend change (`atlas-cmms/`) is done when `.venv/bin/pytest` (84 tests including `tests/test_crud_contracts.py`, `tests/test_asset_management_fixes.py`, `tests/test_non_asset_modules_fixes.py`, and `tests/test_non_asset_audit_fixes.py`) and `.venv/bin/ruff check .` pass in `atlas-cmms/`. A web change (`frontend/`) is done when `npm run lint` and `npm run build` succeed in `frontend/` and the built assets are synced to `atlas-cmms/src/static/` and `atlas-cmms/src/static/ui/`. A mobile change is done when `npm test` has been run in `mobile/`. A UI change is done when the affected screen has been verified in a browser or E2E test.

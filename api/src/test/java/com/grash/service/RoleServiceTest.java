@@ -553,14 +553,15 @@ class RoleServiceTest {
         }
 
         @Test
-        void planWithoutRoleFeature_throwsForbidden() {
+        void emptyStoredPlanFeatures_allowsCustomRoleWhenEntitled() {
             company.getSubscription().getSubscriptionPlan().setFeatures(new HashSet<>(Set.of(PlanFeatures.ANALYTICS)));
+            when(licenseService.hasEntitlement(LicenseEntitlement.CUSTOM_ROLES)).thenReturn(true);
+            when(roleRepository.save(customRole)).thenReturn(customRole);
 
-            CustomException ex = assertThrows(CustomException.class,
-                    () -> roleService.create(customRole, clientUser));
+            Role result = roleService.create(customRole, clientUser);
 
-            assertEquals(HttpStatus.FORBIDDEN, ex.getHttpStatus());
-            verify(roleRepository, never()).save(any(Role.class));
+            assertEquals(customRole, result);
+            verify(roleRepository).save(customRole);
         }
 
         @Test

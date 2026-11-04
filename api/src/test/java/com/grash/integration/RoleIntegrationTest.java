@@ -212,17 +212,17 @@ class RoleIntegrationTest extends AbstractIntegrationTest {
     }
 
     @Test
-    void create_userCreatedRole_withoutLicense_throwsForbidden() {
+    void create_userCreatedRole_withoutActivation_succeeds() {
         Role customRole = Role.builder()
                 .name("Custom")
                 .roleType(RoleType.ROLE_CLIENT)
                 .code(RoleCode.USER_CREATED)
                 .build();
 
-        CustomException ex = assertThrows(CustomException.class, () -> roleService.create(customRole));
+        Role saved = roleService.create(customRole);
 
-        assertEquals(HttpStatus.FORBIDDEN, ex.getHttpStatus());
-        assertTrue(roleRepository.findByName("Custom").isEmpty());
+        assertNotNull(saved.getId());
+        assertTrue(roleRepository.findByName("Custom").isPresent());
     }
 
     // ===== UpdateTests =====

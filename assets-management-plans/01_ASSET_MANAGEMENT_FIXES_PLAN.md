@@ -41,7 +41,7 @@
 ### Phase 1: Security Containment, RBAC Enforcement, Tenant Scoping & Identity Uniqueness (`P0-07`, `P0-08`, `P0-01`, `P1-12`, `P1-11`, `P0-06`)
 
 #### 1.1 Harden `apply_patch()` Against Cross-Tenant Hijack & Nullable FK Clearing (`P0-07`)
-- **File**: [`atlas-cmms/src/services/serializer.py`](../../atlas-cmms/src/services/serializer.py#L361-L398)
+- **File**: [`atlas-cmms/src/services/serializer.py`](../atlas-cmms/src/services/serializer.py#L361-L398)
 - **Root Cause**:
   1. `ignore` is `{"id", "company_id", "created_at", "created_by"}` — missing `"company_settings_id"`, `"updated_at"`, and `"updated_by"`.
   2. When a payload contains `{"company": {"id": 999}}` or `{"companySettings": {"id": 777}}`, `snake_key` is `"company"` / `"company_settings"`, which is not in `ignore`. The nested-object branch (`if isinstance(val, dict) and "id" in val:`) constructs `fk_key = f"{snake_key}_id"` (`"company_id"` / `"company_settings_id"`) and calls `setattr(obj, fk_key, val["id"])` **without checking `fk_key in ignore`**!
@@ -67,9 +67,9 @@
 
 #### 1.2 Wire Role & Entity Permission Checks into `build_crud_router` and Custom Routes (`P0-08`)
 - **Files**:
-  - [`atlas-cmms/src/deps/permissions.py`](../../atlas-cmms/src/deps/permissions.py#L1-L162)
-  - [`atlas-cmms/src/routes/_crud.py`](../../atlas-cmms/src/routes/_crud.py#L46-L210)
-  - [`atlas-cmms/src/routes/assets_locations.py`](../../atlas-cmms/src/routes/assets_locations.py)
+  - [`atlas-cmms/src/deps/permissions.py`](../atlas-cmms/src/deps/permissions.py#L1-L162)
+  - [`atlas-cmms/src/routes/_crud.py`](../atlas-cmms/src/routes/_crud.py#L46-L210)
+  - [`atlas-cmms/src/routes/assets_locations.py`](../atlas-cmms/src/routes/assets_locations.py)
 - **Root Cause**:
   1. `src/deps/permissions.py` defines `PermissionEntity` (`ASSETS`, `LOCATIONS`, `CATEGORIES`, `METERS`, `WORK_ORDERS`, `PARTS_AND_MULTIPARTS`, etc.) and `can_view`, `can_create`, `can_edit`, `can_delete`, but zero routes invoke them.
   2. In `src/deps/permissions.py:52-88`, `can_edit` and `can_delete` only check `role_edit_other_permissions` and `role_delete_other_permissions` when `own=False`.
@@ -88,8 +88,8 @@
 
 #### 1.3 Generic Cross-Tenant Foreign Key Ownership Check in `build_crud_router` (`P1-11`)
 - **Files**:
-  - [`atlas-cmms/src/routes/_crud.py`](../../atlas-cmms/src/routes/_crud.py#L120-L195)
-  - [`atlas-cmms/src/routes/assets_locations.py`](../../atlas-cmms/src/routes/assets_locations.py)
+  - [`atlas-cmms/src/routes/_crud.py`](../atlas-cmms/src/routes/_crud.py#L120-L195)
+  - [`atlas-cmms/src/routes/assets_locations.py`](../atlas-cmms/src/routes/assets_locations.py)
 - **Root Cause**:
   - `Asset`, `Location`, `AssetDowntime` (`asset_id`), `Deprecation` (`asset_id`), `FloorPlan` (`location_id`, `image_id`), `Meter` (`asset_id`, `location_id`, `image_id`), `Reading` (`meter_id`), and `WorkOrder` accept foreign-key IDs in `POST` and `PATCH` without verifying that the target row belongs to `current_user.company_id` (or `company_settings_id`).
 - **Fix Implementation**:
@@ -105,9 +105,9 @@
 
 #### 1.4 Public Portal (`RequestPortal.uuid`), Category Mini, Floor Plans & Meter Readings Tenant Scoping (`P0-01`, `P1-12`)
 - **Files**:
-  - [`atlas-cmms/src/routes/assets_locations.py`](../../atlas-cmms/src/routes/assets_locations.py#L37-L49) (and lines 103–113, 162–173, 253–272)
-  - [`atlas-cmms/src/models/requests.py`](../../atlas-cmms/src/models/requests.py#L52-L64) (`RequestPortal`)
-  - [`atlas-cmms/src/routes/meters_requests_workflows_misc.py`](../../atlas-cmms/src/routes/meters_requests_workflows_misc.py#L119-L130)
+  - [`atlas-cmms/src/routes/assets_locations.py`](../atlas-cmms/src/routes/assets_locations.py#L37-L49) (and lines 103–113, 162–173, 253–272)
+  - [`atlas-cmms/src/models/requests.py`](../atlas-cmms/src/models/requests.py#L52-L64) (`RequestPortal`)
+  - [`atlas-cmms/src/routes/meters_requests_workflows_misc.py`](../atlas-cmms/src/routes/meters_requests_workflows_misc.py#L119-L130)
 - **Fix Implementation**:
   1. **`GET /locations/public/mini/{portal_uuid}` & `GET /assets/public/mini/{portal_uuid}`**:
      - Look up `portal = db.scalars(select(RequestPortal).where(RequestPortal.uuid == portal_uuid)).first()`. If no `RequestPortal` matches `portal_uuid`, return `[]`, never an unfiltered query.
@@ -121,10 +121,10 @@
 
 #### 1.5 Production Postgres Migration (`db/migrations/003_*.sql`) + Startup Index Guard & Clone Fix (`P0-06`)
 - **Files**:
-  - [`atlas-cmms/db/migrations/003_asset_unique_identifiers.sql`](../../atlas-cmms/db/migrations/003_asset_unique_identifiers.sql) (**native Canvas SQL migration run automatically on `canvas deploy`**)
-  - [`atlas-cmms/src/tasks.py`](../../atlas-cmms/src/tasks.py#L19-L64) (`ensure_asset_unique_indexes(db)` idempotent startup hook)
-  - [`atlas-cmms/src/routes/assets_locations.py`](../../atlas-cmms/src/routes/assets_locations.py)
-  - [`frontend/src/content/own/Assets/Show/index.tsx`](../../frontend/src/content/own/Assets/Show/index.tsx#L110-L155)
+  - [`atlas-cmms/db/migrations/003_asset_unique_identifiers.sql`](../atlas-cmms/db/migrations/003_asset_unique_identifiers.sql) (**native Canvas SQL migration run automatically on `canvas deploy`**)
+  - [`atlas-cmms/src/tasks.py`](../atlas-cmms/src/tasks.py#L19-L64) (`ensure_asset_unique_indexes(db)` idempotent startup hook)
+  - [`atlas-cmms/src/routes/assets_locations.py`](../atlas-cmms/src/routes/assets_locations.py)
+  - [`frontend/src/content/own/Assets/Show/index.tsx`](../frontend/src/content/own/Assets/Show/index.tsx#L110-L155)
 - **Fix Implementation**:
   1. **Production Postgres Migration (`db/migrations/003_asset_unique_identifiers.sql`) & Startup Enforcement (`src/tasks.py::ensure_asset_unique_indexes`)**:
      - Normalize empty strings (`''` or whitespace-only) on `asset.custom_id`, `asset.bar_code`, and `asset.nfc_id` to `NULL`.
@@ -144,7 +144,7 @@
 ### Phase 2: Single-Transaction CRUD, Persistent File Upload & M2M / Custom Field Sync (`C-01`, `P0-02`, `P0-04`)
 
 #### 2.1 Single-Transaction `create_item` and `before_patch` Hook in `build_crud_router` (`C-01`, `C-03`)
-- **File**: [`atlas-cmms/src/routes/_crud.py`](../../atlas-cmms/src/routes/_crud.py#L46-L200)
+- **File**: [`atlas-cmms/src/routes/_crud.py`](../atlas-cmms/src/routes/_crud.py#L46-L200)
 - **Root Cause**:
   1. `create_item` calls `db.commit()` at line 152, then runs `after_create(obj, payload, current_user, db)`, and calls `db.commit()` a second time at line 156. If `after_create` (such as M2M sync) fails, the half-saved `Asset` row is already committed!
   2. `patch_item` has no `before_patch` hook, so `after_patch` runs after `apply_patch` has already overwritten `obj.status`.
@@ -159,9 +159,9 @@
 
 #### 2.2 Persistent File Upload via `envs.DATA_DIR`, 25 MB Size Limit & Tenant-Checked Download (`P0-02`)
 - **Files**:
-  - [`atlas-cmms/src/envs.py`](../../atlas-cmms/src/envs.py#L40-L45) (`DATA_DIR`)
-  - [`atlas-cmms/src/routes/meters_requests_workflows_misc.py`](../../atlas-cmms/src/routes/meters_requests_workflows_misc.py#L494-L603)
-  - [`atlas-cmms/src/services/serializer.py`](../../atlas-cmms/src/services/serializer.py#L220-L358)
+  - [`atlas-cmms/src/envs.py`](../atlas-cmms/src/envs.py#L40-L45) (`DATA_DIR`)
+  - [`atlas-cmms/src/routes/meters_requests_workflows_misc.py`](../atlas-cmms/src/routes/meters_requests_workflows_misc.py#L494-L603)
+  - [`atlas-cmms/src/services/serializer.py`](../atlas-cmms/src/services/serializer.py#L220-L358)
 - **Fix Implementation**:
   1. **Unified Deterministic Path (`DATA_DIR/uploads/{company_id}/{file_id}_{safe_name}`) & 25 MB Size Cap**:
      - Enforce `MAX_UPLOAD_FILE_BYTES = 25 * 1024 * 1024` (25 MB per file) on both authenticated `/files/upload` and public `/files/upload/request-portal/{portal_uuid}` by reading `f.file.read(MAX_UPLOAD_FILE_BYTES + 1)` and raising HTTP `413` (`"Uploaded file exceeds 25 MB limit"`) if exceeded.
@@ -177,9 +177,9 @@
 
 #### 2.3 Asset M2M & `CustomFieldValue` Persistence and Hydration (`C-01`)
 - **Files**:
-  - [`atlas-cmms/src/routes/assets_locations.py`](../../atlas-cmms/src/routes/assets_locations.py#L176-L250)
-  - [`atlas-cmms/src/models/associations.py`](../../atlas-cmms/src/models/associations.py#L168-L208)
-  - [`atlas-cmms/src/models/files_custom.py`](../../atlas-cmms/src/models/files_custom.py#L54-L74)
+  - [`atlas-cmms/src/routes/assets_locations.py`](../atlas-cmms/src/routes/assets_locations.py#L176-L250)
+  - [`atlas-cmms/src/models/associations.py`](../atlas-cmms/src/models/associations.py#L168-L208)
+  - [`atlas-cmms/src/models/files_custom.py`](../atlas-cmms/src/models/files_custom.py#L54-L74)
 - **Fix Implementation**:
   1. **Synchronization in `_after_create_asset` and `_after_patch_asset` (same transaction before `db.commit()`)**:
      - Map each M2M payload key to its association table and target model:
@@ -195,7 +195,7 @@
      - Query the 6 `t_asset_*_associations` tables and `CustomFieldValue` for `obj.id` and hydrate `assignedTo`, `teams`, `vendors`, `customers`, `parts`, `files`, and `customFieldValues` with mini-DTOs (`model_to_dict(item, db=db)`).
 
 #### 2.4 Fix `GET /api/assets/part/{part_id}` Crash (`P0-04`)
-- **File**: [`atlas-cmms/src/routes/assets_locations.py`](../../atlas-cmms/src/routes/assets_locations.py#L331-L350)
+- **File**: [`atlas-cmms/src/routes/assets_locations.py`](../atlas-cmms/src/routes/assets_locations.py#L331-L350)
 - **Fix Implementation**: Import `t_asset_part_associations` from `src.models.associations` and join on `t_asset_part_associations.c.id_asset == Asset.id` where `t_asset_part_associations.c.id_part == part_id` and `Asset.company_id == current_user.company_id`.
 
 ---
@@ -203,7 +203,7 @@
 ### Phase 3: Postgres-Safe Search/M2M Filtering, Hierarchy SQL Sort & Java-Parity Import/Export (`P0-03`, `P0-05`, `P1-09`)
 
 #### 3.1 Fix Asset Text Search (`customFieldValues.value`) & Postgres-Safe M2M Filter Subqueries (`P0-03`)
-- **File**: [`atlas-cmms/src/utils/search.py`](../../atlas-cmms/src/utils/search.py#L312-L545)
+- **File**: [`atlas-cmms/src/utils/search.py`](../atlas-cmms/src/utils/search.py#L312-L545)
 - **Root Cause**:
   1. `find_association_table` checks `f"t_{model_table}_{target_clean}_associations"` with plural `target_clean` (`teams`, `customers`, `vendors`, `parts`), failing to match singular `t_asset_team_associations`, `t_asset_customer_associations`, `t_asset_vendor_associations`, `t_asset_part_associations`.
   2. `resolve_field_and_joins` does not handle 1-to-many `customFieldValues.value` (`CustomFieldValue.asset_id == Asset.id`).
@@ -216,16 +216,16 @@
      - Filter the main query via `model_cls.id.in_(select(matching_ids_subq.c.id))` and apply only the `ORDER BY` joins to the main query. This guarantees zero duplicate rows, exact `totalElements` count, and 100% compatibility with PostgreSQL `ORDER BY` on joined columns.
 
 #### 3.2 Fix Hierarchy Children SQL Sort & Pagination (`P1-09`)
-- **File**: [`atlas-cmms/src/routes/assets_locations.py`](../../atlas-cmms/src/routes/assets_locations.py#L131-L155) (and lines 290–313)
+- **File**: [`atlas-cmms/src/routes/assets_locations.py`](../atlas-cmms/src/routes/assets_locations.py#L131-L155) (and lines 290–313)
 - **Fix Implementation**:
   - In `get_asset_children_paginated` and `get_location_children_paginated`, accept `sort: list[str] | None = Query(default=None)`, resolve sort expressions (including dotted paths like `location.name,asc`, `primaryUser.firstName,asc`, `category.name,asc`), compute `total` in SQL via `select(func.count())`, and apply `.order_by(...)`, `.offset(page_num * page_size)`, and `.limit(page_size)` in SQL before serializing the page slice.
 
 #### 3.3 Full Java-Parity Import/Export & Template Download (`P0-05`)
 - **Files**:
-  - [`frontend/src/hooks/useExport.ts`](../../frontend/src/hooks/useExport.ts)
-  - [`frontend/src/hooks/useImport.ts`](../../frontend/src/hooks/useImport.ts)
-  - [`frontend/src/content/own/Imports/index.tsx`](../../frontend/src/content/own/Imports/index.tsx#L62-L66)
-  - [`atlas-cmms/src/routes/meters_requests_workflows_misc.py`](../../atlas-cmms/src/routes/meters_requests_workflows_misc.py#L464-L538)
+  - [`frontend/src/hooks/useExport.ts`](../frontend/src/hooks/useExport.ts)
+  - [`frontend/src/hooks/useImport.ts`](../frontend/src/hooks/useImport.ts)
+  - [`frontend/src/content/own/Imports/index.tsx`](../frontend/src/content/own/Imports/index.tsx#L62-L66)
+  - [`atlas-cmms/src/routes/meters_requests_workflows_misc.py`](../atlas-cmms/src/routes/meters_requests_workflows_misc.py#L464-L538)
 - **Root Cause**:
   1. `useExport.ts` and `useImport.ts` hang waiting on STOMP `/api/ws`, which does not exist in `atlas-cmms` (and even in Java `ExportController.java` is a direct `POST /export/{entity}` HTTP endpoint!).
   2. `Imports/index.tsx` sets `entity` from URL tail `'imports'` instead of defaulting to `'work-orders'`, and calls missing `GET /api/import/download-template`.
@@ -245,8 +245,8 @@
 
 #### 4.1 Full Java-Parity Status $\leftrightarrow$ Downtime & WorkOrder Integration (`C-03`)
 - **Files**:
-  - [`atlas-cmms/src/routes/assets_locations.py`](../../atlas-cmms/src/routes/assets_locations.py#L176-L250) (and lines 389–410)
-  - [`atlas-cmms/src/routes/work_orders_pm.py`](../../atlas-cmms/src/routes/work_orders_pm.py#L140-L220)
+  - [`atlas-cmms/src/routes/assets_locations.py`](../atlas-cmms/src/routes/assets_locations.py#L176-L250) (and lines 389–410)
+  - [`atlas-cmms/src/routes/work_orders_pm.py`](../atlas-cmms/src/routes/work_orders_pm.py#L140-L220)
 - **Java Reference**:
   - `AssetService.java:234-303, 424-428` (`isReallyDown`, `triggerDowntime`, `stopDowntime`, `recursivelyStopChildrenDowntime`)
   - `WorkOrderService.java:119-123, 866-880`
@@ -275,7 +275,7 @@
      - Matching `AssetDowntimeService.java:95-107`: when creating or editing an `AssetDowntime` with `duration > 0` (`ends_on = starts_on + timedelta(seconds=duration)`), query existing completed downtimes (`duration > 0`, `id != current_id`) for the same `asset_id`. If any satisfies `starts_on < other_ends_on and ends_on > other_starts_on`, raise `HTTPException(status_code=406, detail="The downtimes can't interweave")`.
 
 #### 4.2 Fix Meter `lastReading` / `nextReading` Hydration & Reading Trigger `custom_id` (`P1-15`)
-- **File**: [`atlas-cmms/src/routes/meters_requests_workflows_misc.py`](../../atlas-cmms/src/routes/meters_requests_workflows_misc.py#L50-L130)
+- **File**: [`atlas-cmms/src/routes/meters_requests_workflows_misc.py`](../atlas-cmms/src/routes/meters_requests_workflows_misc.py#L50-L130)
 - **Root Cause**:
   1. `AssetMeters.tsx:192` gates the "Add Reading" button on `canAddReading(meter)` (`frontend/src/utils/overall.ts:17-24`), which compares `new Date()` against `new Date(meter.nextReading)`. `_serialize_meter` never computes `lastReading` or `nextReading`!
   2. In `_after_create_reading` (`meters_requests_workflows_misc.py:98-113`), when a meter reading crosses a `WorkOrderMeterTrigger`, it creates a `WorkOrder` without flushing and setting `wo.custom_id = f"W{wo.id:06d}"`.
@@ -288,11 +288,11 @@
 
 #### 4.3 Fix Downtime Edit Modal, Asset Form `parts` Multi-Select, Filter Bugs & Hierarchy Delete (`P1-07`, `P1-08`, `P1-10`)
 - **Files**:
-  - [`frontend/src/content/own/Assets/Show/AssetDowntimes.tsx`](../../frontend/src/content/own/Assets/Show/AssetDowntimes.tsx#L240-L266)
-  - [`frontend/src/content/own/Assets/index.tsx`](../../frontend/src/content/own/Assets/index.tsx#L752)
-  - [`frontend/src/content/own/Assets/Show/index.tsx`](../../frontend/src/content/own/Assets/Show/index.tsx#L355)
-  - [`frontend/src/content/own/Assets/Filters.tsx`](../../frontend/src/content/own/Assets/Filters.tsx#L38-L236)
-  - [`frontend/src/slices/asset.ts`](../../frontend/src/slices/asset.ts#L90-L104)
+  - [`frontend/src/content/own/Assets/Show/AssetDowntimes.tsx`](../frontend/src/content/own/Assets/Show/AssetDowntimes.tsx#L240-L266)
+  - [`frontend/src/content/own/Assets/index.tsx`](../frontend/src/content/own/Assets/index.tsx#L752)
+  - [`frontend/src/content/own/Assets/Show/index.tsx`](../frontend/src/content/own/Assets/Show/index.tsx#L355)
+  - [`frontend/src/content/own/Assets/Filters.tsx`](../frontend/src/content/own/Assets/Filters.tsx#L38-L236)
+  - [`frontend/src/slices/asset.ts`](../frontend/src/slices/asset.ts#L90-L104)
 - **Fix Implementation**:
   1. **`AssetDowntimes.tsx`**: Import `editAssetDowntime` and dispatch `editAssetDowntime(currentDowntime.id, asset.id, values)` in `renderEditModal`.
   2. **`Assets/index.tsx` & `Assets/Show/index.tsx`**: Add `multiple: true` to the `parts` field config (`{ name: 'parts', type: 'select', type2: 'part', label: t('parts'), multiple: true }`).
@@ -321,9 +321,9 @@
 
 #### 5.1 Implement `/api/analytics/assets/{asset_id}/overview` with Exact Java Formulas (`C-02`)
 - **Files**:
-  - [`atlas-cmms/src/routes/analytics.py`](../../atlas-cmms/src/routes/analytics.py#L167-L199)
-  - [`frontend/src/content/own/Assets/Show/AssetAnalytics.tsx`](../../frontend/src/content/own/Assets/Show/AssetAnalytics.tsx#L35-L65)
-- **Java Reference**: [`AssetService.java:654-715`](../../api/src/main/java/com/grash/service/AssetService.java#L654-L715), [`Labor.java:80-108`](../../api/src/main/java/com/grash/model/Labor.java#L80-L108), and [`AssetAnalyticsController.java:380-410`](../../api/src/main/java/com/grash/controller/analytics/AssetAnalyticsController.java#L380-L410)
+  - [`atlas-cmms/src/routes/analytics.py`](../atlas-cmms/src/routes/analytics.py#L167-L199)
+  - [`frontend/src/content/own/Assets/Show/AssetAnalytics.tsx`](../frontend/src/content/own/Assets/Show/AssetAnalytics.tsx#L35-L65)
+- **Java Reference**: [`AssetService.java:654-715`](../atlas-cmms/.canvas/legacy/api/src/main/java/com/grash/service/AssetService.java#L654-L715), [`Labor.java:80-108`](../atlas-cmms/.canvas/legacy/api/src/main/java/com/grash/model/Labor.java#L80-L108), and [`AssetAnalyticsController.java:380-410`](../atlas-cmms/.canvas/legacy/api/src/main/java/com/grash/controller/analytics/AssetAnalyticsController.java#L380-L410)
 - **Fix Implementation**:
   1. Register `@router.post("/assets/{asset_id:int}/overview")` and `@router.get("/assets/{asset_id:int}/overview")` **before** `/assets/{subpath:path}` in `atlas-cmms/src/routes/analytics.py`:
      - Verify `Asset` exists with `asset.company_id == current_user.company_id` (and `can_view(current_user, PermissionEntity.ANALYTICS, db)` or `PermissionEntity.ASSETS`).
@@ -338,8 +338,8 @@
   2. Add defensive null-coalescing `(assetDetailsOverview?.mtbf ?? 0).toString()` in `AssetAnalytics.tsx`.
 
 #### 5.2 Implement Fleet Asset Analytics Endpoints (`/overview`, `/costs/overview`, Trends) (`C-02`, `P1-13`)
-- **File**: [`atlas-cmms/src/routes/analytics.py`](../../atlas-cmms/src/routes/analytics.py#L168-L199)
-- **Java Reference**: [`AssetAnalyticsController.java:53-378`](../../api/src/main/java/com/grash/controller/analytics/AssetAnalyticsController.java#L53-L378)
+- **File**: [`atlas-cmms/src/routes/analytics.py`](../atlas-cmms/src/routes/analytics.py#L168-L199)
+- **Java Reference**: [`AssetAnalyticsController.java:53-378`](../atlas-cmms/.canvas/legacy/api/src/main/java/com/grash/controller/analytics/AssetAnalyticsController.java#L53-L378)
 - **Fix Implementation**:
   1. **`POST`/`GET /api/analytics/assets/overview`**: Replace hardcoded `95.0` availability and `0.0` MTBF with real Java-parity calculation over tenant assets in `[start, end]`:
      - `downtime`: sum of `get_downtime` across tenant assets
@@ -352,7 +352,7 @@
   3. **Fleet Trend & Meantime Endpoints**: Implement `/assets/mtbf`, `/assets/mttr`, `/assets/downtimes/meantime`, `/assets/repair-times`, `/assets/downtimes/costs`, `/assets/downtimes/costs/date`, `/assets/costs/date`, and `/assets/time-cost` before the catch-all fallback so every chart in `/app/analytics/assets` renders real data.
 
 #### 5.3 Align `API_CONTRACTS.md` and `DATABASE.md` (`P1-14`)
-- **Files**: [`atlas-cmms/API_CONTRACTS.md`](../../atlas-cmms/API_CONTRACTS.md), [`atlas-cmms/DATABASE.md`](../../atlas-cmms/DATABASE.md)
+- **Files**: [`atlas-cmms/API_CONTRACTS.md`](../atlas-cmms/API_CONTRACTS.md), [`atlas-cmms/DATABASE.md`](../atlas-cmms/DATABASE.md)
 - **Fix Implementation**: Update both docs to reflect the hydrated M2M & `customFieldValues` contracts, `RequestPortal.uuid` public mini scoping, `AssetDowntime` columns (`starts_on`, `duration`), `/api/deprecations` path, and `db/migrations/003_asset_unique_identifiers.sql` + `src/tasks.py::ensure_asset_unique_indexes` partial unique indexes.
 
 ---

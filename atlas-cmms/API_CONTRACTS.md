@@ -183,10 +183,10 @@ cd atlas-cmms
 .venv/bin/pytest -q && .venv/bin/ruff check .
 ```
 
-Key test suites (**80 tests total**):
+Key test suites (**84 tests total**):
 - [`tests/test_crud_contracts.py`](tests/test_crud_contracts.py) — End-to-end verification of `/api/auth/me`, Location create + `/children/0/paginated`, Asset create + `/children/0/paginated` + `/mini?locationId=` + FK hydration, WorkOrder create + FK hydration, PreventiveMaintenance create + `Schedule` hydration + `schedule.startsOn` sort, Checklist create with `taskBases`/`options`, and Meter create + FK hydration.
-- [`tests/test_asset_fixes.py`](tests/test_asset_fixes.py) — Comprehensive verification of all 22 Asset Management defects (M2M/custom-field sync, status-to-downtime cascades, analytics formulas, search deduplication, two-pass import/export, file upload/download, tenant/FK isolation, RBAC ownership, hierarchy cycle detection, and duplicate identifier checks).
-- [`tests/test_non_asset_audit_fixes.py`](tests/test_non_asset_audit_fixes.py) — Comprehensive regression suite covering all 30 non-asset backend, security, RBAC, `viewOther` scoping, cross-tenant FK injection, WorkOrder configuration/completion guards, PM `COMPLETED_DATE` recurrence, Part barcode/restock, Workflow patching/execution, Meter triggers, Request virtual status search, Import/Export, and Analytics contracts.
+- [`tests/test_asset_management_fixes.py`](tests/test_asset_management_fixes.py) — Comprehensive verification of all 22 Asset Management defects (M2M/custom-field sync, status-to-downtime cascades, analytics formulas, search deduplication, two-pass import/export, file upload/download, tenant/FK isolation, RBAC ownership, hierarchy cycle detection, and duplicate identifier checks).
+- [`tests/test_non_asset_modules_fixes.py`](tests/test_non_asset_modules_fixes.py) and [`tests/test_non_asset_audit_fixes.py`](tests/test_non_asset_audit_fixes.py) — Comprehensive regression suites covering all non-asset backend, security, RBAC, `viewOther` scoping, cross-tenant FK injection, WorkOrder configuration/completion guards, PM `COMPLETED_DATE` recurrence, Part barcode/restock, Workflow patching/execution, Meter triggers, Request virtual status search, in-app notifications, Import/Export, and Analytics contracts.
 - [`tests/routes/test_all_routes_and_jobs.py`](tests/routes/test_all_routes_and_jobs.py) — Route and background scheduler job coverage (`pm_generator`, `preventive_maintenance_notifier`, `downtime_notifier`, `cleanup`).
 - [`tests/contract/test_openapi_covers_catalog.py`](tests/contract/test_openapi_covers_catalog.py) — OpenAPI route catalog parity check.
 - [`tests/test_schema_matches_dump.py`](tests/test_schema_matches_dump.py) — SQLAlchemy 2.0 metadata vs PostgreSQL schema verification.
