@@ -463,32 +463,39 @@ const Import = ({}: OwnProps) => {
                   const reader = new FileReader();
 
                   reader.onload = (e: any) => {
-                    const data = new Uint8Array(e.target.result);
+                    try {
+                      const data = new Uint8Array(e.target.result);
+                      const workbook = read(data, { type: 'array' });
+                      const sheetName = workbook.SheetNames[0];
+                      const sheet = workbook.Sheets[sheetName];
 
-                    const workbook = read(data, { type: 'array' });
+                      const localJsonArray: any[][] = utils.sheet_to_json(
+                        sheet,
+                        { header: 1 }
+                      );
+                      const localJson = utils.sheet_to_json(sheet);
 
-                    const sheetName = workbook.SheetNames[0];
-                    const sheet = workbook.Sheets[sheetName];
-
-                    /* 3. Convert to JSON */
-                    const localJsonArray: any[][] = utils.sheet_to_json(sheet, {
-                      header: 1
-                    });
-                    const localJson = utils.sheet_to_json(sheet);
-
-                    if (localJsonArray.length > 1) {
-                      setJsonData(localJson);
-                      setUserHeaders(localJsonArray[0].filter(Boolean));
-
-                      const localObjectOfArrayOfArrays =
-                        arrayToAoA(localJsonArray);
-                      setSpreadSheetsConfig(localObjectOfArrayOfArrays);
+                      if (localJsonArray.length > 1) {
+                        setJsonData(localJson);
+                        setUserHeaders(localJsonArray[0].filter(Boolean));
+                        setSpreadSheetsConfig(arrayToAoA(localJsonArray));
+                        handleNext();
+                      } else {
+                        showSnackBar(t('not_enough_rows'), 'error');
+                      }
+                    } catch (error) {
+                      const msg = getErrorMessage(error, '');
+                      showSnackBar(
+                        `${t('import_error')}${msg ? `: ${msg}` : ''}`,
+                        'error'
+                      );
+                    } finally {
                       setLoading(false);
-                      handleNext();
-                    } else {
-                      setLoading(false);
-                      showSnackBar(t('not_enough_rows'), 'error');
                     }
+                  };
+                  reader.onerror = () => {
+                    setLoading(false);
+                    showSnackBar(t('import_error'), 'error');
                   };
 
                   reader.readAsArrayBuffer(file);

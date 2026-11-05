@@ -24,13 +24,20 @@ from src.models.associations import (
     role_view_permissions,
 )
 from src.models.company import Company
-from src.models.settings import CompanySettings, GeneralPreferences
+from src.models.settings import (
+    CompanySettings,
+    FieldConfiguration,
+    GeneralPreferences,
+    WorkOrderConfiguration,
+)
 from src.models.enums import PermissionEntity
 from src.models.files_custom import CustomField, File as FileEntity
-from src.models.parts_po import PartTransaction
-from src.models.pm_schedule import Schedule
+from src.models.parts_po import Customer, PartTransaction
+from src.models.pm_schedule import PreventiveMaintenance, Schedule
+from src.models.tasks import Task, TaskBase
 from src.models.users import Role, User, UserSettings
-from src.models.work_orders import Labor
+from src.models.work_orders import Labor, WorkOrder
+from src.routes import work_orders_pm as work_orders_pm_routes
 from src.utils.dates import ensure_utc
 
 
@@ -829,4 +836,317 @@ def test_additional_audit_regressions_and_workflows_engine(non_asset_env: dict) 
         json={"title": "Triggered by Workflow", "priority": "LOW"},
     ).json()
     assert auto_wo["priority"] == "HIGH"
+
+
+def test_calendar_events_accept_blank_company_id(non_asset_env):
+    """The calendar posts companyId= when no company filter is selected.
+
+    FastAPI used to reject that empty query as 422, and the React thunk left
+    loadingGet true, so the calendar spinner never stopped.
+    """
+    from datetime import datetime, timedelta, timezone
+
+    client: TestClient = non_asset_env["client"]
+    session_local = non_asset_env["session_local"]
+    window_start = datetime(2026, 11, 2, 0, 0, tzinfo=timezone.utc)
+    window_end = datetime(2026, 11, 9, 0, 0, tzinfo=timezone.utc)
+    in_range = datetime(2026, 11, 4, 9, 0, tzinfo=timezone.utc)
+    out_of_range = datetime(2026, 12, 1, 9, 0, tzinfo=timezone.utc)
+
+    with session_local() as db:
+        visible = WorkOrder(
+            title="Visible in week",
+            company_id=non_asset_env["comp_a_id"],
+            due_date=in_range,
+            estimated_duration=2.0,
+            priority=3,
+            status=0,
+            archived=False,
+            required_signature=False,
+            is_demo=False,
+            created_by=non_asset_env["user_a_id"],
+        )
+        hidden = WorkOrder(
+            title="Other tenant",
+            company_id=non_asset_env["comp_b_id"],
+            due_date=in_range,
+            estimated_duration=1.0,
+            priority=1,
+            status=0,
+            archived=False,
+            required_signature=False,
+            is_demo=False,
+        )
+        later = WorkOrder(
+            title="Outside the visible week",
+            company_id=non_asset_env["comp_a_id"],
+            due_date=out_of_range,
+            estimated_duration=1.0,
+            priority=1,
+            status=0,
+            archived=False,
+            required_signature=False,
+            is_demo=False,
+        )
+        pm = PreventiveMaintenance(
+            title="Weekly inspection",
+            company_id=non_asset_env["comp_a_id"],
+            estimated_duration=1.0,
+            priority=2,
+            required_signature=False,
+            is_demo=False,
+            created_at=window_start - timedelta(days=30),
+        )
+        db.add_all([visible, hidden, later, pm])
+        db.flush()
+        schedule = Schedule(
+            starts_on=in_range + timedelta(days=1),
+            frequency=1,
+            recurrence_type="WEEKLY",
+            recurrence_based_on="SCHEDULED_DATE",
+            preventive_maintenance_id=pm.id,
+            disabled=False,
+            is_demo=False,
+        )
+        db.add(schedule)
+        db.flush()
+        pm.schedule_id = schedule.id
+        db.commit()
+        visible_id = visible.id
+        pm_id = pm.id
+
+    body = {
+        "start": window_start.isoformat(),
+        "end": window_end.isoformat(),
+        "filterFields": [
+            {"field": "archived", "operation": "eq", "value": False},
+            {
+                "field": "priority",
+                "operation": "in",
+                "values": ["NONE", "LOW", "MEDIUM", "HIGH"],
+                "enumName": "PRIORITY",
+            },
+            {
+                "field": "status",
+                "operation": "in",
+                "values": ["OPEN", "IN_PROGRESS", "ON_HOLD"],
+                "enumName": "STATUS",
+            },
+        ],
+    }
+    blank = client.post("/api/work-orders/events?companyId=", json=body)
+    assert blank.status_code == 200, blank.text
+    events = blank.json()
+    titles = {event["event"]["title"] for event in events}
+    assert "Visible in week" in titles
+    assert "Other tenant" not in titles
+    assert "Outside the visible week" not in titles
+    visible_event = next(event for event in events if event["event"]["id"] == visible_id)
+    assert visible_event["type"] == "WORK_ORDER"
+    assert visible_event["endDate"]
+    assert visible_event["event"]["priority"] == "HIGH"
+    assert visible_event["event"]["status"] == "OPEN"
+    pm_events = [
+        event
+        for event in events
+        if event["type"] == "PREVENTIVE_MAINTENANCE" and event["event"]["id"] == pm_id
+    ]
+    assert pm_events
+    assert pm_events[0]["type"] == "PREVENTIVE_MAINTENANCE"
+    assert pm_events[0]["endDate"]
+
+    omitted = client.post("/api/work-orders/events", json=body)
+    assert omitted.status_code == 200
+    denied = client.post(
+        f"/api/work-orders/events?companyId={non_asset_env['comp_b_id']}",
+        json=body,
+    )
+    assert denied.status_code == 403
+
+
+def test_users_mini_excludes_requesters_unless_requested(non_asset_env):
+    client: TestClient = non_asset_env["client"]
+    session_local = non_asset_env["session_local"]
+    with session_local() as db:
+        requester_role = Role(
+            name="Requester",
+            code=5,
+            role_type=1,
+            company_settings_id=non_asset_env["cs_a_id"],
+        )
+        settings = UserSettings()
+        db.add_all([requester_role, settings])
+        db.flush()
+        requester = User(
+            first_name="Rita",
+            last_name="Requester",
+            email="requester@alpha.test",
+            username="requester@alpha.test",
+            password="hashed_password",
+            company_id=non_asset_env["comp_a_id"],
+            role_id=requester_role.id,
+            user_settings_id=settings.id,
+            enabled=True,
+        )
+        db.add(requester)
+        db.commit()
+
+    workers = client.get("/api/users/mini")
+    assert workers.status_code == 200
+    assert "requester@alpha.test" not in {user["email"] for user in workers.json()}
+
+    everyone = client.get("/api/users/mini?withRequesters=true")
+    assert everyone.status_code == 200
+    assert "requester@alpha.test" in {user["email"] for user in everyone.json()}
+
+
+def test_work_order_completion_enforces_required_tasks_and_time(non_asset_env):
+    client: TestClient = non_asset_env["client"]
+    session_local = non_asset_env["session_local"]
+    with session_local() as db:
+        configuration = WorkOrderConfiguration(
+            company_settings_id=non_asset_env["cs_a_id"]
+        )
+        db.add(configuration)
+        db.flush()
+        db.add_all(
+            [
+                FieldConfiguration(
+                    field_name="completeTasks",
+                    field_type=2,
+                    work_order_configuration_id=configuration.id,
+                ),
+                FieldConfiguration(
+                    field_name="completeTime",
+                    field_type=2,
+                    work_order_configuration_id=configuration.id,
+                ),
+            ]
+        )
+        work_order = WorkOrder(
+            title="Guarded completion",
+            company_id=non_asset_env["comp_a_id"],
+            status=0,
+            priority=1,
+            estimated_duration=1.0,
+            archived=False,
+            required_signature=False,
+            is_demo=False,
+            created_by=non_asset_env["user_a_id"],
+        )
+        db.add(work_order)
+        db.flush()
+        task_base = TaskBase(
+            label="Inspect unit",
+            task_type=0,
+            company_id=non_asset_env["comp_a_id"],
+        )
+        db.add(task_base)
+        db.flush()
+        task = Task(
+            company_id=non_asset_env["comp_a_id"],
+            task_base_id=task_base.id,
+            work_order_id=work_order.id,
+            value="",
+        )
+        db.add(task)
+        db.commit()
+        work_order_id = work_order.id
+        task_id = task.id
+
+    incomplete = client.patch(
+        f"/api/work-orders/{work_order_id}/change-status",
+        json={"status": "COMPLETE"},
+    )
+    assert incomplete.status_code == 406
+    assert "tasks" in incomplete.json()["message"].lower()
+
+    with session_local() as db:
+        task = db.get(Task, task_id)
+        task.value = "Done"
+        db.commit()
+    no_time = client.patch(
+        f"/api/work-orders/{work_order_id}/change-status",
+        json={"status": "COMPLETE"},
+    )
+    assert no_time.status_code == 406
+    assert "time" in no_time.json()["message"].lower()
+
+    with session_local() as db:
+        db.add(
+            Labor(
+                duration=30,
+                work_order_id=work_order_id,
+                company_id=non_asset_env["comp_a_id"],
+            )
+        )
+        db.commit()
+    completed = client.patch(
+        f"/api/work-orders/{work_order_id}/change-status",
+        json={"status": "COMPLETE"},
+    )
+    assert completed.status_code == 200
+    assert completed.json()["status"] == "COMPLETE"
+
+
+def test_send_work_order_report_uses_canvas_email(non_asset_env, monkeypatch):
+    client: TestClient = non_asset_env["client"]
+    session_local = non_asset_env["session_local"]
+    with session_local() as db:
+        work_order = WorkOrder(
+            title="AHU inspection",
+            description="Inspect the air handling unit.",
+            company_id=non_asset_env["comp_a_id"],
+            status=0,
+            priority=2,
+            estimated_duration=2.0,
+            archived=False,
+            required_signature=False,
+            is_demo=False,
+            created_by=non_asset_env["user_a_id"],
+        )
+        customer = Customer(
+            name="Facilities Client",
+            email="facilities@example.test",
+            company_id=non_asset_env["comp_a_id"],
+        )
+        db.add_all([work_order, customer])
+        db.commit()
+        work_order_id = work_order.id
+        customer_id = customer.id
+
+    sent: dict[str, object] = {}
+
+    def fake_send(to: list[str], subject: str, text: str) -> int:
+        sent.update(to=to, subject=subject, text=text)
+        return 19
+
+    monkeypatch.setattr(work_orders_pm_routes, "send_email", fake_send)
+    response = client.post(
+        f"/api/work-orders/{work_order_id}/report/send",
+        json={
+            "customers": [{"id": customer_id}],
+            "message": "Please review this work order.",
+            "config": {"workOrderInformation": True},
+        },
+    )
+    assert response.status_code == 200
+    assert response.json()["success"] is True
+    assert sent["to"] == ["facilities@example.test"]
+    assert "AHU inspection" in str(sent["subject"])
+    assert "Please review this work order." in str(sent["text"])
+
+    def refuse(*_args, **_kwargs):
+        raise work_orders_pm_routes.EmailRefused("403: email.recipient")
+
+    monkeypatch.setattr(work_orders_pm_routes, "send_email", refuse)
+    refused = client.post(
+        f"/api/work-orders/{work_order_id}/report/send",
+        json={"customers": [{"id": customer_id}]},
+    )
+    assert refused.status_code == 200
+    assert refused.json() == {
+        "success": False,
+        "message": "403: email.recipient",
+    }
 

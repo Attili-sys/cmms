@@ -109,9 +109,12 @@ export const getSingleVendor =
   (id: number): AppThunk =>
     async (dispatch) => {
       dispatch(slice.actions.setLoadingGet({ loading: true }));
-      const vendor = await api.get<Vendor>(`${basePath}/${id}`);
-      dispatch(slice.actions.getSingleVendor({ vendor }));
-      dispatch(slice.actions.setLoadingGet({ loading: false }));
+      try {
+        const vendor = await api.get<Vendor>(`${basePath}/${id}`);
+        dispatch(slice.actions.getSingleVendor({ vendor }));
+      } finally {
+        dispatch(slice.actions.setLoadingGet({ loading: false }));
+      }
     };
 
 export const editVendor =

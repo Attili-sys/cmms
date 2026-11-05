@@ -239,17 +239,20 @@ export const getLocationChildrenPaginated =
   (id: number, parents: number[], pageable: Pageable): AppThunk =>
   async (dispatch) => {
     dispatch(slice.actions.setLoadingHierarchy({ loading: true }));
-    const locations = await api.get<Page<Location>>(
-      `locations/children/${id}/paginated?${pageableToQueryParams(pageable)}`
-    );
-    dispatch(
-      slice.actions.getLocationChildrenPaginated({
-        id,
-        locations,
-        parents
-      })
-    );
-    dispatch(slice.actions.setLoadingHierarchy({ loading: false }));
+    try {
+      const locations = await api.get<Page<Location>>(
+        `locations/children/${id}/paginated?${pageableToQueryParams(pageable)}`
+      );
+      dispatch(
+        slice.actions.getLocationChildrenPaginated({
+          id,
+          locations,
+          parents
+        })
+      );
+    } finally {
+      dispatch(slice.actions.setLoadingHierarchy({ loading: false }));
+    }
   };
 
 export const resetLocationsHierarchy =

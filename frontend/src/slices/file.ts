@@ -96,9 +96,12 @@ export const getSingleFile =
   (id: number): AppThunk =>
   async (dispatch) => {
     dispatch(slice.actions.setLoadingGet({ loading: true }));
-    const file = await api.get<File>(`${basePath}/${id}`);
-    dispatch(slice.actions.getSingleFile({ file }));
-    dispatch(slice.actions.setLoadingGet({ loading: false }));
+    try {
+      const file = await api.get<File>(`${basePath}/${id}`);
+      dispatch(slice.actions.getSingleFile({ file }));
+    } finally {
+      dispatch(slice.actions.setLoadingGet({ loading: false }));
+    }
   };
 
 export const editFile =

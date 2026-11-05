@@ -28,9 +28,9 @@ src/app.py                    builds the FastAPI app, wires ajnkit.web.platform(
 src/envs.py                   platform-injected environment variables (the only module reading os.environ)
 src/tasks.py                  background maintenance loop (PM generator, PM notifier, downtime notifier, cleanup)
 src/spa.py                    serves /runtime-env.js and the compiled React SPA fallback
-src/models/                   72 SQLAlchemy 2.0 ORM entity models, 53 association tables, and 44 enums
+src/models/                   72 SQLAlchemy 2.0 ORM entity models, 54 association tables, and 44 enums
 src/deps/                     database session, Authentik SSO user provisioning, RBAC permission checks
-src/routes/                   6 domain routers + _crud.py covering all 250+ REST API endpoints
+src/routes/                   6 domain routers + _crud.py, 311 OpenAPI paths under /api
 src/services/                 nested camelCase entity serializer with FK mini-DTO hydration, workflow, notification, license & PDF services
 src/utils/                    SearchCriteria specification engine (search.py), pagination, dates, security
 src/static/ & src/static/ui/  compiled React frontend bundle ("Powered by Canvas")
@@ -42,7 +42,7 @@ packages/                     platform wheel (ajnkit_core) — never edited
 ## Documentation Reference
 
 - **[AGENTS.md](AGENTS.md)** — Canvas platform rules, `ajnkit` SDK conventions, and deployment workflow.
-- **[DATABASE.md](DATABASE.md)** — Complete SQLAlchemy 2.0 schema reference (all 72 ORM models, 53 association tables, 44 enums, sequences, and tenant scoping).
+- **[DATABASE.md](DATABASE.md)** — Complete SQLAlchemy 2.0 schema reference (all 72 ORM models, 54 association tables, 44 enums, sequences, and tenant scoping).
 - **[API_CONTRACTS.md](API_CONTRACTS.md)** — REST API router catalog, foreign-key mini-DTO hydration (`_hydrate_foreign_key`), hierarchy pagination (`/children/0/paginated`), and `SearchCriteria` specification engine.
 - **[MIGRATION_NOTES.md](MIGRATION_NOTES.md)** — Java-to-Python migration architecture and Reviewer Agent verification history.
 - **[NOTES.md](NOTES.md)** — Project-specific architectural decisions log.

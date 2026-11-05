@@ -151,13 +151,16 @@ export const getSinglePreventiveMaintenance =
   (id: number): AppThunk =>
   async (dispatch) => {
     dispatch(slice.actions.setLoadingGet({ loading: true }));
-    const preventiveMaintenance = await api.get<PreventiveMaintenance>(
-      `${basePath}/${id}`
-    );
-    dispatch(
-      slice.actions.getSinglePreventiveMaintenance({ preventiveMaintenance })
-    );
-    dispatch(slice.actions.setLoadingGet({ loading: false }));
+    try {
+      const preventiveMaintenance = await api.get<PreventiveMaintenance>(
+        `${basePath}/${id}`
+      );
+      dispatch(
+        slice.actions.getSinglePreventiveMaintenance({ preventiveMaintenance })
+      );
+    } finally {
+      dispatch(slice.actions.setLoadingGet({ loading: false }));
+    }
   };
 export const addPreventiveMaintenance =
   (preventiveMaintenance: Partial<PreventiveMaintenancePost>): AppThunk =>

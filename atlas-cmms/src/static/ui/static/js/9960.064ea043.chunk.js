@@ -1,2 +1,0 @@
-"use strict";(self.webpackChunkatlas_cmms=self.webpackChunkatlas_cmms||[]).push([[9960],{39960(s,a,t){t.r(a);var e=t(44224),c=t(24123);const n=function(){return(0,c.jsx)(e.A,{tabIndex:4,basePath:"cost-categories"})};t.d(a,["default",0,n])}}]);
-//# sourceMappingURL=9960.064ea043.chunk.js.map

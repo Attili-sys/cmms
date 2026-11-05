@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunkatlas_cmms=self.webpackChunkatlas_cmms||[]).push([[6761],{86761(e,t){t.default={code:"tr",week:{dow:1,doy:7},buttonText:{prev:"geri",next:"ileri",today:"bug\xfcn",month:"Ay",week:"Hafta",day:"G\xfcn",list:"Ajanda"},weekText:"Hf",allDayText:"T\xfcm g\xfcn",moreLinkText:"daha fazla",noEventsText:"G\xf6sterilecek etkinlik yok"}}}]);
+//# sourceMappingURL=6761.3e16f486.chunk.js.map

@@ -109,14 +109,17 @@ export const getRequestOverview = (start: Date, end: Date, companyId?: number): 
       loading: true
     })
   );
-  const stats = await api.post<RequestStats>(`${basePath}/overview${companyQuery(companyId)}`, { start, end });
-  dispatch(slice.actions.getOverview({ stats }));
-  dispatch(
-    slice.actions.setLoading({
-      operation: 'overview',
-      loading: false
-    })
-  );
+  try {
+    const stats = await api.post<RequestStats>(`${basePath}/overview${companyQuery(companyId)}`, { start, end });
+    dispatch(slice.actions.getOverview({ stats }));
+  } finally {
+    dispatch(
+      slice.actions.setLoading({
+        operation: 'overview',
+        loading: false
+      })
+    );
+  }
 };
 export const getRequestStatsByPriority = (start: Date, end: Date, companyId?: number): AppThunk => async (dispatch) => {
   dispatch(
@@ -125,14 +128,17 @@ export const getRequestStatsByPriority = (start: Date, end: Date, companyId?: nu
       loading: true
     })
   );
-  const stats = await api.post<RequestStatsByPriority>(`${basePath}/priority${companyQuery(companyId)}`, { start, end });
-  dispatch(slice.actions.getRequestStatsByPriority({ stats }));
-  dispatch(
-    slice.actions.setLoading({
-      operation: 'requestStatsByPriority',
-      loading: false
-    })
-  );
+  try {
+    const stats = await api.post<RequestStatsByPriority>(`${basePath}/priority${companyQuery(companyId)}`, { start, end });
+    dispatch(slice.actions.getRequestStatsByPriority({ stats }));
+  } finally {
+    dispatch(
+      slice.actions.setLoading({
+        operation: 'requestStatsByPriority',
+        loading: false
+      })
+    );
+  }
 };
 
 export const getRequestsByDate = (start: Date, end: Date, companyId?: number): AppThunk => async (dispatch) => {
@@ -142,16 +148,19 @@ export const getRequestsByDate = (start: Date, end: Date, companyId?: number): A
       loading: true
     })
   );
-  const stats = await api.post<RequestsByDate[]>(
-    `${basePath}/cycle-time/date${companyQuery(companyId)}`, { start, end }
-  );
-  dispatch(slice.actions.getRequestsByDate({ stats }));
-  dispatch(
-    slice.actions.setLoading({
-      operation: 'requestsByDate',
-      loading: false
-    })
-  );
+  try {
+    const stats = await api.post<RequestsByDate[]>(
+      `${basePath}/cycle-time/date${companyQuery(companyId)}`, { start, end }
+    );
+    dispatch(slice.actions.getRequestsByDate({ stats }));
+  } finally {
+    dispatch(
+      slice.actions.setLoading({
+        operation: 'requestsByDate',
+        loading: false
+      })
+    );
+  }
 };
 export const getRequestsResolvedByDate = (start: Date, end: Date, companyId?: number): AppThunk => async (dispatch) => {
   dispatch(
@@ -160,14 +169,17 @@ export const getRequestsResolvedByDate = (start: Date, end: Date, companyId?: nu
       loading: true
     })
   );
-  const stats = await api.post<RequestsResolvedByDate[]>(`${basePath}/received-and-resolved${companyQuery(companyId)}`, { start, end });
-  dispatch(slice.actions.getRequestsResolvedByDate({ stats }));
-  dispatch(
-    slice.actions.setLoading({
-      operation: 'requestsResolvedByDate',
-      loading: false
-    })
-  );
+  try {
+    const stats = await api.post<RequestsResolvedByDate[]>(`${basePath}/received-and-resolved${companyQuery(companyId)}`, { start, end });
+    dispatch(slice.actions.getRequestsResolvedByDate({ stats }));
+  } finally {
+    dispatch(
+      slice.actions.setLoading({
+        operation: 'requestsResolvedByDate',
+        loading: false
+      })
+    );
+  }
 };
 
 export const getRequestsByCategory = (start: Date, end: Date, companyId?: number): AppThunk => async (dispatch) => {
@@ -177,13 +189,16 @@ export const getRequestsByCategory = (start: Date, end: Date, companyId?: number
       loading: true
     })
   );
-  const stats = await api.post<CountByCategory[]>(`${basePath}/counts/category${companyQuery(companyId)}`, { start, end });
-  dispatch(slice.actions.getRequestsByCategory({ stats }));
-  dispatch(
-    slice.actions.setLoading({
-      operation: 'requestsByCategory',
-      loading: false
-    })
-  );
+  try {
+    const stats = await api.post<CountByCategory[]>(`${basePath}/counts/category${companyQuery(companyId)}`, { start, end });
+    dispatch(slice.actions.getRequestsByCategory({ stats }));
+  } finally {
+    dispatch(
+      slice.actions.setLoading({
+        operation: 'requestsByCategory',
+        loading: false
+      })
+    );
+  }
 };
 export default slice;

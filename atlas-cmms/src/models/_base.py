@@ -31,7 +31,7 @@ def utcnow() -> datetime:
 
 
 class Base(DeclarativeBase):
-    """Single SQLAlchemy DeclarativeBase for all 73 entity tables and 54 association tables."""
+    """Single SQLAlchemy DeclarativeBase for all 72 entity tables and 54 association tables."""
 
 
 @event.listens_for(Base, "before_insert", propagate=True)

@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunkatlas_cmms=self.webpackChunkatlas_cmms||[]).push([[6978],{16978(s,a,e){e.r(a);var t=e(37224),c=e(70579);const n=function(){return(0,c.jsx)(t.A,{tabIndex:3,basePath:"time-categories"})};e.d(a,["default",0,n])}}]);
+//# sourceMappingURL=6978.643c3a93.chunk.js.map

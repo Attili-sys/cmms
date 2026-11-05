@@ -63,16 +63,19 @@ export const getUserWorkOrdersOverview = (): AppThunk => async (dispatch) => {
       loading: true
     })
   );
-  const stats = await api.get<UserWOStats>(
-    `${basePath}/me/work-orders/overview`
-  );
-  dispatch(slice.actions.getWorkOrdersOverview({ stats }));
-  dispatch(
-    slice.actions.setLoading({
-      operation: 'workOrdersOverview',
-      loading: false
-    })
-  );
+  try {
+    const stats = await api.get<UserWOStats>(
+      `${basePath}/me/work-orders/overview`
+    );
+    dispatch(slice.actions.getWorkOrdersOverview({ stats }));
+  } finally {
+    dispatch(
+      slice.actions.setLoading({
+        operation: 'workOrdersOverview',
+        loading: false
+      })
+    );
+  }
 };
 
 export const getTwoWeeksWorkOrders =
@@ -84,16 +87,19 @@ export const getTwoWeeksWorkOrders =
         loading: true
       })
     );
-    const stats = await api.get<WOStatsByDay[]>(
-      `${basePath}/two-weeks/work-orders/${userId}`
-    );
-    dispatch(slice.actions.getTwoWeeksWorkOrders({ stats }));
-    dispatch(
-      slice.actions.setLoading({
-        operation: 'twoWeeksWorkOrders',
-        loading: false
-      })
-    );
+    try {
+      const stats = await api.get<WOStatsByDay[]>(
+        `${basePath}/two-weeks/work-orders/${userId}`
+      );
+      dispatch(slice.actions.getTwoWeeksWorkOrders({ stats }));
+    } finally {
+      dispatch(
+        slice.actions.setLoading({
+          operation: 'twoWeeksWorkOrders',
+          loading: false
+        })
+      );
+    }
   };
 
 export default slice;

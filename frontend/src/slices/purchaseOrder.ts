@@ -118,9 +118,12 @@ export const getSinglePurchaseOrder =
   (id: number): AppThunk =>
   async (dispatch) => {
     dispatch(slice.actions.setLoadingGet({ loading: true }));
-    const purchaseOrder = await api.get<PurchaseOrder>(`${basePath}/${id}`);
-    dispatch(slice.actions.getSinglePurchaseOrder({ purchaseOrder }));
-    dispatch(slice.actions.setLoadingGet({ loading: false }));
+    try {
+      const purchaseOrder = await api.get<PurchaseOrder>(`${basePath}/${id}`);
+      dispatch(slice.actions.getSinglePurchaseOrder({ purchaseOrder }));
+    } finally {
+      dispatch(slice.actions.setLoadingGet({ loading: false }));
+    }
   };
 
 export const editPurchaseOrder =

@@ -167,8 +167,12 @@ All `POST /api/<entity>/search` endpoints accept a `SearchCriteria` payload:
   - Creating (`POST /api/workflows`) or patching (`PATCH /api/workflows/{id}`) a workflow persists both `action` and `secondaryConditions` and hydrates nested foreign-key mini-DTOs (`asset`, `location`, `team`, `user`, `part`, `vendor`, `checklist`, `workOrderCategory`, `purchaseOrderCategory`).
   - Automatically evaluates and executes enabled workflows on WorkOrder, Request, PurchaseOrder, Part, and Task events.
 - **WorkOrder Configuration & Lifecycle (`src/routes/work_orders_pm.py`):**
-  - Enforces `WorkOrderConfiguration` completion guards (`completeFiles`, `completeTasks`, `completeTime`, `requiredSignature`) and `WOFieldConfiguration` `REQUIRED` field checks.
+  - `PATCH /work-orders/{id}/change-status` rejects `COMPLETE` with `406` when any configured completion guard is unsatisfied: required signature, required files, incomplete tasks, no logged labor time, unused assigned parts, or zero total cost.
+  - `POST /work-orders/events` accepts a blank `companyId` query (the calendar sends `companyId=` when no company is selected) and returns `{type, date, endDate, event}` for work orders in the visible range plus future preventive-maintenance occurrences. An empty `companyId` means the caller's company.
+  - `POST /work-orders/{id}/send-report` validates view permission and same-company customer recipients, then sends a plain-text summary through Canvas email. Canvas email does not provide PDF attachments; a refused recipient is returned as `{success: false, message}`.
   - Enforces author-only edit/delete on `Comment`, logs comment history, and normalizes `Relation` directional pairs (`BLOCKED_BY` $\to$ `BLOCKS`, `DUPLICATED_BY` $\to$ `DUPLICATE_OF`, `SPLIT_TO` $\to$ `SPLIT_FROM`) while rejecting self-relations and duplicates (`406`).
+- **User Mini DTOs (`src/routes/auth_users.py`):**
+  - `GET /users/mini` excludes disabled, `VIEW_ONLY`, and `REQUESTER` users by default; `withRequesters=true` includes enabled requesters/view-only users where the assignment UI explicitly supports them.
 - **Parts & Purchase Orders (`src/routes/parts_po_tasks.py`):**
   - Enforces tenant-unique part barcodes (`406` on duplicate), positive restock quantities (`POST`/`PATCH /api/parts/{id}/restock`), and automatic warehouse inventory adjustments + `PartTransaction` consumption logs across `PartQuantity` and `PurchaseOrder` approval/rejection transitions.
 
@@ -183,7 +187,7 @@ cd atlas-cmms
 .venv/bin/pytest -q && .venv/bin/ruff check .
 ```
 
-Key test suites (**84 tests total**):
+Key test suites (**85 tests total**, `uv run pytest -q` on 2026-11-04):
 - [`tests/test_crud_contracts.py`](tests/test_crud_contracts.py) — End-to-end verification of `/api/auth/me`, Location create + `/children/0/paginated`, Asset create + `/children/0/paginated` + `/mini?locationId=` + FK hydration, WorkOrder create + FK hydration, PreventiveMaintenance create + `Schedule` hydration + `schedule.startsOn` sort, Checklist create with `taskBases`/`options`, and Meter create + FK hydration.
 - [`tests/test_asset_management_fixes.py`](tests/test_asset_management_fixes.py) — Comprehensive verification of all 22 Asset Management defects (M2M/custom-field sync, status-to-downtime cascades, analytics formulas, search deduplication, two-pass import/export, file upload/download, tenant/FK isolation, RBAC ownership, hierarchy cycle detection, and duplicate identifier checks).
 - [`tests/test_non_asset_modules_fixes.py`](tests/test_non_asset_modules_fixes.py) and [`tests/test_non_asset_audit_fixes.py`](tests/test_non_asset_audit_fixes.py) — Comprehensive regression suites covering all non-asset backend, security, RBAC, `viewOther` scoping, cross-tenant FK injection, WorkOrder configuration/completion guards, PM `COMPLETED_DATE` recurrence, Part barcode/restock, Workflow patching/execution, Meter triggers, Request virtual status search, in-app notifications, Import/Export, and Analytics contracts.

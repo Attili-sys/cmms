@@ -38,6 +38,7 @@ interface WorkOrderState {
   singleWorkOrder: WorkOrder;
   urgentCount: number;
   loadingGet: boolean;
+  loadingCalendar: boolean;
   calendar: {
     events: CalendarEvent<WorkOrder | PreventiveMaintenance>[];
   };
@@ -50,6 +51,7 @@ const initialState: WorkOrderState = {
   singleWorkOrder: null,
   urgentCount: 0,
   loadingGet: false,
+  loadingCalendar: false,
   workOrdersMini: getInitialPage<WorkOrderBaseMiniDTO>(),
   calendar: {
     events: []
@@ -195,6 +197,13 @@ const slice = createSlice({
       const { loading } = action.payload;
       state.loadingGet = loading;
     },
+    setLoadingCalendar(
+      state: WorkOrderState,
+      action: PayloadAction<{ loading: boolean }>
+    ) {
+      const { loading } = action.payload;
+      state.loadingCalendar = loading;
+    },
     getUrgentWorkOrdersCount(
       state: WorkOrderState,
       action: PayloadAction<{ count: number }>
@@ -258,9 +267,12 @@ export const getSingleWorkOrder =
   (id: number): AppThunk =>
   async (dispatch) => {
     dispatch(slice.actions.setLoadingGet({ loading: true }));
-    const workOrder = await api.get<WorkOrder>(`${basePath}/${id}`);
-    dispatch(slice.actions.getSingleWorkOrder({ workOrder }));
-    dispatch(slice.actions.setLoadingGet({ loading: false }));
+    try {
+      const workOrder = await api.get<WorkOrder>(`${basePath}/${id}`);
+      dispatch(slice.actions.getSingleWorkOrder({ workOrder }));
+    } finally {
+      dispatch(slice.actions.setLoadingGet({ loading: false }));
+    }
   };
 export const addWorkOrder =
   (workOrder): AppThunk =>
@@ -437,6 +449,9 @@ export const sendWorkOrderReport =
       `${basePath}/${id}/report/send`,
       body
     );
+    if (!res.success) {
+      throw new Error(res.message);
+    }
     return res;
   };
 
@@ -448,20 +463,28 @@ export const getWorkOrderEvents =
     filterFields: FilterField[] = null
   ): AppThunk =>
   async (dispatch) => {
-    dispatch(slice.actions.setLoadingGet({ loading: true }));
-    const response = await api.post<
-      CalendarEvent<WorkOrder | PreventiveMaintenance>[]
-    >(`${basePath}/events?companyId=${companyId || ''}`, {
-      start,
-      end,
-      filterFields
-    });
-    dispatch(
-      slice.actions.getEvents({
-        events: response
-      })
-    );
-    dispatch(slice.actions.setLoadingGet({ loading: false }));
+    dispatch(slice.actions.setLoadingCalendar({ loading: true }));
+    try {
+      const params = new URLSearchParams();
+      if (companyId != null && `${companyId}` !== '') {
+        params.set('companyId', String(companyId));
+      }
+      const qs = params.toString();
+      const response = await api.post<
+        CalendarEvent<WorkOrder | PreventiveMaintenance>[]
+      >(`${basePath}/events${qs ? `?${qs}` : ''}`, {
+        start,
+        end,
+        filterFields
+      });
+      dispatch(
+        slice.actions.getEvents({
+          events: Array.isArray(response) ? response : []
+        })
+      );
+    } finally {
+      dispatch(slice.actions.setLoadingCalendar({ loading: false }));
+    }
   };
 export const getUrgentWorkOrdersCount = (): AppThunk => async (dispatch) => {
   const response = await api.get<{ success: boolean; message: string }>(

@@ -200,15 +200,15 @@ restoring their route definitions in `frontend/src/router/app.tsx`.
 
 The entire Java Spring Boot backend (`api/`) has been ported to Python (`atlas-cmms/`) using **FastAPI**, **SQLAlchemy 2.0**, and **`ajnkit-core`**, and deployed to Canvas under the app name **`aj-cafm`** (`https://aj-cafm--innovation.canvas.ajnai.net`):
 
-- **72 SQLAlchemy ORM entity models + 53 association tables** (`atlas-cmms/src/models/`) and **44 enums** (`atlas-cmms/src/models/enums.py`) with 100% schema parity against the Liquibase/PostgreSQL baseline (`atlas-cmms/db/migrations/001_maintenance_records_for_the_cmms.sql`). See `atlas-cmms/DATABASE.md` for the full schema reference.
-- **250+ REST API endpoints** across 6 modular routers (`atlas-cmms/src/routes/`) matching the frontend's expected paths, hierarchy endpoints (`/children/{parent_id}/paginated`), and hydrated camelCase DTO shapes (`atlas-cmms/src/services/serializer.py`). See `atlas-cmms/API_CONTRACTS.md` for the full contract reference.
+- **72 SQLAlchemy ORM entity models + 54 association tables** (`atlas-cmms/src/models/`) and **44 enums** (`atlas-cmms/src/models/enums.py`) with 100% schema parity against the Liquibase/PostgreSQL baseline (`atlas-cmms/db/migrations/001_maintenance_records_for_the_cmms.sql`). See `atlas-cmms/DATABASE.md` for the full schema reference.
+- **311 OpenAPI paths under `/api`** across 6 modular routers (`atlas-cmms/src/routes/`; the same router is also mounted at the site root) matching the frontend's expected paths, hierarchy endpoints (`/children/{parent_id}/paginated`), and hydrated camelCase DTO shapes (`atlas-cmms/src/services/serializer.py`). See `atlas-cmms/API_CONTRACTS.md` for the full contract reference.
 - **Authentik SSO auto-provisioning** (`atlas-cmms/src/deps/current_user.py`): reads `ajnkit.identity.caller(request.headers)`, provisions the initial Company, `CompanySettings`, `GeneralPreferences` (with default Qatari Riyal `QR` currency), `WorkOrderConfiguration`, `WorkOrderRequestConfiguration`, all 24 default `FieldConfiguration` rows, and `ROLE_SUPER_ADMIN` user on first sign-in.
 - **Unrestricted Self-Hosted Policy**: `CLOUD_VERSION="false"` in `atlas-cmms/score.yaml`; `SubscriptionPlan.features` always returns all 20 `PlanFeatures` values (`atlas-cmms/src/services/license_service.py`).
 - **Bundled React SPA**: Compiled `frontend/build/` assets are served directly by FastAPI (`atlas-cmms/src/spa.py`) with `/runtime-env.js` injected at runtime.
 
 ## Verification
 
-- **Canvas Python Test Suite (`atlas-cmms/`)**: 84 pytest tests pass (`.venv/bin/pytest -q`), including:
+- **Canvas Python Test Suite (`atlas-cmms/`)**: 85 pytest tests pass (`uv run pytest -q`, re-checked 2026-11-04), including:
   - `tests/test_schema_matches_dump.py` (DDL parity across all entity and association tables)
   - `tests/contract/test_openapi_covers_catalog.py` (OpenAPI contract check)
   - `tests/routes/test_all_routes_and_jobs.py` (end-to-end CRUD, search, permissions, workflows, analytics, PDF generation, and background jobs)
@@ -217,7 +217,8 @@ The entire Java Spring Boot backend (`api/`) has been ported to Python (`atlas-c
   - `tests/test_non_asset_modules_fixes.py` and `tests/test_non_asset_audit_fixes.py` (RBAC, workflow automation engine, in-app notifications, M2M search filters, and deep parity contracts)
   - `tests/test_smoke.py` (40-endpoint Canvas post-deploy smoke test)
 - **Ruff Linter (`atlas-cmms/`)**: `.venv/bin/ruff check .` passes with zero warnings (`E9`, `F`, `B`, `S`, `ASYNC`).
-- **React Frontend (`frontend/`)**: the production build completed. Repository-wide `npm run lint` still stops on four pre-existing parser-project files (`commitlint.config.ts`, `config-overrides.js`, `index-now.js`, `sitemap-builder.js`); ESLint passed for the changed React sources.
+- **React Frontend (`frontend/`)**: repository-wide `npm run lint` and `npm run build` pass. The verified bundle is synchronized to both `atlas-cmms/src/static/` and `atlas-cmms/src/static/ui/`; single-record, hierarchy, calendar, import, and all 40 analytics loaders clear on request failure.
+- **Canvas Deployment**: build **#17** (`@e5e83dfd328e`) is healthy and synced, all 40 platform page checks open, the database and volume are healthy, and the app reports zero restarts (`canvas status`, 2026-11-04).
 - **Java API (`api/`)**: `mvn -q test` completed with exit code 0 in Docker, including Testcontainers integration tests. Surefire reports contain no failures or errors. Tests that previously expected commercial quotas now prove those operations succeed, while permission denials still fail closed.
 - **Mobile (`mobile/`)**: TypeScript checking, Jest, and native Android and iOS Expo exports completed. No stack was deployed.
 

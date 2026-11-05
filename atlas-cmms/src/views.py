@@ -34,18 +34,31 @@ class ResilientStaticFiles(StaticFiles):
         full_path, stat_result = super().lookup_path(path)
         if stat_result is not None:
             return full_path, stat_result
+        # CRA's manifest uses /static/js and /static/css. The checked-in build is kept under
+        # src/static/static/ (and mirrored under ui/static/), while FastAPI mounts src/static at
+        # /static. Resolve the manifest URL to the nested build without requiring a third copy of
+        # every hashed chunk at src/static/js and src/static/css.
+        if self.directory:
+            for nested_root in ("static", "ui/static"):
+                nested = (Path(self.directory) / nested_root / path).resolve()
+                if nested.is_file():
+                    try:
+                        return str(nested), os.stat(nested)
+                    except OSError:
+                        pass
         m = _HASHED_ASSET_RE.match(path)
         if m and self.directory:
             subdir, prefix, suffix = m.groups()
-            target_dir = Path(self.directory) / subdir
-            if target_dir.is_dir():
-                matches = sorted(target_dir.glob(f"{prefix}.*{suffix}"))
-                if matches:
-                    fallback = matches[0].resolve()
-                    try:
-                        return str(fallback), os.stat(fallback)
-                    except OSError:
-                        pass
+            for nested_root in ("", "static", "ui/static"):
+                target_dir = Path(self.directory) / nested_root / subdir
+                if target_dir.is_dir():
+                    matches = sorted(target_dir.glob(f"{prefix}.*{suffix}"))
+                    if matches:
+                        fallback = matches[0].resolve()
+                        try:
+                            return str(fallback), os.stat(fallback)
+                        except OSError:
+                            pass
         return full_path, stat_result
 
 

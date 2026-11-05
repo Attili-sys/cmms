@@ -161,9 +161,12 @@ export const getSingleUser =
   (id: number): AppThunk =>
   async (dispatch) => {
     dispatch(slice.actions.setLoadingGet({ loading: true }));
-    const user = await api.get<UserResponseDTO>(`${basePath}/${id}`);
-    dispatch(slice.actions.getSingleUser({ user }));
-    dispatch(slice.actions.setLoadingGet({ loading: false }));
+    try {
+      const user = await api.get<UserResponseDTO>(`${basePath}/${id}`);
+      dispatch(slice.actions.getSingleUser({ user }));
+    } finally {
+      dispatch(slice.actions.setLoadingGet({ loading: false }));
+    }
   };
 
 export const editUser =

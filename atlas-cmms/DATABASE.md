@@ -9,7 +9,7 @@ This document is the authoritative reference for the PostgreSQL / SQLAlchemy 2.0
 - **ORM & Driver:** SQLAlchemy 2.0 (`DeclarativeBase` in [`src/models/_base.py`](src/models/_base.py)) using `postgresql+psycopg://` via `ajnkit.db` in production and SQLite (`StaticPool`) in unit/contract tests.
 - **Schema Footprint:**
   - **72 ORM Entity Models** across 15 domain modules under [`src/models/`](src/models/__init__.py)
-  - **53 Association & `@ElementCollection` Tables** in [`src/models/associations.py`](src/models/associations.py)
+  - **54 Association & `@ElementCollection` Tables** in [`src/models/associations.py`](src/models/associations.py)
   - **44 Ported Java Enums** in [`src/models/enums.py`](src/models/enums.py)
 - **Migrations:** Managed via Canvas SQL migrations under [`db/migrations/`](db/migrations/001_maintenance_records_for_the_cmms.sql) (`001_maintenance_records_for_the_cmms.sql`, `002_create_missing_sequences.sql`, `003_asset_unique_identifiers.sql`) and [`db/schema.json`](db/schema.json), with `Base.metadata.create_all(engine)`, sequence initialization, and asset unique indexes verified on startup in [`src/app.py`](src/app.py) and [`src/tasks.py`](src/tasks.py).
 - **Schema Parity Test:** [`tests/test_schema_matches_dump.py`](tests/test_schema_matches_dump.py) verifies that the SQLAlchemy metadata matches the legacy Liquibase/PostgreSQL schema dump.

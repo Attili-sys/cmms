@@ -282,16 +282,19 @@ export const getAssetChildren =
   (id: number, pageable: Pageable): AppThunk =>
   async (dispatch) => {
     dispatch(slice.actions.setLoadingHierarchy({ loading: true }));
-    const assets = await api.get<Page<AssetDTO>>(
-      `${basePath}/children/${id}/paginated?${pageableToQueryParams(pageable)}`
-    );
-    dispatch(
-      slice.actions.getAssetChildrenPaginated({
-        id,
-        assets
-      })
-    );
-    dispatch(slice.actions.setLoadingHierarchy({ loading: false }));
+    try {
+      const assets = await api.get<Page<AssetDTO>>(
+        `${basePath}/children/${id}/paginated?${pageableToQueryParams(pageable)}`
+      );
+      dispatch(
+        slice.actions.getAssetChildrenPaginated({
+          id,
+          assets
+        })
+      );
+    } finally {
+      dispatch(slice.actions.setLoadingHierarchy({ loading: false }));
+    }
   };
 
 export const getAssetDetails =

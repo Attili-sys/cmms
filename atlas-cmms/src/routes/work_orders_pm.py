@@ -2,16 +2,18 @@
 
 from __future__ import annotations
 
-from datetime import timedelta
+from datetime import datetime, timedelta
+import logging
 from typing import Any
+from ajnkit.email import EmailRefused, send as send_email
 from fastapi import APIRouter, Body, Depends, Query, Response
-from sqlalchemy import delete, select
+from sqlalchemy import and_, delete, func, or_, select
 from sqlalchemy.orm import Session
 
 from src.deps.company import assert_company_access, is_super_admin
 from src.deps.current_user import get_current_user
 from src.deps.db import get_db
-from src.deps.permissions import can_create, can_edit_object
+from src.deps.permissions import can_create, can_edit_object, can_view
 from src.jobs.pm_generator import (
     advance_schedule_next_due_date,
     create_work_order_from_pm,
@@ -39,9 +41,10 @@ from src.models.enums import PermissionEntity, WFMainCondition
 from src.models.files_custom import CustomFieldValue, File as FileEntity
 from src.models.location_asset import Asset, Location
 from src.models.meters import WorkOrderMeterTrigger
-from src.models.parts_po import Customer, Part, PartQuantity
+from src.models.parts_po import AdditionalCost, Customer, Part, PartQuantity
 from src.models.pm_schedule import PreventiveMaintenance, Schedule
-from src.models.settings import GeneralPreferences, WorkOrderConfiguration
+from src.models.settings import FieldConfiguration, GeneralPreferences, WorkOrderConfiguration
+from src.models.tasks import Task
 from src.models.users import Team, User
 from src.models.work_orders import (
     Comment,
@@ -62,12 +65,13 @@ from src.routes.assets_locations import (
     _verify_and_sync_m2m,
 )
 from src.schemas.errors import CustomException, SuccessResponse
-from src.services.serializer import apply_patch, model_to_dict
+from src.services.serializer import apply_patch, model_to_dict, resolve_enum_value
 from src.services.workflow_engine import run_work_order_workflows
 from src.utils.dates import ensure_utc, parse_iso_utc, to_iso_utc
-from src.utils.search import SearchCriteria, execute_search
+from src.utils.search import SearchCriteria, apply_search_criteria, execute_search
 
 router = APIRouter()
+logger = logging.getLogger(__name__)
 
 
 def _serialize_wo(wo: WorkOrder, db: Session) -> dict[str, Any]:
@@ -413,24 +417,175 @@ def search_wo_mini(
     )
 
 
+def _naive_utc(dt: datetime) -> datetime:
+    return ensure_utc(dt).replace(tzinfo=None)
+
+
+def _optional_company_id(raw: str | None) -> int | None:
+    """Treat a missing or blank companyId query as 'the caller's company'."""
+    if raw is None or not str(raw).strip():
+        return None
+    try:
+        return int(str(raw).strip())
+    except ValueError as exc:
+        raise CustomException(status_code=422, message="Invalid companyId") from exc
+
+
+def _event_bounds(
+    start: datetime | None, due: datetime | None, hours: float | None
+) -> tuple[datetime, datetime] | None:
+    duration = timedelta(hours=float(hours or 0))
+    if duration <= timedelta(0):
+        duration = timedelta(hours=1)
+    if start is not None:
+        return start, start + duration
+    if due is not None:
+        return due - duration, due
+    return None
+
+
+def _calendar_subject(obj: Any, model_name: str) -> dict[str, Any]:
+    title = getattr(obj, "title", None) or getattr(obj, "name", None) or ""
+    return {
+        "id": obj.id,
+        "title": title,
+        "description": getattr(obj, "description", None),
+        "priority": resolve_enum_value("priority", getattr(obj, "priority", None), model_name),
+        "status": resolve_enum_value("status", getattr(obj, "status", None), model_name),
+    }
+
+
+def _schedule_fires(
+    schedule: Schedule, db: Session, window_start: datetime, window_end: datetime
+) -> list[datetime]:
+    if schedule.disabled or schedule.starts_on is None:
+        return []
+    cursor = _naive_utc(schedule.starts_on)
+    end_cap = _naive_utc(schedule.ends_on) if schedule.ends_on is not None else None
+    fires: list[datetime] = []
+    for _ in range(400):
+        if cursor > window_end:
+            break
+        if cursor >= window_start and (end_cap is None or cursor <= end_cap):
+            fires.append(cursor)
+        nxt = advance_schedule_next_due_date(schedule, cursor, db)
+        nxt = _naive_utc(nxt)
+        if nxt <= cursor:
+            break
+        cursor = nxt
+    return fires
+
+
 @wo_router.post("/events")
 def get_wo_events(
     payload: dict[str, Any] = Body(default_factory=dict),
-    company_id: int | None = Query(default=None, alias="companyId"),
+    company_id: str | None = Query(default=None, alias="companyId"),
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> list[dict[str, Any]]:
-    rows = db.scalars(
-        select(WorkOrder).where(WorkOrder.company_id == current_user.company_id)
-    ).all()
-    return [
-        {
-            "type": "WORK_ORDER",
-            "date": to_iso_utc(r.due_date or r.created_at),
-            "event": _serialize_wo(r, db),
-        }
-        for r in rows
-    ]
+    """Work-order and preventive-maintenance events for the visible calendar range.
+
+    An empty ``companyId`` query (the React calendar sends ``companyId=`` when no
+    company filter is selected) is the caller's own company. Each event includes
+    both ``date`` and ``endDate`` so FullCalendar can place it.
+    """
+    if not can_view(current_user, PermissionEntity.WORK_ORDERS, db):
+        raise CustomException(status_code=403, message="Access Denied")
+
+    requested_company = _optional_company_id(company_id)
+    target_company = current_user.company_id
+    if requested_company is not None and requested_company != current_user.company_id:
+        if not is_super_admin(current_user, db):
+            raise CustomException(status_code=403, message="Access denied")
+        target_company = requested_company
+
+    start = parse_iso_utc(payload.get("start"))
+    end = parse_iso_utc(payload.get("end"))
+    if start is None or end is None:
+        raise CustomException(status_code=400, message="start and end are required")
+    range_start = _naive_utc(start)
+    range_end = _naive_utc(end)
+    if range_end < range_start:
+        raise CustomException(status_code=400, message="end is before start")
+
+    criteria = SearchCriteria.model_validate(
+        {"filterFields": payload.get("filterFields") or []}
+    )
+    in_range = or_(
+        and_(
+            WorkOrder.estimated_start_date.is_not(None),
+            WorkOrder.estimated_start_date >= range_start,
+            WorkOrder.estimated_start_date <= range_end,
+        ),
+        and_(
+            WorkOrder.estimated_start_date.is_(None),
+            WorkOrder.due_date.is_not(None),
+            WorkOrder.due_date >= range_start,
+            WorkOrder.due_date <= range_end,
+        ),
+    )
+    stmt = apply_search_criteria(
+        select(WorkOrder).where(in_range),
+        WorkOrder,
+        criteria,
+        company_id=target_company,
+        paginate=False,
+    )
+    rows = db.scalars(stmt).unique().all()
+
+    events: list[dict[str, Any]] = []
+    for wo in rows:
+        bounds = _event_bounds(wo.estimated_start_date, wo.due_date, wo.estimated_duration)
+        if bounds is None:
+            continue
+        event_start, event_end = bounds
+        events.append(
+            {
+                "type": "WORK_ORDER",
+                "date": to_iso_utc(event_start),
+                "endDate": to_iso_utc(event_end),
+                "event": _calendar_subject(wo, "WorkOrder"),
+            }
+        )
+
+    now = _naive_utc(utcnow())
+    pm_window_start = max(range_start, now)
+    if pm_window_start <= range_end and can_view(
+        current_user, PermissionEntity.PREVENTIVE_MAINTENANCES, db
+    ):
+        pms = db.scalars(
+            select(PreventiveMaintenance).where(
+                PreventiveMaintenance.company_id == target_company
+            )
+        ).all()
+        for pm in pms:
+            if pm.created_at is not None and _naive_utc(pm.created_at) > range_end:
+                continue
+            schedule = (
+                db.get(Schedule, pm.schedule_id) if pm.schedule_id is not None else None
+            )
+            if schedule is None and pm.id is not None:
+                schedule = db.scalar(
+                    select(Schedule).where(Schedule.preventive_maintenance_id == pm.id)
+                )
+            if schedule is None:
+                continue
+            delay = timedelta(days=int(schedule.due_date_delay or 0))
+            for fire in _schedule_fires(schedule, db, pm_window_start, range_end):
+                event_end = fire + delay
+                duration = timedelta(hours=float(pm.estimated_duration or 0))
+                if duration <= timedelta(0):
+                    duration = timedelta(hours=1)
+                event_start = event_end - duration
+                events.append(
+                    {
+                        "type": "PREVENTIVE_MAINTENANCE",
+                        "date": to_iso_utc(event_start),
+                        "endDate": to_iso_utc(event_end),
+                        "event": _calendar_subject(pm, "PreventiveMaintenance"),
+                    }
+                )
+    return events
 
 
 @wo_router.get("/mini")
@@ -601,8 +756,191 @@ def send_wo_report(
     wo_id: int,
     payload: dict[str, Any] = Body(default_factory=dict),
     current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
 ) -> dict[str, Any]:
-    return SuccessResponse(success=True, message="Report sent").model_dump()
+    wo = db.get(WorkOrder, wo_id)
+    if wo is None:
+        raise CustomException(status_code=404, message="WorkOrder not found")
+    assert_company_access(current_user, wo, is_super_admin=is_super_admin(current_user, db))
+    if not can_view(current_user, PermissionEntity.WORK_ORDERS, db):
+        raise CustomException(status_code=403, message="Access is denied")
+
+    requested = payload.get("customers")
+    if not isinstance(requested, list) or not requested:
+        raise CustomException(status_code=400, message="At least one customer is required")
+    customer_ids = list(
+        dict.fromkeys(
+            item.get("id") for item in requested if isinstance(item, dict) and isinstance(item.get("id"), int)
+        )
+    )
+    if not customer_ids or len(customer_ids) != len(requested):
+        raise CustomException(status_code=400, message="Every customer must have a valid id")
+    if len(customer_ids) > 20:
+        raise CustomException(status_code=400, message="A report can be sent to at most 20 customers")
+
+    customers = db.scalars(
+        select(Customer).where(
+            Customer.id.in_(customer_ids),
+            Customer.company_id == wo.company_id,
+        )
+    ).all()
+    by_id = {customer.id: customer for customer in customers}
+    missing = [customer_id for customer_id in customer_ids if customer_id not in by_id]
+    if missing:
+        raise CustomException(status_code=400, message="A selected customer is not available")
+    addresses = [by_id[customer_id].email for customer_id in customer_ids]
+    if any(not address for address in addresses):
+        raise CustomException(
+            status_code=400,
+            message="Every selected customer must have an email address",
+        )
+
+    summary = _work_order_email_summary(wo, payload, db)
+    try:
+        left = send_email(
+            [str(address) for address in addresses],
+            f"AJ CAFM work order: {wo.title}"[:200],
+            summary,
+        )
+    except EmailRefused as exc:
+        logger.warning("work-order report email refused for work_order_id=%s", wo.id)
+        return SuccessResponse(success=False, message=str(exc)).model_dump()
+    return SuccessResponse(
+        success=True,
+        message=f"Report sent; {left} recipient slots remain this hour",
+    ).model_dump()
+
+
+def _work_order_email_summary(
+    wo: WorkOrder, payload: dict[str, Any], db: Session
+) -> str:
+    config = payload.get("config") if isinstance(payload.get("config"), dict) else {}
+    lines = [f"Work order: {wo.title}", f"ID: {wo.custom_id or f'WO{wo.id:06d}'}"]
+    if config.get("workOrderInformation", True):
+        lines.extend(
+            [
+                f"Status: {resolve_enum_value('status', wo.status, 'WorkOrder')}",
+                f"Description: {wo.description or '—'}",
+                f"Due: {to_iso_utc(wo.due_date) or '—'}",
+            ]
+        )
+    if config.get("priority", True):
+        lines.append(f"Priority: {resolve_enum_value('priority', wo.priority, 'WorkOrder')}")
+    if config.get("estimatedTime", True):
+        lines.append(f"Estimated duration: {float(wo.estimated_duration or 0):g} hours")
+    if config.get("locationAddress", True) and wo.location_id:
+        location = db.get(Location, wo.location_id)
+        if location:
+            lines.append(f"Location: {location.name} — {location.address or 'no address'}")
+    if wo.asset_id:
+        asset = db.get(Asset, wo.asset_id)
+        if asset:
+            lines.append(f"Asset: {asset.name}")
+    custom_message = payload.get("message")
+    if isinstance(custom_message, str) and custom_message.strip():
+        lines.extend(["", custom_message.strip()])
+    lines.extend(["", "Sent by AJ CAFM · Powered by Canvas"])
+    return "\n".join(lines)
+
+
+def _required_completion_fields(wo: WorkOrder, db: Session) -> set[str]:
+    company = db.get(Company, wo.company_id)
+    if company is None or company.company_settings_id is None:
+        return set()
+    configuration = db.scalar(
+        select(WorkOrderConfiguration).where(
+            WorkOrderConfiguration.company_settings_id == company.company_settings_id
+        )
+    )
+    if configuration is None:
+        return set()
+    rows = db.scalars(
+        select(FieldConfiguration).where(
+            FieldConfiguration.work_order_configuration_id == configuration.id,
+            FieldConfiguration.field_type == 2,  # REQUIRED
+        )
+    ).all()
+    return {row.field_name for row in rows}
+
+
+def _enforce_completion_guards(wo: WorkOrder, db: Session) -> None:
+    required = _required_completion_fields(wo, db)
+    if not required:
+        return
+
+    if "completeFiles" in required:
+        work_order_file_count = len(
+            set(
+                db.scalars(
+                    select(work_order_files.c.files_id).where(
+                        work_order_files.c.work_order_id == wo.id
+                    )
+                ).all()
+            )
+            | set(
+                db.scalars(
+                    select(t_work_order_file_associations.c.id_file).where(
+                        t_work_order_file_associations.c.id_work_order == wo.id
+                    )
+                ).all()
+            )
+        )
+        comment_file_count = db.scalar(
+            select(func.count())
+            .select_from(comment_files)
+            .join(Comment, Comment.id == comment_files.c.comment_id)
+            .where(Comment.work_order_id == wo.id)
+        ) or 0
+        if work_order_file_count + comment_file_count == 0:
+            raise CustomException(
+                status_code=406,
+                message="A file is required to complete this work order",
+            )
+
+    if "completeTasks" in required:
+        tasks = db.scalars(select(Task).where(Task.work_order_id == wo.id)).all()
+        if any(not str(task.value or "").strip() for task in tasks):
+            raise CustomException(
+                status_code=406,
+                message="All tasks must be completed before closing this work order",
+            )
+
+    if "completeTime" in required:
+        time_count = db.scalar(
+            select(func.count()).select_from(Labor).where(
+                Labor.work_order_id == wo.id,
+                Labor.duration > 0,
+            )
+        ) or 0
+        if time_count == 0:
+            raise CustomException(
+                status_code=406,
+                message="Logged time is required to complete this work order",
+            )
+
+    if "completeParts" in required:
+        part_count = db.scalar(
+            select(func.count()).select_from(PartQuantity).where(
+                PartQuantity.work_order_id == wo.id
+            )
+        ) or 0
+        if part_count == 0:
+            raise CustomException(
+                status_code=406,
+                message="A part is required to complete this work order",
+            )
+
+    if "completeCost" in required:
+        cost_count = db.scalar(
+            select(func.count()).select_from(AdditionalCost).where(
+                AdditionalCost.work_order_id == wo.id
+            )
+        ) or 0
+        if cost_count == 0:
+            raise CustomException(
+                status_code=406,
+                message="An additional cost is required to complete this work order",
+            )
 
 
 @wo_router.patch("/{wo_id:int}/change-status")
@@ -641,6 +979,8 @@ def change_wo_status(
             status_code=406,
             message="Signature is required to complete this work order",
         )
+    if wo.status == 3:
+        _enforce_completion_guards(wo, db)
     if wo.status != 2 and wo.first_time_to_react is None:
         wo.first_time_to_react = utcnow()
     if old_status == 1 and wo.status != 1:

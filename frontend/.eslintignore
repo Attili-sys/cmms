@@ -6,3 +6,4 @@ commitlint.config.ts
 config-overrides.js
 index-now.js
 sitemap-builder.js
+public/runtime-env.js

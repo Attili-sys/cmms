@@ -157,7 +157,7 @@ export default function SendReportModal({
           disabled={sending}
           startIcon={sending ? <CircularProgress size="1rem" /> : null}
         >
-          {t('send_work_order_as_pdf')}
+          {t('email_contractors')}
         </Button>
       </DialogActions>
     </Dialog>

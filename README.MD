@@ -93,7 +93,7 @@ canvas deploy
 |---|---|
 | **[AGENTS.md](./AGENTS.md)** | Root operating guide for coding agents and contributors across all subprojects |
 | **[atlas-cmms/README.md](./atlas-cmms/README.md)** | Canvas Python backend & bundled SPA overview, commands, and layout |
-| **[atlas-cmms/DATABASE.md](./atlas-cmms/DATABASE.md)** | SQLAlchemy 2.0 / PostgreSQL schema reference (72 ORM models, 53 association tables, 44 enums, sequences, and tenant scoping) |
+| **[atlas-cmms/DATABASE.md](./atlas-cmms/DATABASE.md)** | SQLAlchemy 2.0 / PostgreSQL schema reference (72 ORM models, 54 association tables, 44 enums, sequences, and tenant scoping) |
 | **[atlas-cmms/API_CONTRACTS.md](./atlas-cmms/API_CONTRACTS.md)** | REST API router catalog, foreign-key mini-DTO hydration, hierarchy pagination, and `SearchCriteria` engine |
 | **[atlas-cmms/MIGRATION_NOTES.md](./atlas-cmms/MIGRATION_NOTES.md)** | Java-to-Python migration architecture and Reviewer Agent verification notes |
 | **[frontend/README.md](./frontend/README.md)** | React/TypeScript frontend architecture, build/lint commands, and static bundle sync |

@@ -120,9 +120,12 @@ export const getSingleMeter =
   (id: number): AppThunk =>
   async (dispatch) => {
     dispatch(slice.actions.setLoadingGet({ loading: true }));
-    const meter = await api.get<Meter>(`${basePath}/${id}`);
-    dispatch(slice.actions.getSingleMeter({ meter }));
-    dispatch(slice.actions.setLoadingGet({ loading: false }));
+    try {
+      const meter = await api.get<Meter>(`${basePath}/${id}`);
+      dispatch(slice.actions.getSingleMeter({ meter }));
+    } finally {
+      dispatch(slice.actions.setLoadingGet({ loading: false }));
+    }
   };
 
 export const editMeter =

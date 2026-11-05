@@ -22,7 +22,7 @@ const RecentWorkOrders = ({ pmId }: { pmId: number }) => {
   const navigate = useNavigate();
   const { getFormattedDate } = useContext(CompanySettingsContext);
   const [workOrders, setWorkOrders] = useState<WorkOrderMini[]>([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchRecentWorkOrders = async () => {

@@ -144,9 +144,12 @@ export const getSingleRequest =
   (id: number): AppThunk =>
   async (dispatch) => {
     dispatch(slice.actions.setLoadingGet({ loading: true }));
-    const request = await api.get<Request>(`${basePath}/${id}`);
-    dispatch(slice.actions.getSingleRequest({ request }));
-    dispatch(slice.actions.setLoadingGet({ loading: false }));
+    try {
+      const request = await api.get<Request>(`${basePath}/${id}`);
+      dispatch(slice.actions.getSingleRequest({ request }));
+    } finally {
+      dispatch(slice.actions.setLoadingGet({ loading: false }));
+    }
   };
 export const addRequest =
   (request): AppThunk =>

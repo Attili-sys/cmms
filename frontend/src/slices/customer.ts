@@ -118,9 +118,12 @@ export const getSingleCustomer =
   (id: number): AppThunk =>
     async (dispatch) => {
       dispatch(slice.actions.setLoadingGet({ loading: true }));
-      const customer = await api.get<Customer>(`${basePath}/${id}`);
-      dispatch(slice.actions.getSingleCustomer({ customer }));
-      dispatch(slice.actions.setLoadingGet({ loading: false }));
+      try {
+        const customer = await api.get<Customer>(`${basePath}/${id}`);
+        dispatch(slice.actions.getSingleCustomer({ customer }));
+      } finally {
+        dispatch(slice.actions.setLoadingGet({ loading: false }));
+      }
     };
 
 export const editCustomer =

@@ -90,9 +90,12 @@ export const getSingleApiKey =
   (id: number): AppThunk =>
   async (dispatch) => {
     dispatch(slice.actions.setLoadingGet({ loading: true }));
-    const apiKey = await api.get<ApiKey>(`${basePath}/${id}`);
-    dispatch(slice.actions.getSingleApiKey({ apiKey }));
-    dispatch(slice.actions.setLoadingGet({ loading: false }));
+    try {
+      const apiKey = await api.get<ApiKey>(`${basePath}/${id}`);
+      dispatch(slice.actions.getSingleApiKey({ apiKey }));
+    } finally {
+      dispatch(slice.actions.setLoadingGet({ loading: false }));
+    }
   };
 
 export const addApiKey =

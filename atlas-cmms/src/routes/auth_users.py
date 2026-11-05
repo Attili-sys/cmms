@@ -4,7 +4,7 @@ from __future__ import annotations
 
 from typing import Any
 from fastapi import APIRouter, Body, Depends, Query
-from sqlalchemy import select
+from sqlalchemy import or_, select
 from sqlalchemy.orm import Session
 
 from src.deps.company import assert_company_access, is_super_admin
@@ -778,15 +778,22 @@ def create_user(
 
 @router.get("/users/mini")
 def list_users_mini(
+    with_requesters: bool = Query(default=False, alias="withRequesters"),
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> list[dict[str, Any]]:
-    rows = db.scalars(
-        select(User).where(
+    stmt = (
+        select(User)
+        .outerjoin(Role, User.role_id == Role.id)
+        .where(
             User.company_id == current_user.company_id,
             User.enabled.is_(True),
         )
-    ).all()
+    )
+    if not with_requesters:
+        # Java's findWorkersByCompany excludes VIEW_ONLY (ordinal 4) and REQUESTER (ordinal 5).
+        stmt = stmt.where(or_(Role.code.is_(None), Role.code.notin_([4, 5])))
+    rows = db.scalars(stmt).all()
     return [
         {"id": u.id, "firstName": u.first_name, "lastName": u.last_name, "email": u.email}
         for u in rows

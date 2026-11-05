@@ -61,7 +61,7 @@ const AssetDowntimes = ({ asset }: PropsType) => {
   const [currentDowntime, setCurrentDowntime] = useState<AssetDowntime>();
   const { showSnackBar } = useContext(CustomSnackBarContext);
   const { getFormattedDate } = useContext(CompanySettingsContext);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     if (asset) {

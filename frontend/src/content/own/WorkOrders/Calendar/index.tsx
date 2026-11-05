@@ -180,7 +180,7 @@ function ApplicationsCalendar({
   const { i18n } = useTranslation();
   const calendarRef = useRef<FullCalendar | null>(null);
   const dispatch = useDispatch();
-  const { calendar, loadingGet } = useSelector((state) => state.workOrders);
+  const { calendar, loadingCalendar } = useSelector((state) => state.workOrders);
   const [date, setDate] = useState<Date>(new Date());
   const [view, setView] = useState<View>('timeGridWeek');
   const [visibleRange, setVisibleRange] = useState<{ start: Date; end: Date }>({
@@ -220,7 +220,17 @@ function ApplicationsCalendar({
   };
   const getEventFromWO = (
     eventPayload: CalendarEvent<WorkOrder | PreventiveMaintenance>
-  ): Event => {
+  ): Event | null => {
+    const start = new Date(eventPayload.date);
+    if (Number.isNaN(start.getTime()) || eventPayload.event?.id == null) {
+      return null;
+    }
+    const parsedEnd = eventPayload.endDate
+      ? new Date(eventPayload.endDate)
+      : new Date(start.getTime() + 60 * 60 * 1000);
+    const eventEnd = Number.isNaN(parsedEnd.getTime())
+      ? new Date(start.getTime() + 60 * 60 * 1000)
+      : parsedEnd;
     return {
       id: eventPayload.event.id.toString(),
       allDay: false,
@@ -230,8 +240,8 @@ function ApplicationsCalendar({
           ? theme.colors.alpha.black[30]
           : getColor(eventPayload.event.priority),
       description: eventPayload.event?.description,
-      end: new Date(eventPayload.endDate),
-      start: new Date(eventPayload.date),
+      end: eventEnd,
+      start,
       title: eventPayload.event.title,
       extendedProps: { type: eventPayload.type }
     };
@@ -315,7 +325,7 @@ function ApplicationsCalendar({
       />
       <Divider />
       <FullCalendarWrapper>
-        {loadingGet && (
+        {loadingCalendar && (
           <Stack position="absolute" top={'45%'} left={'45%'} zIndex={10}>
             <CircularProgress size={64} />
           </Stack>
@@ -336,11 +346,19 @@ function ApplicationsCalendar({
           dateClick={(event) => handleAddWorkOrder(event.date)}
           dayMaxEventRows={4}
           datesSet={(arg) =>
-            setVisibleRange({ start: arg.start, end: arg.end })
+            setVisibleRange((prev) => {
+              if (
+                prev.start?.getTime() === arg.start.getTime() &&
+                prev.end?.getTime() === arg.end.getTime()
+              ) {
+                return prev;
+              }
+              return { start: arg.start, end: arg.end };
+            })
           }
-          events={calendar.events.map((eventPayload) =>
-            getEventFromWO(eventPayload)
-          )}
+          events={calendar.events
+            .map((eventPayload) => getEventFromWO(eventPayload))
+            .filter((event): event is Event => event !== null)}
           headerToolbar={false}
           height={660}
           ref={calendarRef}

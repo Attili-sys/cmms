@@ -1,0 +1,2 @@
+"use strict";(self.webpackChunkatlas_cmms=self.webpackChunkatlas_cmms||[]).push([[3108],{93108(e,t){t.default={code:"pt-br",buttonText:{prev:"Anterior",next:"Pr\xf3ximo",today:"Hoje",month:"M\xeas",week:"Semana",day:"Dia",list:"Lista"},weekText:"Sm",allDayText:"dia inteiro",moreLinkText:function(e){return"mais +"+e},noEventsText:"N\xe3o h\xe1 eventos para mostrar"}}}]);
+//# sourceMappingURL=3108.440b8b4f.chunk.js.map
