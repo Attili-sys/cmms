@@ -140,6 +140,8 @@ export const deleteFloorPlan =
     const { success } = response;
     if (success) {
       dispatch(slice.actions.deleteFloorPlan({ locationId, id }));
+      // Deleting the current revision makes the previous one current again on the server.
+      dispatch(getFloorPlans(locationId, true));
     }
   };
 

@@ -107,7 +107,7 @@ Rules for agents working on this branch:
 
 ## Deploy branch
 
-`canvas` on GitHub (`origin/canvas`) is the only source of deploys. Canvas runs on the corporate network and cannot pull from GitHub, so deploys are run from a local checkout of `canvas` that matches `origin/canvas` exactly. Work lands on a feature branch, merges into `canvas`, is pushed, and only then is deployed. `.claude/hooks/canvas-deploy-guard.sh` refuses `canvas deploy` from any other branch, from a dirty tree, or when local `canvas` differs from `origin/canvas`. Rollback is `canvas rollback` or redeploying an earlier `canvas` commit.
+`canvas` on GitHub (`origin/canvas`) is the only source of deploys. With the repository linked (`canvas github link Attili-sys/cmms --branch canvas`, see `atlas-cmms/.agents/skills/deploy/SKILL.md` "From GitHub instead"), every push to `canvas` is built and deployed by Canvas. When `score.yaml` or `db/migrations/` change, `canvas github status` reports `built` and one `canvas deploy` from a clean, pushed `canvas` checkout ships it; later pushes follow automatically. `.claude/hooks/canvas-deploy-guard.sh` refuses `canvas deploy` from any other branch, from a dirty tree, or when local `canvas` differs from `origin/canvas`. Work lands on a feature branch and merges into `canvas`. Rollback: `canvas rollback`.
 
 ## Done
 

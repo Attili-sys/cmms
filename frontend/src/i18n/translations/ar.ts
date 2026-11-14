@@ -1978,7 +1978,6 @@ const locale = {
   unit_cost: 'تكلفة الوحدة',
   reason: 'السبب',
   delivery_note_supplier: 'رقم إذن التسليم، المورد…',
-  book_quantity: 'الكمية الدفترية',
   counted_quantity: 'الكمية المعدودة',
   variance: 'الفرق',
   quantity_must_be_positive: 'يجب أن تكون الكمية أكبر من 0',

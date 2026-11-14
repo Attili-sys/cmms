@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { ThemeProvider } from '@mui/material';
+import React, { useEffect, useMemo, useState } from 'react';
+import { Theme, ThemeProvider } from '@mui/material';
 import { themeCreator } from './base';
 import { StylesProvider } from '@mui/styles';
 import { CacheProvider } from '@emotion/react';
@@ -32,9 +32,16 @@ export const ThemeContext = React.createContext(
 const ThemeProviderWrapper: React.FC = (props) => {
   const curThemeName = localStorage.getItem('appTheme') || 'PureLightTheme';
   const [themeName, _setThemeName] = useState(curThemeName);
-  const theme = themeCreator(themeName);
   const { i18n } = useTranslation();
   const rtl = i18n.dir() === 'rtl';
+  // The theme schemes read i18n.dir() once at import, before the user's language is
+  // applied, so their direction stays 'ltr'. MUI's Drawer, Slide and Popover read
+  // theme.direction, and with the RTL style plugin flipping CSS a stale 'ltr' parks
+  // right-anchored drawers off-screen in Arabic. Take the direction from the live language.
+  const theme = useMemo(
+    () => ({ ...themeCreator(themeName), direction: rtl ? 'rtl' : 'ltr' } as Theme),
+    [themeName, rtl]
+  );
   const setThemeName = (themeName: string): void => {
     localStorage.setItem('appTheme', themeName);
     _setThemeName(themeName);

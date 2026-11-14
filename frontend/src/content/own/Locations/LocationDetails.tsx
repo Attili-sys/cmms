@@ -51,6 +51,8 @@ import { getAssetUrl } from '../../../utils/urlPaths';
 import useAuth from '../../../hooks/useAuth';
 import { PermissionEntity } from '../../../models/owns/role';
 import { PlanFeature } from '../../../models/owns/subscriptionPlan';
+import { CustomSnackBarContext } from '../../../contexts/CustomSnackBarContext';
+import { getErrorMessage } from '../../../utils/api';
 
 interface LocationDetailsProps {
   location: Location;
@@ -63,10 +65,11 @@ export default function LocationDetails(props: LocationDetailsProps) {
   const { t }: { t: any } = useTranslation();
   const dispatch = useDispatch();
   const { getFormattedDate, uploadFiles } = useContext(CompanySettingsContext);
+  const { showSnackBar } = useContext(CustomSnackBarContext);
   const [openAddFloorPlan, setOpenAddFloorPlan] = useState<boolean>(false);
   const [currentTab, setCurrentTab] = useState<string>('assets');
   const [searchParams] = useSearchParams();
-  const [includeSuperseded, setIncludeSuperseded] = useState<boolean>(false);
+  const [showOlder, setShowOlder] = useState<boolean>(false);
   const [viewerPlanId, setViewerPlanId] = useState<number | null>(null);
   const [focusAssetId, setFocusAssetId] = useState<number | undefined>();
   const [deepLinkPlanId, setDeepLinkPlanId] = useState<number | null>(null);
@@ -88,7 +91,13 @@ export default function LocationDetails(props: LocationDetailsProps) {
   } = useAuth();
   const locationAssets = assetsByLocation[location.id] ?? [];
   const locationWorkOrders = workOrdersByLocation[location.id] ?? [];
-  const floorPlans = floorPlansByLocation[location.id] ?? [];
+  // All revisions are loaded; older ones are hidden unless asked for, and the switch only
+  // appears when there is an older revision to show.
+  const allFloorPlans = floorPlansByLocation[location.id] ?? [];
+  const hasOlderRevisions = allFloorPlans.some((plan) => plan.current === false);
+  const floorPlans = showOlder
+    ? allFloorPlans
+    : allFloorPlans.filter((plan) => plan.current !== false);
   const theme = useTheme();
   const navigate = useNavigate();
   const tabs = [
@@ -139,12 +148,11 @@ export default function LocationDetails(props: LocationDetailsProps) {
       };
       if (fpArea !== '') body.area = Number(fpArea);
       await dispatch(createFloorPlan(location.id, body));
-      await dispatch(getFloorPlans(location.id, includeSuperseded));
+      await dispatch(getFloorPlans(location.id, true));
       resetFloorPlanForm();
       setOpenAddFloorPlan(false);
     } catch (err) {
-      // upload errors are surfaced by uploadFiles; API errors are logged
-      console.error(err);
+      showSnackBar(getErrorMessage(err), 'error');
     } finally {
       setFpSubmitting(false);
     }
@@ -156,8 +164,8 @@ export default function LocationDetails(props: LocationDetailsProps) {
   }, [location]);
 
   useEffect(() => {
-    dispatch(getFloorPlans(location.id, includeSuperseded));
-  }, [location, includeSuperseded]);
+    dispatch(getFloorPlans(location.id, true));
+  }, [location]);
 
   // deep link: ?tab=floorPlans&floorPlan=<id>&asset=<assetId>
   const searchString = searchParams.toString();
@@ -178,13 +186,11 @@ export default function LocationDetails(props: LocationDetailsProps) {
 
   useEffect(() => {
     if (!deepLinkPlanId) return;
-    const found = floorPlans.find((plan) => plan.id === deepLinkPlanId);
+    const found = allFloorPlans.find((plan) => plan.id === deepLinkPlanId);
     if (found) {
+      if (found.current === false) setShowOlder(true);
       setViewerPlanId(found.id);
       setDeepLinkPlanId(null);
-    } else if (floorPlansByLocation[location.id] && !includeSuperseded) {
-      // the plan may be an older revision
-      setIncludeSuperseded(true);
     }
   }, [deepLinkPlanId, floorPlansByLocation, location.id]);
 
@@ -299,7 +305,7 @@ export default function LocationDetails(props: LocationDetailsProps) {
       justifyContent="center"
       alignItems="stretch"
       spacing={2}
-      padding={4}
+      padding={{ xs: 2, md: 4 }}
     >
       {renderAddFloorPlanModal()}
       <Grid
@@ -485,15 +491,19 @@ export default function LocationDetails(props: LocationDetailsProps) {
               alignItems="center"
               flexWrap="wrap"
             >
-              <FormControlLabel
-                control={
-                  <Switch
-                    checked={includeSuperseded}
-                    onChange={(e) => setIncludeSuperseded(e.target.checked)}
-                  />
-                }
-                label={t('show_older_revisions')}
-              />
+              {hasOlderRevisions ? (
+                <FormControlLabel
+                  control={
+                    <Switch
+                      checked={showOlder}
+                      onChange={(e) => setShowOlder(e.target.checked)}
+                    />
+                  }
+                  label={t('show_older_revisions')}
+                />
+              ) : (
+                <span />
+              )}
               {canEditLocation && (
                 <Button
                   onClick={() => setOpenAddFloorPlan(true)}

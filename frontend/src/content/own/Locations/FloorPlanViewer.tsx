@@ -272,9 +272,16 @@ export default function FloorPlanViewer({
             </IconButton>
           </span>
         </Tooltip>
-        <Typography variant="body2" sx={{ minWidth: 44, textAlign: 'center' }}>
-          {Math.round(zoom * 100)}%
-        </Typography>
+        <Tooltip title={t('reset_zoom')}>
+          <Button
+            size="small"
+            color="inherit"
+            onClick={() => setZoom(1)}
+            sx={{ minWidth: 52, fontVariantNumeric: 'tabular-nums' }}
+          >
+            {Math.round(zoom * 100)}%
+          </Button>
+        </Tooltip>
         <Tooltip title={t('zoom_in')}>
           <span>
             <IconButton
@@ -288,9 +295,6 @@ export default function FloorPlanViewer({
             </IconButton>
           </span>
         </Tooltip>
-        <Button size="small" onClick={() => setZoom(1)}>
-          {t('reset_zoom')}
-        </Button>
         {editable && (
           <Autocomplete<PinnableAsset, false, false, false>
             size="small"
@@ -313,25 +317,38 @@ export default function FloorPlanViewer({
         )}
       </Stack>
       {placing && editable && (
-        <Typography variant="caption" color="primary" display="block" mb={1}>
+        <Typography variant="body2" color="primary" fontSize={12} display="block" mb={1}>
           {t('click_plan_to_place_asset', { name: placing.name })}
         </Typography>
       )}
-      <Stack direction="row" spacing={1} sx={{ mb: 1 }} flexWrap="wrap">
+      <Stack
+        direction="row"
+        spacing={2}
+        sx={{ mb: 1 }}
+        flexWrap="wrap"
+        aria-label="legend"
+      >
         {legend.map((l) => (
-          <Chip
-            key={l.label}
-            size="small"
-            variant="outlined"
-            color={l.color}
-            label={t(l.label)}
-          />
+          <Stack key={l.label} direction="row" spacing={0.75} alignItems="center">
+            <Box
+              sx={{
+                width: 10,
+                height: 10,
+                borderRadius: '50%',
+                bgcolor: l.color === 'default' ? 'text.secondary' : `${l.color}.main`
+              }}
+            />
+            <Typography variant="body2" color="text.secondary" fontSize={12}>
+              {t(l.label)}
+            </Typography>
+          </Stack>
         ))}
       </Stack>
       {!editable && (
         <Typography
-          variant="caption"
+          variant="body2"
           color="text.secondary"
+          fontSize={12}
           display="block"
           mb={1}
         >

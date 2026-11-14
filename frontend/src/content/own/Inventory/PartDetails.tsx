@@ -11,6 +11,7 @@ import {
   ListItemButton,
   ListItemText,
   Stack,
+  ButtonGroup,
   Tab,
   Tabs,
   Typography,
@@ -153,7 +154,7 @@ export default function PartDetails(props: PartDetailsProps) {
       justifyContent="center"
       alignItems="stretch"
       spacing={2}
-      padding={4}
+      padding={{ xs: 2, md: 4 }}
     >
       <Grid
         item
@@ -161,6 +162,8 @@ export default function PartDetails(props: PartDetailsProps) {
         display="flex"
         flexDirection="row"
         justifyContent="space-between"
+        flexWrap="wrap"
+        gap={1}
       >
         <Box>
           <Typography variant="h2">{part?.name}</Typography>
@@ -168,17 +171,15 @@ export default function PartDetails(props: PartDetailsProps) {
         </Box>
         <Box>
           {canStockAct && (
-            <Stack direction="row" spacing={1} sx={{ mb: 1 }} justifyContent="flex-end">
-              <Button size="small" variant="outlined" color="success" onClick={() => openStock('receive')}>
-                {t('receive')}
-              </Button>
-              <Button size="small" variant="outlined" color="warning" onClick={() => openStock('issue')}>
-                {t('issue')}
-              </Button>
-              <Button size="small" variant="outlined" onClick={() => openStock('count')}>
-                {t('stock_count_action')}
-              </Button>
-            </Stack>
+            <Box display="flex" justifyContent="flex-end" sx={{ mb: 1 }}>
+              <ButtonGroup size="small" variant="outlined">
+                <Button onClick={() => openStock('receive')}>{t('receive')}</Button>
+                <Button onClick={() => openStock('issue')}>{t('issue')}</Button>
+                <Button onClick={() => openStock('count')}>
+                  {t('stock_count_action')}
+                </Button>
+              </ButtonGroup>
+            </Box>
           )}
           <Box display="flex" justifyContent="flex-end">
           {hasEditPermission(PermissionEntity.PARTS_AND_MULTIPARTS, part) && (

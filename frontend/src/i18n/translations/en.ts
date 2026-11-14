@@ -1991,7 +1991,6 @@ const locale = {
   unit_cost: 'Unit cost',
   reason: 'Reason',
   delivery_note_supplier: 'Delivery note, supplier…',
-  book_quantity: 'Book quantity',
   counted_quantity: 'Counted quantity',
   variance: 'Variance',
   quantity_must_be_positive: 'Quantity must be greater than 0',

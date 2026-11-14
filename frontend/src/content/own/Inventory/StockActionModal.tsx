@@ -37,6 +37,7 @@ interface StockActionModalProps {
 interface WoOption {
   id: number;
   title: string;
+  customId?: string;
 }
 
 export default function StockActionModal({
@@ -116,8 +117,12 @@ export default function StockActionModal({
     reasonError = t('reason_required_when_variance');
   }
   const hasError = Boolean(quantityError || countedError || reasonError);
+  const reasonRequired =
+    (mode === 'issue' && !workOrder) ||
+    (mode === 'count' && variance !== null && variance !== 0);
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e?: React.FormEvent) => {
+    e?.preventDefault();
     setSubmitted(true);
     if (hasError) return;
     setSending(true);
@@ -162,7 +167,13 @@ export default function StockActionModal({
   };
 
   return (
-    <Dialog fullWidth maxWidth="sm" open={open} onClose={sending ? undefined : onClose}>
+    <Dialog
+      fullWidth
+      maxWidth="sm"
+      open={open}
+      onClose={sending ? undefined : onClose}
+      PaperProps={{ component: 'form', onSubmit: handleSubmit, noValidate: true } as any}
+    >
       <DialogTitle sx={{ p: 3 }}>
         <Typography variant="h4" gutterBottom>
           {titles[mode]}
@@ -181,16 +192,11 @@ export default function StockActionModal({
               value={quantity}
               required
               fullWidth
+              autoFocus
               inputProps={{ min: 0, step: 'any' }}
               onChange={(e) => setQuantity(e.target.value)}
               error={submitted && !!quantityError}
-              helperText={
-                submitted && quantityError
-                  ? quantityError
-                  : mode === 'issue'
-                  ? `${t('on_hand')}: ${onHand}`
-                  : ''
-              }
+              helperText={submitted ? quantityError : ''}
             />
           )}
           {mode === 'receive' && (
@@ -207,7 +213,7 @@ export default function StockActionModal({
             <Autocomplete<WoOption, false, false, false>
               options={workOrdersMini.content as WoOption[]}
               value={workOrder}
-              getOptionLabel={(o) => o.title}
+              getOptionLabel={(o) => (o.customId ? `${o.customId} · ${o.title}` : o.title)}
               isOptionEqualToValue={(a, b) => a.id === b.id}
               filterOptions={(x) => x}
               onChange={(_e, v) => setWorkOrder(v)}
@@ -222,17 +228,12 @@ export default function StockActionModal({
           {mode === 'count' && (
             <>
               <TextField
-                label={t('book_quantity')}
-                value={onHand}
-                fullWidth
-                disabled
-              />
-              <TextField
                 type="number"
                 label={t('counted_quantity')}
                 value={counted}
                 required
                 fullWidth
+                autoFocus
                 inputProps={{ min: 0, step: 'any' }}
                 onChange={(e) => setCounted(e.target.value)}
                 error={submitted && !!countedError}
@@ -250,8 +251,11 @@ export default function StockActionModal({
                         : 'text.secondary'
                   }}
                 >
-                  {t('variance')}: {variance > 0 ? '+' : variance < 0 ? '−' : ''}
-                  {Math.abs(variance)}
+                  {t('variance')}:{' '}
+                  <span dir="ltr">
+                    {variance > 0 ? '+' : variance < 0 ? '−' : ''}
+                    {Math.abs(variance)}
+                  </span>
                 </Typography>
               )}
             </>
@@ -263,7 +267,7 @@ export default function StockActionModal({
             multiline
             minRows={2}
             fullWidth
-            required={mode !== 'receive'}
+            required={reasonRequired}
             onChange={(e) => setReason(e.target.value)}
             error={submitted && !!reasonError}
             helperText={submitted ? reasonError : ''}
@@ -275,8 +279,8 @@ export default function StockActionModal({
           {t('cancel')}
         </Button>
         <Button
+          type="submit"
           variant="contained"
-          onClick={handleSubmit}
           disabled={sending}
           startIcon={sending ? <CircularProgress size="1rem" /> : null}
         >
