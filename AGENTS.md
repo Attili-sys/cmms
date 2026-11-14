@@ -17,7 +17,7 @@ Run these from the directory named in the heading. They are the commands checked
 |---|---|---|
 | Canvas App (`atlas-cmms/`) — Test & Lint | `.venv/bin/pytest -q && .venv/bin/ruff check .` | `atlas-cmms/pyproject.toml`, `atlas-cmms/AGENTS.md` |
 | Canvas App (`atlas-cmms/`) — Run locally | `PORT=8080 .venv/bin/python run.py` | `atlas-cmms/README.md` |
-| Canvas App (`atlas-cmms/`) — Validate & Deploy | `canvas validate`, then `canvas deploy` (deploys `aj-cafm`) | `atlas-cmms/score.yaml` |
+| Canvas App (`atlas-cmms/`) — Validate & Deploy | On branch `canvas`, pushed to `origin/canvas`: `canvas validate`, then `canvas deploy -m "<commit subject>"` (deploys `aj-cafm`) | `atlas-cmms/score.yaml`, `.claude/hooks/canvas-deploy-guard.sh` |
 | Web (`frontend/`) — Lint & Build | `npm run lint`, `npm run build` (then sync `build/*` to `atlas-cmms/src/static/` and `atlas-cmms/src/static/ui/`) | `frontend/package.json` |
 | Legacy Full Stack (Docker) | `docker-compose up -d`, then http://localhost:3000 | `README.MD`, `docker-compose.yml` |
 | Legacy Java API (`api/`) | `mvn test` or `mvn spring-boot:run` (JDK 17) | `api/pom.xml` |
@@ -104,6 +104,10 @@ Rules for agents working on this branch:
 - In `atlas-cmms/`, `LicenseService.is_unrestricted_self_hosted()` (and `LicenseService.isUnrestrictedSelfHosted()` in legacy Java) is the single gating method.
 - `SubscriptionPlan.features` / `getFeatures()` always returns every `PlanFeatures` member. Do not use stored plan features as a gate.
 - Authentication (Authentik SSO on Canvas), role/entity permissions, company isolation, approval rules, rate limits, and audit logging are **not** commercial restrictions and must remain unchanged.
+
+## Deploy branch
+
+`canvas` on GitHub (`origin/canvas`) is the only source of deploys. Canvas runs on the corporate network and cannot pull from GitHub, so deploys are run from a local checkout of `canvas` that matches `origin/canvas` exactly. Work lands on a feature branch, merges into `canvas`, is pushed, and only then is deployed. `.claude/hooks/canvas-deploy-guard.sh` refuses `canvas deploy` from any other branch, from a dirty tree, or when local `canvas` differs from `origin/canvas`. Rollback is `canvas rollback` or redeploying an earlier `canvas` commit.
 
 ## Done
 
