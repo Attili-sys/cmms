@@ -1,5 +1,6 @@
 import {
   Box,
+  Button,
   CircularProgress,
   Divider,
   Grid,
@@ -20,7 +21,6 @@ import { useTranslation } from 'react-i18next';
 import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import DeleteTwoToneIcon from '@mui/icons-material/DeleteTwoTone';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
-import AddShoppingCartTwoToneIcon from '@mui/icons-material/AddShoppingCartTwoTone';
 import Part from '../../../models/owns/part';
 import { CompanySettingsContext } from '../../../contexts/CompanySettingsContext';
 import { PermissionEntity } from '../../../models/owns/role';
@@ -44,7 +44,8 @@ import { getWorkOrdersByPart } from '../../../slices/workOrder';
 import { getFormattedQuantityWithUnit } from './Parts';
 import { getFormattedCostPerUnit } from '../../../utils/formatters';
 import { getCustomFieldValuesForDetails } from '../type';
-import RestockPartModal from './RestockPartModal';
+import StockActionModal, { StockActionMode } from './StockActionModal';
+import StockHistory from './StockHistory';
 
 interface PartDetailsProps {
   part: Part;
@@ -63,7 +64,15 @@ export default function PartDetails(props: PartDetailsProps) {
   const dispatch = useDispatch();
   const [currentTab, setCurrentTab] = useState<string>('details');
   const [isImageViewerOpen, setIsImageViewerOpen] = useState<boolean>(false);
-  const [openRestock, setOpenRestock] = useState<boolean>(false);
+  const [stockMode, setStockMode] = useState<StockActionMode | null>(null);
+  const [lastMode, setLastMode] = useState<StockActionMode>('receive');
+  const canStockAct =
+    hasEditPermission(PermissionEntity.PARTS_AND_MULTIPARTS, part) &&
+    !part?.nonStock;
+  const openStock = (m: StockActionMode) => {
+    setLastMode(m);
+    setStockMode(m);
+  };
   const theme = useTheme();
   const { assetsByPart } = useSelector((state) => state.assets);
   const { workOrdersByPart } = useSelector((state) => state.workOrders);
@@ -76,7 +85,10 @@ export default function PartDetails(props: PartDetailsProps) {
     { value: 'details', label: t('details') },
     { value: 'assets', label: t('assets') },
     { value: 'files', label: t('files') },
-    { value: 'workOrders', label: t('work_orders') }
+    { value: 'workOrders', label: t('work_orders') },
+    ...(part?.nonStock
+      ? []
+      : [{ value: 'stock_history', label: t('stock_history') }])
     //TODO events
   ];
   const handleTabsChange = (_event: ChangeEvent<{}>, value: string): void => {
@@ -155,6 +167,20 @@ export default function PartDetails(props: PartDetailsProps) {
           <Typography variant="h6">{part?.description}</Typography>
         </Box>
         <Box>
+          {canStockAct && (
+            <Stack direction="row" spacing={1} sx={{ mb: 1 }} justifyContent="flex-end">
+              <Button size="small" variant="outlined" color="success" onClick={() => openStock('receive')}>
+                {t('receive')}
+              </Button>
+              <Button size="small" variant="outlined" color="warning" onClick={() => openStock('issue')}>
+                {t('issue')}
+              </Button>
+              <Button size="small" variant="outlined" onClick={() => openStock('count')}>
+                {t('count')}
+              </Button>
+            </Stack>
+          )}
+          <Box display="flex" justifyContent="flex-end">
           {hasEditPermission(PermissionEntity.PARTS_AND_MULTIPARTS, part) && (
             <IconButton onClick={handleOpenUpdate} style={{ marginRight: 10 }}>
               <EditTwoToneIcon color="primary" />
@@ -168,19 +194,12 @@ export default function PartDetails(props: PartDetailsProps) {
               <ContentCopyIcon color="primary" />
             </IconButton>
           )}
-          {hasEditPermission(PermissionEntity.PARTS_AND_MULTIPARTS, part) && (
-            <IconButton
-              style={{ marginRight: 10 }}
-              onClick={() => setOpenRestock(true)}
-            >
-              <AddShoppingCartTwoToneIcon color="primary" />
-            </IconButton>
-          )}
           {hasDeletePermission(PermissionEntity.PARTS_AND_MULTIPARTS, part) && (
             <IconButton onClick={handleOpenDelete}>
               <DeleteTwoToneIcon style={{ cursor: 'pointer' }} color="error" />
             </IconButton>
           )}
+          </Box>
         </Box>
       </Grid>
       <Divider />
@@ -400,6 +419,7 @@ export default function PartDetails(props: PartDetailsProps) {
             </Box>
           </Box>
         )}
+        {currentTab === 'stock_history' && <StockHistory part={part} />}
         {currentTab === 'workOrders' && (
           <Box>
             {loadingWorkOrders ? (
@@ -437,10 +457,11 @@ export default function PartDetails(props: PartDetailsProps) {
           </Box>
         )}
       </Grid>
-      <RestockPartModal
-        open={openRestock}
-        onClose={() => setOpenRestock(false)}
+      <StockActionModal
+        open={stockMode !== null}
+        onClose={() => setStockMode(null)}
         part={part}
+        mode={stockMode ?? lastMode}
       />
       {isImageViewerOpen && (
         <div style={{ zIndex: 100 }}>

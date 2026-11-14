@@ -17,6 +17,7 @@ import {
   Stack,
   Tab,
   Tabs,
+  TextField,
   Typography,
   useTheme
 } from '@mui/material';
@@ -659,14 +660,25 @@ const Parts = ({ setAction }: PropsType) => {
         }}
       >
         <Box>
+          <TextField
+            sx={{ mb: 2 }}
+            fullWidth
+            disabled
+            label={t('quantity')}
+            value={currentPart?.quantity ?? ''}
+            helperText={t('use_stock_actions_hint')}
+          />
           <Form
-            fields={getFilteredFields(fields)}
+            fields={getFilteredFields(fields).filter(
+              (f) => f.name !== 'quantity'
+            )}
             validation={Yup.object().shape(shape)}
             submitText={t('save')}
             values={getPartFormValues(currentPart)}
             onChange={({ field, e }) => {}}
             onSubmit={async (values) => {
-              let formattedValues = formatValues(values);
+              const { quantity: _ignoredQuantity, ...editValues } = values;
+              let formattedValues = formatValues(editValues);
               try {
                 const imageAndFiles = await handleFileUpload(
                   {

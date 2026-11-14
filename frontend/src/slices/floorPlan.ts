@@ -158,10 +158,9 @@ export const upsertPin =
     const existed = (
       getState().floorPlans.pinsByFloorPlan[floorPlanId] ?? []
     ).some((p) => p.asset.id === assetId);
-    // PUT: the shared api client has no put helper, reuse get() with options
-    const pin = await api.get<FloorPlanPin>(
+    const pin = await api.put<FloorPlanPin>(
       `${basePath}/${floorPlanId}/pins/${assetId}`,
-      { method: 'PUT', body: JSON.stringify({ x, y }) }
+      { x, y }
     );
     dispatch(slice.actions.upsertPin({ id: floorPlanId, pin }));
     if (!existed) {

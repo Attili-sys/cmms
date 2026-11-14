@@ -5,6 +5,7 @@ import type { AppThunk } from 'src/store';
 import Part, { PartMiniDTO } from '../models/owns/part';
 import api from '../utils/api';
 import { revertAll } from 'src/utils/redux';
+import { StockMovementPage } from 'src/models/owns/stockMovement';
 import { cancellableFetch } from 'src/utils/cancellableRequest';
 
 const basePath = 'parts';
@@ -13,6 +14,7 @@ interface PartState {
   parts: Page<Part>;
   singlePart: Part;
   partsMini: PartMiniDTO[];
+  movementsByPart: { [partId: number]: StockMovementPage };
   loadingGet: boolean;
 }
 
@@ -20,6 +22,7 @@ const initialState: PartState = {
   parts: getInitialPage<Part>(),
   singlePart: null,
   partsMini: [],
+  movementsByPart: {},
   loadingGet: false
 };
 
@@ -51,6 +54,20 @@ const slice = createSlice({
       } else {
         state.singlePart = part;
       }
+    },
+    updatePartEverywhere(state: PartState, action: PayloadAction<{ part: Part }>) {
+      const { part } = action.payload;
+      state.parts.content = state.parts.content.map((p) =>
+        p.id === part.id ? part : p
+      );
+      if (state.singlePart?.id === part.id) state.singlePart = part;
+    },
+    getStockMovements(
+      state: PartState,
+      action: PayloadAction<{ partId: number; movements: StockMovementPage }>
+    ) {
+      const { partId, movements } = action.payload;
+      state.movementsByPart[partId] = movements;
     },
     getPartsMini(
       state: PartState,
@@ -140,18 +157,52 @@ export const clearSinglePart = (): AppThunk => async (dispatch) => {
   dispatch(slice.actions.clearSinglePart({}));
 };
 
-export const restockPart =
+export const receiveStock =
   (
-    id: number,
-    partRestockDTO: { quantity: number; description?: string }
-  ): AppThunk =>
-  async (dispatch, getState) => {
-    await api.post(`${basePath}/${id}/restock`, partRestockDTO);
-    const { singlePart, parts } = getState().parts;
-    const current = singlePart?.id === id ? singlePart : parts.content.find((p) => p.id === id);
-    if (current) {
-      dispatch(slice.actions.editPart({ part: { ...current, quantity: current.quantity + partRestockDTO.quantity } }));
+    partId: number,
+    dto: {
+      quantity: number;
+      reason?: string;
+      unitCost?: number;
+      purchaseOrderId?: number;
     }
+  ): AppThunk =>
+  async (dispatch) => {
+    const part = await api.post<Part>(`${basePath}/${partId}/stock/receive`, dto);
+    dispatch(slice.actions.updatePartEverywhere({ part }));
+    return part;
+  };
+
+export const issueStock =
+  (
+    partId: number,
+    dto: { quantity: number; workOrderId?: number; reason?: string }
+  ): AppThunk =>
+  async (dispatch) => {
+    const part = await api.post<Part>(`${basePath}/${partId}/stock/issue`, dto);
+    dispatch(slice.actions.updatePartEverywhere({ part }));
+    return part;
+  };
+
+export const countStock =
+  (partId: number, dto: { counted: number; reason?: string }): AppThunk =>
+  async (dispatch) => {
+    const part = await api.post<Part & { variance: number }>(
+      `${basePath}/${partId}/stock/count`,
+      dto
+    );
+    dispatch(slice.actions.updatePartEverywhere({ part }));
+    return part;
+  };
+
+export const getStockMovements =
+  (partId: number, page: number = 0, size: number = 20): AppThunk =>
+  async (dispatch) => {
+    const result = await api.get<StockMovementPage>(
+      `${basePath}/${partId}/stock/movements?page=${page}&size=${size}`
+    );
+    dispatch(slice.actions.getStockMovements({ partId, movements: result }));
+    return result;
   };
 
 export default slice;

@@ -133,6 +133,14 @@ function patch<T>(url, data, options?: Options) {
   });
 }
 
+function put<T>(url, data, options?: Options) {
+  return api<T>(resolveUrl(url), {
+    ...options,
+    method: 'PUT',
+    body: JSON.stringify(data)
+  });
+}
+
 function deletes<T>(url, options?: Options) {
   return api<T>(resolveUrl(url), { ...options, method: 'DELETE' });
 }
@@ -191,4 +199,4 @@ export const isNetworkError = (error: any): boolean => {
   );
 };
 
-export default { get, patch, post, deletes };
+export default { get, patch, post, put, deletes };
