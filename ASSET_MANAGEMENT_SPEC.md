@@ -3,7 +3,7 @@
 > **Status**: Rev 2 audit record. The defect rows below (C-01, C-02, C-03, and the P0/P1 findings) are implemented on `migrate-python` and covered by `atlas-cmms/tests/test_asset_management_fixes.py` plus the non-asset suites. The tables stay as the record of what was broken.
 > **Scope**: AJ CAFM (`atlas-cmms/` + `frontend/`) benchmarked against Java Spring Boot (`api/`), [SentrixFM (`S030–S037`, `S095`)](research/sentrixfm-research/02_WORKFLOWS/ASSETS_INVENTORY_SPEC.md), and [Facilio (`03_ASSETS_SPACES`)](research/Facilio_Public_Research/03_ASSETS_SPACES/README.md)
 > **Still deferred**: C-04 depreciation, C-05 always-on QR tags, and the net-new parts of Stages 4, 6, and 7 in [`assets-management-plans/README.md`](assets-management-plans/README.md). Do not treat those as shipped.
-> **Verification**: 85 backend tests, backend/frontend lint, and the frontend production build pass. Canvas build **#17** (`@e5e83dfd328e`) is deployed healthy and synced (2026-11-04).
+> **Verification**: 86 backend tests and backend lint pass. Canvas build **#19** (`@8ecc014ddf63`) is deployed healthy (2026-11-05).
 
 ---
 

@@ -8,6 +8,7 @@ from sqlalchemy.orm import Session
 from ajnkit.db import session as get_platform_session
 from src import envs
 from src.jobs.cleanup import cleanup_expired_tokens
+from src.services.account_invitations import ensure_requested_administrator
 from src.jobs.downtime_notifier import notify_ongoing_downtimes
 from src.jobs.pm_generator import generate_due_work_orders
 from src.jobs.preventive_maintenance_notifier import notify_upcoming_preventive_maintenance
@@ -104,6 +105,7 @@ def start_background_scheduler(poll_interval: int = 60) -> threading.Thread | No
             db_init = next(gen_init)
             try:
                 ensure_asset_unique_indexes(db_init)
+                ensure_requested_administrator(db_init)
             finally:
                 gen_init.close()
         except Exception as e:

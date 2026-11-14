@@ -6,7 +6,7 @@ metadata:
   name: aj-cafm                   # also the hostname: aj-cafm--<team>.<base>
   # What people call it and what it does, shown in the console — `describe-app` writes them.
   annotations:
-    canvas.dev/visibility: private
+    canvas.dev/visibility: team                  # listed for the team — `canvas share private` keeps it to you
     canvas.dev/title: AJ CAFM
     canvas.dev/description: Self-hosted work orders, assets, parts, preventive maintenance, and requests.
     canvas.dev/category: operations
@@ -37,7 +37,7 @@ resources:
       path: /healthz                  # MUST match src/views.py — a mismatch is `probe.path`
       auth: sso                       # a company sign-in before anyone reaches the app; none: open to the company network
       access:
-        read: ["attiliab@aljazeera.net"]
+        read: ["attiliab@aljazeera.net", "Elradie@aljazeera.net"]
   db:
     type: postgres
     params: {size: 1Gi}

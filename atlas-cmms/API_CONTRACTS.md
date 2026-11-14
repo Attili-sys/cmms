@@ -173,6 +173,7 @@ All `POST /api/<entity>/search` endpoints accept a `SearchCriteria` payload:
   - Enforces author-only edit/delete on `Comment`, logs comment history, and normalizes `Relation` directional pairs (`BLOCKED_BY` $\to$ `BLOCKS`, `DUPLICATED_BY` $\to$ `DUPLICATE_OF`, `SPLIT_TO` $\to$ `SPLIT_FROM`) while rejecting self-relations and duplicates (`406`).
 - **User Mini DTOs (`src/routes/auth_users.py`):**
   - `GET /users/mini` excludes disabled, `VIEW_ONLY`, and `REQUESTER` users by default; `withRequesters=true` includes enabled requesters/view-only users where the assignment UI explicitly supports them.
+  - `POST /users` and `POST /users/invite` create the account and send one bilingual English/Arabic welcome email through Canvas email. Canvas supplies the layout; the message is plain text. A refused recipient still keeps the account.
 - **Parts & Purchase Orders (`src/routes/parts_po_tasks.py`):**
   - Enforces tenant-unique part barcodes (`406` on duplicate), positive restock quantities (`POST`/`PATCH /api/parts/{id}/restock`), and automatic warehouse inventory adjustments + `PartTransaction` consumption logs across `PartQuantity` and `PurchaseOrder` approval/rejection transitions.
 
@@ -187,7 +188,7 @@ cd atlas-cmms
 .venv/bin/pytest -q && .venv/bin/ruff check .
 ```
 
-Key test suites (**85 tests total**, `uv run pytest -q` on 2026-11-04):
+Key test suites (**86 tests total**, `uv run pytest -q` on 2026-11-05):
 - [`tests/test_crud_contracts.py`](tests/test_crud_contracts.py) — End-to-end verification of `/api/auth/me`, Location create + `/children/0/paginated`, Asset create + `/children/0/paginated` + `/mini?locationId=` + FK hydration, WorkOrder create + FK hydration, PreventiveMaintenance create + `Schedule` hydration + `schedule.startsOn` sort, Checklist create with `taskBases`/`options`, and Meter create + FK hydration.
 - [`tests/test_asset_management_fixes.py`](tests/test_asset_management_fixes.py) — Comprehensive verification of all 22 Asset Management defects (M2M/custom-field sync, status-to-downtime cascades, analytics formulas, search deduplication, two-pass import/export, file upload/download, tenant/FK isolation, RBAC ownership, hierarchy cycle detection, and duplicate identifier checks).
 - [`tests/test_non_asset_modules_fixes.py`](tests/test_non_asset_modules_fixes.py) and [`tests/test_non_asset_audit_fixes.py`](tests/test_non_asset_audit_fixes.py) — Comprehensive regression suites covering all non-asset backend, security, RBAC, `viewOther` scoping, cross-tenant FK injection, WorkOrder configuration/completion guards, PM `COMPLETED_DATE` recurrence, Part barcode/restock, Workflow patching/execution, Meter triggers, Request virtual status search, in-app notifications, Import/Export, and Analytics contracts.

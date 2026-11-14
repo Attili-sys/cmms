@@ -27,7 +27,8 @@ from src.models.settings import (
     WorkOrderConfiguration,
     WorkOrderRequestConfiguration,
 )
-from src.models.users import Role, User, UserSettings
+from src.models.users import Role, User, UserInvitation, UserSettings
+from src.services.welcome_email import send_welcome
 from src.schemas.errors import CustomException
 
 logger = logging.getLogger("app.auth")
@@ -307,7 +308,13 @@ def _provision_sso_user(db: Session, who: Caller) -> User:
 
     _ensure_company_settings(db, company)
 
-    role = db.scalar(select(Role).where(Role.role_type == 1).order_by(Role.id))
+    email = (who.email or "user@canvas.local").strip().lower()
+    invitation = db.scalar(
+        select(UserInvitation).where(func.lower(UserInvitation.email) == email)
+    )
+    role = db.get(Role, invitation.role_id) if invitation is not None else None
+    if role is None:
+        role = db.scalar(select(Role).where(Role.role_type == 1).order_by(Role.id))
     if not role:
         role = db.scalar(select(Role).order_by(Role.id))
     if not role:
@@ -336,7 +343,6 @@ def _provision_sso_user(db: Session, who: Caller) -> User:
     first_name = parts[0]
     last_name = parts[1] if len(parts) > 1 else ""
 
-    email = who.email or "user@canvas.local"
     user = User(
         email=email,
         username=email,
@@ -353,6 +359,15 @@ def _provision_sso_user(db: Session, who: Caller) -> User:
         rate=0,
     )
     db.add(user)
+    db.flush()
+    delivered = send_welcome(
+        email,
+        first_name=user.first_name,
+        role_name=role.name,
+        company_name=company.name,
+    )
+    if invitation is not None and delivered:
+        db.delete(invitation)
     db.commit()
     db.refresh(user)
     return user

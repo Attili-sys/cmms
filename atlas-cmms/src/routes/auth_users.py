@@ -35,6 +35,8 @@ from src.models.settings import (
     WorkOrderRequestConfiguration,
 )
 from src.models.users import Role, Team, User, UserInvitation, UserSettings
+from src.services.account_invitations import fulfill_invitations
+from src.services.welcome_email import send_welcome
 from src.routes._crud import (
     _ensure_company_settings_id,
     build_crud_router,
@@ -773,6 +775,14 @@ def create_user(
     db.add(u)
     db.commit()
     db.refresh(u)
+    role = db.get(Role, u.role_id)
+    company = db.get(Company, u.company_id)
+    send_welcome(
+        u.email,
+        first_name=u.first_name,
+        role_name=role.name if role is not None else None,
+        company_name=company.name if company is not None else None,
+    )
     return serialize_user(u, db)
 
 
@@ -854,12 +864,21 @@ def invite_user(
     else:
         single = (payload.get("email") or "").strip().lower()
         emails = [single] if single else []
+    if not emails:
+        raise CustomException(status_code=400, message="At least one email is required")
+    if len(emails) > 20:
+        raise CustomException(status_code=400, message="Invite at most 20 people at a time")
 
     for email in emails:
-        inv = UserInvitation(email=email, role_id=role_id)
-        db.add(inv)
+        already = db.scalar(select(User).where(User.email == email))
+        pending = db.scalar(
+            select(UserInvitation).where(UserInvitation.email == email)
+        )
+        if already is None and pending is None:
+            db.add(UserInvitation(email=email, role_id=role_id))
     db.commit()
-    return {"success": True, "message": "Invitation recorded"}
+    welcomed = fulfill_invitations(db, current_user.company_id)
+    return {"success": True, "message": "Invitation sent", "welcomed": welcomed}
 
 
 @router.get("/users/{user_id:int}")

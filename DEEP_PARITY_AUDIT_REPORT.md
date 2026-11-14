@@ -11,7 +11,7 @@
 ## Principal Reviewer Sign-Off & Branch Reconciliation
 
 ### Why 8 of the 12 Findings Appeared in the Other Agent's Audit
-When the secondary audit session ran, its git worktree (`deep_parity_audit_report`) was branched off the local `migrate-python` branch (`61443df8`, 57 tests) **before** our remediation branch (`explain_asset_management_plans` @ `569732b7`, 80 tests, deployed to Canvas `@c9e197b0d631`) was merged into `migrate-python`. Those counts are historical. The current suite on `migrate-python` is 85 tests (`uv run pytest -q`, 2026-11-04). The current Canvas deployment is build **#17** (`@e5e83dfd328e`); the older `@c9e197b0d631` identifier is retained only as historical audit provenance.
+When the secondary audit session ran, its git worktree (`deep_parity_audit_report`) was branched off the local `migrate-python` branch (`61443df8`, 57 tests) **before** our remediation branch (`explain_asset_management_plans` @ `569732b7`, 80 tests, deployed to Canvas `@c9e197b0d631`) was merged into `migrate-python`. Those counts are historical. The current suite on `migrate-python` is 86 tests (`uv run pytest -q`, 2026-11-05). The current Canvas deployment is build **#19** (`@8ecc014ddf63`); the older `@c9e197b0d631` identifier is retained only as historical audit provenance.
 
 Consequently, **8 of the 12 findings** in the raw audit report were **already fixed and regression-tested** on `explain_asset_management_plans` (`d1e8fc06` / `569732b7`), while **4 of the 12 findings are genuine, high-value new catches** on `explain_asset_management_plans`. Furthermore, our code review of the other agent's proposed patches caught **2 runtime bugs in the proposed solutions** (which are corrected in Section 3 below).
 

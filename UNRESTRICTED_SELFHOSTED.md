@@ -208,7 +208,7 @@ The entire Java Spring Boot backend (`api/`) has been ported to Python (`atlas-c
 
 ## Verification
 
-- **Canvas Python Test Suite (`atlas-cmms/`)**: 85 pytest tests pass (`uv run pytest -q`, re-checked 2026-11-04), including:
+- **Canvas Python Test Suite (`atlas-cmms/`)**: 86 pytest tests pass (`uv run pytest -q`, re-checked 2026-11-05), including:
   - `tests/test_schema_matches_dump.py` (DDL parity across all entity and association tables)
   - `tests/contract/test_openapi_covers_catalog.py` (OpenAPI contract check)
   - `tests/routes/test_all_routes_and_jobs.py` (end-to-end CRUD, search, permissions, workflows, analytics, PDF generation, and background jobs)
@@ -218,7 +218,7 @@ The entire Java Spring Boot backend (`api/`) has been ported to Python (`atlas-c
   - `tests/test_smoke.py` (40-endpoint Canvas post-deploy smoke test)
 - **Ruff Linter (`atlas-cmms/`)**: `.venv/bin/ruff check .` passes with zero warnings (`E9`, `F`, `B`, `S`, `ASYNC`).
 - **React Frontend (`frontend/`)**: repository-wide `npm run lint` and `npm run build` pass. The verified bundle is synchronized to both `atlas-cmms/src/static/` and `atlas-cmms/src/static/ui/`; single-record, hierarchy, calendar, import, and all 40 analytics loaders clear on request failure.
-- **Canvas Deployment**: build **#17** (`@e5e83dfd328e`) is healthy and synced, all 40 platform page checks open, the database and volume are healthy, and the app reports zero restarts (`canvas status`, 2026-11-04).
+- **Canvas Deployment**: build **#19** (`@8ecc014ddf63`) is healthy and synced, all 40 platform page checks open, the database and volume are healthy, and the app reports zero restarts (`canvas status`, 2026-11-05).
 - **Java API (`api/`)**: `mvn -q test` completed with exit code 0 in Docker, including Testcontainers integration tests. Surefire reports contain no failures or errors. Tests that previously expected commercial quotas now prove those operations succeed, while permission denials still fail closed.
 - **Mobile (`mobile/`)**: TypeScript checking, Jest, and native Android and iOS Expo exports completed. No stack was deployed.
 

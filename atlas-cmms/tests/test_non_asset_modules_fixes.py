@@ -848,10 +848,11 @@ def test_calendar_events_accept_blank_company_id(non_asset_env):
 
     client: TestClient = non_asset_env["client"]
     session_local = non_asset_env["session_local"]
-    window_start = datetime(2026, 11, 2, 0, 0, tzinfo=timezone.utc)
-    window_end = datetime(2026, 11, 9, 0, 0, tzinfo=timezone.utc)
-    in_range = datetime(2026, 11, 4, 9, 0, tzinfo=timezone.utc)
-    out_of_range = datetime(2026, 12, 1, 9, 0, tzinfo=timezone.utc)
+    now = datetime.now(timezone.utc).replace(minute=0, second=0, microsecond=0)
+    window_start = now + timedelta(days=2)
+    window_end = window_start + timedelta(days=7)
+    in_range = window_start + timedelta(days=1)
+    out_of_range = window_end + timedelta(days=20)
 
     with session_local() as db:
         visible = WorkOrder(
@@ -1087,6 +1088,57 @@ def test_work_order_completion_enforces_required_tasks_and_time(non_asset_env):
     )
     assert completed.status_code == 200
     assert completed.json()["status"] == "COMPLETE"
+
+
+def test_welcome_email_is_bilingual_and_an_invitation_creates_the_account(
+    non_asset_env, monkeypatch
+):
+    from src.services import account_invitations, welcome_email
+
+    sent: list[tuple[list[str], str, str]] = []
+    monkeypatch.setattr(
+        welcome_email,
+        "send",
+        lambda to, subject, text: sent.append((to, subject, text)) or 20,
+    )
+    monkeypatch.setattr(account_invitations, "send_welcome", welcome_email.send_welcome)
+
+    subject, text = welcome_email.welcome_message(
+        first_name="Elradie",
+        role_name="Administrator",
+        company_name="AJ CAFM",
+    )
+    assert len(subject) <= 200 and "\n" not in subject
+    assert "Welcome to AJ CAFM" in subject
+    assert "أهلاً بك في نظام إدارة المرافق" in subject
+    assert "Hello Elradie," in text
+    assert "مرحباً Elradie،" in text
+    assert "Role: Administrator" in text
+    assert "الدور: مسؤول" in text
+    assert "Open AJ CAFM" in text
+    assert "افتح النظام" in text
+
+    client: TestClient = non_asset_env["client"]
+    response = client.post(
+        "/api/users/invite",
+        json={
+            "email": "elradie@aljazeera.net",
+            "role": {"id": non_asset_env["role_a_id"]},
+        },
+    )
+    assert response.status_code == 200
+    assert response.json()["welcomed"] == ["elradie@aljazeera.net"]
+    assert sent[-1][0] == ["elradie@aljazeera.net"]
+    assert "Tenant Alpha" in sent[-1][2]
+    assert "Admin Alpha" in sent[-1][2]
+    assert "مرحباً Elradie،" in sent[-1][2]
+
+    with non_asset_env["session_local"]() as db:
+        created = db.scalar(select(User).where(User.email == "elradie@aljazeera.net"))
+        assert created is not None
+        assert created.role_id == non_asset_env["role_a_id"]
+        assert created.company_id == non_asset_env["comp_a_id"]
+        assert created.enabled is True
 
 
 def test_send_work_order_report_uses_canvas_email(non_asset_env, monkeypatch):
