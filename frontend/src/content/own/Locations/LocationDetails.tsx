@@ -1,10 +1,13 @@
 import {
   Box,
   Button,
+  Chip,
   Dialog,
+  DialogActions,
   DialogContent,
   DialogTitle,
   Divider,
+  FormControlLabel,
   Grid,
   IconButton,
   Link,
@@ -12,9 +15,12 @@ import {
   ListItem,
   ListItemButton,
   ListItemText,
+  MenuItem,
   Stack,
+  Switch,
   Tab,
   Tabs,
+  TextField,
   Typography,
   useTheme
 } from '@mui/material';
@@ -25,12 +31,15 @@ import EditTwoToneIcon from '@mui/icons-material/EditTwoTone';
 import DeleteTwoToneIcon from '@mui/icons-material/DeleteTwoTone';
 import ContentCopyIcon from '@mui/icons-material/ContentCopy';
 import AddTwoToneIcon from '@mui/icons-material/AddTwoTone';
-import Form from '../components/form';
-import * as Yup from 'yup';
-import { IField } from '../type';
+import DownloadTwoToneIcon from '@mui/icons-material/DownloadTwoTone';
+import FloorPlanViewer from './FloorPlanViewer';
+import FloorPlan, {
+  FloorPlanKind,
+  floorPlanKinds
+} from '../../../models/owns/floorPlan';
 import { useDispatch, useSelector } from '../../../store';
 import { getAssetsByLocation } from '../../../slices/asset';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { getWorkOrdersByLocation } from '../../../slices/workOrder';
 import {
   createFloorPlan,
@@ -56,13 +65,24 @@ export default function LocationDetails(props: LocationDetailsProps) {
   const { getFormattedDate, uploadFiles } = useContext(CompanySettingsContext);
   const [openAddFloorPlan, setOpenAddFloorPlan] = useState<boolean>(false);
   const [currentTab, setCurrentTab] = useState<string>('assets');
+  const [searchParams] = useSearchParams();
+  const [includeSuperseded, setIncludeSuperseded] = useState<boolean>(false);
+  const [viewerPlanId, setViewerPlanId] = useState<number | null>(null);
+  const [focusAssetId, setFocusAssetId] = useState<number | undefined>();
+  const [deepLinkPlanId, setDeepLinkPlanId] = useState<number | null>(null);
+  const [fpName, setFpName] = useState<string>('');
+  const [fpArea, setFpArea] = useState<string>('');
+  const [fpKind, setFpKind] = useState<string>('');
+  const [fpRevision, setFpRevision] = useState<string>('');
+  const [fpNote, setFpNote] = useState<string>('');
+  const [fpFile, setFpFile] = useState<File | null>(null);
+  const [fpSubmitting, setFpSubmitting] = useState<boolean>(false);
   const { assetsByLocation } = useSelector((state) => state.assets);
   const { workOrdersByLocation } = useSelector((state) => state.workOrders);
   const { floorPlansByLocation } = useSelector((state) => state.floorPlans);
   const {
     hasEditPermission,
     hasDeletePermission,
-    getFilteredFields,
     hasCreatePermission,
     hasFeature
   } = useAuth();
@@ -79,37 +99,94 @@ export default function LocationDetails(props: LocationDetailsProps) {
     { value: 'people', label: t('people') }
   ];
 
-  const fields: Array<IField> = [
-    {
-      name: 'name',
-      type: 'text',
-      label: t('name'),
-      placeholder: t('floor_plan_name_description'),
-      required: true
-    },
-    {
-      name: 'area',
-      type: 'number',
-      label: t('area'),
-      placeholder: t('Floor plan area in m²')
-    },
-    {
-      name: 'image',
-      type: 'file',
-      fileType: 'image',
-      label: 'Image',
-      placeholder: t('upload_image')
+  const kindLabel = (kind?: FloorPlanKind | null) =>
+    kind
+      ? t(`floor_plan_kind_${kind.toLowerCase()}`)
+      : t('floor_plan_kind_unspecified');
+  const canEditLocation = hasEditPermission(
+    PermissionEntity.LOCATIONS,
+    location
+  );
+  const viewerPlan: FloorPlan | undefined = floorPlans.find(
+    (plan) => plan.id === viewerPlanId
+  );
+
+  const resetFloorPlanForm = () => {
+    setFpName('');
+    setFpArea('');
+    setFpKind('');
+    setFpRevision('');
+    setFpNote('');
+    setFpFile(null);
+  };
+
+  const submitFloorPlan = async () => {
+    if (!fpName.trim() || !fpFile) return;
+    setFpSubmitting(true);
+    try {
+      const isImage = fpFile.type.startsWith('image/');
+      const uploaded = await uploadFiles(
+        isImage ? [] : ([fpFile] as any),
+        isImage ? ([fpFile] as any) : []
+      );
+      if (!uploaded.length) return;
+      const body: { [key: string]: any } = {
+        name: fpName.trim(),
+        kind: fpKind || null,
+        revision: fpRevision.trim() || null,
+        note: fpNote.trim() || null,
+        [isImage ? 'image' : 'file']: { id: uploaded[0].id }
+      };
+      if (fpArea !== '') body.area = Number(fpArea);
+      await dispatch(createFloorPlan(location.id, body));
+      await dispatch(getFloorPlans(location.id, includeSuperseded));
+      resetFloorPlanForm();
+      setOpenAddFloorPlan(false);
+    } catch (err) {
+      // upload errors are surfaced by uploadFiles; API errors are logged
+      console.error(err);
+    } finally {
+      setFpSubmitting(false);
     }
-  ];
-  const floorPlanShape = {
-    name: Yup.string().required(t('required_floor_plan_name'))
   };
 
   useEffect(() => {
     dispatch(getAssetsByLocation(location.id));
     dispatch(getWorkOrdersByLocation(location.id));
-    dispatch(getFloorPlans(location.id));
   }, [location]);
+
+  useEffect(() => {
+    dispatch(getFloorPlans(location.id, includeSuperseded));
+  }, [location, includeSuperseded]);
+
+  // deep link: ?tab=floorPlans&floorPlan=<id>&asset=<assetId>
+  const searchString = searchParams.toString();
+  useEffect(() => {
+    const tab = searchParams.get('tab');
+    const planParam = searchParams.get('floorPlan');
+    const assetParam = searchParams.get('asset');
+    if (tab === 'floorPlans' || planParam) setCurrentTab('floorPlans');
+    if (planParam && Number.isFinite(Number(planParam))) {
+      setDeepLinkPlanId(Number(planParam));
+      setFocusAssetId(
+        assetParam && Number.isFinite(Number(assetParam))
+          ? Number(assetParam)
+          : undefined
+      );
+    }
+  }, [location.id, searchString]);
+
+  useEffect(() => {
+    if (!deepLinkPlanId) return;
+    const found = floorPlans.find((plan) => plan.id === deepLinkPlanId);
+    if (found) {
+      setViewerPlanId(found.id);
+      setDeepLinkPlanId(null);
+    } else if (floorPlansByLocation[location.id] && !includeSuperseded) {
+      // the plan may be an older revision
+      setIncludeSuperseded(true);
+    }
+  }, [deepLinkPlanId, floorPlansByLocation, location.id]);
 
   const renderAddFloorPlanModal = () => (
     <Dialog
@@ -136,33 +213,81 @@ export default function LocationDetails(props: LocationDetailsProps) {
           p: 3
         }}
       >
-        <Box>
-          <Form
-            fields={getFilteredFields(fields)}
-            validation={Yup.object().shape(floorPlanShape)}
-            submitText={t('add_floor_plan')}
-            values={{}}
-            onChange={({ field, e }) => {}}
-            onSubmit={async (values) => {
-              return new Promise<void>((resolve, rej) => {
-                uploadFiles([], values.image)
-                  .then((files) => {
-                    values = {
-                      ...values,
-                      image: files.length ? { id: files[0].id } : null
-                    };
-                    dispatch(createFloorPlan(location.id, values))
-                      .then(() => setOpenAddFloorPlan(false))
-                      .finally(resolve);
-                  })
-                  .catch((err) => {
-                    rej(err);
-                  });
-              });
-            }}
+        <Stack spacing={2}>
+          <TextField
+            required
+            fullWidth
+            label={t('name')}
+            placeholder={t('floor_plan_name_description')}
+            value={fpName}
+            onChange={(e) => setFpName(e.target.value)}
+            error={!fpName.trim() && fpSubmitting}
           />
-        </Box>
+          <Stack direction={{ xs: 'column', sm: 'row' }} spacing={2}>
+            <TextField
+              select
+              fullWidth
+              label={t('floor_plan_kind')}
+              value={fpKind}
+              onChange={(e) => setFpKind(e.target.value)}
+            >
+              <MenuItem value="">{t('floor_plan_kind_unspecified')}</MenuItem>
+              {floorPlanKinds.map((kind) => (
+                <MenuItem key={kind} value={kind}>
+                  {kindLabel(kind)}
+                </MenuItem>
+              ))}
+            </TextField>
+            <TextField
+              fullWidth
+              label={t('floor_plan_revision')}
+              value={fpRevision}
+              onChange={(e) => setFpRevision(e.target.value)}
+            />
+          </Stack>
+          <TextField
+            fullWidth
+            type="number"
+            label={t('area')}
+            value={fpArea}
+            onChange={(e) => setFpArea(e.target.value)}
+          />
+          <TextField
+            fullWidth
+            multiline
+            minRows={2}
+            label={t('floor_plan_note')}
+            value={fpNote}
+            onChange={(e) => setFpNote(e.target.value)}
+          />
+          <Box>
+            <Button variant="outlined" component="label">
+              {t('floor_plan_choose_file')}
+              <input
+                hidden
+                type="file"
+                accept="image/*,application/pdf"
+                onChange={(e) => setFpFile(e.target.files?.[0] ?? null)}
+              />
+            </Button>
+            <Typography variant="body2" sx={{ mt: 1 }}>
+              {fpFile ? fpFile.name : t('floor_plan_file_hint')}
+            </Typography>
+          </Box>
+        </Stack>
       </DialogContent>
+      <DialogActions sx={{ p: 2 }}>
+        <Button onClick={() => setOpenAddFloorPlan(false)}>
+          {t('cancel')}
+        </Button>
+        <Button
+          variant="contained"
+          disabled={fpSubmitting || !fpName.trim() || !fpFile}
+          onClick={submitFloorPlan}
+        >
+          {t('add_floor_plan')}
+        </Button>
+      </DialogActions>
     </Dialog>
   );
   const handleTabsChange = (_event: ChangeEvent<{}>, value: string): void => {
@@ -354,45 +479,156 @@ export default function LocationDetails(props: LocationDetailsProps) {
         )}
         {currentTab === 'floorPlans' && (
           <Box>
-            {hasEditPermission(PermissionEntity.LOCATIONS, location) && (
-              <Box display="flex" justifyContent="right">
+            <Stack
+              direction="row"
+              justifyContent="space-between"
+              alignItems="center"
+              flexWrap="wrap"
+            >
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={includeSuperseded}
+                    onChange={(e) => setIncludeSuperseded(e.target.checked)}
+                  />
+                }
+                label={t('show_older_revisions')}
+              />
+              {canEditLocation && (
                 <Button
                   onClick={() => setOpenAddFloorPlan(true)}
                   startIcon={<AddTwoToneIcon fontSize="small" />}
                 >
                   {t('floor_plan')}
                 </Button>
+              )}
+            </Stack>
+            {viewerPlan && (
+              <Box sx={{ my: 2 }}>
+                <Stack
+                  direction="row"
+                  justifyContent="space-between"
+                  alignItems="center"
+                  sx={{ mb: 1 }}
+                >
+                  <Typography variant="h5">
+                    {viewerPlan.name}
+                    {viewerPlan.revision ? ` (${viewerPlan.revision})` : ''}
+                  </Typography>
+                  <Button
+                    size="small"
+                    onClick={() => {
+                      setViewerPlanId(null);
+                      setFocusAssetId(undefined);
+                    }}
+                  >
+                    {t('close_floor_plan')}
+                  </Button>
+                </Stack>
+                <FloorPlanViewer
+                  key={viewerPlan.id}
+                  floorPlan={viewerPlan}
+                  canEdit={canEditLocation}
+                  focusAssetId={focusAssetId}
+                />
               </Box>
             )}
             {floorPlans.length ? (
               <List sx={{ width: '100%' }}>
                 {floorPlans.map((floorPlan) => (
-                  <ListItemButton key={floorPlan.id} divider>
+                  <ListItemButton
+                    key={floorPlan.id}
+                    divider
+                    selected={floorPlan.id === viewerPlanId}
+                    onClick={() => {
+                      setFocusAssetId(undefined);
+                      setViewerPlanId(floorPlan.id);
+                    }}
+                  >
                     <ListItem
+                      disableGutters
                       secondaryAction={
-                        <IconButton
-                          sx={{ ml: 1 }}
-                          onClick={() => {
-                            if (
-                              window.confirm(
-                                t(
-                                  "Are you sure you want to delete this Floor Plan. It can't be undone"
-                                )
-                              )
-                            ) {
-                              dispatch(
-                                deleteFloorPlan(location.id, floorPlan.id)
-                              );
-                            }
-                          }}
-                        >
-                          <DeleteTwoToneIcon fontSize="small" color="error" />
-                        </IconButton>
+                        <Stack direction="row" alignItems="center">
+                          {floorPlan.sourceFile?.url && (
+                            <Link
+                              href={floorPlan.sourceFile.url}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                              onClick={(e) => e.stopPropagation()}
+                              sx={{ display: 'inline-flex', mr: 1 }}
+                              title={t('download_original')}
+                            >
+                              <DownloadTwoToneIcon fontSize="small" />
+                            </Link>
+                          )}
+                          {canEditLocation && (
+                            <IconButton
+                              sx={{ ml: 1 }}
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                if (
+                                  window.confirm(
+                                    t(
+                                      "Are you sure you want to delete this Floor Plan. It can't be undone"
+                                    )
+                                  )
+                                ) {
+                                  if (floorPlan.id === viewerPlanId)
+                                    setViewerPlanId(null);
+                                  dispatch(
+                                    deleteFloorPlan(location.id, floorPlan.id)
+                                  );
+                                }
+                              }}
+                            >
+                              <DeleteTwoToneIcon
+                                fontSize="small"
+                                color="error"
+                              />
+                            </IconButton>
+                          )}
+                        </Stack>
                       }
                     >
                       <ListItemText
                         primary={floorPlan.name}
-                        secondary={`${floorPlan.area} m²`}
+                        secondaryTypographyProps={{ component: 'div' }}
+                        secondary={
+                          <Stack
+                            direction="row"
+                            spacing={1}
+                            alignItems="center"
+                            flexWrap="wrap"
+                          >
+                            <span>{kindLabel(floorPlan.kind)}</span>
+                            {floorPlan.revision && (
+                              <span>
+                                {t('floor_plan_revision')}: {floorPlan.revision}
+                              </span>
+                            )}
+                            <span>
+                              {t('floor_plan_pin_count', {
+                                count: floorPlan.pinCount ?? 0
+                              })}
+                            </span>
+                            {floorPlan.area ? (
+                              <span>{`${floorPlan.area} m²`}</span>
+                            ) : null}
+                            <Chip
+                              size="small"
+                              color={
+                                floorPlan.current === false
+                                  ? 'default'
+                                  : 'success'
+                              }
+                              label={
+                                floorPlan.current === false
+                                  ? t('floor_plan_superseded')
+                                  : t('floor_plan_current')
+                              }
+                            />
+                          </Stack>
+                        }
                       />
                     </ListItem>
                   </ListItemButton>

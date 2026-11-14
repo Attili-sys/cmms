@@ -23,9 +23,11 @@ import {
   getUserUrl,
   getVendorUrl
 } from '../../../../utils/urlPaths';
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { useDispatch } from '../../../../store';
 import { editAsset } from '../../../../slices/asset';
+import { getAssetFloorPlanPins } from '../../../../slices/floorPlan';
+import { AssetFloorPlanPin } from '../../../../models/owns/floorPlan';
 import { CompanySettingsContext } from '../../../../contexts/CompanySettingsContext';
 import AssetStatusSelect from '../components/AssetStatusSelect';
 import Loading from '../../Analytics/Loading';
@@ -82,6 +84,21 @@ const AssetDetails = ({ asset, loading, onCopy }: PropsType) => {
     CompanySettingsContext
   );
   const dispatch = useDispatch();
+  const [floorPlanPins, setFloorPlanPins] = useState<AssetFloorPlanPin[]>([]);
+  useEffect(() => {
+    if (!asset?.id) return;
+    let cancelled = false;
+    Promise.resolve(dispatch(getAssetFloorPlanPins(asset.id)))
+      .then((pins) => {
+        if (!cancelled) setFloorPlanPins(Array.isArray(pins) ? pins : []);
+      })
+      .catch(() => {
+        if (!cancelled) setFloorPlanPins([]);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [asset?.id]);
   const informationFields = [
     { label: t('name'), value: asset?.name },
     { label: t('custom_id', 'Custom ID'), value: asset?.customId },
@@ -288,6 +305,30 @@ const AssetDetails = ({ asset, loading, onCopy }: PropsType) => {
                     >
                       {asset.location.name}
                     </Link>
+                  </Stack>
+                  <Divider sx={{ mt: 1 }} />
+                </Grid>
+              )}
+              {!!floorPlanPins.length && (
+                <Grid item xs={12}>
+                  <Stack spacing={5} direction="row">
+                    <Typography variant="h6" fontWeight="bold">
+                      {t('on_floor_plan')}
+                    </Typography>
+                    <Stack spacing={0.5}>
+                      {floorPlanPins.map((pin) => (
+                        <Link
+                          key={pin.floorPlan.id}
+                          href={`/app/locations/${pin.floorPlan.locationId}?tab=floorPlans&floorPlan=${pin.floorPlan.id}&asset=${asset.id}`}
+                          variant="h6"
+                        >
+                          {pin.floorPlan.name}
+                          {pin.floorPlan.revision
+                            ? ` (${pin.floorPlan.revision})`
+                            : ''}
+                        </Link>
+                      ))}
+                    </Stack>
                   </Stack>
                   <Divider sx={{ mt: 1 }} />
                 </Grid>

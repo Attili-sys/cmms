@@ -271,7 +271,14 @@ function Locations() {
       (await dispatch(getSingleLocation(id)));
     if (foundLocation) {
       setCurrentLocation(foundLocation);
-      window.history.replaceState(null, 'Location details', getLocationUrl(id));
+      // keep deep-link query params (?tab=floorPlans&floorPlan=..&asset=..)
+      // when the URL already targets this location
+      const keepSearch = window.location.pathname === getLocationUrl(id);
+      window.history.replaceState(
+        null,
+        'Location details',
+        getLocationUrl(id) + (keepSearch ? window.location.search : '')
+      );
       setOpenDrawer(true);
     }
   };
