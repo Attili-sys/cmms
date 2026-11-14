@@ -13,6 +13,7 @@ from sqlalchemy import (
     SmallInteger,
     String,
     Text,
+    UniqueConstraint,
     text,
 )
 from sqlalchemy.orm import Mapped, mapped_column
@@ -138,3 +139,31 @@ class FloorPlan(Base):
     name: Mapped[str] = mapped_column("name", String(255), nullable=False)
     image_id: Mapped[int | None] = mapped_column("image_id", BigInteger, ForeignKey("file.id", ondelete="SET NULL"), nullable=True)
     location_id: Mapped[int] = mapped_column("location_id", BigInteger, ForeignKey("location.id", ondelete="CASCADE"), nullable=False)
+    # Drawing metadata and revisions (migration 006). Nullable with no FK: Canvas refuses new
+    # constraints on existing tables.
+    kind: Mapped[str | None] = mapped_column("kind", String(32), nullable=True)
+    revision: Mapped[str | None] = mapped_column("revision", String(32), nullable=True)
+    note: Mapped[str | None] = mapped_column("note", Text, nullable=True)
+    source_file_id: Mapped[int | None] = mapped_column("source_file_id", BigInteger, nullable=True)
+    superseded_by_id: Mapped[int | None] = mapped_column("superseded_by_id", BigInteger, nullable=True)
+    created_at: Mapped[datetime | None] = mapped_column("created_at", DateTime, nullable=True, default=utcnow)
+    created_by: Mapped[int | None] = mapped_column("created_by", BigInteger, nullable=True)
+
+
+class FloorPlanPin(Base):
+    """An asset placed on a floor plan; x and y are fractions (0..1) of the drawing's width and height."""
+
+    __tablename__ = "floor_plan_pin"
+    __table_args__ = (UniqueConstraint("floor_plan_id", "asset_id", name="uq_floor_plan_pin"),)
+
+    id: Mapped[int] = mapped_column("id", BigInteger, Sequence("floor_plan_pin_seq", start=1, increment=50, metadata=Base.metadata), primary_key=True, nullable=False)
+    created_at: Mapped[datetime] = mapped_column("created_at", DateTime, nullable=False, default=utcnow)
+    updated_at: Mapped[datetime] = mapped_column("updated_at", DateTime, nullable=False, default=utcnow)
+    created_by: Mapped[int | None] = mapped_column("created_by", BigInteger, nullable=True)
+    updated_by: Mapped[int | None] = mapped_column("updated_by", BigInteger, nullable=True)
+    company_id: Mapped[int] = mapped_column("company_id", BigInteger, ForeignKey("company.id", ondelete="CASCADE"), nullable=False)
+    floor_plan_id: Mapped[int] = mapped_column("floor_plan_id", BigInteger, ForeignKey("floor_plan.id", ondelete="CASCADE"), nullable=False, index=True)
+    asset_id: Mapped[int] = mapped_column("asset_id", BigInteger, ForeignKey("asset.id", ondelete="CASCADE"), nullable=False, index=True)
+    x: Mapped[float] = mapped_column("x", Float, nullable=False)
+    y: Mapped[float] = mapped_column("y", Float, nullable=False)
+

@@ -507,3 +507,26 @@ class WorkOrderCondition(StrEnum):
     DUE_DATE_AFTER = "DUE_DATE_AFTER"
     STATUS_IS = "STATUS_IS"
     TITLE_CONTAINS = "TITLE_CONTAINS"
+
+
+class MovementType(StrEnum):
+    """Stock ledger movement kinds stored in part_transaction.movement_type."""
+
+    OPENING = "OPENING"
+    RECEIPT = "RECEIPT"
+    PO_RECEIPT = "PO_RECEIPT"
+    PO_REVERSAL = "PO_REVERSAL"
+    ISSUE = "ISSUE"
+    WO_CONSUMPTION = "WO_CONSUMPTION"
+    WO_RETURN = "WO_RETURN"
+    COUNT_GAIN = "COUNT_GAIN"
+    COUNT_LOSS = "COUNT_LOSS"
+    ADJUSTMENT = "ADJUSTMENT"
+
+
+class FloorPlanKind(StrEnum):
+    ARCHITECTURAL = "ARCHITECTURAL"
+    MEP = "MEP"
+    FIRE_SAFETY = "FIRE_SAFETY"
+    SECURITY = "SECURITY"
+    OTHER = "OTHER"

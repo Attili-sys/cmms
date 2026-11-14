@@ -6,7 +6,7 @@ from src.models.company import Company, Subscription, SubscriptionPlan, Subscrip
 from src.models.settings import CompanySettings, GeneralPreferences, WorkOrderConfiguration, WorkOrderRequestConfiguration, FieldConfiguration, UiConfiguration, ShiftConfiguration, CustomSequence
 from src.models.users import User, Role, Team, UserSettings, UserInvitation, SuperAccountRelation, UserAppStats, VerificationToken, RefreshToken, PushNotificationToken
 from src.models.categories import AssetCategory, MeterCategory, PartCategory, PurchaseOrderCategory, WorkOrderCategory, CostCategory, TimeCategory
-from src.models.location_asset import Location, Asset, AssetDowntime, Deprecation, FloorPlan
+from src.models.location_asset import Location, Asset, AssetDowntime, Deprecation, FloorPlan, FloorPlanPin
 from src.models.parts_po import Part, PartQuantity, PartTransaction, MultiParts, PurchaseOrder, AdditionalCost, Vendor, Customer
 from src.models.work_orders import WorkOrder, WorkOrderHistory, Labor, Relation, Comment
 from src.models.pm_schedule import PreventiveMaintenance, Schedule
@@ -60,6 +60,7 @@ __all__ = [
     "AssetDowntime",
     "Deprecation",
     "FloorPlan",
+    "FloorPlanPin",
     "Part",
     "PartQuantity",
     "PartTransaction",

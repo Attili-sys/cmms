@@ -1945,6 +1945,20 @@
         "type": "BIGINT",
         "unique": false
       },
+      "created_at": {
+        "default": null,
+        "nullable": true,
+        "references": [],
+        "type": "DATETIME",
+        "unique": false
+      },
+      "created_by": {
+        "default": null,
+        "nullable": true,
+        "references": [],
+        "type": "BIGINT",
+        "unique": false
+      },
       "id": {
         "default": null,
         "nullable": false,
@@ -1959,6 +1973,13 @@
           "file.id"
         ],
         "type": "BIGINT",
+        "unique": false
+      },
+      "kind": {
+        "default": null,
+        "nullable": true,
+        "references": [],
+        "type": "VARCHAR(32)",
         "unique": false
       },
       "location_id": {
@@ -1976,6 +1997,34 @@
         "references": [],
         "type": "VARCHAR(255)",
         "unique": false
+      },
+      "note": {
+        "default": null,
+        "nullable": true,
+        "references": [],
+        "type": "TEXT",
+        "unique": false
+      },
+      "revision": {
+        "default": null,
+        "nullable": true,
+        "references": [],
+        "type": "VARCHAR(32)",
+        "unique": false
+      },
+      "source_file_id": {
+        "default": null,
+        "nullable": true,
+        "references": [],
+        "type": "BIGINT",
+        "unique": false
+      },
+      "superseded_by_id": {
+        "default": null,
+        "nullable": true,
+        "references": [],
+        "type": "BIGINT",
+        "unique": false
       }
     },
     "constraints": {
@@ -1987,6 +2036,109 @@
       ]
     },
     "indexes": {}
+  },
+  "floor_plan_pin": {
+    "columns": {
+      "asset_id": {
+        "default": null,
+        "nullable": false,
+        "references": [
+          "asset.id"
+        ],
+        "type": "BIGINT",
+        "unique": false
+      },
+      "company_id": {
+        "default": null,
+        "nullable": false,
+        "references": [
+          "company.id"
+        ],
+        "type": "BIGINT",
+        "unique": false
+      },
+      "created_at": {
+        "default": null,
+        "nullable": false,
+        "references": [],
+        "type": "DATETIME",
+        "unique": false
+      },
+      "created_by": {
+        "default": null,
+        "nullable": true,
+        "references": [],
+        "type": "BIGINT",
+        "unique": false
+      },
+      "floor_plan_id": {
+        "default": null,
+        "nullable": false,
+        "references": [
+          "floor_plan.id"
+        ],
+        "type": "BIGINT",
+        "unique": false
+      },
+      "id": {
+        "default": null,
+        "nullable": false,
+        "references": [],
+        "type": "BIGINT",
+        "unique": false
+      },
+      "updated_at": {
+        "default": null,
+        "nullable": false,
+        "references": [],
+        "type": "DATETIME",
+        "unique": false
+      },
+      "updated_by": {
+        "default": null,
+        "nullable": true,
+        "references": [],
+        "type": "BIGINT",
+        "unique": false
+      },
+      "x": {
+        "default": null,
+        "nullable": false,
+        "references": [],
+        "type": "FLOAT",
+        "unique": false
+      },
+      "y": {
+        "default": null,
+        "nullable": false,
+        "references": [],
+        "type": "FLOAT",
+        "unique": false
+      }
+    },
+    "constraints": {
+      "ALTER TABLE floor_plan_pin ADD FOREIGN KEY(company_id) REFERENCES company (id);": [
+        "company_id"
+      ],
+      "ALTER TABLE floor_plan_pin ADD FOREIGN KEY(floor_plan_id) REFERENCES floor_plan (id);": [
+        "floor_plan_id"
+      ],
+      "ALTER TABLE floor_plan_pin ADD FOREIGN KEY(asset_id) REFERENCES asset (id);": [
+        "asset_id"
+      ],
+      "ALTER TABLE floor_plan_pin ADD CONSTRAINT uq_floor_plan_pin UNIQUE (floor_plan_id, asset_id);": [
+        "floor_plan_id",
+        "asset_id"
+      ]
+    },
+    "indexes": {
+      "ix_floor_plan_pin_floor_plan_id": [
+        "floor_plan_id"
+      ],
+      "ix_floor_plan_pin_asset_id": [
+        "asset_id"
+      ]
+    }
   },
   "general_preferences": {
     "columns": {
@@ -3509,6 +3661,20 @@
   },
   "part_transaction": {
     "columns": {
+      "balance_after": {
+        "default": null,
+        "nullable": true,
+        "references": [],
+        "type": "FLOAT",
+        "unique": false
+      },
+      "change": {
+        "default": null,
+        "nullable": true,
+        "references": [],
+        "type": "FLOAT",
+        "unique": false
+      },
       "company_id": {
         "default": null,
         "nullable": false,
@@ -3546,6 +3712,13 @@
         "type": "BIGINT",
         "unique": false
       },
+      "movement_type": {
+        "default": null,
+        "nullable": true,
+        "references": [],
+        "type": "VARCHAR(32)",
+        "unique": false
+      },
       "part_id": {
         "default": null,
         "nullable": false,
@@ -3555,9 +3728,30 @@
         "type": "BIGINT",
         "unique": false
       },
+      "purchase_order_id": {
+        "default": null,
+        "nullable": true,
+        "references": [],
+        "type": "BIGINT",
+        "unique": false
+      },
       "quantity": {
         "default": null,
         "nullable": false,
+        "references": [],
+        "type": "FLOAT",
+        "unique": false
+      },
+      "reason": {
+        "default": null,
+        "nullable": true,
+        "references": [],
+        "type": "TEXT",
+        "unique": false
+      },
+      "unit_cost": {
+        "default": null,
+        "nullable": true,
         "references": [],
         "type": "FLOAT",
         "unique": false
@@ -3597,7 +3791,12 @@
         "work_order_id"
       ]
     },
-    "indexes": {}
+    "indexes": {
+      "ix_part_transaction_part_created": [
+        "part_id",
+        "created_at"
+      ]
+    }
   },
   "preventive_maintenance": {
     "columns": {

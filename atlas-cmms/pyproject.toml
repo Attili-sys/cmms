@@ -18,6 +18,7 @@ dependencies = [
   "pyyaml",              # YAML configuration
   "ajnkit-core",         # the platform's code (packages/); a feature's package by its skill: `canvas app add llm`
   "ajnkit-email",
+  "pypdfium2==4.30.0",
 ]
 
 # PACKAGE MODE OFF. Without this the Paketo Python buildpack fails at the very

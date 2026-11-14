@@ -1481,6 +1481,41 @@
           "type": "BIGINT",
           "nullable": false,
           "pk": false
+        },
+        "kind": {
+          "type": "VARCHAR(32)",
+          "nullable": true,
+          "pk": false
+        },
+        "revision": {
+          "type": "VARCHAR(32)",
+          "nullable": true,
+          "pk": false
+        },
+        "note": {
+          "type": "TEXT",
+          "nullable": true,
+          "pk": false
+        },
+        "source_file_id": {
+          "type": "BIGINT",
+          "nullable": true,
+          "pk": false
+        },
+        "superseded_by_id": {
+          "type": "BIGINT",
+          "nullable": true,
+          "pk": false
+        },
+        "created_at": {
+          "type": "TIMESTAMP WITHOUT TIME ZONE",
+          "nullable": true,
+          "pk": false
+        },
+        "created_by": {
+          "type": "BIGINT",
+          "nullable": true,
+          "pk": false
         }
       }
     },
@@ -5497,6 +5532,36 @@
           "type": "text",
           "nullable": true,
           "pk": false
+        },
+        "movement_type": {
+          "type": "VARCHAR(32)",
+          "nullable": true,
+          "pk": false
+        },
+        "change": {
+          "type": "double",
+          "nullable": true,
+          "pk": false
+        },
+        "balance_after": {
+          "type": "double",
+          "nullable": true,
+          "pk": false
+        },
+        "reason": {
+          "type": "TEXT",
+          "nullable": true,
+          "pk": false
+        },
+        "purchase_order_id": {
+          "type": "BIGINT",
+          "nullable": true,
+          "pk": false
+        },
+        "unit_cost": {
+          "type": "double",
+          "nullable": true,
+          "pk": false
         }
       }
     },
@@ -5535,6 +5600,60 @@
         "replaced_by_token_hash": {
           "type": "VARCHAR(255)",
           "nullable": true,
+          "pk": false
+        }
+      }
+    },
+    "floor_plan_pin": {
+      "columns": {
+        "id": {
+          "type": "BIGINT",
+          "nullable": false,
+          "pk": true
+        },
+        "created_at": {
+          "type": "TIMESTAMP WITHOUT TIME ZONE",
+          "nullable": false,
+          "pk": false
+        },
+        "updated_at": {
+          "type": "TIMESTAMP WITHOUT TIME ZONE",
+          "nullable": false,
+          "pk": false
+        },
+        "created_by": {
+          "type": "BIGINT",
+          "nullable": true,
+          "pk": false
+        },
+        "updated_by": {
+          "type": "BIGINT",
+          "nullable": true,
+          "pk": false
+        },
+        "company_id": {
+          "type": "BIGINT",
+          "nullable": false,
+          "pk": false
+        },
+        "floor_plan_id": {
+          "type": "BIGINT",
+          "nullable": false,
+          "pk": false
+        },
+        "asset_id": {
+          "type": "BIGINT",
+          "nullable": false,
+          "pk": false
+        },
+        "x": {
+          "type": "double",
+          "nullable": false,
+          "pk": false
+        },
+        "y": {
+          "type": "double",
+          "nullable": false,
           "pk": false
         }
       }
@@ -5818,6 +5937,10 @@
       "increment": 50
     },
     "part_transaction_seq": {
+      "start": 1,
+      "increment": 50
+    },
+    "floor_plan_pin_seq": {
       "start": 1,
       "increment": 50
     }
@@ -8156,6 +8279,30 @@
       "base_table": "refresh_token",
       "base_cols": "user_id",
       "ref_table": "own_user",
+      "ref_cols": "id",
+      "on_delete": "CASCADE"
+    },
+    {
+      "name": "fk_floor_plan_pin_company",
+      "base_table": "floor_plan_pin",
+      "base_cols": "company_id",
+      "ref_table": "company",
+      "ref_cols": "id",
+      "on_delete": "CASCADE"
+    },
+    {
+      "name": "fk_floor_plan_pin_floor_plan",
+      "base_table": "floor_plan_pin",
+      "base_cols": "floor_plan_id",
+      "ref_table": "floor_plan",
+      "ref_cols": "id",
+      "on_delete": "CASCADE"
+    },
+    {
+      "name": "fk_floor_plan_pin_asset",
+      "base_table": "floor_plan_pin",
+      "base_cols": "asset_id",
+      "ref_table": "asset",
       "ref_cols": "id",
       "on_delete": "CASCADE"
     }

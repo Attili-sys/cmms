@@ -7,6 +7,7 @@ from sqlalchemy import (
     DateTime,
     Float,
     ForeignKey,
+    Index,
     Sequence,
     SmallInteger,
     String,
@@ -60,6 +61,7 @@ class PartQuantity(Base):
 
 class PartTransaction(Base):
     __tablename__ = "part_transaction"
+    __table_args__ = (Index("ix_part_transaction_part_created", "part_id", "created_at"),)
 
     id: Mapped[int] = mapped_column("id", BigInteger, Sequence("part_transaction_seq", start=1, increment=50, metadata=Base.metadata), primary_key=True, nullable=False)
     created_at: Mapped[datetime] = mapped_column("created_at", DateTime, nullable=False, default=utcnow)
@@ -71,6 +73,13 @@ class PartTransaction(Base):
     part_id: Mapped[int] = mapped_column("part_id", BigInteger, ForeignKey("part.id", ondelete="CASCADE"), nullable=False)
     work_order_id: Mapped[int | None] = mapped_column("work_order_id", BigInteger, ForeignKey("work_order.id", ondelete="CASCADE"), nullable=True)
     description: Mapped[str | None] = mapped_column("description", Text, nullable=True)
+    # Stock ledger (migration 005). Nullable with no FK: Canvas refuses new constraints on existing tables.
+    movement_type: Mapped[str | None] = mapped_column("movement_type", String(32), nullable=True)
+    change: Mapped[float | None] = mapped_column("change", Float, nullable=True)
+    balance_after: Mapped[float | None] = mapped_column("balance_after", Float, nullable=True)
+    reason: Mapped[str | None] = mapped_column("reason", Text, nullable=True)
+    purchase_order_id: Mapped[int | None] = mapped_column("purchase_order_id", BigInteger, nullable=True)
+    unit_cost: Mapped[float | None] = mapped_column("unit_cost", Float, nullable=True)
 
 
 class MultiParts(Base):
