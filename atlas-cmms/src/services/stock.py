@@ -41,8 +41,19 @@ LEGACY_DESCRIPTION = {
 
 
 def lock_part(db: Session, part_id: int) -> Part:
-    """Load a part with a row lock (Postgres) so concurrent stock changes serialise."""
-    part = db.scalar(select(Part).where(Part.id == part_id).with_for_update())
+    """Load a part with a row lock (Postgres) so concurrent stock changes serialise.
+
+    ``populate_existing`` matters: a part already in the session would otherwise keep the quantity
+    read before the lock was taken, and the change would be applied to a stale balance. Pending
+    changes are flushed first so the reload cannot discard them.
+    """
+    db.flush()
+    part = db.scalar(
+        select(Part)
+        .where(Part.id == part_id)
+        .with_for_update()
+        .execution_options(populate_existing=True)
+    )
     if part is None:
         raise CustomException(status_code=404, message=f"Part {part_id} not found")
     return part

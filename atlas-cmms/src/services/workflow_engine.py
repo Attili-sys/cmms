@@ -12,6 +12,7 @@ from src.models.associations import (
     workflow_secondary_conditions,
 )
 from src.models.enums import (
+    MovementType,
     PartAction,
     PartCondition,
     PurchaseOrderAction,
@@ -28,13 +29,13 @@ from src.models.location_asset import Asset
 from src.models.parts_po import (
     Part,
     PartQuantity,
-    PartTransaction as PartConsumption,
     PurchaseOrder,
 )
 from src.models.requests import Request
 from src.models.tasks import Task, TaskBase, TaskOption
 from src.models.work_orders import WorkOrder
 from src.models.workflows import Workflow, WorkflowAction, WorkflowCondition
+from src.services.stock import lock_part, record_movement
 from src.utils.dates import ensure_utc
 
 
@@ -348,18 +349,16 @@ def _apply_po_action(po: PurchaseOrder, act: WorkflowAction, db: Session) -> Non
             ).all()
             for pq in pqs:
                 if pq.part_id and (pq.quantity or 0.0) > 0:
-                    part = db.get(Part, pq.part_id)
-                    if part and part.company_id == po.company_id:
-                        part.quantity = (part.quantity or 0.0) + float(pq.quantity)
-                        db.add(
-                            PartConsumption(
-                                part_id=part.id,
-                                quantity=float(pq.quantity),
-                                company_id=po.company_id,
-                                created_by=po.created_by,
-                                updated_by=po.updated_by,
-                                description="PART_RECEPTION",
-                            )
+                    part = lock_part(db, pq.part_id)
+                    if part.company_id == po.company_id:
+                        # Part workflows only create purchase orders; they never re-enter here.
+                        record_movement(
+                            db,
+                            part,
+                            MovementType.PO_RECEIPT,
+                            float(pq.quantity),
+                            user_id=po.updated_by or po.created_by,
+                            purchase_order_id=po.id,
                         )
         po.status = 0
     elif act_name == "REJECT":

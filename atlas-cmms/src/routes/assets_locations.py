@@ -4,14 +4,14 @@ from __future__ import annotations
 
 from datetime import timedelta
 from typing import Any
-from fastapi import APIRouter, Depends, Query
+from fastapi import APIRouter, Body, Depends, Query
 from sqlalchemy import delete, func, insert, or_, select
 from sqlalchemy.orm import Session
 
 from src.deps.company import assert_company_access
 from src.deps.current_user import get_current_user
 from src.deps.db import get_db
-from src.deps.permissions import PermissionEntity, can_view
+from src.deps.permissions import PermissionEntity, can_edit_object, can_view
 from src.models._base import utcnow
 from src.models.associations import (
     t_asset_customer_associations,
@@ -41,17 +41,20 @@ from src.models.location_asset import (
     AssetDowntime,
     Deprecation as AssetDeprecation,
     FloorPlan,
+    FloorPlanPin,
     Location,
 )
+from src.models.enums import FloorPlanKind, Status
+from src.models.work_orders import WorkOrder
 from src.models.parts_po import Customer, Part, Vendor
 from src.models.requests import RequestPortal
 from src.models.users import Team, User
 from src.routes._crud import _ensure_company_settings_id, build_crud_router
 from src.schemas.errors import CustomException
-from src.services.serializer import model_to_dict, serialize_value
+from src.services.serializer import model_to_dict, resolve_enum_value, serialize_value
 from src.utils.dates import ensure_utc
 from src.utils.pagination import as_spring_page
-from src.utils.search import apply_spring_sort
+from src.utils.search import SearchCriteria, apply_spring_sort, execute_search
 
 router = APIRouter()
 
@@ -574,12 +577,277 @@ def list_location_children_paginated(
 
 router.include_router(locations_router)
 
-floor_plans_router = build_crud_router("/floor-plans", FloorPlan)
+# --- Floor plans (drawings) and asset pins ---------------------------------------------------
+_MAX_LOCATION_DEPTH = 50
+_WO_COMPLETE = list(Status).index(Status.COMPLETE)
 
 
-@floor_plans_router.get("/location/{location_id:int}")
+def _location_ancestors(db: Session, location_id: int | None) -> list[int]:
+    """The location and its ancestors, nearest first (cycle-safe, bounded)."""
+    chain: list[int] = []
+    seen: set[int] = set()
+    cur = location_id
+    while cur is not None and cur not in seen and len(chain) < _MAX_LOCATION_DEPTH:
+        seen.add(cur)
+        chain.append(cur)
+        cur = db.scalar(select(Location.parent_location_id).where(Location.id == cur))
+    return chain
+
+
+def _location_subtree_ids(db: Session, root_id: int) -> list[int]:
+    """The location and all its descendants (cycle-safe, bounded depth)."""
+    seen: set[int] = {root_id}
+    frontier = [root_id]
+    for _ in range(_MAX_LOCATION_DEPTH):
+        if not frontier:
+            break
+        children = db.scalars(
+            select(Location.id).where(Location.parent_location_id.in_(frontier))
+        ).all()
+        frontier = [c for c in children if c not in seen]
+        seen.update(frontier)
+    return list(seen)
+
+
+def _file_id_from_payload(payload: dict[str, Any]) -> int | None:
+    for key in ("file", "image"):
+        val = payload.get(key)
+        raw = val.get("id") if isinstance(val, dict) else None
+        if raw is not None:
+            try:
+                return int(raw)
+            except (TypeError, ValueError):
+                raise CustomException(status_code=406, message="Invalid file reference") from None
+    for key in ("fileId", "imageId"):
+        if payload.get(key) is not None:
+            try:
+                return int(payload[key])
+            except (TypeError, ValueError):
+                raise CustomException(status_code=406, message="Invalid file reference") from None
+    return None
+
+
+def _assert_can_edit_location(db: Session, current_user: User, location_id: int | None) -> Location:
+    if location_id is None:
+        raise CustomException(status_code=406, message="A location is required")
+    loc = db.get(Location, location_id)
+    if loc is None:
+        raise CustomException(status_code=404, message="Location not found")
+    assert_company_access(current_user, loc.company_id)
+    if not can_edit_object(current_user, PermissionEntity.LOCATIONS, loc, db):
+        raise CustomException(status_code=403, message="Access is denied")
+    return loc
+
+
+def _validate_kind(kind: Any) -> str | None:
+    if kind is None or kind == "":
+        return None
+    if kind not in {k.value for k in FloorPlanKind}:
+        raise CustomException(
+            status_code=406,
+            message="kind must be one of " + ", ".join(k.value for k in FloorPlanKind),
+        )
+    return str(kind)
+
+
+def _floor_plan_dtos(rows: list[FloorPlan], db: Session) -> list[dict[str, Any]]:
+    ids = [r.id for r in rows]
+    counts: dict[int, int] = {}
+    if ids:
+        counts = dict(
+            db.execute(
+                select(FloorPlanPin.floor_plan_id, func.count(FloorPlanPin.id))
+                .where(FloorPlanPin.floor_plan_id.in_(ids))
+                .group_by(FloorPlanPin.floor_plan_id)
+            ).all()
+        )
+    source_ids = {r.source_file_id for r in rows if r.source_file_id is not None}
+    sources: dict[int, File] = {}
+    if source_ids:
+        sources = {f.id: f for f in db.scalars(select(File).where(File.id.in_(source_ids))).all()}
+    out: list[dict[str, Any]] = []
+    for r in rows:
+        dto = model_to_dict(r, db=db)
+        dto.setdefault("image", None)
+        src = sources.get(r.source_file_id) if r.source_file_id is not None else None
+        dto["sourceFile"] = (
+            {"id": src.id, "name": src.name, "url": src.path} if src is not None else None
+        )
+        dto["current"] = r.superseded_by_id is None
+        dto["supersededById"] = r.superseded_by_id
+        dto["pinCount"] = int(counts.get(r.id, 0))
+        out.append(dto)
+    return out
+
+
+def _serialize_floor_plan(plan: FloorPlan, db: Session) -> dict[str, Any]:
+    return _floor_plan_dtos([plan], db)[0]
+
+
+def _before_create_floor_plan(
+    plan: FloorPlan, payload: dict[str, Any], current_user: User, db: Session
+) -> None:
+    from src.services.floor_plan_render import classify_file, render_pdf_first_page
+
+    name = (plan.name or "").strip() if isinstance(plan.name, str) else ""
+    if not name:
+        raise CustomException(status_code=406, message="A name is required")
+    plan.name = name
+    _assert_can_edit_location(db, current_user, plan.location_id)
+    plan.kind = _validate_kind(payload.get("kind"))
+    plan.superseded_by_id = None
+    plan.source_file_id = None
+    plan.created_at = utcnow()
+    plan.created_by = current_user.id
+    plan.image_id = None
+    file_id = _file_id_from_payload(payload)
+    if file_id is None:
+        return
+    f = db.get(File, file_id)
+    if f is None:
+        raise CustomException(status_code=404, message="File not found")
+    assert_company_access(current_user, f.company_id)
+    kind = classify_file(f)
+    if kind == "image":
+        plan.image_id = f.id
+    elif kind == "pdf":
+        png = render_pdf_first_page(db, f, created_by=current_user.id)
+        plan.image_id = png.id
+        plan.source_file_id = f.id
+    else:
+        raise CustomException(
+            status_code=406,
+            message="Unsupported drawing file: upload a PNG, JPG, WEBP, SVG or PDF",
+        )
+
+
+def _after_create_floor_plan(
+    plan: FloorPlan, payload: dict[str, Any], current_user: User, db: Session
+) -> None:
+    stmt = select(FloorPlan).where(
+        FloorPlan.location_id == plan.location_id,
+        FloorPlan.name == plan.name,
+        FloorPlan.id != plan.id,
+        FloorPlan.superseded_by_id.is_(None),
+    )
+    stmt = stmt.where(FloorPlan.kind.is_(None) if plan.kind is None else FloorPlan.kind == plan.kind)
+    olds = db.scalars(stmt.order_by(FloorPlan.id)).all()
+    if not olds:
+        return
+    copied: set[int] = set()
+    for old in olds:
+        old.superseded_by_id = plan.id
+        for pin in db.scalars(select(FloorPlanPin).where(FloorPlanPin.floor_plan_id == old.id)).all():
+            if pin.asset_id in copied:
+                continue
+            copied.add(pin.asset_id)
+            db.add(
+                FloorPlanPin(
+                    company_id=pin.company_id,
+                    floor_plan_id=plan.id,
+                    asset_id=pin.asset_id,
+                    x=pin.x,
+                    y=pin.y,
+                    created_by=current_user.id,
+                    updated_by=current_user.id,
+                )
+            )
+    db.flush()
+
+
+def _before_patch_floor_plan(
+    plan: FloorPlan, payload: dict[str, Any], current_user: User, db: Session
+) -> None:
+    from src.services.floor_plan_render import classify_file
+
+    _assert_can_edit_location(db, current_user, plan.location_id)
+    # Server-managed or structural fields are never client-writable.
+    for key in (
+        "supersededById", "superseded_by_id", "supersededBy", "sourceFileId", "source_file_id",
+        "sourceFile", "createdAt", "createdBy", "location", "locationId", "location_id", "file", "fileId",
+    ):
+        payload.pop(key, None)
+    if "kind" in payload:
+        payload["kind"] = _validate_kind(payload["kind"])
+    if "image" in payload or "imageId" in payload:
+        file_id = _file_id_from_payload(payload)
+        if file_id is not None:
+            f = db.get(File, file_id)
+            if f is None:
+                raise CustomException(status_code=404, message="File not found")
+            assert_company_access(current_user, f.company_id)
+            if classify_file(f) != "image":
+                raise CustomException(status_code=406, message="The drawing image must be an image file")
+
+
+def _before_delete_floor_plan(plan: FloorPlan, current_user: User, db: Session) -> None:
+    _assert_can_edit_location(db, current_user, plan.location_id)
+    # SQLite test databases may not enforce FK cascades; delete pins explicitly.
+    db.execute(delete(FloorPlanPin).where(FloorPlanPin.floor_plan_id == plan.id))
+    # Deleting a revision restores the one it superseded.
+    for prev in db.scalars(select(FloorPlan).where(FloorPlan.superseded_by_id == plan.id)).all():
+        prev.superseded_by_id = None
+
+
+floor_plans_router = build_crud_router(
+    "/floor-plans",
+    FloorPlan,
+    custom_serializer=_serialize_floor_plan,
+    before_create=_before_create_floor_plan,
+    after_create=_after_create_floor_plan,
+    before_patch=_before_patch_floor_plan,
+    before_delete=_before_delete_floor_plan,
+)
+
+# Extra routes live on their own router, included BEFORE the generic CRUD router so they win over
+# its unscoped GET "" / POST /search (FloorPlan has no company_id of its own).
+floor_plans_extra_router = APIRouter(prefix="/floor-plans", tags=["floor-plans"])
+
+
+def _company_floor_plan_stmt(current_user: User) -> Any:
+    stmt = select(FloorPlan)
+    if current_user.company_id is not None:
+        stmt = stmt.where(
+            FloorPlan.location_id.in_(
+                select(Location.id).where(Location.company_id == current_user.company_id)
+            )
+        )
+    return stmt
+
+
+@floor_plans_extra_router.get("")
+def list_floor_plans(
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> list[dict[str, Any]]:
+    if not can_view(current_user, PermissionEntity.LOCATIONS, db):
+        raise CustomException(status_code=403, message="Access is denied")
+    rows = db.scalars(_company_floor_plan_stmt(current_user).order_by(FloorPlan.id)).all()
+    return _floor_plan_dtos(list(rows), db)
+
+
+@floor_plans_extra_router.post("/search")
+def search_floor_plans(
+    criteria: SearchCriteria = Body(default_factory=SearchCriteria),
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> dict[str, Any]:
+    if not can_view(current_user, PermissionEntity.LOCATIONS, db):
+        raise CustomException(status_code=403, message="Access is denied")
+    return execute_search(
+        db=db,
+        model_cls=FloorPlan,
+        criteria=criteria,
+        company_id=current_user.company_id,
+        base_stmt=_company_floor_plan_stmt(current_user),
+        serializer=lambda row: _serialize_floor_plan(row, db),
+    )
+
+
+@floor_plans_extra_router.get("/location/{location_id:int}")
 def list_floor_plans_by_location(
     location_id: int,
+    include_superseded: bool = Query(default=False, alias="includeSuperseded"),
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> list[dict[str, Any]]:
@@ -589,14 +857,199 @@ def list_floor_plans_by_location(
     if loc is None:
         raise CustomException(status_code=404, message="Location not found")
     assert_company_access(current_user, loc.company_id)
-    rows = db.scalars(
-        select(FloorPlan).where(
-            FloorPlan.location_id == location_id,
-        )
+    stmt = select(FloorPlan).where(FloorPlan.location_id == location_id)
+    if not include_superseded:
+        stmt = stmt.where(FloorPlan.superseded_by_id.is_(None))
+    rows = db.scalars(stmt.order_by(FloorPlan.id)).all()
+    return _floor_plan_dtos(list(rows), db)
+
+
+def _load_floor_plan(
+    db: Session, current_user: User, plan_id: int, *, write: bool
+) -> tuple[FloorPlan, Location]:
+    if write:
+        plan = db.get(FloorPlan, plan_id)
+        if plan is None:
+            raise CustomException(status_code=404, message="Floor plan not found")
+        return plan, _assert_can_edit_location(db, current_user, plan.location_id)
+    if not can_view(current_user, PermissionEntity.LOCATIONS, db):
+        raise CustomException(status_code=403, message="Access is denied")
+    plan = db.get(FloorPlan, plan_id)
+    if plan is None:
+        raise CustomException(status_code=404, message="Floor plan not found")
+    loc = db.get(Location, plan.location_id)
+    if loc is None:
+        raise CustomException(status_code=404, message="Location not found")
+    assert_company_access(current_user, loc.company_id)
+    return plan, loc
+
+
+def _asset_mini(asset: Asset, image_url: str | None, open_wos: int | None = None) -> dict[str, Any]:
+    dto: dict[str, Any] = {
+        "id": asset.id,
+        "name": asset.name,
+        "customId": asset.custom_id,
+        "status": resolve_enum_value("status", asset.status, "Asset") or "OPERATIONAL",
+        "image": {"url": image_url} if image_url else None,
+    }
+    if open_wos is not None:
+        dto["openWorkOrders"] = open_wos
+    return dto
+
+
+@floor_plans_extra_router.get("/{plan_id:int}/pins")
+def list_floor_plan_pins(
+    plan_id: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> list[dict[str, Any]]:
+    _load_floor_plan(db, current_user, plan_id, write=False)
+    rows = db.execute(
+        select(FloorPlanPin, Asset)
+        .join(Asset, Asset.id == FloorPlanPin.asset_id)
+        .where(FloorPlanPin.floor_plan_id == plan_id)
+        .order_by(FloorPlanPin.id)
     ).all()
-    return [model_to_dict(r, db=db) for r in rows]
+    asset_ids = [a.id for _, a in rows]
+    wo_counts: dict[int, int] = {}
+    images: dict[int, str] = {}
+    if asset_ids:
+        wo_counts = dict(
+            db.execute(
+                select(WorkOrder.asset_id, func.count(WorkOrder.id))
+                .where(
+                    WorkOrder.asset_id.in_(asset_ids),
+                    WorkOrder.archived.is_(False),
+                    or_(WorkOrder.status.is_(None), WorkOrder.status != _WO_COMPLETE),
+                )
+                .group_by(WorkOrder.asset_id)
+            ).all()
+        )
+        image_ids = {a.image_id for _, a in rows if a.image_id is not None}
+        if image_ids:
+            images = {
+                fid: path
+                for fid, path in db.execute(
+                    select(File.id, File.path).where(File.id.in_(image_ids))
+                ).all()
+            }
+    return [
+        {
+            "id": pin.id,
+            "x": pin.x,
+            "y": pin.y,
+            "asset": _asset_mini(
+                a, images.get(a.image_id) if a.image_id is not None else None, int(wo_counts.get(a.id, 0))
+            ),
+        }
+        for pin, a in rows
+    ]
 
 
+def _asset_in_plan_subtree(db: Session, asset: Asset, plan_location_id: int) -> bool:
+    return asset.location_id is not None and plan_location_id in _location_ancestors(db, asset.location_id)
+
+
+@floor_plans_extra_router.put("/{plan_id:int}/pins/{asset_id:int}")
+def put_floor_plan_pin(
+    plan_id: int,
+    asset_id: int,
+    payload: dict[str, Any] = Body(...),
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> dict[str, Any]:
+    plan, loc = _load_floor_plan(db, current_user, plan_id, write=True)
+    coords: list[float] = []
+    for key in ("x", "y"):
+        v = payload.get(key)
+        if isinstance(v, bool) or not isinstance(v, (int, float)) or not (0 <= v <= 1):
+            raise CustomException(status_code=406, message=f"{key} must be a number between 0 and 1")
+        coords.append(float(v))
+    if plan.superseded_by_id is not None:
+        raise CustomException(status_code=406, message="This drawing has been superseded")
+    asset = db.get(Asset, asset_id)
+    if asset is None:
+        raise CustomException(status_code=404, message="Asset not found")
+    assert_company_access(current_user, asset.company_id)
+    if asset.company_id != loc.company_id:
+        raise CustomException(status_code=406, message="Asset and drawing belong to different companies")
+    if not _asset_in_plan_subtree(db, asset, plan.location_id):
+        raise CustomException(
+            status_code=406, message="The asset is not located in this drawing's location"
+        )
+    pin = db.scalar(
+        select(FloorPlanPin).where(
+            FloorPlanPin.floor_plan_id == plan_id, FloorPlanPin.asset_id == asset_id
+        )
+    )
+    if pin is None:
+        pin = FloorPlanPin(
+            company_id=loc.company_id,
+            floor_plan_id=plan_id,
+            asset_id=asset_id,
+            x=coords[0],
+            y=coords[1],
+            created_by=current_user.id,
+        )
+        db.add(pin)
+    pin.x, pin.y = coords
+    pin.updated_by = current_user.id
+    pin.updated_at = utcnow()
+    db.commit()
+    db.refresh(pin)
+    image_url = db.scalar(select(File.path).where(File.id == asset.image_id)) if asset.image_id else None
+    return {"id": pin.id, "x": pin.x, "y": pin.y, "asset": _asset_mini(asset, image_url)}
+
+
+@floor_plans_extra_router.delete("/{plan_id:int}/pins/{asset_id:int}")
+def delete_floor_plan_pin(
+    plan_id: int,
+    asset_id: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> dict[str, Any]:
+    _load_floor_plan(db, current_user, plan_id, write=True)
+    db.execute(
+        delete(FloorPlanPin).where(
+            FloorPlanPin.floor_plan_id == plan_id, FloorPlanPin.asset_id == asset_id
+        )
+    )
+    db.commit()
+    return {"success": True}
+
+
+@floor_plans_extra_router.get("/{plan_id:int}/pinnable-assets")
+def list_pinnable_assets(
+    plan_id: int,
+    search: str | None = Query(default=None),
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> list[dict[str, Any]]:
+    if not can_view(current_user, PermissionEntity.ASSETS, db):
+        raise CustomException(status_code=403, message="Access is denied")
+    plan, loc = _load_floor_plan(db, current_user, plan_id, write=False)
+    stmt = select(Asset).where(
+        Asset.company_id == loc.company_id,
+        Asset.archived.is_(False),
+        Asset.location_id.in_(_location_subtree_ids(db, plan.location_id)),
+        Asset.id.not_in(select(FloorPlanPin.asset_id).where(FloorPlanPin.floor_plan_id == plan_id)),
+    )
+    if search and search.strip():
+        like = f"%{search.strip()}%"
+        stmt = stmt.where(or_(Asset.name.ilike(like), Asset.custom_id.ilike(like)))
+    rows = db.scalars(stmt.order_by(Asset.name, Asset.id).limit(50)).all()
+    return [
+        {
+            "id": a.id,
+            "name": a.name,
+            "customId": a.custom_id,
+            "status": resolve_enum_value("status", a.status, "Asset") or "OPERATIONAL",
+        }
+        for a in rows
+    ]
+
+
+router.include_router(floor_plans_extra_router)
 router.include_router(floor_plans_router)
 
 
@@ -989,10 +1442,29 @@ def _after_create_asset(
     )
 
 
+def _prune_stale_pins(asset: Asset, db: Session) -> None:
+    """Keep only pins whose drawing is at the asset's (new) location or one of its ancestors."""
+    allowed = set(_location_ancestors(db, asset.location_id))
+    rows = db.execute(
+        select(FloorPlanPin.id, FloorPlan.location_id)
+        .join(FloorPlan, FloorPlan.id == FloorPlanPin.floor_plan_id)
+        .where(FloorPlanPin.asset_id == asset.id)
+    ).all()
+    stale = [pid for pid, plan_loc in rows if plan_loc not in allowed]
+    if stale:
+        db.execute(delete(FloorPlanPin).where(FloorPlanPin.id.in_(stale)))
+
+
+def _before_delete_asset(asset: Asset, current_user: User, db: Session) -> None:
+    # SQLite test databases may not enforce FK cascades; delete pins explicitly.
+    db.execute(delete(FloorPlanPin).where(FloorPlanPin.asset_id == asset.id))
+
+
 def _before_patch_asset(
     asset: Asset, payload: dict[str, Any], current_user: User, db: Session
 ) -> None:
     asset._old_status = asset.status  # type: ignore[attr-defined]
+    asset._old_location_id = asset.location_id  # type: ignore[attr-defined]
 
 
 def _after_patch_asset(
@@ -1000,6 +1472,8 @@ def _after_patch_asset(
 ) -> None:
     _validate_asset_integrity(asset, current_user, db)
     _sync_asset_relations(asset, payload, current_user, db)
+    if asset.location_id != getattr(asset, "_old_location_id", asset.location_id):
+        _prune_stale_pins(asset, db)
     old_down = is_really_down(getattr(asset, "_old_status", None))
     new_down = is_really_down(asset.status)
     if not old_down and new_down:
@@ -1029,6 +1503,7 @@ assets_router = build_crud_router(
     after_create=_after_create_asset,
     before_patch=_before_patch_asset,
     after_patch=_after_patch_asset,
+    before_delete=_before_delete_asset,
 )
 
 
@@ -1229,6 +1704,40 @@ def get_asset_by_barcode(
     if not asset:
         raise CustomException(status_code=404, message="Asset not found")
     return _serialize_asset(asset, db)
+
+
+@assets_router.get("/{asset_id:int}/floor-plan-pins")
+def list_asset_floor_plan_pins(
+    asset_id: int,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> list[dict[str, Any]]:
+    if not can_view(current_user, PermissionEntity.ASSETS, db):
+        raise CustomException(status_code=403, message="Access is denied")
+    asset = db.get(Asset, asset_id)
+    if asset is None:
+        raise CustomException(status_code=404, message="Asset not found")
+    assert_company_access(current_user, asset.company_id)
+    rows = db.execute(
+        select(FloorPlanPin, FloorPlan)
+        .join(FloorPlan, FloorPlan.id == FloorPlanPin.floor_plan_id)
+        .where(FloorPlanPin.asset_id == asset_id, FloorPlan.superseded_by_id.is_(None))
+        .order_by(FloorPlanPin.id)
+    ).all()
+    return [
+        {
+            "floorPlan": {
+                "id": plan.id,
+                "name": plan.name,
+                "kind": plan.kind,
+                "revision": plan.revision,
+                "locationId": plan.location_id,
+            },
+            "x": pin.x,
+            "y": pin.y,
+        }
+        for pin, plan in rows
+    ]
 
 
 router.include_router(assets_router)

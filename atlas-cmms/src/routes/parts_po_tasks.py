@@ -4,15 +4,16 @@ from __future__ import annotations
 
 from typing import Any
 from fastapi import APIRouter, Body, Depends, Query
+from pydantic import Field
 from sqlalchemy import delete, func, select
 from sqlalchemy.orm import Session
 
 from src.deps.company import assert_company_access, is_super_admin
 from src.deps.current_user import get_current_user
 from src.deps.db import get_db
-from src.deps.permissions import can_edit, can_edit_object
+from src.deps.permissions import can_edit, can_edit_object, can_view
 from src.models._base import utcnow
-from src.models.enums import PermissionEntity, WFMainCondition
+from src.models.enums import MovementType, PermissionEntity, WFMainCondition
 from src.services.workflow_engine import (
     run_part_workflows,
     run_purchase_order_workflows,
@@ -51,8 +52,10 @@ from src.routes.assets_locations import (
     _sync_entity_custom_fields,
     _verify_and_sync_m2m,
 )
+from src.schemas._base import CamelModel
 from src.schemas.errors import CustomException
-from src.services.serializer import model_to_dict
+from src.services.serializer import model_to_dict, serialize_value
+from src.services.stock import count_stock, lock_part, record_movement
 
 router = APIRouter()
 
@@ -256,14 +259,68 @@ def _before_write_part(
             part.barcode = None
 
 
+# Session.info key: a part's quantity before a PATCH, read again after the payload is applied.
+_QUANTITY_BEFORE_PATCH = "stock_quantity_before_patch"
+
+
+def _after_create_part(
+    part: Part, payload: dict[str, Any], current_user: User, db: Session
+) -> None:
+    opening = float(part.quantity or 0.0)
+    if not part.non_stock and opening > 0:
+        # The payload already set the quantity; the ledger applies it so its first row anchors it.
+        part.quantity = 0.0
+        record_movement(
+            db,
+            part,
+            MovementType.OPENING,
+            opening,
+            user_id=current_user.id,
+            reason="Initial quantity",
+            run_workflows=False,  # _sync_part_relations runs them once below
+        )
+    _sync_part_relations(part, payload, current_user, db)
+
+
+def _before_patch_part(
+    part: Part, payload: dict[str, Any], current_user: User, db: Session
+) -> None:
+    if "quantity" in payload:
+        part = lock_part(db, part.id)
+        db.info.setdefault(_QUANTITY_BEFORE_PATCH, {})[part.id] = float(part.quantity or 0.0)
+    _before_write_part(part, payload, current_user, db)
+
+
+def _after_patch_part(
+    part: Part, payload: dict[str, Any], current_user: User, db: Session
+) -> None:
+    before = db.info.get(_QUANTITY_BEFORE_PATCH, {}).pop(part.id, None)
+    after = float(part.quantity or 0.0)
+    if before is not None and not part.non_stock and after != before:
+        if after < 0:
+            raise CustomException(status_code=406, message="Quantity cannot be negative")
+        # apply_patch already wrote the new value; put the old one back so the ledger applies the change once.
+        part.quantity = before
+        record_movement(
+            db,
+            part,
+            MovementType.ADJUSTMENT,
+            after - before,
+            user_id=current_user.id,
+            reason=str(payload.get("stockReason") or "").strip() or "Edited on part form",
+            run_workflows=False,  # _sync_part_relations runs them once below
+        )
+    _sync_part_relations(part, payload, current_user, db)
+
+
 parts_router = build_crud_router(
     "/parts",
     Part,
     custom_serializer=_serialize_part,
     before_create=_before_write_part,
-    before_patch=_before_write_part,
-    after_create=_sync_part_relations,
-    after_patch=_sync_part_relations,
+    before_patch=_before_patch_part,
+    after_create=_after_create_part,
+    after_patch=_after_patch_part,
 )
 
 
@@ -296,6 +353,70 @@ def get_part_by_barcode(
     return _serialize_part(part, db)
 
 
+_NON_STOCK_MESSAGE = "Stock actions are not available for non-stock parts"
+
+
+class StockReceiveIn(CamelModel):
+    quantity: float = Field(gt=0)
+    reason: str | None = None
+    unit_cost: float | None = Field(default=None, ge=0)
+    purchase_order_id: int | None = None
+
+
+class StockIssueIn(CamelModel):
+    quantity: float = Field(gt=0)
+    work_order_id: int | None = None
+    reason: str | None = None
+
+
+class StockCountIn(CamelModel):
+    counted: float = Field(ge=0)
+    reason: str | None = None
+
+
+def _lock_part_for_stock(part_id: int, current_user: User, db: Session) -> Part:
+    part = lock_part(db, part_id)
+    assert_company_access(current_user, part, is_super_admin=is_super_admin(current_user, db))
+    if not can_edit_object(current_user, PermissionEntity.PARTS_AND_MULTIPARTS, part, db):
+        raise CustomException(status_code=403, message="Access is denied")
+    if part.non_stock:
+        raise CustomException(status_code=406, message=_NON_STOCK_MESSAGE)
+    return part
+
+
+def _receive_stock(
+    part: Part,
+    quantity: float,
+    *,
+    reason: str | None,
+    unit_cost: float | None,
+    purchase_order_id: int | None,
+    current_user: User,
+    db: Session,
+) -> dict[str, Any]:
+    movement = MovementType.RECEIPT
+    if purchase_order_id is not None:
+        po = db.get(PurchaseOrder, purchase_order_id)
+        if po is None:
+            raise CustomException(status_code=404, message="PurchaseOrder not found")
+        if po.company_id != part.company_id:
+            raise CustomException(status_code=403, message="Access is denied")
+        movement = MovementType.PO_RECEIPT
+    record_movement(
+        db,
+        part,
+        movement,
+        quantity,
+        user_id=current_user.id,
+        purchase_order_id=purchase_order_id,
+        reason=reason,
+        unit_cost=unit_cost,
+    )
+    db.commit()
+    db.refresh(part)
+    return _serialize_part(part, db)
+
+
 @parts_router.post("/{part_id:int}/restock")
 @parts_router.patch("/{part_id:int}/restock")
 def restock_part(
@@ -304,32 +425,183 @@ def restock_part(
     current_user: User = Depends(get_current_user),
     db: Session = Depends(get_db),
 ) -> dict[str, Any]:
+    """Backward-compatible alias of POST /parts/{id}/stock/receive."""
+    part = _lock_part_for_stock(part_id, current_user, db)
+    qty = float(payload.get("quantity", 0) or 0)
+    if qty <= 0:
+        raise CustomException(status_code=406, message="Quantity must be positive")
+    raw_cost = payload.get("unitCost")
+    raw_po = payload.get("purchaseOrderId")
+    return _receive_stock(
+        part,
+        qty,
+        reason=payload.get("reason"),
+        unit_cost=float(raw_cost) if raw_cost is not None else None,
+        purchase_order_id=int(raw_po) if raw_po is not None else None,
+        current_user=current_user,
+        db=db,
+    )
+
+
+@parts_router.post("/{part_id:int}/stock/receive")
+def receive_part_stock(
+    part_id: int,
+    body: StockReceiveIn,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> dict[str, Any]:
+    part = _lock_part_for_stock(part_id, current_user, db)
+    return _receive_stock(
+        part,
+        body.quantity,
+        reason=body.reason,
+        unit_cost=body.unit_cost,
+        purchase_order_id=body.purchase_order_id,
+        current_user=current_user,
+        db=db,
+    )
+
+
+@parts_router.post("/{part_id:int}/stock/issue")
+def issue_part_stock(
+    part_id: int,
+    body: StockIssueIn,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> dict[str, Any]:
+    part = _lock_part_for_stock(part_id, current_user, db)
+    if body.work_order_id is not None:
+        wo = db.get(WorkOrder, body.work_order_id)
+        if wo is None:
+            raise CustomException(status_code=404, message="WorkOrder not found")
+        if wo.company_id != part.company_id or not can_view(
+            current_user, PermissionEntity.WORK_ORDERS, db
+        ):
+            raise CustomException(status_code=403, message="Access is denied")
+    elif not (body.reason or "").strip():
+        raise CustomException(
+            status_code=406, message="A reason is required when no work order is given"
+        )
+    record_movement(
+        db,
+        part,
+        MovementType.ISSUE,
+        body.quantity,
+        user_id=current_user.id,
+        work_order_id=body.work_order_id,
+        reason=body.reason,
+    )
+    db.commit()
+    db.refresh(part)
+    return _serialize_part(part, db)
+
+
+@parts_router.post("/{part_id:int}/stock/count")
+def count_part_stock(
+    part_id: int,
+    body: StockCountIn,
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> dict[str, Any]:
+    part = _lock_part_for_stock(part_id, current_user, db)
+    _tx, variance = count_stock(
+        db, part, body.counted, user_id=current_user.id, reason=body.reason
+    )
+    db.commit()
+    db.refresh(part)
+    res = _serialize_part(part, db)
+    res["variance"] = variance
+    return res
+
+
+@parts_router.get("/{part_id:int}/stock/movements")
+def list_part_stock_movements(
+    part_id: int,
+    page: int = Query(default=0, ge=0),
+    size: int = Query(default=20, ge=1),
+    current_user: User = Depends(get_current_user),
+    db: Session = Depends(get_db),
+) -> dict[str, Any]:
     part = db.get(Part, part_id)
     if not part:
         raise CustomException(status_code=404, message="Part not found")
     assert_company_access(current_user, part, is_super_admin=is_super_admin(current_user, db))
-    if not can_edit_object(current_user, PermissionEntity.PARTS_AND_MULTIPARTS, part, db):
+    if not can_view(current_user, PermissionEntity.PARTS_AND_MULTIPARTS, db):
         raise CustomException(status_code=403, message="Access is denied")
-    if part.non_stock:
-        raise CustomException(status_code=406, message="Cannot restock a non-stock part")
-    qty = float(payload.get("quantity", 0) or 0)
-    if qty <= 0:
-        raise CustomException(status_code=406, message="Quantity must be positive")
-    part.quantity = (part.quantity or 0.0) + qty
-    db.add(
-        PartConsumption(
-            part_id=part.id,
-            quantity=qty,
-            company_id=part.company_id,
-            created_by=current_user.id,
-            updated_by=current_user.id,
-            description="PART_RESTOCK",
-        )
+    size = min(size, 100)
+    scope = (
+        PartConsumption.part_id == part.id,
+        PartConsumption.company_id == part.company_id,
     )
-    run_part_workflows(part, db)
-    db.commit()
-    db.refresh(part)
-    return _serialize_part(part, db)
+    total = db.scalar(select(func.count()).select_from(PartConsumption).where(*scope)) or 0
+    rows = db.scalars(
+        select(PartConsumption)
+        .where(*scope)
+        .order_by(PartConsumption.created_at.desc(), PartConsumption.id.desc())
+        .offset(page * size)
+        .limit(size)
+    ).all()
+
+    user_ids = {r.created_by for r in rows if r.created_by is not None}
+    wo_ids = {r.work_order_id for r in rows if r.work_order_id is not None}
+    po_ids = {r.purchase_order_id for r in rows if r.purchase_order_id is not None}
+    users = (
+        {u.id: u for u in db.scalars(select(User).where(User.id.in_(user_ids)))}
+        if user_ids
+        else {}
+    )
+    wos = (
+        {
+            w.id: w
+            for w in db.scalars(
+                select(WorkOrder).where(
+                    WorkOrder.id.in_(wo_ids), WorkOrder.company_id == part.company_id
+                )
+            )
+        }
+        if wo_ids
+        else {}
+    )
+    pos = (
+        {
+            p.id: p
+            for p in db.scalars(
+                select(PurchaseOrder).where(
+                    PurchaseOrder.id.in_(po_ids), PurchaseOrder.company_id == part.company_id
+                )
+            )
+        }
+        if po_ids
+        else {}
+    )
+
+    content: list[dict[str, Any]] = []
+    for r in rows:
+        u = users.get(r.created_by)
+        w = wos.get(r.work_order_id)
+        p = pos.get(r.purchase_order_id)
+        content.append(
+            {
+                "id": r.id,
+                "createdAt": serialize_value(r.created_at),
+                "movementType": r.movement_type,
+                "change": r.change,
+                "balanceAfter": r.balance_after,
+                "quantity": r.quantity,
+                "reason": r.reason,
+                "unitCost": r.unit_cost,
+                "createdBy": (
+                    {"id": u.id, "firstName": u.first_name, "lastName": u.last_name}
+                    if u
+                    else None
+                ),
+                "workOrder": (
+                    {"id": w.id, "title": w.title, "customId": w.custom_id} if w else None
+                ),
+                "purchaseOrder": {"id": p.id, "name": p.name} if p else None,
+            }
+        )
+    return {"content": content, "totalElements": int(total), "page": page, "size": size}
 
 
 router.include_router(parts_router)
@@ -364,30 +636,18 @@ def _consume_or_restore_part_stock(
     current_user: User,
     db: Session,
 ) -> Part:
-    part = db.get(Part, part_id)
-    if not part:
-        raise CustomException(status_code=404, message=f"Part {part_id} not found")
+    part = lock_part(db, part_id)
     assert_company_access(current_user, part, is_super_admin=is_super_admin(current_user, db))
     if delta_qty > 0:
-        if not part.non_stock and (part.quantity or 0.0) < delta_qty:
-            raise CustomException(
-                status_code=406,
-                message=f"Insufficient stock for part {part.name}",
-            )
-        part.quantity = (part.quantity or 0.0) - delta_qty
-        tx = PartConsumption(
-            part_id=part.id,
-            work_order_id=wo_id,
-            quantity=delta_qty,
-            company_id=current_user.company_id,
-            created_by=current_user.id,
-            updated_by=current_user.id,
-            description="PART_CONSUMPTION",
+        record_movement(
+            db, part, MovementType.WO_CONSUMPTION, delta_qty,
+            user_id=current_user.id, work_order_id=wo_id,
         )
-        db.add(tx)
-        run_part_workflows(part, db)
     elif delta_qty < 0:
-        part.quantity = (part.quantity or 0.0) - delta_qty
+        record_movement(
+            db, part, MovementType.WO_RETURN, -delta_qty,
+            user_id=current_user.id, work_order_id=wo_id,
+        )
     return part
 
 
@@ -837,26 +1097,23 @@ def respond_purchase_order(
     if is_approved and po.status != 0:
         for pq in pqs:
             if pq.part_id and (pq.quantity or 0.0) > 0:
-                part = db.get(Part, pq.part_id)
-                if part and part.company_id == po.company_id:
-                    part.quantity = (part.quantity or 0.0) + float(pq.quantity)
-                    tx = PartConsumption(
-                        part_id=part.id,
-                        quantity=float(pq.quantity),
-                        company_id=po.company_id,
-                        created_by=current_user.id,
-                        updated_by=current_user.id,
-                        description="PART_RECEPTION",
+                part = lock_part(db, pq.part_id)
+                if part.company_id == po.company_id:
+                    record_movement(
+                        db, part, MovementType.PO_RECEIPT, float(pq.quantity),
+                        user_id=current_user.id, purchase_order_id=po.id,
                     )
-                    db.add(tx)
-                    run_part_workflows(part, db)
     elif not is_approved and po.status == 0:
         for pq in pqs:
             if pq.part_id and (pq.quantity or 0.0) > 0:
-                part = db.get(Part, pq.part_id)
-                if part and part.company_id == po.company_id:
-                    part.quantity = (part.quantity or 0.0) - float(pq.quantity)
-                    run_part_workflows(part, db)
+                part = lock_part(db, pq.part_id)
+                if part.company_id == po.company_id:
+                    # The stock may already have been used; the ledger still records the reversal.
+                    record_movement(
+                        db, part, MovementType.PO_REVERSAL, float(pq.quantity),
+                        user_id=current_user.id, purchase_order_id=po.id,
+                        allow_negative=True,
+                    )
 
     po.status = 0 if is_approved else 1  # APPROVED=0, REJECTED=1, PENDING=2 in ApprovalStatus
     if po.created_by is not None:

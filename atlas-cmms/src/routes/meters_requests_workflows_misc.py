@@ -57,6 +57,7 @@ from src.models.categories import (
 from src.models.enums import (
     AssetStatus,
     FileType,
+    MovementType,
     PermissionEntity,
     Priority,
     Status,
@@ -87,6 +88,7 @@ from src.routes.assets_locations import (
 from src.routes.work_orders_pm import _serialize_wo
 from src.schemas.errors import CustomException, SuccessResponse
 from src.services.serializer import apply_patch, model_to_dict
+from src.services.stock import record_movement
 from src.services.workflow_engine import (
     run_request_workflows,
     run_work_order_workflows,
@@ -1890,7 +1892,9 @@ def import_entities(
             except (ValueError, TypeError):
                 item_id = None
 
-        obj = db.get(model_cls, item_id) if item_id else None
+        # A part is locked: its quantity change is written to the stock ledger below.
+        lock = {"with_for_update": True, "populate_existing": True} if model_cls is Part else {}
+        obj = db.get(model_cls, item_id, **lock) if item_id else None
         is_update = obj is not None and getattr(obj, "company_id", None) == company_id
         if not is_update:
             obj = model_cls()
@@ -1920,6 +1924,9 @@ def import_entities(
                 "customersNames",
             )
         }
+        part_qty_before = (
+            float(obj.quantity or 0.0) if is_update and isinstance(obj, Part) else 0.0
+        )
         apply_patch(obj, scalar_item)
 
         # Resolve relational fields by name/email within tenant
@@ -2100,6 +2107,22 @@ def import_entities(
                         )
                     )
         elif isinstance(obj, Part):
+            part_qty_after = float(obj.quantity or 0.0)
+            if not obj.non_stock and part_qty_after != part_qty_before and (
+                is_update or part_qty_after > 0
+            ):
+                # apply_patch wrote the new value; the ledger applies the change itself.
+                obj.quantity = part_qty_before
+                record_movement(
+                    db,
+                    obj,
+                    MovementType.ADJUSTMENT if is_update else MovementType.OPENING,
+                    part_qty_after - part_qty_before,
+                    user_id=current_user.id,
+                    reason="CSV import",
+                    allow_negative=True,
+                    run_workflows=False,
+                )
             for email in _parse_list_import(
                 item.get("workersEmails")
                 or item.get("assignedToEmails")

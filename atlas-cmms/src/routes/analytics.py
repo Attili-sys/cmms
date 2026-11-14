@@ -3,9 +3,9 @@
 from __future__ import annotations
 
 from datetime import datetime, timedelta
-from typing import Any
+from typing import Any, NamedTuple
 from fastapi import APIRouter, Body, Depends
-from sqlalchemy import select
+from sqlalchemy import and_, or_, select
 from sqlalchemy.orm import Session
 
 from src.deps.company import assert_company_access, is_super_admin
@@ -14,7 +14,7 @@ from src.deps.db import get_db
 from src.deps.permissions import can_view
 from src.models._base import utcnow
 from src.models.categories import PartCategory, WorkOrderCategory
-from src.models.enums import PermissionEntity
+from src.models.enums import MovementType, PermissionEntity
 from src.models.location_asset import Asset, AssetDowntime
 from src.models.parts_po import AdditionalCost, Part, PartQuantity, PartTransaction as PartConsumption
 from src.models.requests import Request
@@ -1037,27 +1037,63 @@ def assets_analytics_fallback(
 
 
 # 3. PartAnalyticsController (/analytics/parts/...)
+class PartConsumptionLine(NamedTuple):
+    """Net quantity of one part consumed by one work order (or by none) within a period."""
+
+    part_id: int
+    work_order_id: int | None
+    quantity: float
+
+
 def _load_part_consumptions(
     db: Session, company_id: int, start: datetime, end: datetime
-) -> list[PartConsumption]:
-    rows = list(
-        db.scalars(
-            select(PartConsumption).where(
-                PartConsumption.company_id == company_id,
-                PartConsumption.created_at >= start,
-                PartConsumption.created_at <= end,
-            )
-        ).all()
+) -> list[PartConsumptionLine]:
+    """Consumption net of returns: WO_CONSUMPTION (and ISSUE to a WO) minus WO_RETURN.
+
+    Rows written before the ledger have no movement type and are read by their description.
+    Receipts, counts, adjustments, openings and PO movements are never consumption.
+    """
+    is_consumption = or_(
+        PartConsumption.movement_type == MovementType.WO_CONSUMPTION.value,
+        # A manual issue against a work order is consumption too; one without a WO is not.
+        and_(
+            PartConsumption.movement_type == MovementType.ISSUE.value,
+            PartConsumption.work_order_id.is_not(None),
+        ),
+        and_(
+            PartConsumption.movement_type.is_(None),
+            or_(
+                PartConsumption.description.is_(None),
+                PartConsumption.description.in_(("PART_CONSUMPTION", "CONSUMPTION")),
+                PartConsumption.work_order_id.is_not(None),
+            ),
+        ),
     )
+    rows = db.execute(
+        select(
+            PartConsumption.part_id,
+            PartConsumption.work_order_id,
+            PartConsumption.movement_type,
+            PartConsumption.quantity,
+        ).where(
+            PartConsumption.company_id == company_id,
+            PartConsumption.created_at >= start,
+            PartConsumption.created_at <= end,
+            or_(is_consumption, PartConsumption.movement_type == MovementType.WO_RETURN.value),
+        )
+    ).all()
+    net: dict[tuple[int, int | None], float] = {}
+    for part_id, wo_id, movement_type, qty in rows:
+        sign = -1.0 if movement_type == MovementType.WO_RETURN.value else 1.0
+        net[(part_id, wo_id)] = net.get((part_id, wo_id), 0.0) + sign * abs(float(qty or 0.0))
     return [
-        c
-        for c in rows
-        if c.description in (None, "PART_CONSUMPTION", "CONSUMPTION")
-        or c.work_order_id is not None
+        PartConsumptionLine(part_id, wo_id, qty)
+        for (part_id, wo_id), qty in net.items()
+        if qty != 0
     ]
 
 
-def _get_consumption_cost(db: Session, c: PartConsumption) -> float:
+def _get_consumption_cost(db: Session, c: PartConsumptionLine) -> float:
     if not c.part_id:
         return 0.0
     p = db.get(Part, c.part_id)
