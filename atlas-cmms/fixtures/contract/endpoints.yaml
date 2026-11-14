@@ -1,5 +1,5 @@
 total_controllers: 70
-total_endpoints: 380
+total_endpoints: 391
 endpoints:
 - controller: AdditionalCostController
   handler: getById
@@ -218,6 +218,14 @@ endpoints:
   auth: permitAll
   path_variables:
   - portalUUID
+  query_params: []
+  request_body: null
+- controller: AssetController
+  handler: getFloorPlanPins
+  method: GET
+  path: /assets/{id}/floor-plan-pins
+  auth: hasRole('ROLE_CLIENT')
+  path_variables: []
   query_params: []
   request_body: null
 - controller: AssetController
@@ -872,7 +880,8 @@ endpoints:
   path: /floor-plans/location/{id}
   auth: permitAll()
   path_variables: []
-  query_params: []
+  query_params:
+  - includeSuperseded
   request_body: null
 - controller: FloorPlanController
   handler: patch
@@ -897,6 +906,55 @@ endpoints:
   auth: hasRole('ROLE_CLIENT')
   path_variables: []
   query_params: []
+  request_body: null
+- controller: FloorPlanController
+  handler: getAll
+  method: GET
+  path: /floor-plans
+  auth: permitAll()
+  path_variables: []
+  query_params: []
+  request_body: null
+- controller: FloorPlanController
+  handler: search
+  method: POST
+  path: /floor-plans/search
+  auth: hasRole('ROLE_CLIENT')
+  path_variables: []
+  query_params: []
+  request_body: null
+- controller: FloorPlanController
+  handler: getPins
+  method: GET
+  path: /floor-plans/{id}/pins
+  auth: permitAll()
+  path_variables: []
+  query_params: []
+  request_body: null
+- controller: FloorPlanController
+  handler: putPin
+  method: PUT
+  path: /floor-plans/{id}/pins/{assetId}
+  auth: hasRole('ROLE_CLIENT')
+  path_variables: []
+  query_params: []
+  request_body: null
+- controller: FloorPlanController
+  handler: deletePin
+  method: DELETE
+  path: /floor-plans/{id}/pins/{assetId}
+  auth: hasRole('ROLE_CLIENT')
+  path_variables: []
+  query_params: []
+  request_body: null
+- controller: FloorPlanController
+  handler: getPinnableAssets
+  method: GET
+  path: /floor-plans/{id}/pinnable-assets
+  auth: permitAll()
+  path_variables: []
+  query_params:
+  - search
   request_body: null
 - controller: GeneralPreferencesController
   handler: getAll
@@ -1425,6 +1483,40 @@ endpoints:
   auth: hasRole('ROLE_CLIENT')
   path_variables: []
   query_params: []
+  request_body: null
+- controller: PartController
+  handler: receiveStock
+  method: POST
+  path: /parts/{id}/stock/receive
+  auth: hasRole('ROLE_CLIENT')
+  path_variables: []
+  query_params: []
+  request_body: null
+- controller: PartController
+  handler: issueStock
+  method: POST
+  path: /parts/{id}/stock/issue
+  auth: hasRole('ROLE_CLIENT')
+  path_variables: []
+  query_params: []
+  request_body: null
+- controller: PartController
+  handler: countStock
+  method: POST
+  path: /parts/{id}/stock/count
+  auth: hasRole('ROLE_CLIENT')
+  path_variables: []
+  query_params: []
+  request_body: null
+- controller: PartController
+  handler: getStockMovements
+  method: GET
+  path: /parts/{id}/stock/movements
+  auth: hasRole('ROLE_CLIENT')
+  path_variables: []
+  query_params:
+  - page
+  - size
   request_body: null
 - controller: PartController
   handler: patch

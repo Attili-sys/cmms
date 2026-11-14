@@ -134,8 +134,15 @@ export default function FloorPlanViewer({
   useEffect(() => {
     if (!highlightId || loading) return;
     const el = pinRefs.current[highlightId];
-    if (el) {
-      el.scrollIntoView({ block: 'center', inline: 'center' });
+    const box = scrollRef.current;
+    if (el && box) {
+      // Scroll only the viewer's own box: scrollIntoView would also shift the drawer and page.
+      const pin = el.getBoundingClientRect();
+      const frame = box.getBoundingClientRect();
+      box.scrollBy({
+        left: pin.left - frame.left - frame.width / 2,
+        top: pin.top - frame.top - frame.height / 2
+      });
     }
   }, [highlightId, loading, pins.length]);
 
@@ -386,11 +393,15 @@ export default function FloorPlanViewer({
                   onPointerMove={onPinPointerMove}
                   onPointerUp={(e) => onPinPointerUp(e, pin)}
                   onPointerCancel={onPinPointerCancel}
-                  sx={{
-                    position: 'absolute',
+                  // Inline, not sx: the app's RTL style plugin flips `left` to `right` in emotion
+                  // styles, which would mirror every pin in Arabic. Coordinates are physical.
+                  style={{
                     left: `${pos.x * 100}%`,
                     top: `${pos.y * 100}%`,
-                    transform: 'translate(-50%, -100%)',
+                    transform: 'translate(-50%, -100%)'
+                  }}
+                  sx={{
+                    position: 'absolute',
                     lineHeight: 1,
                     cursor: editable ? 'grab' : 'pointer',
                     touchAction: editable ? 'none' : 'auto',

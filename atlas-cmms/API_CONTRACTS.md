@@ -179,6 +179,42 @@ All `POST /api/<entity>/search` endpoints accept a `SearchCriteria` payload:
 
 ---
 
+### 3.10 Stock Ledger (`src/services/stock.py`, `src/routes/parts_po_tasks.py`)
+
+**Rule:** every part quantity change goes through `src/services/stock.py` (`record_movement`, `count_stock`) — never assign `part.quantity` elsewhere. It locks the part row (`lock_part`), writes one `PartTransaction` row (`movementType`, signed `change`, `balanceAfter`, `reason`), and does not commit; the caller owns the transaction. Callers: stock endpoints, WO part consumption/return, PO approve/un-approve, workflow `APPROVE` action, part create (`OPENING`), part PATCH of `quantity` (`ADJUSTMENT`, reason from `stockReason`, default `Edited on part form`), and CSV import (`OPENING` / `ADJUSTMENT`, reason `CSV import`). Ledger columns and movement types: see [DATABASE.md](DATABASE.md) 4.8.
+
+| Method & path | Body | Permission | Response |
+|---|---|---|---|
+| `POST /api/parts/{id}/stock/receive` | `{quantity>0, reason?, unitCost?>=0, purchaseOrderId?}` | edit `PARTS_AND_MULTIPARTS` | Part DTO. Records `RECEIPT`, or `PO_RECEIPT` when `purchaseOrderId` is given (PO must be in the part's company). |
+| `POST /api/parts/{id}/stock/issue` | `{quantity>0, workOrderId?, reason?}` | edit `PARTS_AND_MULTIPARTS` (and view `WORK_ORDERS` when `workOrderId` is set) | Part DTO. Records `ISSUE`. `reason` is required when there is no `workOrderId`. |
+| `POST /api/parts/{id}/stock/count` | `{counted>=0, reason?}` | edit `PARTS_AND_MULTIPARTS` | Part DTO plus `variance` (`counted - book`). Records `COUNT_GAIN` / `COUNT_LOSS`; no row when `variance == 0`. `reason` is required when `variance != 0`. |
+| `GET /api/parts/{id}/stock/movements?page=0&size=20` | none | view `PARTS_AND_MULTIPARTS` | `{content: [{id, createdAt, movementType, change, balanceAfter, quantity, reason, unitCost, createdBy: {id, firstName, lastName}?, workOrder: {id, title, customId}?, purchaseOrder: {id, name}?}], totalElements, page, size}`, newest first. `size` is capped at 100. |
+| `POST` / `PATCH /api/parts/{id}/restock` | `{quantity, reason?, unitCost?, purchaseOrderId?}` | edit `PARTS_AND_MULTIPARTS` | Backward-compatible alias of `stock/receive`. |
+
+- **Errors:** body validation failures (missing/non-numeric `quantity`, `quantity <= 0`, `counted < 0`, `unitCost < 0`) return `400` with `{message, success: false}`. `406`: `Insufficient stock for part <name>`, `Stock actions are not available for non-stock parts` (receive/issue/count on a `non_stock` part), `A reason is required when no work order is given`, `A reason is required when the count differs`, `Quantity must be positive` (restock alias). `404`: unknown part, `WorkOrder not found`, `PurchaseOrder not found`. `403`: no permission or a WO/PO from another company.
+- **Analytics:** `_load_part_consumptions` (`src/routes/analytics.py`) counts `WO_CONSUMPTION` and `ISSUE` with a work order, minus `WO_RETURN`; rows without `movement_type` are read by `description`.
+
+### 3.11 Floor Plans & Pins (`src/routes/assets_locations.py`, `src/services/floor_plan_render.py`)
+
+Floor-plan DTOs (`model_to_dict` plus): `kind`, `revision`, `note`, `image`, `sourceFile: {id, name, url}?`, `current` (`supersededById == null`), `supersededById`, `pinCount`. Coordinates are normalised 0..1 of the image width/height. Tenant scope is through `Location.company_id` (the table has no `company_id`).
+
+| Method & path | Body / query | Permission | Response |
+|---|---|---|---|
+| `GET /api/floor-plans` | none | view `LOCATIONS` | Floor-plan DTOs of the company (all revisions). |
+| `POST /api/floor-plans/search` | `SearchCriteria` | view `LOCATIONS` | Standard page of DTOs. |
+| `GET /api/floor-plans/location/{id}?includeSuperseded=false` | none | view `LOCATIONS` | DTOs for a location; superseded revisions only with `includeSuperseded=true`. |
+| `POST /api/floor-plans` | `{name, area?, location: {id}, kind?, revision?, note?, file: {id}}` | edit `LOCATIONS` object | DTO. A PDF `file` is rendered to a PNG (`image`) and kept as `sourceFile`; an image is used as-is. Same `(location, name, kind)` as a current plan: the old plan is superseded and its pins are copied. |
+| `PATCH /api/floor-plans/{id}` | `{name?, area?, kind?, revision?, note?, image?}` | edit `LOCATIONS` object | DTO. `location`, `file`, `sourceFile`, `supersededById`, `createdAt`, `createdBy` are ignored. `image` must be an image file. |
+| `DELETE /api/floor-plans/{id}` | none | edit `LOCATIONS` object | Deletes the plan and its pins; restores the revision it superseded. |
+| `GET /api/floor-plans/{id}/pins` | none | view `LOCATIONS` | `[{id, x, y, asset: {id, name, customId, status, image: {url}?, openWorkOrders}}]` |
+| `PUT /api/floor-plans/{id}/pins/{assetId}` | `{x, y}` (numbers in 0..1) | edit `LOCATIONS` object | Pin DTO (create or move; one pin per asset per plan). |
+| `DELETE /api/floor-plans/{id}/pins/{assetId}` | none | edit `LOCATIONS` object | `{success: true}` (idempotent). |
+| `GET /api/floor-plans/{id}/pinnable-assets?search=` | none | view `ASSETS` | Up to 50 unarchived assets (`{id, name, customId, status}`) located in the plan's location or a descendant and not yet pinned on it. |
+| `GET /api/assets/{id}/floor-plan-pins` | none | view `ASSETS` | `[{floorPlan: {id, name, kind, revision, locationId}, x, y}]` on current revisions only. |
+
+- **Errors:** `406`: `A name is required`, `A location is required`, `kind must be one of ARCHITECTURAL, MEP, FIRE_SAFETY, SECURITY, OTHER`, `Unsupported drawing file: upload a PNG, JPG, WEBP, SVG or PDF`, `The drawing image must be an image file`, `Invalid file reference`, PDF rejections (`PDF exceeds the 25 MB limit`, `Encrypted or password-protected PDFs are not supported`, `The PDF is unreadable or corrupt`, `The PDF has no pages`, `The PDF has more than 50 pages`), pin rejections (`x must be a number between 0 and 1` / `y ...`, `This drawing has been superseded`, `The asset is not located in this drawing's location`, `Asset and drawing belong to different companies`). `404`: `Floor plan not found`, `Location not found`, `Asset not found`, `File not found`. `403`: no permission or other company. `400`: body fails schema validation.
+- Pins on a superseded plan are read-only (`PUT` returns `406`); `DELETE` of a pin is still allowed.
+
 ## 4. End-to-End Contract Verification (`tests/`)
 
 Before deploying any backend or serializer change, run:
@@ -188,10 +224,12 @@ cd atlas-cmms
 .venv/bin/pytest -q && .venv/bin/ruff check .
 ```
 
-Key test suites (**86 tests total**, `uv run pytest -q` on 2026-11-05):
+Key test suites (**115 tests total**, `uv run pytest -q` on 2026-11-14):
 - [`tests/test_crud_contracts.py`](tests/test_crud_contracts.py) — End-to-end verification of `/api/auth/me`, Location create + `/children/0/paginated`, Asset create + `/children/0/paginated` + `/mini?locationId=` + FK hydration, WorkOrder create + FK hydration, PreventiveMaintenance create + `Schedule` hydration + `schedule.startsOn` sort, Checklist create with `taskBases`/`options`, and Meter create + FK hydration.
 - [`tests/test_asset_management_fixes.py`](tests/test_asset_management_fixes.py) — Comprehensive verification of all 22 Asset Management defects (M2M/custom-field sync, status-to-downtime cascades, analytics formulas, search deduplication, two-pass import/export, file upload/download, tenant/FK isolation, RBAC ownership, hierarchy cycle detection, and duplicate identifier checks).
 - [`tests/test_non_asset_modules_fixes.py`](tests/test_non_asset_modules_fixes.py) and [`tests/test_non_asset_audit_fixes.py`](tests/test_non_asset_audit_fixes.py) — Comprehensive regression suites covering all non-asset backend, security, RBAC, `viewOther` scoping, cross-tenant FK injection, WorkOrder configuration/completion guards, PM `COMPLETED_DATE` recurrence, Part barcode/restock, Workflow patching/execution, Meter triggers, Request virtual status search, in-app notifications, Import/Export, and Analytics contracts.
+- [`tests/test_stock_ledger.py`](tests/test_stock_ledger.py) — Stock ledger: receive/issue/count endpoints, movement history, insufficient-stock and non-stock errors, WO return and PO reversal logging, restock alias, consumption analytics netting.
+- [`tests/test_floor_plan_pins.py`](tests/test_floor_plan_pins.py) — Floor-plan kinds, PDF rendering and rejections, revisions with pin copying, pin integrity rules (company, location subtree, 0..1 coordinates, superseded plans), pinnable assets, and `GET /assets/{id}/floor-plan-pins`.
 - [`tests/routes/test_all_routes_and_jobs.py`](tests/routes/test_all_routes_and_jobs.py) — Route and background scheduler job coverage (`pm_generator`, `preventive_maintenance_notifier`, `downtime_notifier`, `cleanup`).
 - [`tests/contract/test_openapi_covers_catalog.py`](tests/contract/test_openapi_covers_catalog.py) — OpenAPI route catalog parity check.
 - [`tests/test_schema_matches_dump.py`](tests/test_schema_matches_dump.py) — SQLAlchemy 2.0 metadata vs PostgreSQL schema verification.

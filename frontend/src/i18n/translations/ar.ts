@@ -2003,6 +2003,7 @@ const locale = {
   movement_COUNT_GAIN: 'زيادة في الجرد',
   movement_COUNT_LOSS: 'نقص في الجرد',
   movement_ADJUSTMENT: 'تعديل',
+  stock_count_action: 'جرد',
 };
 
 export default locale;

@@ -176,7 +176,7 @@ export default function PartDetails(props: PartDetailsProps) {
                 {t('issue')}
               </Button>
               <Button size="small" variant="outlined" onClick={() => openStock('count')}>
-                {t('count')}
+                {t('stock_count_action')}
               </Button>
             </Stack>
           )}

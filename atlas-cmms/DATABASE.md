@@ -8,10 +8,10 @@ This document is the authoritative reference for the PostgreSQL / SQLAlchemy 2.0
 
 - **ORM & Driver:** SQLAlchemy 2.0 (`DeclarativeBase` in [`src/models/_base.py`](src/models/_base.py)) using `postgresql+psycopg://` via `ajnkit.db` in production and SQLite (`StaticPool`) in unit/contract tests.
 - **Schema Footprint:**
-  - **72 ORM Entity Models** across 15 domain modules under [`src/models/`](src/models/__init__.py)
+  - **73 ORM Entity Models** across 15 domain modules under [`src/models/`](src/models/__init__.py)
   - **54 Association & `@ElementCollection` Tables** in [`src/models/associations.py`](src/models/associations.py)
-  - **44 Ported Java Enums** in [`src/models/enums.py`](src/models/enums.py)
-- **Migrations:** Managed via Canvas SQL migrations under [`db/migrations/`](db/migrations/001_maintenance_records_for_the_cmms.sql) (`001_maintenance_records_for_the_cmms.sql`, `002_create_missing_sequences.sql`, `003_asset_unique_identifiers.sql`) and [`db/schema.json`](db/schema.json), with `Base.metadata.create_all(engine)`, sequence initialization, and asset unique indexes verified on startup in [`src/app.py`](src/app.py) and [`src/tasks.py`](src/tasks.py).
+  - **46 Enums** (44 ported from Java plus `MovementType` and `FloorPlanKind`) in [`src/models/enums.py`](src/models/enums.py)
+- **Migrations:** Managed via Canvas SQL migrations under [`db/migrations/`](db/migrations/001_maintenance_records_for_the_cmms.sql) (`001_maintenance_records_for_the_cmms.sql`, `002_create_missing_sequences.sql`, `003_asset_unique_identifiers.sql`, `004_invite_elradie_administrator.sql`, `005_stock_ledger.sql`, `006_floor_plan_pins.sql`) and [`db/schema.json`](db/schema.json), with `Base.metadata.create_all(engine)`, sequence initialization, and asset unique indexes verified on startup in [`src/app.py`](src/app.py) and [`src/tasks.py`](src/tasks.py).
 - **Schema Parity Test:** [`tests/test_schema_matches_dump.py`](tests/test_schema_matches_dump.py) verifies that the SQLAlchemy metadata matches the legacy Liquibase/PostgreSQL schema dump.
 
 ---
@@ -100,7 +100,8 @@ Legacy Hibernate mapped `@Enumerated` fields in two different ways depending onw
 | ORM Class | SQL Table | Tenant Key | Purpose |
 |---|---|---|---|
 | `Location` | `location` | `company_id` | Physical site/building/room (`name`, `address`, `longitude`, `latitude`, `parent_location_id`, `image_id`, `custom_id`). Supports recursive hierarchy via `parent_location_id`. |
-| `FloorPlan` | `floor_plan` | `location_id` | Floor plan image and area attached to a `Location`. |
+| `FloorPlan` | `floor_plan` | `location_id` | Drawing attached to a `Location` (`name`, `area`, `image_id`). Migration 006 adds nullable `kind` (`FloorPlanKind`: `ARCHITECTURAL`, `MEP`, `FIRE_SAFETY`, `SECURITY`, `OTHER`), `revision`, `note`, `source_file_id` (original PDF; `image_id` is the rendered PNG), `superseded_by_id` (revision chain: `NULL` = current revision, otherwise the id of the next revision), `created_at`, `created_by`. These columns have no FK, unique, or check constraint (see 4.8). |
+| `FloorPlanPin` | `floor_plan_pin` | `company_id` | Asset placed on a floor plan. `floor_plan_id` and `asset_id` are FKs with `ON DELETE CASCADE`; `x`, `y` are normalised 0..1 fractions of the image width/height. `UNIQUE (floor_plan_id, asset_id)` (`uq_floor_plan_pin`) and an index on `asset_id`. Uses `CompanyAuditMixin` columns. |
 | `Asset` | `asset` | `company_id` | Equipment or machine (`name`, `description`, `model`, `serial_number`, `bar_code`, `nfc_id`, `status`, `area`, `acquisition_cost`, `in_service_date`, `warranty_expiration_date`, `location_id`, `parent_asset_id`, `category_id`, `primary_user_id`, `image_id`, `custom_id`). Supports recursive hierarchy via `parent_asset_id` and enforces tenant-scoped partial unique indexes (`WHERE col IS NOT NULL`) on `(company_id, custom_id)`, `(company_id, bar_code)`, and `(company_id, nfc_id)` (`db/migrations/003_asset_unique_identifiers.sql` + `src/tasks.py::ensure_asset_unique_indexes`). |
 | `AssetDowntime` | `asset_downtime` | `company_id` | Downtime intervals (`starts_on`, `duration`, `downtime_reason`, `asset_id`). `duration=0` indicates an ongoing downtime; automatically opened/closed on Asset and WorkOrder status transitions. |
 | `Deprecation` | `deprecation` | `company_id` | Asset financial depreciation schedule. |
@@ -133,11 +134,43 @@ Legacy Hibernate mapped `@Enumerated` fields in two different ways depending onw
 | `Part` | `part` | `company_id` | Spare part / inventory item (`name`, `description`, `barcode`, `cost`, `quantity`, `min_quantity`, `non_stock`, `area`, `unit`, `category_id`, `image_id`, `custom_id`). |
 | `MultiParts` | `multi_parts` | `company_id` | Set/bundle of parts (`name`). Linked to `Part` via `t_multi_parts_part_associations`. |
 | `PartQuantity` | `part_quantity` | `part_id` / `work_order_id` / `purchase_order_id` | Quantity of a `Part` allocated to a `Part`, `PurchaseOrder`, or `WorkOrder` (`part_id`, `purchase_order_id`, `work_order_id`, `quantity`). Scoped via parent entity joins in `_crud.py`. |
-| `PartTransaction` | `part_transaction` | `company_id` | Inventory consumption/addition log. |
+| `PartTransaction` | `part_transaction` | `company_id` | Stock ledger: one row per quantity change of a part (see 4.8). Aliased `PartConsumption` in `src/models/parts_po.py`. |
 | `PurchaseOrder` | `purchase_order` | `company_id` | Purchase order (`name`, `status`, `shipping_due_date`, `shipping_Additional_detail`, `vendor_id`, `category_id`, `company_id`). |
 | `AdditionalCost` | `additional_cost` | `work_order_id` | Non-part/non-labor cost on a `WorkOrder` (`description`, `cost`, `include_to_total_cost`, `work_order_id`, `assigned_to_id`, `category_id`). Scoped via `WorkOrder.company_id`. |
 | `Vendor` | `vendor` | `company_id` | External supplier/contractor (`company_name`, `name`, `address`, `phone`, `email`, `website`, `vendor_type`, `rate`, `description`, `custom_id`). |
 | `Customer` | `customer` | `company_id` | Client/customer (`name`, `address`, `phone`, `email`, `website`, `customer_type`, `rate`, `description`, `billing_name`, `billing_address`, `custom_id`). |
+
+### 4.8 Stock Ledger, Floor-Plan Pins & the Canvas Existing-Table Rule
+
+**Canvas rule.** Canvas refuses a drop, rename, type change, or new constraint on an existing table. Columns added to existing tables (`part_transaction`, `floor_plan`) are therefore nullable with no FK, unique, or check constraint (`purchase_order_id`, `source_file_id`, `superseded_by_id` are plain `BIGINT`; integrity is checked in the service layer). New tables (`floor_plan_pin`) may carry FKs and unique constraints. Migrations are additive and idempotent (`IF NOT EXISTS`, guarded backfills) so the previous build still runs against the new schema.
+
+**`part_transaction` ledger columns (migration `005_stock_ledger.sql`):**
+
+| Column | Type | Meaning |
+|---|---|---|
+| `movement_type` | `VARCHAR(32)` | `MovementType` value (below). `NULL` only on rows the backfill could not classify. |
+| `quantity` | `DOUBLE PRECISION` (existing) | Magnitude, always positive (`abs(change)`). |
+| `change` | `DOUBLE PRECISION` | Signed effect on the part's balance. |
+| `balance_after` | `DOUBLE PRECISION` | Part quantity after the movement; `NULL` for `non_stock` parts, which keep no balance. |
+| `reason` | `TEXT` | Free-text reason (required for `ISSUE` without a work order and for a count with variance). |
+| `purchase_order_id` | `BIGINT` | Source PO for `PO_RECEIPT` / `PO_REVERSAL`. No FK. |
+| `unit_cost` | `DOUBLE PRECISION` | Cost per unit at the time; defaults to `part.cost`. |
+
+Index `ix_part_transaction_part_created (part_id, created_at)`. The migration backfills `movement_type`/`change` for legacy rows from `description` and inserts one `OPENING` row (`description = 'LEDGER_START'`) per stocked part so every ledger starts at today's balance.
+
+**Movement types and direction (`src/services/stock.py`):**
+
+| Direction | `MovementType` |
+|---|---|
+| Inbound (`change > 0`) | `OPENING`, `RECEIPT`, `PO_RECEIPT`, `WO_RETURN`, `COUNT_GAIN` |
+| Outbound (`change < 0`) | `ISSUE`, `WO_CONSUMPTION`, `PO_REVERSAL`, `COUNT_LOSS` |
+| Signed by the caller | `ADJUSTMENT` (part form / API PATCH / CSV import of an existing part) |
+
+Outbound movements that would take the balance below zero fail with `406 Insufficient stock for part <name>`. The PO un-approve path passes `allow_negative=True` for `PO_REVERSAL`: the stock may already have been used, and the ledger still records the reversal.
+
+`description` is still written with the legacy value (`PART_RESTOCK` for `RECEIPT`, `PART_RECEPTION` for `PO_RECEIPT`, `PART_CONSUMPTION` for `WO_CONSUMPTION`; otherwise the movement type name) so readers of the pre-ledger column keep working. Consumption analytics reads `movement_type` (consumption minus `WO_RETURN`) and falls back to `description` for rows with no `movement_type`.
+
+**`floor_plan` revisions.** Uploading a drawing with the same `(location_id, name, kind)` as a current plan creates a new row, sets the old row's `superseded_by_id` to the new id, and copies the pins. Deleting a revision clears `superseded_by_id` on the plan it superseded.
 
 ### 4.7 Meters, Requests, Workflows, Categories, Files & Audit (`meters.py`, `requests.py`, `workflows.py`, `categories.py`, `files_custom.py`, `integrations.py`, `envers.py`)
 

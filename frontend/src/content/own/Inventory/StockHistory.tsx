@@ -88,8 +88,9 @@ export default function StockHistory({ part }: { part: Part }) {
                   <TableCell align="right">{t('change')}</TableCell>
                   <TableCell align="right">{t('balance')}</TableCell>
                   <TableCell>{t('by')}</TableCell>
-                  <TableCell>{t('reference')}</TableCell>
-                  <TableCell>{t('reason')}</TableCell>
+                  <TableCell sx={{ minWidth: 140 }}>
+                    {t('reference')} / {t('reason')}
+                  </TableCell>
                 </TableRow>
               </TableHead>
               <TableBody>
@@ -117,7 +118,7 @@ export default function StockHistory({ part }: { part: Part }) {
                             : 'text.secondary'
                       }}
                     >
-                      {formatChange(m.change)}
+                      <span dir="ltr">{formatChange(m.change)}</span>
                     </TableCell>
                     <TableCell align="right">
                       {m.balanceAfter ?? '—'}
@@ -145,10 +146,14 @@ export default function StockHistory({ part }: { part: Part }) {
                             {m.purchaseOrder.name}
                           </Link>
                         )}
-                        {!m.workOrder && !m.purchaseOrder && '—'}
+                        {m.reason && (
+                          <Typography variant="body2" color="text.secondary">
+                            {m.reason}
+                          </Typography>
+                        )}
+                        {!m.workOrder && !m.purchaseOrder && !m.reason && '—'}
                       </Stack>
                     </TableCell>
-                    <TableCell sx={{ minWidth: 160 }}>{m.reason || '—'}</TableCell>
                   </TableRow>
                 ))}
               </TableBody>

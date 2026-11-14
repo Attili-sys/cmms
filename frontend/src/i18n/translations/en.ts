@@ -2016,6 +2016,7 @@ const locale = {
   movement_COUNT_GAIN: 'Count gain',
   movement_COUNT_LOSS: 'Count loss',
   movement_ADJUSTMENT: 'Adjustment',
+  stock_count_action: 'Count',
 };
 
 export default locale;

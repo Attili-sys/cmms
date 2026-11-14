@@ -3,7 +3,7 @@
 Self-hosted maintenance system deployed on Canvas as **`aj-cafm`** (`https://aj-cafm--innovation.canvas.ajnai.net`).
 
 The active production stack is:
-- **Canvas Python Backend + Bundled SPA (`atlas-cmms/`)**: FastAPI + SQLAlchemy 2.0 + `ajnkit-core` serving 311 OpenAPI paths under `/api` across 6 domain routers (`src/routes/`; the same router is also mounted at the site root), 72 ORM entity models + 54 association tables (`src/models/`), background maintenance schedulers (`src/tasks.py`), and the compiled React SPA (`src/static/ui/`).
+- **Canvas Python Backend + Bundled SPA (`atlas-cmms/`)**: FastAPI + SQLAlchemy 2.0 + `ajnkit-core` serving 324 OpenAPI paths under `/api` across 6 domain routers (`src/routes/`; the same router is also mounted at the site root), 72 ORM entity models + 54 association tables (`src/models/`), background maintenance schedulers (`src/tasks.py`), and the compiled React SPA (`src/static/ui/`).
 - **React Web App (`frontend/`)**: TypeScript/React + Redux Toolkit source compiled into `atlas-cmms/src/static/` and `atlas-cmms/src/static/ui/`. All external logos and branding have been replaced with **"Powered by Canvas"**.
 - **Legacy Reference (`api/`, `mobile/`, `home/`)**: `api/` is the original Java Spring Boot backend (retained for parity reference and archived in `atlas-cmms/.canvas/legacy/api/`), `mobile/` is the Expo mobile app, and `home/` is the marketing site. `cmms/` is a leftover venv — ignore.
 
@@ -107,4 +107,4 @@ Rules for agents working on this branch:
 
 ## Done
 
-A Canvas backend change (`atlas-cmms/`) is done when `uv run pytest -q` (86 tests, including `tests/test_crud_contracts.py`, `tests/test_asset_management_fixes.py`, `tests/test_non_asset_modules_fixes.py`, and `tests/test_non_asset_audit_fixes.py`) and `uv run ruff check .` pass in `atlas-cmms/`. A web change (`frontend/`) is done when `npm run lint` and `npm run build` succeed in `frontend/` and the built assets are synced to `atlas-cmms/src/static/` and `atlas-cmms/src/static/ui/`. A mobile change is done when `npm test` has been run in `mobile/`. A UI change is done when the affected screen has been verified in a browser or E2E test.
+A Canvas backend change (`atlas-cmms/`) is done when `uv run pytest -q` (115 tests, including `tests/test_crud_contracts.py`, `tests/test_asset_management_fixes.py`, `tests/test_non_asset_modules_fixes.py`, `tests/test_non_asset_audit_fixes.py`, `tests/test_stock_ledger.py`, and `tests/test_floor_plan_pins.py`) and `uv run ruff check .` pass in `atlas-cmms/`. A web change (`frontend/`) is done when `npm run lint` and `npm run build` succeed in `frontend/` and the built assets are synced to `atlas-cmms/src/static/` and `atlas-cmms/src/static/ui/`. A mobile change is done when `npm test` has been run in `mobile/`. A UI change is done when the affected screen has been verified in a browser or E2E test.
